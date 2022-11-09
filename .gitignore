@@ -1,0 +1,38 @@
+# Created by .ignore support plugin (hsz.mobi)
+
+.DS_Store
+.swp
+
+# IntelliJ
+.idea
+.ijwb
+
+# Ignore binary
+cmd/orchestrator/orchestrator
+cmd/subscriber/subscriber
+
+# Dist files
+dist
+
+# Coverage outputs
+coverage.txt
+profile.out
+profile.grind
+
+# Nodejs
+node_modules
+yarn-error.log
+.vscode/
+
+# Ignore password file
+password.txt
+
+# libfuzzer
+oom-*
+crash-*
+
+# deepsource cli
+bin
+
+# test data
+orchestrator/db/kv/test-data
