@@ -124,7 +124,7 @@ func (dependency *ClientDependency) Run(
 
 func (dependency *ClientDependency) Download(tagName, destination, commitHash string) (err error) {
 	dependencyTagPath := dependency.ResolveDirPath(tagName, destination)
-	err = os.MkdirAll(dependencyTagPath, 0755)
+	err = os.MkdirAll(dependencyTagPath, 0750)
 
 	if nil != err {
 		return

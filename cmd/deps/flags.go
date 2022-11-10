@@ -44,6 +44,11 @@ var (
 			Usage: "provide a hash of commit that is bound to given release tag",
 			Value: "e5eb32ac",
 		},
+		&cli.StringFlag{
+			Name:  gethDatadirFlag,
+			Usage: "provide a path you would like to store your data",
+			Value: "./geth",
+		},
 	}
 	validatorFlags = []cli.Flag{
 		&cli.StringFlag{
@@ -65,31 +70,3 @@ var (
 		},
 	}
 )
-
-func preparePrysmFlags(ctx *cli.Context) (prysmArguments []string) {
-	if !ctx.Bool(acceptTermsOfUseFlagName) {
-		log.Fatal("you must accept terms of use")
-		ctx.Done()
-
-		return
-	}
-
-	prysmArguments = append(prysmArguments, "--accept-terms-of-use")
-
-	return
-}
-
-func prepareValidatorFlags(ctx *cli.Context) (validatorArguments []string) {
-	if !ctx.Bool(acceptTermsOfUseFlagName) {
-		log.Fatal("you must accept terms of use")
-		ctx.Done()
-
-		return
-	}
-
-	return
-}
-
-func prepareGethFlags(ctx *cli.Context) (gethArguments []string) {
-	return
-}
