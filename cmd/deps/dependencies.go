@@ -25,8 +25,8 @@ const (
 var (
 	clientDependencies = map[string]*ClientDependency{
 		gethDependencyName: {
-			baseUnixUrl:   "https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-1.10.26-e5eb32ac.tar.gz",
-			baseDarwinUrl: "https://gethstore.blob.core.windows.net/builds/geth-darwin-amd64-1.10.26-e5eb32ac.tar.gz",
+			baseUnixUrl:   "https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-%s-%s.tar.gz",
+			baseDarwinUrl: "https://gethstore.blob.core.windows.net/builds/geth-darwin-amd64-%s-%s.tar.gz",
 			name:          gethDependencyName,
 		},
 		gethGenesisDependencyName: {
@@ -35,13 +35,13 @@ var (
 			name:          gethGenesisDependencyName,
 		},
 		prysmDependencyName: {
-			baseUnixUrl:   "https://github.com/prysmaticlabs/prysm/releases/download/v3.1.2/beacon-chain-v3.1.2-linux-amd64",
-			baseDarwinUrl: "https://github.com/prysmaticlabs/prysm/releases/download/v3.1.2/beacon-chain-v3.1.2-darwin-amd64",
+			baseUnixUrl:   "https://github.com/prysmaticlabs/prysm/releases/download/%s/beacon-chain-%s-linux-amd64",
+			baseDarwinUrl: "https://github.com/prysmaticlabs/prysm/releases/download/%s/beacon-chain-%s-darwin-amd64",
 			name:          prysmDependencyName,
 		},
 		validatorDependencyName: {
-			baseUnixUrl:   "https://github.com/prysmaticlabs/prysm/releases/download/v3.1.2/validator-v3.1.2-linux-amd64",
-			baseDarwinUrl: "https://github.com/prysmaticlabs/prysm/releases/download/v3.1.2/validator-v3.1.2-darwin-amd64",
+			baseUnixUrl:   "https://github.com/prysmaticlabs/prysm/releases/download/%s/validator-%s-linux-amd64",
+			baseDarwinUrl: "https://github.com/prysmaticlabs/prysm/releases/download/%s/validator-%s-darwin-amd64",
 			name:          validatorDependencyName,
 		},
 		prysmGenesisDependencyName: {

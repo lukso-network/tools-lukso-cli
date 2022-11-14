@@ -37,7 +37,7 @@ var (
 		&cli.StringFlag{
 			Name:  gethTagFlag,
 			Usage: "provide a tag of geth you would like to run",
-			Value: "v1.10.26",
+			Value: "1.10.26",
 		},
 		&cli.StringFlag{
 			Name:  gethCommitHashFlag,
