@@ -37,7 +37,13 @@ func main() {
 	app.Name = appName
 	app.Usage = "Spins all lukso ecosystem components"
 	app.Flags = appFlags
-	app.Action = downloadAndRunBinaries
+	app.Commands = []*cli.Command{
+		{
+			Name:   "init",
+			Usage:  "initialize lukso dependencies",
+			Action: downloadBinaries,
+		},
+	}
 
 	app.Before = func(ctx *cli.Context) error {
 		runtime.GOMAXPROCS(runtime.NumCPU())
@@ -71,7 +77,7 @@ func main() {
 	}
 }
 
-func downloadAndRunBinaries(ctx *cli.Context) (err error) {
+func downloadBinaries(ctx *cli.Context) (err error) {
 	// Get os, then download all binaries into datadir matching desired system
 	// After successful download run binary with desired arguments spin and connect them
 	// Orchestrator can be run from-memory
