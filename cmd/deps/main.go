@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 	"os"
@@ -24,24 +25,25 @@ var (
 	systemOs       string
 )
 
+// do not confuse init func with init subcommand - for now we just pass init flags, there are more to come
 func init() {
-	allFlags := make([]cli.Flag, 0)
-	allFlags = append(allFlags, gethFlags...)
-	allFlags = append(allFlags, validatorFlags...)
-	allFlags = append(allFlags, prysmFlags...)
-	appFlags = append(appFlags, allFlags...)
+	initFlags = make([]cli.Flag, 0)
+	initFlags = append(initFlags, gethInitFlags...)
+	initFlags = append(initFlags, validatorInitFlags...)
+	initFlags = append(initFlags, prysmInitFlags...)
 }
 
 func main() {
 	app := cli.App{}
 	app.Name = appName
 	app.Usage = "Spins all lukso ecosystem components"
+	app.Flags = appFlags
 	app.Commands = []*cli.Command{
 		{
 			Name:   "init",
 			Usage:  "initialize lukso dependencies",
 			Action: downloadBinaries,
-			Flags:  appFlags,
+			Flags:  initFlags,
 			Before: beforeInit,
 		},
 	}
@@ -97,6 +99,9 @@ func beforeInit(ctx *cli.Context) error {
 }
 
 func downloadBinaries(ctx *cli.Context) (err error) {
+	if !ctx.Bool(acceptTermsOfUseFlagName) {
+		return errors.New("Terms of Use must be accepted")
+	}
 	// Get os, then download all binaries into datadir matching desired system
 	// After successful download run binary with desired arguments spin and connect them
 	// Orchestrator can be run from-memory

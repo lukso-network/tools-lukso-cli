@@ -25,15 +25,16 @@ const (
 )
 
 var (
-	appFlags = []cli.Flag{
+	initFlags []cli.Flag
+	appFlags  = []cli.Flag{
 		&cli.BoolFlag{
 			Name:  acceptTermsOfUseFlagName,
-			Usage: "Accept terms of use. Default: true",
-			Value: true,
+			Usage: "Accept terms of use. Default: false",
+			Value: false,
 		},
 	}
 
-	gethFlags = []cli.Flag{
+	gethInitFlags = []cli.Flag{
 		&cli.StringFlag{
 			Name:  gethTagFlag,
 			Usage: "provide a tag of geth you would like to run",
@@ -50,14 +51,14 @@ var (
 			Value: "./geth",
 		},
 	}
-	validatorFlags = []cli.Flag{
+	validatorInitFlags = []cli.Flag{
 		&cli.StringFlag{
 			Name:  validatorTagFlag,
 			Usage: "provide tag for validator binary",
 			Value: "v3.1.2",
 		},
 	}
-	prysmFlags = []cli.Flag{
+	prysmInitFlags = []cli.Flag{
 		&cli.StringFlag{
 			Name:  prysmTagFlag,
 			Usage: "provide tag for prysm",
