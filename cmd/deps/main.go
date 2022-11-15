@@ -36,12 +36,13 @@ func main() {
 	app := cli.App{}
 	app.Name = appName
 	app.Usage = "Spins all lukso ecosystem components"
-	app.Flags = appFlags
 	app.Commands = []*cli.Command{
 		{
 			Name:   "init",
 			Usage:  "initialize lukso dependencies",
 			Action: downloadBinaries,
+			Flags:  appFlags,
+			Before: beforeInit,
 		},
 	}
 
@@ -75,6 +76,24 @@ func main() {
 	if nil != err {
 		log.Error(err.Error())
 	}
+}
+
+func beforeInit(ctx *cli.Context) error {
+	runtime.GOMAXPROCS(runtime.NumCPU())
+
+	setupOperatingSystem()
+
+	// Geth related parsing
+	gethTag = ctx.String(gethTagFlag)
+	gethCommitHash = ctx.String(gethCommitHashFlag)
+
+	// Validator related parsing
+	validatorTag = ctx.String(validatorTagFlag)
+
+	// Prysm related parsing
+	prysmTag = ctx.String(prysmTagFlag)
+
+	return nil
 }
 
 func downloadBinaries(ctx *cli.Context) (err error) {
