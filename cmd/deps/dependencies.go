@@ -135,7 +135,7 @@ func (dependency *ClientDependency) Download(tagName, destination, commitHash st
 	fileUrl := dependency.ParseUrl(tagName, commitHash)
 
 	if fileExists(dependencyLocation) {
-		log.Warningf("I am not downloading %s, file %s already exists", fileUrl, dependencyLocation)
+		log.Warningf("Downloading %s aborted, file %s already exists", fileUrl, dependencyLocation)
 
 		return
 	}
