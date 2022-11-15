@@ -8,8 +8,8 @@
 .ijwb
 
 # Ignore binary
-cmd/orchestrator/orchestrator
-cmd/subscriber/subscriber
+cmd/deps/geth
+cmd/deps/prysm
 
 # Dist files
 dist
@@ -33,6 +33,3 @@ crash-*
 
 # deepsource cli
 bin
-
-# test data
-orchestrator/db/kv/test-data

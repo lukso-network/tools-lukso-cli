@@ -8,13 +8,6 @@ import (
 	runtimeDebug "runtime/debug"
 )
 
-// We want to spin also 3 libraries at once, and secretly rule them by orchestrator. It matches for me somehow
-
-// This binary will also support only some of the possible networks.
-// Make a pull request to attach your network.
-// We are also very open to any improvements. Please make some issue or hackmd proposal to make it better.
-// Join our lukso discord https://discord.gg/E2rJPP4 to ask some questions
-
 const (
 	ubuntu  = "linux"
 	macos   = "darwin"
@@ -112,7 +105,7 @@ func downloadAndRunBinaries(ctx *cli.Context) (err error) {
 }
 
 func downloadGeth(ctx *cli.Context) (err error) {
-	log.WithField("dependencyTag", gethTag).Info("I am downloading Geth")
+	log.WithField("dependencyTag", gethTag).Info("Downloading Geth")
 	gethDataDir := ctx.String(gethDatadirFlag)
 	err = clientDependencies[gethDependencyName].Download(gethTag, gethDataDir, gethCommitHash)
 
@@ -120,7 +113,7 @@ func downloadGeth(ctx *cli.Context) (err error) {
 }
 
 func downloadGenesis(ctx *cli.Context) (err error) {
-	log.WithField("dependencyTag", gethTag).Info("I am downloading geth genesis")
+	log.WithField("dependencyTag", gethTag).Info("Downloading Geth Genesis")
 	gethDataDir := ctx.String(gethDatadirFlag)
 	err = clientDependencies[gethGenesisDependencyName].Download(gethTag, gethDataDir, "")
 
@@ -128,7 +121,7 @@ func downloadGenesis(ctx *cli.Context) (err error) {
 		return
 	}
 
-	log.WithField("dependencyTag", prysmTag).Info("I am downloading prysm genesis")
+	log.WithField("dependencyTag", prysmTag).Info("Downloading Prysm Genesis")
 	prysmDataDir := ctx.String(prysmDatadirFlag)
 	err = clientDependencies[prysmGenesisDependencyName].Download(prysmTag, prysmDataDir, "")
 
@@ -136,7 +129,7 @@ func downloadGenesis(ctx *cli.Context) (err error) {
 }
 
 func downloadConfig(ctx *cli.Context) (err error) {
-	log.WithField("dependencyTag", prysmTag).Info("I am downloading prysm config")
+	log.WithField("dependencyTag", prysmTag).Info("Downloading Prysm Config")
 	prysmDataDir := ctx.String(prysmDatadirFlag)
 	err = clientDependencies[prysmConfigDependencyName].Download(prysmTag, prysmDataDir, "")
 
@@ -144,7 +137,7 @@ func downloadConfig(ctx *cli.Context) (err error) {
 }
 
 func downloadPrysm(ctx *cli.Context) (err error) {
-	log.WithField("dependencyTag", prysmTag).Info("I am downloading prysm")
+	log.WithField("dependencyTag", prysmTag).Info("Downloading Prysm")
 	prysmDataDir := ctx.String(prysmDatadirFlag)
 	err = clientDependencies[prysmDependencyName].Download(prysmTag, prysmDataDir, "")
 
@@ -152,7 +145,7 @@ func downloadPrysm(ctx *cli.Context) (err error) {
 }
 
 func downloadValidator(ctx *cli.Context) (err error) {
-	log.WithField("dependencyTag", validatorTag).Info("I am downloading validator")
+	log.WithField("dependencyTag", validatorTag).Info("Downloading Validator")
 	validatorDataDir := ctx.String(prysmDatadirFlag)
 	err = clientDependencies[validatorDependencyName].Download(prysmTag, validatorDataDir, "")
 
