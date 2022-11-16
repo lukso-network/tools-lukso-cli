@@ -31,6 +31,7 @@ func init() {
 	initFlags = append(initFlags, gethInitFlags...)
 	initFlags = append(initFlags, validatorInitFlags...)
 	initFlags = append(initFlags, prysmInitFlags...)
+	initFlags = append(initFlags, appFlags...)
 }
 
 func main() {
