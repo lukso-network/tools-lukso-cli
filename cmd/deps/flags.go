@@ -25,8 +25,8 @@ const (
 )
 
 var (
-	initFlags []cli.Flag
-	appFlags  = []cli.Flag{
+	downloadFlags []cli.Flag
+	appFlags      = []cli.Flag{
 		&cli.BoolFlag{
 			Name:  acceptTermsOfUseFlagName,
 			Usage: "Accept terms of use. Default: false",

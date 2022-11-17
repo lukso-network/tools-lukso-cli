@@ -2,6 +2,7 @@ package main
 
 import (
 	"archive/tar"
+	"bytes"
 	"compress/gzip"
 	"errors"
 	"fmt"
@@ -12,10 +13,12 @@ import (
 	"strings"
 )
 
+var errNeedRoot = errors.New("You need root privilages to perform this action")
+
 func (dependency *ClientDependency) Download(tagName, destination, commitHash string) (err error) {
 	dependencyTagPath := dependency.ResolveDirPath(tagName, destination)
-	err = os.MkdirAll(dependencyTagPath, 0750)
 
+	err = os.MkdirAll(dependencyTagPath, 0750)
 	if nil != err {
 		return
 	}
@@ -83,24 +86,42 @@ func (dependency *ClientDependency) Download(tagName, destination, commitHash st
 			}
 		}
 	}
+	log.Info("I am in download section")
 
-	output, err := os.Create(dependencyLocation)
+	buf := new(bytes.Buffer)
+	_, err = buf.ReadFrom(responseReader)
+	if err != nil {
+		return
+	}
+	log.Info("I am past download section")
 
-	if nil != err {
+	err = os.WriteFile(dependencyLocation, buf.Bytes(), os.ModePerm)
+
+	if err != nil && strings.Contains(err.Error(), "permission denied") {
+		return errNeedRoot
+	}
+
+	if err != nil {
+		log.Infof("I am in download section: error: %v", err)
 		return
 	}
 
-	defer func() {
-		_ = output.Close()
-	}()
-
-	_, err = io.Copy(output, responseReader)
-
-	if nil != err {
-		return
-	}
-
-	err = os.Chmod(dependencyLocation, os.ModePerm)
+	//defer func() {
+	//	_ = output.Close()
+	//}()
+	//log.Info("I am  in download section")
+	//
+	//_, err = io.Copy(output, responseReader)
+	//
+	//if nil != err {
+	//	log.Infof("I am  in download section: error: %v", err)
+	//	return
+	//}
+	//
+	//log.Info("I am  in download section")
+	//
+	//err = os.Chmod(dependencyLocation, os.ModePerm)
+	//log.Infof("I am  in download section: error: %v", err)
 
 	return
 }

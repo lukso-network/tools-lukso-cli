@@ -88,6 +88,12 @@ func (dependency *ClientDependency) ParseUrl(tagName, commitHash string) (url st
 }
 
 func (dependency *ClientDependency) ResolveDirPath(tagName string, datadir string) (location string) {
+	if datadir == binDir {
+		location = binDir
+
+		return
+	}
+
 	location = fmt.Sprintf("%s/%s", datadir, tagName)
 
 	return

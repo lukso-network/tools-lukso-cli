@@ -28,11 +28,11 @@ var (
 
 // do not confuse init func with init subcommand - for now we just pass init flags, there are more to come
 func init() {
-	initFlags = make([]cli.Flag, 0)
-	initFlags = append(initFlags, gethInitFlags...)
-	initFlags = append(initFlags, validatorInitFlags...)
-	initFlags = append(initFlags, prysmInitFlags...)
-	initFlags = append(initFlags, appFlags...)
+	downloadFlags = make([]cli.Flag, 0)
+	downloadFlags = append(downloadFlags, gethInitFlags...)
+	downloadFlags = append(downloadFlags, validatorInitFlags...)
+	downloadFlags = append(downloadFlags, prysmInitFlags...)
+	downloadFlags = append(downloadFlags, appFlags...)
 }
 
 func main() {
@@ -42,11 +42,11 @@ func main() {
 	app.Flags = appFlags
 	app.Commands = []*cli.Command{
 		{
-			Name:   "init",
-			Usage:  "initialize lukso dependencies",
+			Name:   "download",
+			Usage:  "Downloads lukso binary dependencies - needs root privileges",
 			Action: downloadBinaries,
-			Flags:  initFlags,
-			Before: beforeInit,
+			Flags:  downloadFlags,
+			Before: beforeDownload,
 		},
 	}
 
@@ -82,7 +82,7 @@ func main() {
 	}
 }
 
-func beforeInit(ctx *cli.Context) error {
+func beforeDownload(ctx *cli.Context) error {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
 	setupOperatingSystem()
