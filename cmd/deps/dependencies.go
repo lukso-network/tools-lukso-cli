@@ -1,11 +1,7 @@
 package main
 
 import (
-	"archive/tar"
-	"compress/gzip"
 	"fmt"
-	"io"
-	"net/http"
 	"os"
 	"os/exec"
 	"runtime"
@@ -118,99 +114,6 @@ func (dependency *ClientDependency) Run(
 	}
 
 	err = command.Start()
-
-	return
-}
-
-func (dependency *ClientDependency) Download(tagName, destination, commitHash string) (err error) {
-	dependencyTagPath := dependency.ResolveDirPath(tagName, destination)
-	err = os.MkdirAll(dependencyTagPath, 0750)
-
-	if nil != err {
-		return
-	}
-
-	dependencyLocation := dependency.ResolveBinaryPath(tagName, destination)
-
-	fileUrl := dependency.ParseUrl(tagName, commitHash)
-
-	if fileExists(dependencyLocation) {
-		log.Warningf("Downloading %s aborted, file %s already exists", fileUrl, dependencyLocation)
-
-		return
-	}
-
-	response, err := http.Get(fileUrl)
-
-	if nil != err {
-		return
-	}
-
-	defer func() {
-		_ = response.Body.Close()
-	}()
-
-	if http.StatusOK != response.StatusCode {
-		return fmt.Errorf(
-			"invalid response when downloading on file url: %s. Response: %s",
-			fileUrl,
-			response.Status,
-		)
-	}
-
-	var responseReader io.Reader = response.Body
-
-	// this means that we are fetching tared geth
-	if commitHash != "" {
-		g, err := gzip.NewReader(response.Body)
-		if err != nil {
-			return err
-		}
-
-		defer func() {
-			_ = g.Close()
-		}()
-
-		t := tar.NewReader(g)
-		for {
-			header, err := t.Next()
-
-			switch {
-			case err == io.EOF:
-				break
-
-			case err != nil:
-				return err
-
-			default:
-
-			}
-
-			if header.Typeflag == tar.TypeReg && strings.Contains(header.Name, "/geth") {
-				responseReader = t
-
-				break
-			}
-		}
-	}
-
-	output, err := os.Create(dependencyLocation)
-
-	if nil != err {
-		return
-	}
-
-	defer func() {
-		_ = output.Close()
-	}()
-
-	_, err = io.Copy(output, responseReader)
-
-	if nil != err {
-		return
-	}
-
-	err = os.Chmod(dependencyLocation, os.ModePerm)
 
 	return
 }
