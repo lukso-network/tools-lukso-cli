@@ -48,22 +48,18 @@ func main() {
 			Flags:  downloadFlags,
 			Before: beforeDownload,
 		},
+		{
+			Name:   "init",
+			Usage:  "Initializes your lukso working directory, it's structure and configurations for all of your clients",
+			Action: downloadConfigs,
+			Before: beforeDownload,
+		},
 	}
 
 	app.Before = func(ctx *cli.Context) error {
 		runtime.GOMAXPROCS(runtime.NumCPU())
 
 		setupOperatingSystem()
-
-		// Geth related parsing
-		gethTag = ctx.String(gethTagFlag)
-		gethCommitHash = ctx.String(gethCommitHashFlag)
-
-		// Validator related parsing
-		validatorTag = ctx.String(validatorTagFlag)
-
-		// Prysm related parsing
-		prysmTag = ctx.String(prysmTagFlag)
 
 		return nil
 	}
@@ -83,10 +79,6 @@ func main() {
 }
 
 func beforeDownload(ctx *cli.Context) error {
-	runtime.GOMAXPROCS(runtime.NumCPU())
-
-	setupOperatingSystem()
-
 	// Geth related parsing
 	gethTag = ctx.String(gethTagFlag)
 	gethCommitHash = ctx.String(gethCommitHashFlag)

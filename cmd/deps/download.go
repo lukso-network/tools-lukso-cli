@@ -133,11 +133,6 @@ func downloadBinaries(ctx *cli.Context) (err error) {
 	// Get os, then download all binaries into datadir matching desired system
 	// After successful download run binary with desired arguments spin and connect them
 	// Orchestrator can be run from-memory
-	//err = downloadGenesis(ctx)
-	//
-	//if nil != err {
-	//	return
-	//}
 
 	err = downloadGeth(ctx)
 
@@ -157,9 +152,18 @@ func downloadBinaries(ctx *cli.Context) (err error) {
 		return
 	}
 
-	//err = downloadConfig(ctx)
-
 	return
+}
+
+func downloadConfigs(ctx *cli.Context) error {
+	err := downloadGenesis(ctx)
+	if nil != err {
+		return err
+	}
+
+	err = downloadConfig(ctx)
+
+	return err
 }
 
 func downloadGeth(ctx *cli.Context) (err error) {
