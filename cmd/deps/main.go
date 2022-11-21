@@ -29,10 +29,14 @@ var (
 // do not confuse init func with init subcommand - for now we just pass init flags, there are more to come
 func init() {
 	downloadFlags = make([]cli.Flag, 0)
-	downloadFlags = append(downloadFlags, gethInitFlags...)
-	downloadFlags = append(downloadFlags, validatorInitFlags...)
-	downloadFlags = append(downloadFlags, prysmInitFlags...)
+	downloadFlags = append(downloadFlags, gethDownloadFlags...)
+	downloadFlags = append(downloadFlags, validatorDownloadFlags...)
+	downloadFlags = append(downloadFlags, prysmDownloadFlags...)
 	downloadFlags = append(downloadFlags, appFlags...)
+
+	updateFlags = append(updateFlags, gethUpdateFlags...)
+	updateFlags = append(updateFlags, prysmUpdateFlags...)
+	updateFlags = append(updateFlags, validatorUpdateFlags...)
 }
 
 func main() {
@@ -54,12 +58,49 @@ func main() {
 			Action: downloadConfigs,
 			Before: beforeDownload,
 		},
+		{
+			Name:   "update",
+			Usage:  "Updates all clients to newest versions",
+			Action: updateClients,
+			Before: beforeUpdate,
+			Flags:  updateFlags,
+			Subcommands: []*cli.Command{
+				{
+					Name:   "geth",
+					Usage:  "Updates your geth client to newest version",
+					Action: updateGeth,
+					Flags:  gethUpdateFlags,
+				},
+				{
+					Name:   "prysm",
+					Usage:  "Updates your prysm client to newest version",
+					Action: updatePrysm,
+					Flags:  prysmUpdateFlags,
+				},
+				{
+					Name:   "validator",
+					Usage:  "Updates your validator client to newest version",
+					Action: updateValidator,
+					Flags:  validatorUpdateFlags,
+				},
+			},
+		},
 	}
 
 	app.Before = func(ctx *cli.Context) error {
 		runtime.GOMAXPROCS(runtime.NumCPU())
 
 		setupOperatingSystem()
+
+		// Geth related parsing
+		gethTag = ctx.String(gethTagFlag)
+		gethCommitHash = ctx.String(gethCommitHashFlag)
+
+		// Validator related parsing
+		validatorTag = ctx.String(validatorTagFlag)
+
+		// Prysm related parsing
+		prysmTag = ctx.String(prysmTagFlag)
 
 		return nil
 	}

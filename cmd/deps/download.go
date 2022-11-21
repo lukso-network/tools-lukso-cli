@@ -86,14 +86,12 @@ func (dependency *ClientDependency) Download(tagName, destination, commitHash st
 			}
 		}
 	}
-	log.Info("I am in download section")
 
 	buf := new(bytes.Buffer)
 	_, err = buf.ReadFrom(responseReader)
 	if err != nil {
 		return
 	}
-	log.Info("I am past download section")
 
 	err = os.WriteFile(dependencyLocation, buf.Bytes(), os.ModePerm)
 
@@ -105,23 +103,6 @@ func (dependency *ClientDependency) Download(tagName, destination, commitHash st
 		log.Infof("I am in download section: error: %v", err)
 		return
 	}
-
-	//defer func() {
-	//	_ = output.Close()
-	//}()
-	//log.Info("I am  in download section")
-	//
-	//_, err = io.Copy(output, responseReader)
-	//
-	//if nil != err {
-	//	log.Infof("I am  in download section: error: %v", err)
-	//	return
-	//}
-	//
-	//log.Info("I am  in download section")
-	//
-	//err = os.Chmod(dependencyLocation, os.ModePerm)
-	//log.Infof("I am  in download section: error: %v", err)
 
 	return
 }
