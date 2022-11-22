@@ -138,6 +138,24 @@ func updateValidator(ctx *cli.Context) error {
 	return clientDependencies[validatorDependencyName].Download(latestValidatorFlag, binDir, "", false)
 }
 
+func updateGethToSpec(ctx *cli.Context) error {
+	log.WithField("dependencyTag", gethTag).Info("Updating Geth")
+
+	return clientDependencies[gethDependencyName].Download(gethTag, binDir, gethCommitHash, false)
+}
+
+func updatePrysmToSpec(ctx *cli.Context) error {
+	log.WithField("dependencyTag", prysmTag).Info("Updating Prysm")
+
+	return clientDependencies[prysmDependencyName].Download(prysmTag, binDir, "", false)
+}
+
+func updateValidatorToSpec(ctx *cli.Context) error {
+	log.WithField("dependencyTag", validatorTag).Info("Updating Validator")
+
+	return clientDependencies[validatorDependencyName].Download(validatorTag, binDir, "", false)
+}
+
 func beforeUpdate(ctx *cli.Context) error {
 	// Geth related parsing
 	gethTag = ctx.String(gethTagFlag)
