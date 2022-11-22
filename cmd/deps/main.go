@@ -50,19 +50,19 @@ func main() {
 			Usage:  "Downloads lukso binary dependencies - needs root privileges",
 			Action: downloadBinaries,
 			Flags:  downloadFlags,
-			Before: beforeDownload,
+			Before: initializeFlags,
 		},
 		{
 			Name:   "init",
 			Usage:  "Initializes your lukso working directory, it's structure and configurations for all of your clients",
 			Action: downloadConfigs,
-			Before: beforeDownload,
+			Before: initializeFlags,
 		},
 		{
 			Name:   "update",
 			Usage:  "Updates all clients to newest versions",
 			Action: updateClients,
-			Before: beforeUpdate,
+			Before: initializeFlags,
 			Flags:  updateFlags,
 			Subcommands: []*cli.Command{
 				{
@@ -70,21 +70,21 @@ func main() {
 					Usage:  "Updates your geth client to newest version",
 					Action: updateGethToSpec,
 					Flags:  gethUpdateFlags,
-					Before: beforeUpdate,
+					Before: initializeFlags,
 				},
 				{
 					Name:   "prysm",
 					Usage:  "Updates your prysm client to newest version",
 					Action: updatePrysmToSpec,
 					Flags:  prysmUpdateFlags,
-					Before: beforeUpdate,
+					Before: initializeFlags,
 				},
 				{
 					Name:   "validator",
 					Usage:  "Updates your validator client to newest version",
 					Action: updateValidatorToSpec,
 					Flags:  validatorUpdateFlags,
-					Before: beforeUpdate,
+					Before: initializeFlags,
 				},
 			},
 		},
@@ -122,7 +122,7 @@ func main() {
 	}
 }
 
-func beforeDownload(ctx *cli.Context) error {
+func initializeFlags(ctx *cli.Context) error {
 	// Geth related parsing
 	gethTag = ctx.String(gethTagFlag)
 	gethCommitHash = ctx.String(gethCommitHashFlag)

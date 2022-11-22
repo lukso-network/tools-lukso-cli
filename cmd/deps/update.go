@@ -155,17 +155,3 @@ func updateValidatorToSpec(ctx *cli.Context) error {
 
 	return clientDependencies[validatorDependencyName].Download(validatorTag, binDir, "", false)
 }
-
-func beforeUpdate(ctx *cli.Context) error {
-	// Geth related parsing
-	gethTag = ctx.String(gethTagFlag)
-	gethCommitHash = ctx.String(gethCommitHashFlag)
-
-	// Validator related parsing
-	validatorTag = ctx.String(validatorTagFlag)
-
-	// Prysm related parsing
-	prysmTag = ctx.String(prysmTagFlag)
-
-	return nil
-}
