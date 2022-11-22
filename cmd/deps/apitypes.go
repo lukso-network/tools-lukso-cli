@@ -5,4 +5,7 @@ type GithubApiReleaseResponse struct {
 }
 
 type GithubApiCommitResponse struct {
+	Object struct {
+		Sha string `json:"sha"`
+	} `json:"object"`
 }
