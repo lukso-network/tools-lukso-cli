@@ -113,7 +113,6 @@ func downloadBinaries(ctx *cli.Context) (err error) {
 	}
 	// Get os, then download all binaries into datadir matching desired system
 	// After successful download run binary with desired arguments spin and connect them
-	// Orchestrator can be run from-memory
 
 	err = downloadGeth(ctx)
 
@@ -156,7 +155,7 @@ func downloadGeth(ctx *cli.Context) (err error) {
 }
 
 func downloadGenesis(ctx *cli.Context) (err error) {
-	log.WithField("dependencyTag", gethTag).Info("Downloading Geth Genesis")
+	log.WithField("dependencyTag", gethTag).Info("Downloading Execution Genesis")
 	gethDataDir := ctx.String(gethDatadirFlag)
 	err = clientDependencies[gethGenesisDependencyName].Download(gethTag, gethDataDir, "", true)
 
@@ -164,7 +163,7 @@ func downloadGenesis(ctx *cli.Context) (err error) {
 		return
 	}
 
-	log.WithField("dependencyTag", prysmTag).Info("Downloading Prysm Genesis")
+	log.WithField("dependencyTag", prysmTag).Info("Downloading Consensus Genesis")
 	prysmDataDir := ctx.String(prysmDatadirFlag)
 	err = clientDependencies[prysmGenesisDependencyName].Download(prysmTag, prysmDataDir, "", true)
 
