@@ -126,4 +126,13 @@ func (dependency *ClientDependency) Run(
 
 func setupOperatingSystem() {
 	systemOs = runtime.GOOS
+
+	switch systemOs {
+	case ubuntu, macos:
+		binDir = unixBinDir
+	case windows:
+		binDir = windowsBinDir
+	default:
+		log.Panicf("unexpected OS: %v", systemOs)
+	}
 }

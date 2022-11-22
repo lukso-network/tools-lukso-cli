@@ -13,11 +13,15 @@ const (
 	macos   = "darwin"
 	windows = "windows"
 
-	binDir = "/usr/local/bin"
+	unixBinDir = "/usr/local/bin"
+	// should be a user-created path, like C:\bin,
+	// but since it is not guaranteed that all users vahe it we can leave it as is
+	windowsBinDir = "/Windows/System32"
 )
 
 var (
 	appName        = "lukso"
+	binDir         string
 	gethTag        string
 	gethCommitHash string
 	validatorTag   string
