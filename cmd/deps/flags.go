@@ -27,6 +27,7 @@ const (
 var (
 	downloadFlags []cli.Flag
 	updateFlags   []cli.Flag
+	startFlags    []cli.Flag
 	appFlags      = []cli.Flag{
 		&cli.BoolFlag{
 			Name:  acceptTermsOfUseFlagName,
@@ -104,3 +105,9 @@ var (
 		},
 	}
 )
+
+func prepareGethStartFlags(ctx *cli.Context) (startFlags []string) {
+	// parse all runtime-related geth flags, one by one and append them
+
+	return
+}

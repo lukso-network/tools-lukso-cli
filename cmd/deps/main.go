@@ -92,6 +92,12 @@ func main() {
 				},
 			},
 		},
+		{
+			Name:        "start",
+			Description: "Start all lukso clients",
+			Action:      startClients,
+			Flags:       startFlags,
+		},
 	}
 
 	app.Before = func(ctx *cli.Context) error {

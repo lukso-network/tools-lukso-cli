@@ -2,8 +2,6 @@ package main
 
 import (
 	"fmt"
-	"os"
-	"os/exec"
 	"runtime"
 	"strings"
 )
@@ -101,25 +99,6 @@ func (dependency *ClientDependency) ResolveDirPath(tagName string, datadir strin
 
 func (dependency *ClientDependency) ResolveBinaryPath(tagName string, datadir string) (location string) {
 	location = fmt.Sprintf("%s/%s", dependency.ResolveDirPath(tagName, datadir), dependency.name)
-
-	return
-}
-
-func (dependency *ClientDependency) Run(
-	tagName string,
-	destination string,
-	arguments []string,
-	attachStdInAndErr bool,
-) (err error) {
-	binaryPath := dependency.ResolveBinaryPath(tagName, destination)
-	command := exec.Command(binaryPath, arguments...)
-
-	if attachStdInAndErr {
-		command.Stdout = os.Stdout
-		command.Stderr = os.Stderr
-	}
-
-	err = command.Start()
 
 	return
 }
