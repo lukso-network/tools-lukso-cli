@@ -41,6 +41,10 @@ func init() {
 	updateFlags = append(updateFlags, gethUpdateFlags...)
 	updateFlags = append(updateFlags, prysmUpdateFlags...)
 	updateFlags = append(updateFlags, validatorUpdateFlags...)
+
+	startFlags = append(startFlags, gethStartFlags...)
+	startFlags = append(startFlags, prysmStartFlags...)
+	startFlags = append(startFlags, validatorStartFlags...)
 }
 
 func main() {
@@ -97,6 +101,30 @@ func main() {
 			Description: "Start all lukso clients",
 			Action:      startClients,
 			Flags:       startFlags,
+			Before:      initializeFlags,
+			Subcommands: []*cli.Command{
+				{
+					Name:        "geth",
+					Description: "Start Geth client",
+					Flags:       gethStartFlags,
+					Before:      initializeFlags,
+					Action:      startGeth,
+				},
+				{
+					Name:        "prysm",
+					Description: "Start Prysm client",
+					Flags:       prysmStartFlags,
+					Before:      initializeFlags,
+					Action:      startPrysm,
+				},
+				{
+					Name:        "validator",
+					Description: "Start Validator client",
+					Flags:       validatorStartFlags,
+					Before:      initializeFlags,
+					Action:      startValidator,
+				},
+			},
 		},
 	}
 
