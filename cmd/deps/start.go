@@ -67,7 +67,7 @@ func startPrysm(ctx *cli.Context) error {
 
 	stdAttached := ctx.Bool(prysmStdOutputFlag)
 
-	err := clientDependencies[prysmDependencyName].Run(prysmDependencyName, prepareGethStartFlags(ctx), stdAttached)
+	err := clientDependencies[prysmDependencyName].Run(prysmDependencyName, preparePrysmStartFlags(ctx), stdAttached)
 	if err != nil {
 		return err
 	}
@@ -81,7 +81,7 @@ func startValidator(ctx *cli.Context) error {
 
 	stdAttached := ctx.Bool(validatorStdOutputFlag)
 
-	err := clientDependencies[validatorDependencyName].Run(validatorDependencyName, prepareGethStartFlags(ctx), stdAttached)
+	err := clientDependencies[validatorDependencyName].Run(validatorDependencyName, prepareValidatorStartFlags(ctx), stdAttached)
 	if err != nil {
 		return err
 	}
@@ -90,7 +90,6 @@ func startValidator(ctx *cli.Context) error {
 	return nil
 }
 
-// startGethDetached explicitly runs geth in detached mode - useful for running all clients with lukso start command
 func startGethDetached(ctx *cli.Context) error {
 	log.Info("Starting Geth")
 
@@ -106,7 +105,7 @@ func startGethDetached(ctx *cli.Context) error {
 func startPrysmDetached(ctx *cli.Context) error {
 	log.Info("Starting Prysm")
 
-	err := clientDependencies[prysmDependencyName].Run(prysmDependencyName, prepareGethStartFlags(ctx), false)
+	err := clientDependencies[prysmDependencyName].Run(prysmDependencyName, preparePrysmStartFlags(ctx), false)
 	if err != nil {
 		return err
 	}
@@ -118,7 +117,7 @@ func startPrysmDetached(ctx *cli.Context) error {
 func startValidatorDetached(ctx *cli.Context) error {
 	log.Info("Starting Validator")
 
-	err := clientDependencies[validatorDependencyName].Run(validatorDependencyName, prepareGethStartFlags(ctx), false)
+	err := clientDependencies[validatorDependencyName].Run(validatorDependencyName, prepareValidatorStartFlags(ctx), false)
 	if err != nil {
 		return err
 	}

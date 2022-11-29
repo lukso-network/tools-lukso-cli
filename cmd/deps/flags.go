@@ -46,7 +46,6 @@ const (
 	prysmGenesisStateFlag            = "prysm-genesis-state"
 	prysmBootnodesFlag               = "prysm-bootnode"
 	prysmPeerFlag                    = "prysm-peer"
-	prysmStdOutputFlag               = "prysm-std-output"
 	prysmWeb3ProviderFlag            = "prysm-web3provider"
 	prysmDepositContractFlag         = "prysm-deposit-contract"
 	prysmContractDeploymentBlockFlag = "prysm-deposit-deployment"
@@ -55,9 +54,9 @@ const (
 	prysmMaxSyncPeersFlag            = "prysm-max-sync-peers"
 	prysmP2pHostFlag                 = "prysm-p2p-host"
 	prysmP2pLocalFlag                = "prysm-p2p-local"
-	prysmOrcProviderFlag             = "prysm-orc-provider"
 	prysmDisableSyncFlag             = "prysm-disable-sync"
 	prysmOutputFileFlag              = "prysm-output-file"
+	prysmStdOutputFlag               = "prysm-std-output"
 
 	acceptTermsOfUseFlagName = "accept-terms-of-use"
 )
@@ -180,6 +179,11 @@ var (
 			Usage: "this flag sets up http nat to assign static ip for geth, default not set. Example extip:172.16.254.4",
 			Value: "",
 		},
+		&cli.BoolFlag{
+			Name:  gethStdOutputFlag,
+			Usage: "set geth output to stdout",
+			Value: false,
+		},
 	}
 
 	// PRYSM FLAGS
@@ -205,7 +209,82 @@ var (
 		},
 	}
 	// START
-	prysmStartFlags = []cli.Flag{}
+	prysmStartFlags = []cli.Flag{
+		&cli.StringFlag{
+			Name:  prysmGenesisStateFlag,
+			Usage: "provide genesis.ssz file",
+			Value: "./prysm/v0.0.18-delta/vanguard_private_testnet_genesis.ssz",
+		},
+		&cli.StringFlag{
+			Name:  prysmDatadirFlag,
+			Usage: "provide prysm datadir",
+			Value: "./prysm",
+		},
+		&cli.StringFlag{
+			Name:  prysmBootnodesFlag,
+			Usage: `provide coma separated bootnode enr, default: "enr:-Ku4QANldTRLCRUrY9K4OAmk_ATOAyS_sxdTAaGeSh54AuDJXxOYij1fbgh4KOjD4tb2g3T-oJmMjuJyzonLYW9OmRQBh2F0dG5ldHOIAAAAAAAAAACEZXRoMpD1pf1CAAAAAP__________gmlkgnY0gmlwhAoABweJc2VjcDI1NmsxoQKWfbT1atCho149MGMvpgBWUymiOv9QyXYhgYEBZvPBW4N1ZHCCD6A"`,
+			Value: "",
+		},
+		&cli.StringFlag{
+			Name:  prysmPeerFlag,
+			Usage: `provide coma separated peer enr address, default: ""`,
+			Value: "",
+		},
+		&cli.StringFlag{
+			Name:  prysmWeb3ProviderFlag,
+			Usage: "provide web3 provider (network of deposit contract deployment)",
+			Value: "http://127.0.0.1:8565",
+		},
+		&cli.StringFlag{
+			Name:  prysmDepositContractFlag,
+			Usage: "provide deposit contract address",
+			Value: "0x000000000000000000000000000000000000cafe",
+		},
+		&cli.StringFlag{
+			Name:  prysmContractDeploymentBlockFlag,
+			Usage: "provide deployment height of deposit contract, default 0.",
+			Value: "0",
+		},
+		&cli.StringFlag{
+			Name:  prysmVerbosityFlag,
+			Usage: "provide verobosity for prysm",
+			Value: "info",
+		},
+		&cli.StringFlag{
+			Name:  prysmMinSyncPeersFlag,
+			Usage: "provide min sync peers for prysm, default 0",
+			Value: "0",
+		},
+		&cli.StringFlag{
+			Name:  prysmMaxSyncPeersFlag,
+			Usage: "provide max sync peers for prysm, default 25",
+			Value: "25",
+		},
+		&cli.StringFlag{
+			Name:  prysmP2pHostFlag,
+			Usage: "provide p2p host for prysm, default empty",
+			Value: "",
+		}, &cli.StringFlag{
+			Name:  prysmP2pLocalFlag,
+			Usage: "provide p2p local ip for prysm, default empty",
+			Value: "",
+		},
+		&cli.BoolFlag{
+			Name:  prysmDisableSyncFlag,
+			Usage: "disable initial sync phase",
+			Value: false,
+		},
+		&cli.StringFlag{
+			Name:  prysmOutputFileFlag,
+			Usage: "provide output destination of prysm",
+			Value: "./prysm.log",
+		},
+		&cli.BoolFlag{
+			Name:  prysmStdOutputFlag,
+			Usage: "set prysm output to stdout",
+			Value: false,
+		},
+	}
 
 	// VALIDATOR
 	// DOWNLOAD
@@ -225,7 +304,38 @@ var (
 		},
 	}
 	// START
-	validatorStartFlags = []cli.Flag{}
+	validatorStartFlags = []cli.Flag{
+		&cli.StringFlag{
+			Name:  validatorPrysmRpcProviderFlag,
+			Usage: "provide url without prefix, example: localhost:4000",
+			Value: "localhost:4000",
+		},
+		&cli.StringFlag{
+			Name:  validatorVerbosityFlag,
+			Usage: "provide verbosity of validator",
+			Value: "info",
+		},
+		&cli.StringFlag{
+			Name:  validatorTrustedGethFlag,
+			Usage: "provide host:port for trusted geth, default: http://127.0.0.1:8565",
+			Value: "http://127.0.0.1:8565",
+		},
+		&cli.StringFlag{
+			Name:  validatorWalletPasswordFileFlag,
+			Usage: "location of file password that you used for generation keys from deposit-cli",
+			Value: "./password.txt",
+		},
+		&cli.StringFlag{
+			Name:  validatorOutputFileFlag,
+			Usage: "provide output destination of validator",
+			Value: "./prysm.log",
+		},
+		&cli.BoolFlag{
+			Name:  validatorStdOutputFlag,
+			Usage: "set validator output to stdout",
+			Value: false,
+		},
+	}
 )
 
 func prepareGethStartFlags(ctx *cli.Context) (startFlags []string) {
@@ -247,5 +357,33 @@ func prepareGethStartFlags(ctx *cli.Context) (startFlags []string) {
 	startFlags = append(startFlags, fmt.Sprintf("--ws.origins %s", ctx.String(gethWsOriginFlag)))
 	startFlags = append(startFlags, fmt.Sprintf("--http.corsdomain %s", ctx.String(gethHttpOriginFlag)))
 	startFlags = append(startFlags, fmt.Sprintf("--nat %s", ctx.String(gethNatFlag)))
+
+	return
+}
+
+func prepareValidatorStartFlags(ctx *cli.Context) (startFlags []string) {
+	startFlags = append(startFlags, fmt.Sprintf("--beacon-rpc-provider %s", ctx.String(validatorPrysmRpcProviderFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--verbosity %s", ctx.String(validatorVerbosityFlag)))
+	//TODO: provide flag: see --grpc-gateway-corsdomain + --grpc-gateway-port | startFlags = append(startFlags, fmt.Sprintf("--beacon-rpc-provider %s", ctx.String(validatorTrustedGethFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--wallet-password-file %s", ctx.String(validatorWalletPasswordFileFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--log-file %s", ctx.String(validatorOutputFileFlag)))
+
+	return
+}
+
+func preparePrysmStartFlags(ctx *cli.Context) (startFlags []string) {
+	startFlags = append(startFlags, fmt.Sprintf("--genesis-state %s", ctx.String(prysmGenesisStateFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--bootstrap-node %s", ctx.String(prysmBootnodesFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--peer %s", ctx.String(prysmPeerFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--http-web3provider %s", ctx.String(prysmWeb3ProviderFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--deposit-contract %s", ctx.String(prysmDepositContractFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--contract-deployment-block %s", ctx.String(prysmContractDeploymentBlockFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--verbosity %s", ctx.String(prysmVerbosityFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--min-sync-peers %s", ctx.String(prysmMinSyncPeersFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--p2p-max-peers %s", ctx.String(prysmMaxSyncPeersFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--p2p-host-ip %s", ctx.String(prysmP2pHostFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--p2p-local-ip %s", ctx.String(prysmP2pLocalFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--log-file %s", ctx.String(prysmOutputFileFlag)))
+
 	return
 }
