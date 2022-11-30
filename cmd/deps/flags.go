@@ -104,7 +104,7 @@ var (
 	gethStartFlags = []cli.Flag{
 		&cli.StringFlag{
 			Name:  gethEthstatsFlag,
-			Usage: "nickname:STATS_LOGIN_SECRET@GETH_STATS_HOST",
+			Usage: "URL of an ethstats service, should be of scheme: nickname:STATS_LOGIN_SECRET@GETH_STATS_HOST",
 			Value: "",
 		},
 		&cli.StringFlag{
@@ -167,17 +167,17 @@ var (
 		&cli.StringFlag{
 			Name:  gethWsOriginFlag,
 			Usage: "this flag sets up websocket accepted origins, default not set",
-			Value: "",
+			Value: "ws://127.0.0.1:7878",
 		},
 		&cli.StringFlag{
 			Name:  gethHttpOriginFlag,
 			Usage: "this flag sets up http accepted origins, default not set",
-			Value: "",
+			Value: "http://127.0.0.1:8008",
 		},
 		&cli.StringFlag{
 			Name:  gethNatFlag,
 			Usage: "this flag sets up http nat to assign static ip for geth, default not set. Example extip:172.16.254.4",
-			Value: "",
+			Value: "extip:172.16.254.4",
 		},
 		&cli.BoolFlag{
 			Name:  gethStdOutputFlag,
@@ -340,50 +340,50 @@ var (
 
 func prepareGethStartFlags(ctx *cli.Context) (startFlags []string) {
 	// parse all runtime-related geth flags, one by one and append them
-	startFlags = append(startFlags, fmt.Sprintf("--ethstats %s", ctx.String(gethEthstatsFlag)))
-	startFlags = append(startFlags, fmt.Sprintf("--bootnodes %s", ctx.String(gethBootnodesFlag)))
-	startFlags = append(startFlags, fmt.Sprintf("--networkid %s", ctx.String(gethNetworkIDFlag)))
-	startFlags = append(startFlags, fmt.Sprintf("--port %s", ctx.String(gethPortFlag)))
-	startFlags = append(startFlags, fmt.Sprintf("--http.api %s", ctx.String(gethHttpApiFlag)))
-	startFlags = append(startFlags, fmt.Sprintf("--ws.api %s", ctx.String(gethWSApiFlag)))
-	startFlags = append(startFlags, fmt.Sprintf("--ws.port %s", ctx.String(gethWSPortFlag)))
-	startFlags = append(startFlags, fmt.Sprintf("--miner.etherbase %s", ctx.String(gethEtherbaseFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--ethstats=%s", ctx.String(gethEthstatsFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--bootnodes=%s", ctx.String(gethBootnodesFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--networkid=%s", ctx.String(gethNetworkIDFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--port=%s", ctx.String(gethPortFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--http.api=%s", ctx.String(gethHttpApiFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--ws.api=%s", ctx.String(gethWSApiFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--ws.port=%s", ctx.String(gethWSPortFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--miner.etherbase=%s", ctx.String(gethEtherbaseFlag)))
 	if ctx.Bool(gethNotifyFlag) {
 		startFlags = append(startFlags, "--miner.notify.full")
 	}
 
-	startFlags = append(startFlags, fmt.Sprintf("--verbosity %s", ctx.String(gethVerbosityFlag)))
-	startFlags = append(startFlags, fmt.Sprintf("--http.port %s", ctx.String(gethHttpPortFlag)))
-	startFlags = append(startFlags, fmt.Sprintf("--ws.origins %s", ctx.String(gethWsOriginFlag)))
-	startFlags = append(startFlags, fmt.Sprintf("--http.corsdomain %s", ctx.String(gethHttpOriginFlag)))
-	startFlags = append(startFlags, fmt.Sprintf("--nat %s", ctx.String(gethNatFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--verbosity=%s", ctx.String(gethVerbosityFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--http.port=%s", ctx.String(gethHttpPortFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--ws.origins=%s", ctx.String(gethWsOriginFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--http.corsdomain=%s", ctx.String(gethHttpOriginFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--nat=%s", ctx.String(gethNatFlag)))
 
 	return
 }
 
 func prepareValidatorStartFlags(ctx *cli.Context) (startFlags []string) {
-	startFlags = append(startFlags, fmt.Sprintf("--beacon-rpc-provider %s", ctx.String(validatorPrysmRpcProviderFlag)))
-	startFlags = append(startFlags, fmt.Sprintf("--verbosity %s", ctx.String(validatorVerbosityFlag)))
-	//TODO: provide flag: see --grpc-gateway-corsdomain + --grpc-gateway-port | startFlags = append(startFlags, fmt.Sprintf("--beacon-rpc-provider %s", ctx.String(validatorTrustedGethFlag)))
-	startFlags = append(startFlags, fmt.Sprintf("--wallet-password-file %s", ctx.String(validatorWalletPasswordFileFlag)))
-	startFlags = append(startFlags, fmt.Sprintf("--log-file %s", ctx.String(validatorOutputFileFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--beacon-rpc-provider=%s", ctx.String(validatorPrysmRpcProviderFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--verbosity=%s", ctx.String(validatorVerbosityFlag)))
+	//TODO: provide flag: see --grpc-gateway-corsdomain + --grpc-gateway-port | startFlags = append(startFlags, fmt.Sprintf("--beacon-rpc-provider=%s", ctx.String(validatorTrustedGethFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--wallet-password-file=%s", ctx.String(validatorWalletPasswordFileFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--log-file=%s", ctx.String(validatorOutputFileFlag)))
 
 	return
 }
 
 func preparePrysmStartFlags(ctx *cli.Context) (startFlags []string) {
-	startFlags = append(startFlags, fmt.Sprintf("--genesis-state %s", ctx.String(prysmGenesisStateFlag)))
-	startFlags = append(startFlags, fmt.Sprintf("--bootstrap-node %s", ctx.String(prysmBootnodesFlag)))
-	startFlags = append(startFlags, fmt.Sprintf("--peer %s", ctx.String(prysmPeerFlag)))
-	startFlags = append(startFlags, fmt.Sprintf("--http-web3provider %s", ctx.String(prysmWeb3ProviderFlag)))
-	startFlags = append(startFlags, fmt.Sprintf("--deposit-contract %s", ctx.String(prysmDepositContractFlag)))
-	startFlags = append(startFlags, fmt.Sprintf("--contract-deployment-block %s", ctx.String(prysmContractDeploymentBlockFlag)))
-	startFlags = append(startFlags, fmt.Sprintf("--verbosity %s", ctx.String(prysmVerbosityFlag)))
-	startFlags = append(startFlags, fmt.Sprintf("--min-sync-peers %s", ctx.String(prysmMinSyncPeersFlag)))
-	startFlags = append(startFlags, fmt.Sprintf("--p2p-max-peers %s", ctx.String(prysmMaxSyncPeersFlag)))
-	startFlags = append(startFlags, fmt.Sprintf("--p2p-host-ip %s", ctx.String(prysmP2pHostFlag)))
-	startFlags = append(startFlags, fmt.Sprintf("--p2p-local-ip %s", ctx.String(prysmP2pLocalFlag)))
-	startFlags = append(startFlags, fmt.Sprintf("--log-file %s", ctx.String(prysmOutputFileFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--genesis-state=%s", ctx.String(prysmGenesisStateFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--bootstrap-node=%s", ctx.String(prysmBootnodesFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--peer=%s", ctx.String(prysmPeerFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--http-web3provider=%s", ctx.String(prysmWeb3ProviderFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--deposit-contract=%s", ctx.String(prysmDepositContractFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--contract-deployment-block=%s", ctx.String(prysmContractDeploymentBlockFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--verbosity=%s", ctx.String(prysmVerbosityFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--min-sync-peers=%s", ctx.String(prysmMinSyncPeersFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--p2p-max-peers=%s", ctx.String(prysmMaxSyncPeersFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--p2p-host-ip=%s", ctx.String(prysmP2pHostFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--p2p-local-ip=%s", ctx.String(prysmP2pLocalFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--log-file=%s", ctx.String(prysmOutputFileFlag)))
 
 	return
 }
