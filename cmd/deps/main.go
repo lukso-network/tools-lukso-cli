@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 	"os"
@@ -13,10 +12,16 @@ const (
 	ubuntu  = "linux"
 	macos   = "darwin"
 	windows = "windows"
+
+	unixBinDir = "/usr/local/bin"
+	// should be a user-created path, like C:\bin,
+	// but since it is not guaranteed that all users vahe it we can leave it as is
+	windowsBinDir = "/Windows/System32"
 )
 
 var (
 	appName        = "lukso"
+	binDir         string
 	gethTag        string
 	gethCommitHash string
 	validatorTag   string
@@ -27,11 +32,15 @@ var (
 
 // do not confuse init func with init subcommand - for now we just pass init flags, there are more to come
 func init() {
-	initFlags = make([]cli.Flag, 0)
-	initFlags = append(initFlags, gethInitFlags...)
-	initFlags = append(initFlags, validatorInitFlags...)
-	initFlags = append(initFlags, prysmInitFlags...)
-	initFlags = append(initFlags, appFlags...)
+	downloadFlags = make([]cli.Flag, 0)
+	downloadFlags = append(downloadFlags, gethDownloadFlags...)
+	downloadFlags = append(downloadFlags, validatorDownloadFlags...)
+	downloadFlags = append(downloadFlags, prysmDownloadFlags...)
+	downloadFlags = append(downloadFlags, appFlags...)
+
+	updateFlags = append(updateFlags, gethUpdateFlags...)
+	updateFlags = append(updateFlags, prysmUpdateFlags...)
+	updateFlags = append(updateFlags, validatorUpdateFlags...)
 }
 
 func main() {
@@ -41,11 +50,47 @@ func main() {
 	app.Flags = appFlags
 	app.Commands = []*cli.Command{
 		{
-			Name:   "init",
-			Usage:  "initialize lukso dependencies",
+			Name:   "download",
+			Usage:  "Downloads lukso binary dependencies - needs root privileges",
 			Action: downloadBinaries,
-			Flags:  initFlags,
-			Before: beforeInit,
+			Flags:  downloadFlags,
+			Before: initializeFlags,
+		},
+		{
+			Name:   "init",
+			Usage:  "Initializes your lukso working directory, it's structure and configurations for all of your clients",
+			Action: downloadConfigs,
+			Before: initializeFlags,
+		},
+		{
+			Name:   "update",
+			Usage:  "Updates all clients to newest versions",
+			Action: updateClients,
+			Before: initializeFlags,
+			Flags:  updateFlags,
+			Subcommands: []*cli.Command{
+				{
+					Name:   "geth",
+					Usage:  "Updates your geth client to newest version",
+					Action: updateGethToSpec,
+					Flags:  gethUpdateFlags,
+					Before: initializeFlags,
+				},
+				{
+					Name:   "prysm",
+					Usage:  "Updates your prysm client to newest version",
+					Action: updatePrysmToSpec,
+					Flags:  prysmUpdateFlags,
+					Before: initializeFlags,
+				},
+				{
+					Name:   "validator",
+					Usage:  "Updates your validator client to newest version",
+					Action: updateValidatorToSpec,
+					Flags:  validatorUpdateFlags,
+					Before: initializeFlags,
+				},
+			},
 		},
 	}
 
@@ -81,11 +126,7 @@ func main() {
 	}
 }
 
-func beforeInit(ctx *cli.Context) error {
-	runtime.GOMAXPROCS(runtime.NumCPU())
-
-	setupOperatingSystem()
-
+func initializeFlags(ctx *cli.Context) error {
 	// Geth related parsing
 	gethTag = ctx.String(gethTagFlag)
 	gethCommitHash = ctx.String(gethCommitHashFlag)
@@ -97,90 +138,6 @@ func beforeInit(ctx *cli.Context) error {
 	prysmTag = ctx.String(prysmTagFlag)
 
 	return nil
-}
-
-func downloadBinaries(ctx *cli.Context) (err error) {
-	if !ctx.Bool(acceptTermsOfUseFlagName) {
-		return errors.New("Terms of Use must be accepted")
-	}
-	// Get os, then download all binaries into datadir matching desired system
-	// After successful download run binary with desired arguments spin and connect them
-	// Orchestrator can be run from-memory
-	err = downloadGenesis(ctx)
-
-	if nil != err {
-		return
-	}
-
-	err = downloadGeth(ctx)
-
-	if nil != err {
-		return
-	}
-
-	err = downloadValidator(ctx)
-
-	if nil != err {
-		return
-	}
-
-	err = downloadPrysm(ctx)
-
-	if nil != err {
-		return
-	}
-
-	err = downloadConfig(ctx)
-
-	return
-}
-
-func downloadGeth(ctx *cli.Context) (err error) {
-	log.WithField("dependencyTag", gethTag).Info("Downloading Geth")
-	gethDataDir := ctx.String(gethDatadirFlag)
-	err = clientDependencies[gethDependencyName].Download(gethTag, gethDataDir, gethCommitHash)
-
-	return
-}
-
-func downloadGenesis(ctx *cli.Context) (err error) {
-	log.WithField("dependencyTag", gethTag).Info("Downloading Geth Genesis")
-	gethDataDir := ctx.String(gethDatadirFlag)
-	err = clientDependencies[gethGenesisDependencyName].Download(gethTag, gethDataDir, "")
-
-	if nil != err {
-		return
-	}
-
-	log.WithField("dependencyTag", prysmTag).Info("Downloading Prysm Genesis")
-	prysmDataDir := ctx.String(prysmDatadirFlag)
-	err = clientDependencies[prysmGenesisDependencyName].Download(prysmTag, prysmDataDir, "")
-
-	return
-}
-
-func downloadConfig(ctx *cli.Context) (err error) {
-	log.WithField("dependencyTag", prysmTag).Info("Downloading Prysm Config")
-	prysmDataDir := ctx.String(prysmDatadirFlag)
-	err = clientDependencies[prysmConfigDependencyName].Download(prysmTag, prysmDataDir, "")
-
-	return
-}
-
-func downloadPrysm(ctx *cli.Context) (err error) {
-	log.WithField("dependencyTag", prysmTag).Info("Downloading Prysm")
-	prysmDataDir := ctx.String(prysmDatadirFlag)
-	err = clientDependencies[prysmDependencyName].Download(prysmTag, prysmDataDir, "")
-
-	return
-}
-
-func downloadValidator(ctx *cli.Context) (err error) {
-	log.WithField("dependencyTag", validatorTag).Info("Downloading Validator")
-	validatorDataDir := ctx.String(prysmDatadirFlag)
-	err = clientDependencies[validatorDependencyName].Download(prysmTag, validatorDataDir, "")
-
-	return
 }
 
 func fileExists(path string) bool {

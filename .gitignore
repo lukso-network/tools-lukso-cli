@@ -10,6 +10,7 @@
 # Ignore binary
 cmd/deps/geth
 cmd/deps/prysm
+cmd/deps/deps
 
 # Dist files
 dist

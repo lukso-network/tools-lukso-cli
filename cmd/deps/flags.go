@@ -25,8 +25,9 @@ const (
 )
 
 var (
-	initFlags []cli.Flag
-	appFlags  = []cli.Flag{
+	downloadFlags []cli.Flag
+	updateFlags   []cli.Flag
+	appFlags      = []cli.Flag{
 		&cli.BoolFlag{
 			Name:  acceptTermsOfUseFlagName,
 			Usage: "Accept terms of use. Default: false",
@@ -34,7 +35,9 @@ var (
 		},
 	}
 
-	gethInitFlags = []cli.Flag{
+	// GETH FLAGS
+	// DOWNLOAD
+	gethDownloadFlags = []cli.Flag{
 		&cli.StringFlag{
 			Name:  gethTagFlag,
 			Usage: "provide a tag of geth you would like to run",
@@ -51,14 +54,18 @@ var (
 			Value: "./geth",
 		},
 	}
-	validatorInitFlags = []cli.Flag{
+	// UPDATE
+	gethUpdateFlags = []cli.Flag{
 		&cli.StringFlag{
-			Name:  validatorTagFlag,
-			Usage: "provide tag for validator binary",
-			Value: "v3.1.2",
+			Name:  gethTagFlag,
+			Usage: "provide a tag of geth you would like to run",
+			Value: "1.10.26",
 		},
 	}
-	prysmInitFlags = []cli.Flag{
+
+	// PRYSM FLAGS
+	// DOWNLOAD
+	prysmDownloadFlags = []cli.Flag{
 		&cli.StringFlag{
 			Name:  prysmTagFlag,
 			Usage: "provide tag for prysm",
@@ -68,6 +75,32 @@ var (
 			Name:  prysmDatadirFlag,
 			Usage: "provide prysm datadir",
 			Value: "./prysm",
+		},
+	}
+	// UPDATE
+	prysmUpdateFlags = []cli.Flag{
+		&cli.StringFlag{
+			Name:  prysmTagFlag,
+			Usage: "provide tag for prysm",
+			Value: "v3.1.2",
+		},
+	}
+
+	// VALIDATOR
+	// DOWNLOAD
+	validatorDownloadFlags = []cli.Flag{
+		&cli.StringFlag{
+			Name:  validatorTagFlag,
+			Usage: "provide tag for validator binary",
+			Value: "v3.1.2",
+		},
+	}
+	// UPDATE
+	validatorUpdateFlags = []cli.Flag{
+		&cli.StringFlag{
+			Name:  validatorTagFlag,
+			Usage: "provide tag for validator binary",
+			Value: "v3.1.2",
 		},
 	}
 )
