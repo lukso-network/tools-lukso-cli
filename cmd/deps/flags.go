@@ -328,7 +328,7 @@ var (
 		&cli.StringFlag{
 			Name:  validatorOutputFileFlag,
 			Usage: "provide output destination of validator",
-			Value: "./prysm.log",
+			Value: "./validator.log",
 		},
 		&cli.BoolFlag{
 			Name:  validatorStdOutputFlag,

@@ -126,6 +126,28 @@ func main() {
 				},
 			},
 		},
+		{
+			Name:        "stop",
+			Description: "stops all lukso clients",
+			Action:      stopClients,
+			Subcommands: []*cli.Command{
+				{
+					Name:        "geth",
+					Description: "Stop Geth client",
+					Action:      stopClient(clientDependencies[gethDependencyName]),
+				},
+				{
+					Name:        "prysm",
+					Description: "Stop Prysm client",
+					Action:      stopClient(clientDependencies[prysmDependencyName]),
+				},
+				{
+					Name:        "validator",
+					Description: "Stop Validator client",
+					Action:      stopClient(clientDependencies[validatorDependencyName]),
+				},
+			},
+		},
 	}
 
 	app.Before = func(ctx *cli.Context) error {
