@@ -64,6 +64,7 @@ func main() {
 			Name:   "init",
 			Usage:  "Initializes your lukso working directory, it's structure and configurations for all of your clients",
 			Action: downloadConfigs,
+			Flags:  downloadFlags,
 			Before: initializeFlags,
 		},
 		{
