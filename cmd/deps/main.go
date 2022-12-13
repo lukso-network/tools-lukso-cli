@@ -41,6 +41,10 @@ func init() {
 	updateFlags = append(updateFlags, gethUpdateFlags...)
 	updateFlags = append(updateFlags, prysmUpdateFlags...)
 	updateFlags = append(updateFlags, validatorUpdateFlags...)
+
+	startFlags = append(startFlags, gethStartFlags...)
+	startFlags = append(startFlags, prysmStartFlags...)
+	startFlags = append(startFlags, validatorStartFlags...)
 }
 
 func main() {
@@ -60,6 +64,7 @@ func main() {
 			Name:   "init",
 			Usage:  "Initializes your lukso working directory, it's structure and configurations for all of your clients",
 			Action: downloadConfigs,
+			Flags:  downloadFlags,
 			Before: initializeFlags,
 		},
 		{
@@ -89,6 +94,58 @@ func main() {
 					Action: updateValidatorToSpec,
 					Flags:  validatorUpdateFlags,
 					Before: initializeFlags,
+				},
+			},
+		},
+		{
+			Name:        "start",
+			Description: "Start all lukso clients",
+			Action:      startClients,
+			Flags:       startFlags,
+			Before:      initializeFlags,
+			Subcommands: []*cli.Command{
+				{
+					Name:        "geth",
+					Description: "Start Geth client",
+					Flags:       gethStartFlags,
+					Before:      initializeFlags,
+					Action:      startGeth,
+				},
+				{
+					Name:        "prysm",
+					Description: "Start Prysm client",
+					Flags:       prysmStartFlags,
+					Before:      initializeFlags,
+					Action:      startPrysm,
+				},
+				{
+					Name:        "validator",
+					Description: "Start Validator client",
+					Flags:       validatorStartFlags,
+					Before:      initializeFlags,
+					Action:      startValidator,
+				},
+			},
+		},
+		{
+			Name:        "stop",
+			Description: "stops all lukso clients",
+			Action:      stopClients,
+			Subcommands: []*cli.Command{
+				{
+					Name:        "geth",
+					Description: "Stop Geth client",
+					Action:      stopClient(clientDependencies[gethDependencyName]),
+				},
+				{
+					Name:        "prysm",
+					Description: "Stop Prysm client",
+					Action:      stopClient(clientDependencies[prysmDependencyName]),
+				},
+				{
+					Name:        "validator",
+					Description: "Stop Validator client",
+					Action:      stopClient(clientDependencies[validatorDependencyName]),
 				},
 			},
 		},
