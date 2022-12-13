@@ -45,6 +45,10 @@ func init() {
 	startFlags = append(startFlags, gethStartFlags...)
 	startFlags = append(startFlags, prysmStartFlags...)
 	startFlags = append(startFlags, validatorStartFlags...)
+
+	logsFlags = append(logsFlags, gethLogsFlags...)
+	logsFlags = append(logsFlags, prysmLogsFlags...)
+	logsFlags = append(logsFlags, validatorLogsFlags...)
 }
 
 func main() {
@@ -129,7 +133,7 @@ func main() {
 		},
 		{
 			Name:        "stop",
-			Description: "stops all lukso clients",
+			Description: "Stops all lukso clients",
 			Action:      stopClients,
 			Subcommands: []*cli.Command{
 				{
@@ -146,6 +150,29 @@ func main() {
 					Name:        "validator",
 					Description: "Stop Validator client",
 					Action:      stopClient(clientDependencies[validatorDependencyName]),
+				},
+			},
+		},
+		{
+			Name:        "logs",
+			Description: "Outputs log file of given client",
+			Action:      logClients,
+			Flags:       logsFlags,
+			Subcommands: []*cli.Command{
+				{
+					Name:        "geth",
+					Description: "Outputs Geth client logs",
+					Action:      logClient(gethDependencyName, gethOutputFileFlag),
+				},
+				{
+					Name:        "prysm",
+					Description: "Outputs Prysm client logs",
+					Action:      logClient(prysmDependencyName, prysmOutputFileFlag),
+				},
+				{
+					Name:        "validator",
+					Description: "Outputs Validator client logs",
+					Action:      logClient(validatorDependencyName, validatorOutputFileFlag),
 				},
 			},
 		},

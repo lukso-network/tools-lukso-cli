@@ -26,6 +26,7 @@ const (
 	gethWsOriginFlag    = "geth-ws-origin"
 	gethHttpOriginFlag  = "geth-http-origin"
 	gethNatFlag         = "geth-nat"
+	gethOutputFileFlag  = "geth-output-file"
 
 	// Common for prysm client
 	prysmChainConfigFlag = "prysm-chain-config"
@@ -57,6 +58,7 @@ const (
 	prysmDisableSyncFlag             = "prysm-disable-sync"
 	prysmOutputFileFlag              = "prysm-output-file"
 	prysmStdOutputFlag               = "prysm-std-output"
+	prysmTestnetFlag                 = "prysm-testnet"
 
 	acceptTermsOfUseFlagName = "accept-terms-of-use"
 )
@@ -65,6 +67,7 @@ var (
 	downloadFlags []cli.Flag
 	updateFlags   []cli.Flag
 	startFlags    []cli.Flag
+	logsFlags     []cli.Flag
 	appFlags      = []cli.Flag{
 		&cli.BoolFlag{
 			Name:  acceptTermsOfUseFlagName,
@@ -184,6 +187,19 @@ var (
 			Usage: "set geth output to stdout",
 			Value: false,
 		},
+		&cli.StringFlag{
+			Name:  gethOutputFileFlag,
+			Usage: "file to output logs into",
+			Value: "./geth.log",
+		},
+	}
+	// LOGS
+	gethLogsFlags = []cli.Flag{
+		&cli.StringFlag{
+			Name:  gethOutputFileFlag,
+			Usage: "file to output logs into",
+			Value: "./geth.log",
+		},
 	}
 
 	// PRYSM FLAGS
@@ -213,7 +229,7 @@ var (
 		&cli.StringFlag{
 			Name:  prysmGenesisStateFlag,
 			Usage: "provide genesis.ssz file",
-			Value: "./prysm/v0.0.18-delta/vanguard_private_testnet_genesis.ssz",
+			Value: "./prysm/v3.1.2/genesis.ssz",
 		},
 		&cli.StringFlag{
 			Name:  prysmDatadirFlag,
@@ -284,6 +300,19 @@ var (
 			Usage: "set prysm output to stdout",
 			Value: false,
 		},
+		&cli.BoolFlag{
+			Name:  prysmTestnetFlag,
+			Usage: "testnet",
+			Value: false,
+		},
+	}
+	// LOGS
+	prysmLogsFlags = []cli.Flag{
+		&cli.StringFlag{
+			Name:  prysmOutputFileFlag,
+			Usage: "file to output logs into",
+			Value: "./prysm.log",
+		},
 	}
 
 	// VALIDATOR
@@ -336,6 +365,14 @@ var (
 			Value: false,
 		},
 	}
+	// LOGS
+	validatorLogsFlags = []cli.Flag{
+		&cli.StringFlag{
+			Name:  validatorOutputFileFlag,
+			Usage: "file to output logs into",
+			Value: "./validator.log",
+		},
+	}
 )
 
 func prepareGethStartFlags(ctx *cli.Context) (startFlags []string) {
@@ -384,6 +421,9 @@ func preparePrysmStartFlags(ctx *cli.Context) (startFlags []string) {
 	startFlags = append(startFlags, fmt.Sprintf("--p2p-host-ip=%s", ctx.String(prysmP2pHostFlag)))
 	startFlags = append(startFlags, fmt.Sprintf("--p2p-local-ip=%s", ctx.String(prysmP2pLocalFlag)))
 	startFlags = append(startFlags, fmt.Sprintf("--log-file=%s", ctx.String(prysmOutputFileFlag)))
+	if ctx.Bool(prysmTestnetFlag) {
+		startFlags = append(startFlags, "--goerli")
+	}
 
 	return
 }
