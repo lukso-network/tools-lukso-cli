@@ -53,8 +53,6 @@ func (dependency *ClientDependency) Start(
 		command.Stderr = logFile
 	}
 
-	log.Info(command.Path, command.Args)
-
 	err = command.Start()
 
 	return

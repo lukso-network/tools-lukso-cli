@@ -176,6 +176,28 @@ func main() {
 				},
 			},
 		},
+		{
+			Name:        "stat",
+			Description: "Displays running status of clients",
+			Action:      statClients,
+			Subcommands: []*cli.Command{
+				{
+					Name:        "geth",
+					Description: "Displays Geth's running status",
+					Action:      statClient(gethDependencyName),
+				},
+				{
+					Name:        "prysm",
+					Description: "Displays Prysm's running status",
+					Action:      statClient(prysmDependencyName),
+				},
+				{
+					Name:        "validator",
+					Description: "Displays Validator's running status",
+					Action:      statClient(validatorDependencyName),
+				},
+			},
+		},
 	}
 
 	app.Before = func(ctx *cli.Context) error {
@@ -192,6 +214,8 @@ func main() {
 
 		// Prysm related parsing
 		prysmTag = ctx.String(prysmTagFlag)
+
+		log = log.WithField("os", systemOs)
 
 		return nil
 	}
