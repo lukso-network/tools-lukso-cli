@@ -293,7 +293,7 @@ var (
 		&cli.StringFlag{
 			Name:  prysmOutputFileFlag,
 			Usage: "provide output destination of prysm",
-			Value: "./prysm.log",
+			Value: "./prysm_beacon.log",
 		},
 		&cli.BoolFlag{
 			Name:  prysmStdOutputFlag,
