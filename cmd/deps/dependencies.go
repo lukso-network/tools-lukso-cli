@@ -22,31 +22,37 @@ var (
 			baseUnixUrl:   "https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-%s-%s.tar.gz",
 			baseDarwinUrl: "https://gethstore.blob.core.windows.net/builds/geth-darwin-amd64-%s-%s.tar.gz",
 			name:          gethDependencyName,
+			filePath:      "", // binary dir selected during runtime
 		},
 		gethGenesisDependencyName: {
 			baseUnixUrl:   "https://storage.googleapis.com/l16-common/pandora/pandora_private_testnet_genesis.json",
 			baseDarwinUrl: "https://storage.googleapis.com/l16-common/pandora/pandora_private_testnet_genesis.json",
 			name:          gethGenesisDependencyName,
+			filePath:      "./config/mainnet/geth/geth-genesis.json",
 		},
 		prysmDependencyName: {
 			baseUnixUrl:   "https://github.com/prysmaticlabs/prysm/releases/download/%s/beacon-chain-%s-linux-amd64",
 			baseDarwinUrl: "https://github.com/prysmaticlabs/prysm/releases/download/%s/beacon-chain-%s-darwin-amd64",
 			name:          prysmDependencyName,
+			filePath:      "", // binary dir selected during runtime
 		},
 		validatorDependencyName: {
 			baseUnixUrl:   "https://github.com/prysmaticlabs/prysm/releases/download/%s/validator-%s-linux-amd64",
 			baseDarwinUrl: "https://github.com/prysmaticlabs/prysm/releases/download/%s/validator-%s-darwin-amd64",
 			name:          validatorDependencyName,
+			filePath:      "", // binary dir selected during runtime
 		},
 		prysmGenesisDependencyName: {
 			baseUnixUrl:   "https://storage.googleapis.com/l16-common/vanguard/vanguard_private_testnet_genesis.ssz",
 			baseDarwinUrl: "https://storage.googleapis.com/l16-common/vanguard/vanguard_private_testnet_genesis.ssz",
 			name:          prysmGenesisDependencyName,
+			filePath:      "./config/mainnet/prysm/prysm-beaconchain-genesis.ssz",
 		},
 		prysmConfigDependencyName: {
 			baseUnixUrl:   "https://storage.googleapis.com/l16-common/vanguard/chain-config.yaml",
 			baseDarwinUrl: "https://storage.googleapis.com/l16-common/vanguard/chain-config.yaml",
 			name:          prysmConfigDependencyName,
+			filePath:      "./config/mainnet/prysm/prysm-chain-config.yaml",
 		},
 	}
 )
@@ -55,6 +61,7 @@ type ClientDependency struct {
 	baseUnixUrl   string
 	baseDarwinUrl string
 	name          string
+	filePath      string
 }
 
 func (dependency *ClientDependency) ParseUrl(tagName, commitHash string) (url string) {
@@ -114,4 +121,9 @@ func setupOperatingSystem() {
 	default:
 		log.Panicf("unexpected OS: %v", systemOs)
 	}
+
+	// setting PATH for binaries
+	clientDependencies[gethDependencyName].filePath = binDir + "/geth"
+	clientDependencies[prysmDependencyName].filePath = binDir + "/prysm"
+	clientDependencies[validatorDependencyName].filePath = binDir + "/validator"
 }

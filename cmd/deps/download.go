@@ -10,25 +10,22 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"os/exec"
 	"strings"
 )
 
 var errNeedRoot = errors.New("You need root privilages to perform this action")
 
 func (dependency *ClientDependency) Download(tagName, destination, commitHash string, checkExist bool) (err error) {
-	dependencyTagPath := dependency.ResolveDirPath(tagName, destination)
-
-	err = os.MkdirAll(dependencyTagPath, 0750)
-	if nil != err {
+	err = dependency.createDir()
+	if err != nil {
 		return
 	}
 
-	dependencyLocation := dependency.ResolveBinaryPath(tagName, destination)
-
 	fileUrl := dependency.ParseUrl(tagName, commitHash)
 
-	if fileExists(dependencyLocation) && checkExist {
-		log.Warningf("Downloading %s aborted, file %s already exists", fileUrl, dependencyLocation)
+	if fileExists(dependency.filePath) && checkExist {
+		log.Warningf("Downloading %s aborted, file %s already exists", fileUrl, dependency.filePath)
 
 		return
 	}
@@ -93,7 +90,7 @@ func (dependency *ClientDependency) Download(tagName, destination, commitHash st
 		return
 	}
 
-	err = os.WriteFile(dependencyLocation, buf.Bytes(), os.ModePerm)
+	err = os.WriteFile(dependency.filePath, buf.Bytes(), os.ModePerm)
 
 	if err != nil && strings.Contains(err.Error(), "permission denied") {
 		return errNeedRoot
@@ -105,6 +102,17 @@ func (dependency *ClientDependency) Download(tagName, destination, commitHash st
 	}
 
 	return
+}
+
+// createDir creates directory structure for given dependency if it's not a binary file
+func (dependency *ClientDependency) createDir() error {
+	if strings.Contains(dependency.filePath, binDir) {
+		return nil
+	}
+
+	segments := strings.Split(dependency.filePath, "/")
+
+	return os.MkdirAll(strings.TrimRight(dependency.filePath, segments[len(segments)-1]), 0750)
 }
 
 func downloadBinaries(ctx *cli.Context) (err error) {
@@ -142,6 +150,24 @@ func downloadConfigs(ctx *cli.Context) error {
 	}
 
 	err = downloadConfig(ctx)
+	if nil != err {
+		return err
+	}
+
+	// after initializing we can run geth init to make sure geth runs fine
+	command := exec.Command("geth", "init", clientDependencies[gethGenesisDependencyName].filePath)
+
+	err = command.Run()
+	if _, ok := err.(*exec.ExitError); ok {
+		log.Error("No error logs found")
+
+		return err
+	}
+
+	// error unrelated to command execution
+	if err != nil {
+		log.Errorf("There was an error while executing logs command. Error: %v", err)
+	}
 
 	return err
 }
