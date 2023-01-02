@@ -5,14 +5,17 @@ import (
 	"github.com/urfave/cli/v2"
 	"os"
 	"os/exec"
-	"time"
 )
 
-var errorCouldntStart = errors.New("Couldn't start client")
+var (
+	errorCouldntStart = errors.New("Couldn't start client ")
+	errorFlagMissing  = errors.New("Couldn't find given flag ")
+)
 
 func (dependency *ClientDependency) Start(
 	arguments []string,
 	attachStdoutAndErr bool,
+	ctx *cli.Context,
 ) (err error) {
 	command := exec.Command(dependency.name, arguments...)
 
@@ -21,21 +24,36 @@ func (dependency *ClientDependency) Start(
 		command.Stderr = os.Stderr
 
 		err = command.Run()
-		if _, ok := err.(*exec.ExitError); ok {
-			return errorCouldntStart
-		}
 
 		return
 	}
 
-	log.Info("Waiting for initialization...")
-	err = command.Start()
+	// since geth removed --logfile flag we have to manually adjust geth's stdout
+	if dependency.name == gethDependencyName {
+		var logFile *os.File
+		gethLogDir := ctx.String(gethOutputFileFlag)
+		if gethLogDir == "" {
+			return errorFlagMissing
+		}
 
-	time.Sleep(time.Second) // sleep to wait for initialization error
+		_, err = os.Stat(gethLogDir)
+		if err != nil {
+			err = os.WriteFile(gethLogDir, []byte{}, 0750)
+			if err != nil {
+				return
+			}
+		}
 
-	if _, ok := err.(*exec.ExitError); ok {
-		return errorCouldntStart
+		logFile, err = os.OpenFile(gethLogDir, os.O_RDWR, 0750)
+		if err != nil {
+			return
+		}
+
+		command.Stdout = logFile
+		command.Stderr = logFile
 	}
+
+	err = command.Start()
 
 	return
 }
@@ -73,7 +91,7 @@ func startGeth(ctx *cli.Context) error {
 
 	stdAttached := ctx.Bool(gethStdOutputFlag)
 
-	err := clientDependencies[gethDependencyName].Start(prepareGethStartFlags(ctx), stdAttached)
+	err := clientDependencies[gethDependencyName].Start(prepareGethStartFlags(ctx), stdAttached, ctx)
 	if err != nil {
 		return err
 	}
@@ -87,7 +105,7 @@ func startPrysm(ctx *cli.Context) error {
 
 	stdAttached := ctx.Bool(prysmStdOutputFlag)
 
-	err := clientDependencies[prysmDependencyName].Start(preparePrysmStartFlags(ctx), stdAttached)
+	err := clientDependencies[prysmDependencyName].Start(preparePrysmStartFlags(ctx), stdAttached, ctx)
 	if err != nil {
 		return err
 	}
@@ -101,7 +119,7 @@ func startValidator(ctx *cli.Context) error {
 
 	stdAttached := ctx.Bool(validatorStdOutputFlag)
 
-	err := clientDependencies[validatorDependencyName].Start(prepareValidatorStartFlags(ctx), stdAttached)
+	err := clientDependencies[validatorDependencyName].Start(prepareValidatorStartFlags(ctx), stdAttached, ctx)
 	if err != nil {
 		return err
 	}
@@ -113,7 +131,7 @@ func startValidator(ctx *cli.Context) error {
 func startGethDetached(ctx *cli.Context) error {
 	log.Info("Starting Geth")
 
-	err := clientDependencies[gethDependencyName].Start(prepareGethStartFlags(ctx), false)
+	err := clientDependencies[gethDependencyName].Start(prepareGethStartFlags(ctx), false, ctx)
 	if err != nil {
 		return err
 	}
@@ -125,7 +143,7 @@ func startGethDetached(ctx *cli.Context) error {
 func startPrysmDetached(ctx *cli.Context) error {
 	log.Info("Starting Prysm")
 
-	err := clientDependencies[prysmDependencyName].Start(preparePrysmStartFlags(ctx), false)
+	err := clientDependencies[prysmDependencyName].Start(preparePrysmStartFlags(ctx), false, ctx)
 	if err != nil {
 		return err
 	}
@@ -137,7 +155,7 @@ func startPrysmDetached(ctx *cli.Context) error {
 func startValidatorDetached(ctx *cli.Context) error {
 	log.Info("Starting Validator")
 
-	err := clientDependencies[validatorDependencyName].Start(prepareValidatorStartFlags(ctx), false)
+	err := clientDependencies[validatorDependencyName].Start(prepareValidatorStartFlags(ctx), false, ctx)
 	if err != nil {
 		return err
 	}
