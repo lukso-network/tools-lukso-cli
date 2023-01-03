@@ -16,7 +16,7 @@ import (
 
 var errNeedRoot = errors.New("You need root privilages to perform this action")
 
-func (dependency *ClientDependency) Download(tagName, destination, commitHash string, checkExist bool) (err error) {
+func (dependency *ClientDependency) Download(tagName, commitHash string, checkExist bool) (err error) {
 	err = dependency.createDir()
 	if err != nil {
 		return
@@ -170,31 +170,31 @@ func downloadConfigs(ctx *cli.Context) error {
 func downloadGeth(ctx *cli.Context) (err error) {
 	log.WithField("dependencyTag", gethTag).Info("Downloading Geth")
 
-	err = clientDependencies[gethDependencyName].Download(gethTag, binDir, gethCommitHash, true)
+	err = clientDependencies[gethDependencyName].Download(gethTag, gethCommitHash, true)
 
 	return
 }
 
 func downloadGenesis(ctx *cli.Context) (err error) {
 	log.WithField("dependencyTag", gethTag).Info("Downloading Execution Genesis")
-	gethDataDir := ctx.String(gethDatadirFlag)
-	err = clientDependencies[gethGenesisDependencyName].Download(gethTag, gethDataDir, "", true)
+
+	err = clientDependencies[gethGenesisDependencyName].Download(gethTag, "", true)
 
 	if nil != err {
 		return
 	}
 
 	log.WithField("dependencyTag", prysmTag).Info("Downloading Consensus Genesis")
-	prysmDataDir := ctx.String(prysmDatadirFlag)
-	err = clientDependencies[prysmGenesisDependencyName].Download(prysmTag, prysmDataDir, "", true)
+
+	err = clientDependencies[prysmGenesisDependencyName].Download(prysmTag, "", true)
 
 	return
 }
 
 func downloadConfig(ctx *cli.Context) (err error) {
 	log.WithField("dependencyTag", prysmTag).Info("Downloading Prysm Config")
-	prysmDataDir := ctx.String(prysmDatadirFlag)
-	err = clientDependencies[prysmConfigDependencyName].Download(prysmTag, prysmDataDir, "", true)
+
+	err = clientDependencies[prysmConfigDependencyName].Download(prysmTag, "", true)
 
 	return
 }
@@ -202,14 +202,14 @@ func downloadConfig(ctx *cli.Context) (err error) {
 func downloadPrysm(ctx *cli.Context) (err error) {
 	log.WithField("dependencyTag", prysmTag).Info("Downloading Prysm")
 
-	err = clientDependencies[prysmDependencyName].Download(prysmTag, binDir, "", true)
+	err = clientDependencies[prysmDependencyName].Download(prysmTag, "", true)
 
 	return
 }
 
 func downloadValidator(ctx *cli.Context) (err error) {
 	log.WithField("dependencyTag", validatorTag).Info("Downloading Validator")
-	err = clientDependencies[validatorDependencyName].Download(prysmTag, binDir, "", true)
+	err = clientDependencies[validatorDependencyName].Download(prysmTag, "", true)
 
 	return
 }
