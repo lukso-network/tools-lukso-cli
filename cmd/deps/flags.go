@@ -229,7 +229,7 @@ var (
 		&cli.StringFlag{
 			Name:  prysmGenesisStateFlag,
 			Usage: "provide genesis.ssz file",
-			Value: "./prysm/v3.1.2/genesis.ssz",
+			Value: "./config/mainnet/prysm/prysm-beaconchain-genesis.ssz",
 		},
 		&cli.StringFlag{
 			Name:  prysmDatadirFlag,
@@ -311,7 +311,7 @@ var (
 		&cli.StringFlag{
 			Name:  prysmOutputFileFlag,
 			Usage: "file to output logs into",
-			Value: "./prysm.log",
+			Value: "./prysm_beacon.log",
 		},
 	}
 

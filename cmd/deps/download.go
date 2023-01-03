@@ -154,19 +154,14 @@ func downloadConfigs(ctx *cli.Context) error {
 		return err
 	}
 
-	// after initializing we can run geth init to make sure geth runs fine
+	// after initializing we can run geth init to make sure geth runs fine - providing stdout for more information about process
 	command := exec.Command("geth", "init", clientDependencies[gethGenesisDependencyName].filePath)
+	command.Stdout = os.Stdout
+	command.Stderr = os.Stderr
 
 	err = command.Run()
-	if _, ok := err.(*exec.ExitError); ok {
-		log.Error("No error logs found")
-
-		return err
-	}
-
-	// error unrelated to command execution
 	if err != nil {
-		log.Errorf("There was an error while executing logs command. Error: %v", err)
+		log.Errorf("There was an error while initalizing geth. Error: %v", err)
 	}
 
 	return err
