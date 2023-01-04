@@ -163,17 +163,17 @@ func main() {
 				{
 					Name:   "geth",
 					Usage:  "Outputs Geth client logs",
-					Action: logClient(gethDependencyName, gethOutputFileFlag),
+					Action: logClient(gethDependencyName, gethOutputDirFlag),
 				},
 				{
 					Name:   "prysm",
 					Usage:  "Outputs Prysm client logs",
-					Action: logClient(prysmDependencyName, prysmOutputFileFlag),
+					Action: logClient(prysmDependencyName, prysmOutputDirFlag),
 				},
 				{
 					Name:   "validator",
 					Usage:  "Outputs Validator client logs",
-					Action: logClient(validatorDependencyName, validatorOutputFileFlag),
+					Action: logClient(validatorDependencyName, validatorOutputDirFlag),
 				},
 			},
 		},

@@ -30,22 +30,30 @@ func (dependency *ClientDependency) Start(
 
 	// since geth removed --logfile flag we have to manually adjust geth's stdout
 	if dependency.name == gethDependencyName {
-		var logFile *os.File
-		gethLogDir := ctx.String(gethOutputFileFlag)
+		var (
+			logFile  *os.File
+			fullPath string
+		)
+
+		gethLogDir := ctx.String(gethOutputDirFlag)
 		if gethLogDir == "" {
 			return errorFlagMissing
 		}
 
-		_, err = os.Stat(gethLogDir)
+		fullPath, err = prepareTimestampedFile(gethLogDir, gethDependencyName)
 		if err != nil {
-			err = os.WriteFile(gethLogDir, []byte{}, 0750)
-			if err != nil {
-				return
-			}
+			return
 		}
 
-		logFile, err = os.OpenFile(gethLogDir, os.O_RDWR, 0750)
+		err = os.WriteFile(fullPath, []byte{}, 0750)
 		if err != nil {
+			return
+		}
+
+		logFile, err = os.OpenFile(fullPath, os.O_RDWR, 0750)
+		if err != nil {
+			log.Fatal("WRONG OPENNNN!!!!!!!!!!!")
+
 			return
 		}
 
@@ -87,11 +95,18 @@ func startClients(ctx *cli.Context) error {
 }
 
 func startGeth(ctx *cli.Context) error {
+	log.Info("Running geth init first...")
+
+	err := initGeth()
+	if err != nil {
+		log.Errorf("There was an error while initalizing geth. Error: %v", err)
+	}
+
 	log.Info("Starting Geth")
 
 	stdAttached := ctx.Bool(gethStdOutputFlag)
 
-	err := clientDependencies[gethDependencyName].Start(prepareGethStartFlags(ctx), stdAttached, ctx)
+	err = clientDependencies[gethDependencyName].Start(prepareGethStartFlags(ctx), stdAttached, ctx)
 	if err != nil {
 		return err
 	}
@@ -188,4 +203,12 @@ func stopClient(dependency *ClientDependency) func(ctx *cli.Context) error {
 
 		return err
 	}
+}
+
+func initGeth() (err error) {
+	command := exec.Command("geth", "init", clientDependencies[gethGenesisDependencyName].filePath)
+	command.Stdout = os.Stdout
+	command.Stderr = os.Stderr
+
+	return command.Run()
 }

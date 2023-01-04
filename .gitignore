@@ -15,6 +15,10 @@ cmd/deps/deps
 # Dist files
 dist
 
+# Configs and logs
+cmd/deps/config
+cmd/deps/logs
+
 # Coverage outputs
 coverage.txt
 profile.out
