@@ -52,8 +52,6 @@ func (dependency *ClientDependency) Start(
 
 		logFile, err = os.OpenFile(fullPath, os.O_RDWR, 0750)
 		if err != nil {
-			log.Fatal("WRONG OPENNNN!!!!!!!!!!!")
-
 			return
 		}
 
