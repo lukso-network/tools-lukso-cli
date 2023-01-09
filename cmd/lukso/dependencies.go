@@ -25,10 +25,10 @@ var (
 			filePath:      "", // binary dir selected during runtime
 		},
 		gethGenesisDependencyName: {
-			baseUnixUrl:   "https://storage.googleapis.com/l16-common/pandora/pandora_private_testnet_genesis.json",
-			baseDarwinUrl: "https://storage.googleapis.com/l16-common/pandora/pandora_private_testnet_genesis.json",
+			baseUnixUrl:   "https://github.com/lukso-network/network-configs/blob/devnet/dev/2022/geth/genesis.json",
+			baseDarwinUrl: "https://github.com/lukso-network/network-configs/blob/devnet/dev/2022/geth/genesis.json",
 			name:          gethGenesisDependencyName,
-			filePath:      "./config/mainnet/geth/geth-genesis.json",
+			filePath:      "./config/mainnet/geth/genesis.json",
 		},
 		prysmDependencyName: {
 			baseUnixUrl:   "https://github.com/prysmaticlabs/prysm/releases/download/%s/beacon-chain-%s-linux-amd64",
@@ -43,16 +43,16 @@ var (
 			filePath:      "", // binary dir selected during runtime
 		},
 		prysmGenesisDependencyName: {
-			baseUnixUrl:   "https://storage.googleapis.com/l16-common/vanguard/vanguard_private_testnet_genesis.ssz",
-			baseDarwinUrl: "https://storage.googleapis.com/l16-common/vanguard/vanguard_private_testnet_genesis.ssz",
+			baseUnixUrl:   "https://github.com/lukso-network/network-configs/blob/devnet/dev/2022/prysm/config.yml",
+			baseDarwinUrl: "https://github.com/lukso-network/network-configs/blob/devnet/dev/2022/prysm/config.yml",
 			name:          prysmGenesisDependencyName,
-			filePath:      "./config/mainnet/prysm/prysm-beaconchain-genesis.ssz",
+			filePath:      "./config/mainnet/shared/genesis.ssz",
 		},
 		prysmConfigDependencyName: {
-			baseUnixUrl:   "https://storage.googleapis.com/l16-common/vanguard/chain-config.yaml",
-			baseDarwinUrl: "https://storage.googleapis.com/l16-common/vanguard/chain-config.yaml",
+			baseUnixUrl:   "https://github.com/lukso-network/network-configs/blob/devnet/dev/2022/prysm/genesis.ssz",
+			baseDarwinUrl: "https://github.com/lukso-network/network-configs/blob/devnet/dev/2022/prysm/genesis.ssz",
 			name:          prysmConfigDependencyName,
-			filePath:      "./config/mainnet/prysm/prysm-chain-config.yaml",
+			filePath:      "./config/mainnet/shared/config.yaml",
 		},
 	}
 )

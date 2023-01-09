@@ -15,7 +15,7 @@ import (
 
 var errNeedRoot = errors.New("You need root privilages to perform this action")
 
-func (dependency *ClientDependency) Download(tagName, commitHash string, checkExist bool) (err error) {
+func (dependency *ClientDependency) Download(tagName, commitHash string, overrideFile bool) (err error) {
 	err = dependency.createDir()
 	if err != nil {
 		return
@@ -23,7 +23,7 @@ func (dependency *ClientDependency) Download(tagName, commitHash string, checkEx
 
 	fileUrl := dependency.ParseUrl(tagName, commitHash)
 
-	if fileExists(dependency.filePath) && checkExist {
+	if fileExists(dependency.filePath) && !overrideFile {
 		log.Warningf("Downloading %s aborted, file %s already exists", fileUrl, dependency.filePath)
 
 		return
@@ -111,7 +111,12 @@ func (dependency *ClientDependency) createDir() error {
 
 	segments := strings.Split(dependency.filePath, "/")
 
-	return os.MkdirAll(strings.TrimRight(dependency.filePath, segments[len(segments)-1]), 0750)
+	err := os.MkdirAll(strings.TrimRight(dependency.filePath, segments[len(segments)-1]), 0750)
+	if errors.Is(err, os.ErrExist) {
+		log.Errorf("%s already exists!", dependency.name)
+	}
+
+	return err
 }
 
 func downloadBinaries(ctx *cli.Context) (err error) {
@@ -148,13 +153,13 @@ func downloadConfigs(ctx *cli.Context) error {
 		return err
 	}
 
-	return downloadConfig(ctx)
+	return downloadPrysmConfig(ctx)
 }
 
 func downloadGeth(ctx *cli.Context) (err error) {
 	log.WithField("dependencyTag", gethTag).Info("Downloading Geth")
 
-	err = clientDependencies[gethDependencyName].Download(gethTag, gethCommitHash, true)
+	err = clientDependencies[gethDependencyName].Download(gethTag, gethCommitHash, false)
 
 	return
 }
@@ -162,7 +167,7 @@ func downloadGeth(ctx *cli.Context) (err error) {
 func downloadGenesis(ctx *cli.Context) (err error) {
 	log.WithField("dependencyTag", gethTag).Info("Downloading Execution Genesis")
 
-	err = clientDependencies[gethGenesisDependencyName].Download(gethTag, "", true)
+	err = clientDependencies[gethGenesisDependencyName].Download(gethTag, "", false)
 
 	if nil != err {
 		return
@@ -170,15 +175,15 @@ func downloadGenesis(ctx *cli.Context) (err error) {
 
 	log.WithField("dependencyTag", prysmTag).Info("Downloading Consensus Genesis")
 
-	err = clientDependencies[prysmGenesisDependencyName].Download(prysmTag, "", true)
+	err = clientDependencies[prysmGenesisDependencyName].Download(prysmTag, "", false)
 
 	return
 }
 
-func downloadConfig(ctx *cli.Context) (err error) {
+func downloadPrysmConfig(ctx *cli.Context) (err error) {
 	log.WithField("dependencyTag", prysmTag).Info("Downloading Prysm Config")
 
-	err = clientDependencies[prysmConfigDependencyName].Download(prysmTag, "", true)
+	err = clientDependencies[prysmConfigDependencyName].Download(prysmTag, "", false)
 
 	return
 }
@@ -186,14 +191,14 @@ func downloadConfig(ctx *cli.Context) (err error) {
 func downloadPrysm(ctx *cli.Context) (err error) {
 	log.WithField("dependencyTag", prysmTag).Info("Downloading Prysm")
 
-	err = clientDependencies[prysmDependencyName].Download(prysmTag, "", true)
+	err = clientDependencies[prysmDependencyName].Download(prysmTag, "", false)
 
 	return
 }
 
 func downloadValidator(ctx *cli.Context) (err error) {
 	log.WithField("dependencyTag", validatorTag).Info("Downloading Validator")
-	err = clientDependencies[validatorDependencyName].Download(prysmTag, "", true)
+	err = clientDependencies[validatorDependencyName].Download(prysmTag, "", false)
 
 	return
 }
