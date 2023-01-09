@@ -7,26 +7,29 @@ import (
 
 const (
 	// geth related flag names
-	gethTagFlag         = "geth-tag"
-	gethCommitHashFlag  = "geth-commit-hash"
-	gethDatadirFlag     = "geth-datadir"
-	gethEthstatsFlag    = "geth-ethstats"
-	gethBootnodesFlag   = "geth-bootnodes"
-	gethNetworkIDFlag   = "geth-networkid"
-	gethPortFlag        = "geth-port"
-	gethHttpApiFlag     = "geth-http-apis"
-	gethWSApiFlag       = "geth-ws-apis"
-	gethWSPortFlag      = "geth-websocket-port"
-	gethEtherbaseFlag   = "geth-etherbase"
-	gethGenesisFileFlag = "geth-genesis"
-	gethNotifyFlag      = "geth-notify"
-	gethVerbosityFlag   = "geth-verbosity"
-	gethHttpPortFlag    = "geth-http-port"
-	gethStdOutputFlag   = "geth-std-output"
-	gethWsOriginFlag    = "geth-ws-origin"
-	gethHttpOriginFlag  = "geth-http-origin"
-	gethNatFlag         = "geth-nat"
-	gethOutputDirFlag   = "geth-output-dir"
+	gethTagFlag            = "geth-tag"
+	gethCommitHashFlag     = "geth-commit-hash"
+	gethDatadirFlag        = "geth-datadir"
+	gethEthstatsFlag       = "geth-ethstats"
+	gethBootnodesFlag      = "geth-bootnodes"
+	gethNetworkIDFlag      = "geth-networkid"
+	gethPortFlag           = "geth-port"
+	gethWSFlag             = "geth-ws"
+	gethWSApiFlag          = "geth-ws-apis"
+	gethGenesisFileFlag    = "geth-genesis"
+	gethVerbosityFlag      = "geth-verbosity"
+	gethHttpFlag           = "geth-http"
+	gethHttpApiFlag        = "geth-http-apis"
+	gethHttpAddrFlag       = "geth-http-addr"
+	gethHttpPortFlag       = "geth-http-port"
+	gethMineFlag           = "geth-mine"
+	gethMinerGaslimit      = "geth-miner-gaslimit"
+	gethMinerEtherbaseFlag = "geth-miner-etherbase"
+	gethMinerThreads       = "geth-miner-threads"
+	gethStdOutputFlag      = "geth-std-output"
+	gethAuthJWTSecretFlag  = "geth-auth-jwt-secret"
+	gethNatFlag            = "geth-nat"
+	gethOutputDirFlag      = "geth-output-dir"
 
 	// Common for prysm client
 	prysmChainConfigFlag = "prysm-chain-config"
@@ -89,11 +92,6 @@ var (
 			Usage: "provide a hash of commit that is bound to given release tag",
 			Value: "e5eb32ac",
 		},
-		&cli.StringFlag{
-			Name:  gethDatadirFlag,
-			Usage: "provide a path you would like to store your data",
-			Value: "./geth",
-		},
 	}
 	// UPDATE
 	gethUpdateFlags = []cli.Flag{
@@ -106,34 +104,14 @@ var (
 	// START
 	gethStartFlags = []cli.Flag{
 		&cli.StringFlag{
-			Name:  gethEthstatsFlag,
-			Usage: "URL of an ethstats service, should be of scheme: nickname:STATS_LOGIN_SECRET@GETH_STATS_HOST",
-			Value: "",
+			Name:  gethDatadirFlag,
+			Usage: "provide a path you would like to store your data",
+			Value: "./geth",
 		},
-		&cli.StringFlag{
-			Name:  gethBootnodesFlag,
-			Usage: "Default value should be ok for test network. Otherwise provide Comma separated enode urls, see at https://geth.ethereum.org/docs/getting-started/private-net.",
-			Value: "enode://967db4f56ad0a1a35e3d30632fa600565329a23aff50c9762181810166f3c15b078cca522f930d1a2747778893232336bffd1ea5d2ca60543f1801d4360ea63a@35.204.255.172:0?discport=30301",
-		},
-		&cli.StringFlag{
-			Name:  gethNetworkIDFlag,
-			Usage: "provide network id if must be different than default",
-			Value: "4004181",
-		},
-		&cli.StringFlag{
-			Name:  gethPortFlag,
-			Usage: "provide port for geth",
-			Value: "30405",
-		},
-		&cli.StringFlag{
-			Name:  gethHttpApiFlag,
-			Usage: "comma separated apis",
-			Value: "eth,net",
-		},
-		&cli.StringFlag{
-			Name:  gethHttpPortFlag,
-			Usage: "port used in geth http communication",
-			Value: "8565",
+		&cli.BoolFlag{
+			Name:  gethWSFlag,
+			Usage: "enable WS server",
+			Value: true,
 		},
 		&cli.StringFlag{
 			Name:  gethWSApiFlag,
@@ -141,26 +119,24 @@ var (
 			Value: "eth,net",
 		},
 		&cli.StringFlag{
-			Name:  gethWSPortFlag,
-			Usage: "port for geth api",
-			Value: "8546",
+			Name:  gethNatFlag,
+			Usage: "this flag sets up http nat to assign static ip for geth, default not set. Example extip:172.16.254.4",
+			Value: "extip:172.16.254.4",
+		},
+		&cli.BoolFlag{
+			Name:  gethHttpFlag,
+			Usage: "enable HTTP server",
+			Value: true,
 		},
 		&cli.StringFlag{
-			Name:  gethEtherbaseFlag,
-			Usage: "your ECDSA public key used to get rewards on geth chain",
-			// yes, If you won't set it up, I'll get rewards ;]
-			Value: "0x59E3dADc83af3c127a2e29B12B0E86109Bb6d838",
+			Name:  gethHttpApiFlag,
+			Usage: "comma separated apis",
+			Value: "eth,net",
 		},
 		&cli.StringFlag{
-			Name:  gethGenesisFileFlag,
-			Usage: "remote genesis file that will be downloaded to spin up the network",
-			// yes, If you won't set it up, I'll get rewards ;]
-			Value: "https://storage.googleapis.com/l16-common/geth/geth_private_testnet_genesis.json",
-		},
-		&cli.StringFlag{
-			Name:  gethNotifyFlag,
-			Usage: "this flag is used to geth engine to notify validator and orchestrator",
-			Value: "ws://127.0.0.1:7878,http://127.0.0.1:7877",
+			Name:  gethHttpAddrFlag,
+			Usage: "address used in geth http communication",
+			Value: "0.0.0.0",
 		},
 		&cli.StringFlag{
 			Name:  gethVerbosityFlag,
@@ -168,19 +144,40 @@ var (
 			Value: "3",
 		},
 		&cli.StringFlag{
-			Name:  gethWsOriginFlag,
-			Usage: "this flag sets up websocket accepted origins, default not set",
-			Value: "ws://127.0.0.1:7878",
+			Name:  gethPortFlag,
+			Usage: "provide port for geth",
+			Value: "30405",
 		},
 		&cli.StringFlag{
-			Name:  gethHttpOriginFlag,
-			Usage: "this flag sets up http accepted origins, default not set",
-			Value: "http://127.0.0.1:8008",
+			Name:  gethHttpPortFlag,
+			Usage: "port used in geth http communication",
+			Value: "8565",
+		},
+		&cli.BoolFlag{
+			Name:  gethMineFlag,
+			Usage: "enable mining",
+			Value: true,
 		},
 		&cli.StringFlag{
-			Name:  gethNatFlag,
-			Usage: "this flag sets up http nat to assign static ip for geth, default not set. Example extip:172.16.254.4",
-			Value: "extip:172.16.254.4",
+			Name:  gethMinerThreads,
+			Usage: "number opf CPU threads used for mining",
+			Value: "1",
+		},
+		&cli.StringFlag{
+			Name:  gethMinerGaslimit,
+			Usage: "gas ceiling",
+			Value: "60000000",
+		},
+		&cli.StringFlag{
+			Name:  gethMinerEtherbaseFlag,
+			Usage: "your ECDSA public key used to get rewards on geth chain",
+			// yes, If you won't set it up, I'll get rewards ;]
+			Value: "0x59E3dADc83af3c127a2e29B12B0E86109Bb6d838",
+		},
+		&cli.StringFlag{
+			Name:  gethAuthJWTSecretFlag,
+			Usage: "path to a JWT secret used for secured endpoints authorization",
+			Value: "./config/mainnet/secrets/jwt.hex",
 		},
 		&cli.BoolFlag{
 			Name:  gethStdOutputFlag,
@@ -377,23 +374,27 @@ var (
 
 func prepareGethStartFlags(ctx *cli.Context) (startFlags []string) {
 	// parse all runtime-related geth flags, one by one and append them
-	startFlags = append(startFlags, fmt.Sprintf("--ethstats=%s", ctx.String(gethEthstatsFlag)))
-	startFlags = append(startFlags, fmt.Sprintf("--bootnodes=%s", ctx.String(gethBootnodesFlag)))
-	startFlags = append(startFlags, fmt.Sprintf("--networkid=%s", ctx.String(gethNetworkIDFlag)))
-	startFlags = append(startFlags, fmt.Sprintf("--port=%s", ctx.String(gethPortFlag)))
-	startFlags = append(startFlags, fmt.Sprintf("--http.api=%s", ctx.String(gethHttpApiFlag)))
-	startFlags = append(startFlags, fmt.Sprintf("--ws.api=%s", ctx.String(gethWSApiFlag)))
-	startFlags = append(startFlags, fmt.Sprintf("--ws.port=%s", ctx.String(gethWSPortFlag)))
-	startFlags = append(startFlags, fmt.Sprintf("--miner.etherbase=%s", ctx.String(gethEtherbaseFlag)))
-	if ctx.Bool(gethNotifyFlag) {
-		startFlags = append(startFlags, "--miner.notify.full")
+	startFlags = append(startFlags, fmt.Sprintf("--datadir=%s", ctx.String(gethDatadirFlag)))
+	if ctx.Bool(gethWSFlag) {
+		startFlags = append(startFlags, "--ws")
 	}
-
-	startFlags = append(startFlags, fmt.Sprintf("--verbosity=%s", ctx.String(gethVerbosityFlag)))
-	startFlags = append(startFlags, fmt.Sprintf("--http.port=%s", ctx.String(gethHttpPortFlag)))
-	startFlags = append(startFlags, fmt.Sprintf("--ws.origins=%s", ctx.String(gethWsOriginFlag)))
-	startFlags = append(startFlags, fmt.Sprintf("--http.corsdomain=%s", ctx.String(gethHttpOriginFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--ws.api=%s", ctx.String(gethWSApiFlag)))
 	startFlags = append(startFlags, fmt.Sprintf("--nat=%s", ctx.String(gethNatFlag)))
+	if ctx.Bool(gethHttpFlag) {
+		startFlags = append(startFlags, "--http")
+	}
+	startFlags = append(startFlags, fmt.Sprintf("--http.api=%s", ctx.String(gethHttpApiFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--http.addr=%s", ctx.String(gethHttpAddrFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--http.port=%s", ctx.String(gethHttpPortFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--verbosity=%s", ctx.String(gethVerbosityFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--port=%s", ctx.String(gethPortFlag)))
+	if ctx.Bool(gethMineFlag) {
+		startFlags = append(startFlags, "--mine")
+	}
+	startFlags = append(startFlags, fmt.Sprintf("--miner.threads=%s", ctx.String(gethMinerThreads)))
+	startFlags = append(startFlags, fmt.Sprintf("--miner.gaslimit=%s", ctx.String(gethMinerGaslimit)))
+	startFlags = append(startFlags, fmt.Sprintf("--miner.etherbase=%s", ctx.String(gethMinerEtherbaseFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--authrpc.jwtsecret=%s", ctx.String(gethAuthJWTSecretFlag)))
 
 	return
 }
