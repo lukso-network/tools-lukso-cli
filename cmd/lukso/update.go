@@ -105,7 +105,7 @@ func updateGeth(ctx *cli.Context) error {
 
 	log.WithField("dependencyTag", latestGethTag).Info("Updating Geth")
 
-	return clientDependencies[gethDependencyName].Download(strippedTag, latestGethCommitHash, true)
+	return clientDependencies[gethDependencyName].Download(strippedTag, latestGethCommitHash, true, binaryPerms)
 }
 
 func updatePrysm(ctx *cli.Context) error {
@@ -120,7 +120,7 @@ func updatePrysm(ctx *cli.Context) error {
 
 	log.WithField("dependencyTag", latestPrysmTag).Info("Updating Prysm")
 
-	return clientDependencies[prysmDependencyName].Download(latestPrysmTag, "", true)
+	return clientDependencies[prysmDependencyName].Download(latestPrysmTag, "", true, binaryPerms)
 }
 
 func updateValidator(ctx *cli.Context) error {
@@ -135,23 +135,23 @@ func updateValidator(ctx *cli.Context) error {
 
 	log.WithField("dependencyTag", latestValidatorFlag).Info("Updating Validator")
 
-	return clientDependencies[validatorDependencyName].Download(latestValidatorFlag, "", true)
+	return clientDependencies[validatorDependencyName].Download(latestValidatorFlag, "", true, binaryPerms)
 }
 
 func updateGethToSpec(ctx *cli.Context) error {
 	log.WithField("dependencyTag", gethTag).Info("Updating Geth")
 
-	return clientDependencies[gethDependencyName].Download(gethTag, gethCommitHash, true)
+	return clientDependencies[gethDependencyName].Download(gethTag, gethCommitHash, true, binaryPerms)
 }
 
 func updatePrysmToSpec(ctx *cli.Context) error {
 	log.WithField("dependencyTag", prysmTag).Info("Updating Prysm")
 
-	return clientDependencies[prysmDependencyName].Download(prysmTag, "", true)
+	return clientDependencies[prysmDependencyName].Download(prysmTag, "", true, binaryPerms)
 }
 
 func updateValidatorToSpec(ctx *cli.Context) error {
 	log.WithField("dependencyTag", validatorTag).Info("Updating Validator")
 
-	return clientDependencies[validatorDependencyName].Download(validatorTag, "", true)
+	return clientDependencies[validatorDependencyName].Download(validatorTag, "", true, binaryPerms)
 }
