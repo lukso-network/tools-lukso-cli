@@ -8,12 +8,16 @@
 .ijwb
 
 # Ignore binary
-cmd/deps/geth
-cmd/deps/prysm
-cmd/deps/deps
+cmd/lukso/geth
+cmd/lukso/prysm
+cmd/lukso/deps
 
 # Dist files
 dist
+
+# Configs and logs
+cmd/lukso/config
+cmd/lukso/logs
 
 # Coverage outputs
 coverage.txt

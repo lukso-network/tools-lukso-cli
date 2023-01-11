@@ -13,22 +13,23 @@ import (
 	"strings"
 )
 
+const (
+	configPerms = 0750
+	binaryPerms = int(os.ModePerm)
+)
+
 var errNeedRoot = errors.New("You need root privilages to perform this action")
 
-func (dependency *ClientDependency) Download(tagName, destination, commitHash string, checkExist bool) (err error) {
-	dependencyTagPath := dependency.ResolveDirPath(tagName, destination)
-
-	err = os.MkdirAll(dependencyTagPath, 0750)
-	if nil != err {
+func (dependency *ClientDependency) Download(tagName, commitHash string, overrideFile bool, permissions int) (err error) {
+	err = dependency.createDir()
+	if err != nil {
 		return
 	}
 
-	dependencyLocation := dependency.ResolveBinaryPath(tagName, destination)
-
 	fileUrl := dependency.ParseUrl(tagName, commitHash)
 
-	if fileExists(dependencyLocation) && checkExist {
-		log.Warningf("Downloading %s aborted, file %s already exists", fileUrl, dependencyLocation)
+	if fileExists(dependency.filePath) && !overrideFile {
+		log.Warningf("Downloading %s aborted, file %s already exists", fileUrl, dependency.filePath)
 
 		return
 	}
@@ -93,7 +94,7 @@ func (dependency *ClientDependency) Download(tagName, destination, commitHash st
 		return
 	}
 
-	err = os.WriteFile(dependencyLocation, buf.Bytes(), os.ModePerm)
+	err = os.WriteFile(dependency.filePath, buf.Bytes(), os.FileMode(permissions))
 
 	if err != nil && strings.Contains(err.Error(), "permission denied") {
 		return errNeedRoot
@@ -105,6 +106,26 @@ func (dependency *ClientDependency) Download(tagName, destination, commitHash st
 	}
 
 	return
+}
+
+// createDir creates directory structure for given dependency if it's not a binary file
+func (dependency *ClientDependency) createDir() error {
+	if strings.Contains(dependency.filePath, binDir) {
+		return nil
+	}
+
+	segments := strings.Split(dependency.filePath, "/")
+
+	err := os.MkdirAll(strings.TrimRight(dependency.filePath, segments[len(segments)-1]), configPerms)
+	if errors.Is(err, os.ErrExist) {
+		log.Errorf("%s already exists!", dependency.name)
+	}
+
+	if errors.Is(err, os.ErrPermission) {
+		return errNeedRoot
+	}
+
+	return err
 }
 
 func downloadBinaries(ctx *cli.Context) (err error) {
@@ -141,39 +162,37 @@ func downloadConfigs(ctx *cli.Context) error {
 		return err
 	}
 
-	err = downloadConfig(ctx)
-
-	return err
+	return downloadPrysmConfig(ctx)
 }
 
 func downloadGeth(ctx *cli.Context) (err error) {
 	log.WithField("dependencyTag", gethTag).Info("Downloading Geth")
 
-	err = clientDependencies[gethDependencyName].Download(gethTag, binDir, gethCommitHash, true)
+	err = clientDependencies[gethDependencyName].Download(gethTag, gethCommitHash, false, binaryPerms)
 
 	return
 }
 
 func downloadGenesis(ctx *cli.Context) (err error) {
 	log.WithField("dependencyTag", gethTag).Info("Downloading Execution Genesis")
-	gethDataDir := ctx.String(gethDatadirFlag)
-	err = clientDependencies[gethGenesisDependencyName].Download(gethTag, gethDataDir, "", true)
+
+	err = clientDependencies[gethGenesisDependencyName].Download(gethTag, "", false, configPerms)
 
 	if nil != err {
 		return
 	}
 
 	log.WithField("dependencyTag", prysmTag).Info("Downloading Consensus Genesis")
-	prysmDataDir := ctx.String(prysmDatadirFlag)
-	err = clientDependencies[prysmGenesisDependencyName].Download(prysmTag, prysmDataDir, "", true)
+
+	err = clientDependencies[prysmGenesisDependencyName].Download(prysmTag, "", false, configPerms)
 
 	return
 }
 
-func downloadConfig(ctx *cli.Context) (err error) {
+func downloadPrysmConfig(ctx *cli.Context) (err error) {
 	log.WithField("dependencyTag", prysmTag).Info("Downloading Prysm Config")
-	prysmDataDir := ctx.String(prysmDatadirFlag)
-	err = clientDependencies[prysmConfigDependencyName].Download(prysmTag, prysmDataDir, "", true)
+
+	err = clientDependencies[prysmConfigDependencyName].Download(prysmTag, "", false, configPerms)
 
 	return
 }
@@ -181,14 +200,14 @@ func downloadConfig(ctx *cli.Context) (err error) {
 func downloadPrysm(ctx *cli.Context) (err error) {
 	log.WithField("dependencyTag", prysmTag).Info("Downloading Prysm")
 
-	err = clientDependencies[prysmDependencyName].Download(prysmTag, binDir, "", true)
+	err = clientDependencies[prysmDependencyName].Download(prysmTag, "", false, binaryPerms)
 
 	return
 }
 
 func downloadValidator(ctx *cli.Context) (err error) {
 	log.WithField("dependencyTag", validatorTag).Info("Downloading Validator")
-	err = clientDependencies[validatorDependencyName].Download(prysmTag, binDir, "", true)
+	err = clientDependencies[validatorDependencyName].Download(prysmTag, "", false, binaryPerms)
 
 	return
 }

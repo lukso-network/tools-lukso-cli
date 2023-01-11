@@ -26,7 +26,7 @@ const (
 	gethWsOriginFlag    = "geth-ws-origin"
 	gethHttpOriginFlag  = "geth-http-origin"
 	gethNatFlag         = "geth-nat"
-	gethOutputFileFlag  = "geth-output-file"
+	gethOutputDirFlag   = "geth-output-dir"
 
 	// Common for prysm client
 	prysmChainConfigFlag = "prysm-chain-config"
@@ -38,7 +38,7 @@ const (
 	validatorVerbosityFlag          = "validator-verbosity"
 	validatorTrustedGethFlag        = "validator-trusted-geth"
 	validatorWalletPasswordFileFlag = "validator-wallet-password-file"
-	validatorOutputFileFlag         = "validator-output-file"
+	validatorOutputDirFlag          = "validator-output-dir"
 	validatorStdOutputFlag          = "validator-std-output"
 
 	// Prysm related flag names
@@ -56,7 +56,7 @@ const (
 	prysmP2pHostFlag                 = "prysm-p2p-host"
 	prysmP2pLocalFlag                = "prysm-p2p-local"
 	prysmDisableSyncFlag             = "prysm-disable-sync"
-	prysmOutputFileFlag              = "prysm-output-file"
+	prysmOutputDirFlag               = "prysm-output-dir"
 	prysmStdOutputFlag               = "prysm-std-output"
 	prysmTestnetFlag                 = "prysm-testnet"
 
@@ -188,17 +188,17 @@ var (
 			Value: false,
 		},
 		&cli.StringFlag{
-			Name:  gethOutputFileFlag,
-			Usage: "file to output logs into",
-			Value: "./geth.log",
+			Name:  gethOutputDirFlag,
+			Usage: "Directory to output logs into",
+			Value: "./logs/geth",
 		},
 	}
 	// LOGS
 	gethLogsFlags = []cli.Flag{
 		&cli.StringFlag{
-			Name:  gethOutputFileFlag,
+			Name:  gethOutputDirFlag,
 			Usage: "file to output logs into",
-			Value: "./geth.log",
+			Value: "./logs/geth",
 		},
 	}
 
@@ -229,7 +229,7 @@ var (
 		&cli.StringFlag{
 			Name:  prysmGenesisStateFlag,
 			Usage: "provide genesis.ssz file",
-			Value: "./prysm/v3.1.2/genesis.ssz",
+			Value: "./config/mainnet/prysm/prysm-beaconchain-genesis.ssz",
 		},
 		&cli.StringFlag{
 			Name:  prysmDatadirFlag,
@@ -291,9 +291,9 @@ var (
 			Value: false,
 		},
 		&cli.StringFlag{
-			Name:  prysmOutputFileFlag,
+			Name:  prysmOutputDirFlag,
 			Usage: "provide output destination of prysm",
-			Value: "./prysm_beacon.log",
+			Value: "./logs/beacon_chain",
 		},
 		&cli.BoolFlag{
 			Name:  prysmStdOutputFlag,
@@ -309,9 +309,9 @@ var (
 	// LOGS
 	prysmLogsFlags = []cli.Flag{
 		&cli.StringFlag{
-			Name:  prysmOutputFileFlag,
+			Name:  prysmOutputDirFlag,
 			Usage: "file to output logs into",
-			Value: "./prysm.log",
+			Value: "./logs/beacon_chain",
 		},
 	}
 
@@ -355,9 +355,9 @@ var (
 			Value: "./password.txt",
 		},
 		&cli.StringFlag{
-			Name:  validatorOutputFileFlag,
+			Name:  validatorOutputDirFlag,
 			Usage: "provide output destination of validator",
-			Value: "./validator.log",
+			Value: "./logs/validator",
 		},
 		&cli.BoolFlag{
 			Name:  validatorStdOutputFlag,
@@ -368,9 +368,9 @@ var (
 	// LOGS
 	validatorLogsFlags = []cli.Flag{
 		&cli.StringFlag{
-			Name:  validatorOutputFileFlag,
+			Name:  validatorOutputDirFlag,
 			Usage: "file to output logs into",
-			Value: "./validator.log",
+			Value: "./logs/validator",
 		},
 	}
 )
@@ -403,7 +403,11 @@ func prepareValidatorStartFlags(ctx *cli.Context) (startFlags []string) {
 	startFlags = append(startFlags, fmt.Sprintf("--verbosity=%s", ctx.String(validatorVerbosityFlag)))
 	//TODO: provide flag: see --grpc-gateway-corsdomain + --grpc-gateway-port | startFlags = append(startFlags, fmt.Sprintf("--beacon-rpc-provider=%s", ctx.String(validatorTrustedGethFlag)))
 	startFlags = append(startFlags, fmt.Sprintf("--wallet-password-file=%s", ctx.String(validatorWalletPasswordFileFlag)))
-	startFlags = append(startFlags, fmt.Sprintf("--log-file=%s", ctx.String(validatorOutputFileFlag)))
+
+	logFileFlag := prepareLogfileFlag(ctx, validatorOutputDirFlag, validatorDependencyName)
+	if logFileFlag != "" {
+		startFlags = append(startFlags, logFileFlag)
+	}
 
 	return
 }
@@ -420,7 +424,12 @@ func preparePrysmStartFlags(ctx *cli.Context) (startFlags []string) {
 	startFlags = append(startFlags, fmt.Sprintf("--p2p-max-peers=%s", ctx.String(prysmMaxSyncPeersFlag)))
 	startFlags = append(startFlags, fmt.Sprintf("--p2p-host-ip=%s", ctx.String(prysmP2pHostFlag)))
 	startFlags = append(startFlags, fmt.Sprintf("--p2p-local-ip=%s", ctx.String(prysmP2pLocalFlag)))
-	startFlags = append(startFlags, fmt.Sprintf("--log-file=%s", ctx.String(prysmOutputFileFlag)))
+
+	logFileFlag := prepareLogfileFlag(ctx, prysmOutputDirFlag, prysmDependencyName)
+	if logFileFlag != "" {
+		startFlags = append(startFlags, logFileFlag)
+	}
+
 	if ctx.Bool(prysmTestnetFlag) {
 		startFlags = append(startFlags, "--goerli")
 	}
