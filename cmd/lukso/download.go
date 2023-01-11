@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	configPerms = 0644
+	configPerms = 0750
 	binaryPerms = int(os.ModePerm)
 )
 
@@ -119,6 +119,10 @@ func (dependency *ClientDependency) createDir() error {
 	err := os.MkdirAll(strings.TrimRight(dependency.filePath, segments[len(segments)-1]), configPerms)
 	if errors.Is(err, os.ErrExist) {
 		log.Errorf("%s already exists!", dependency.name)
+	}
+
+	if errors.Is(err, os.ErrPermission) {
+		return errNeedRoot
 	}
 
 	return err
