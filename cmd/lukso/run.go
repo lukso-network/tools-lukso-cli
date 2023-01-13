@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"github.com/urfave/cli/v2"
 	"os"
 	"os/exec"
@@ -95,7 +96,7 @@ func startClients(ctx *cli.Context) error {
 func startGeth(ctx *cli.Context) error {
 	log.Info("Running geth init first...")
 
-	err := initGeth()
+	err := initGeth(ctx)
 	if err != nil {
 		log.Errorf("There was an error while initalizing geth. Error: %v", err)
 	}
@@ -142,9 +143,16 @@ func startValidator(ctx *cli.Context) error {
 }
 
 func startGethDetached(ctx *cli.Context) error {
+	log.Info("Running geth init first...")
+
+	err := initGeth(ctx)
+	if err != nil {
+		log.Errorf("There was an error while initalizing geth. Error: %v", err)
+	}
+
 	log.Info("Starting Geth")
 
-	err := clientDependencies[gethDependencyName].Start(prepareGethStartFlags(ctx), false, ctx)
+	err = clientDependencies[gethDependencyName].Start(prepareGethStartFlags(ctx), false, ctx)
 	if err != nil {
 		return err
 	}
@@ -203,8 +211,9 @@ func stopClient(dependency *ClientDependency) func(ctx *cli.Context) error {
 	}
 }
 
-func initGeth() (err error) {
-	command := exec.Command("geth", "init", clientDependencies[gethGenesisDependencyName].filePath)
+func initGeth(ctx *cli.Context) (err error) {
+	dataDir := fmt.Sprintf("--datadir=%s", ctx.String(gethDatadirFlag))
+	command := exec.Command("geth", "init", dataDir, clientDependencies[gethGenesisDependencyName].filePath)
 	command.Stdout = os.Stdout
 	command.Stderr = os.Stderr
 

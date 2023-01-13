@@ -53,7 +53,6 @@ const (
 	prysmJWTSecretFlag               = "prysm-jwt-secret"
 	prysmSuggestedFeeRecipientFlag   = "prysm-suggested-fee-recipient"
 	prysmMinSyncPeersFlag            = "prysm-min-sync-peers"
-	prysmMaxSyncPeersFlag            = "prysm-max-sync-peers"
 	prysmContractDeploymentBlockFlag = "prysm-deposit-deployment"
 	prysmP2pHostFlag                 = "prysm-p2p-host"
 	prysmP2pmaxPeersFlag             = "prysm-p2p-max-peers"
@@ -289,8 +288,8 @@ var (
 			Value: "info",
 		},
 		&cli.StringFlag{
-			Name:  prysmMaxSyncPeersFlag,
-			Usage: "max sync peers for prysm, default 250",
+			Name:  prysmP2pmaxPeersFlag,
+			Usage: "max peers for prysm, default 250",
 			Value: "250",
 		},
 		&cli.BoolFlag{
@@ -445,7 +444,7 @@ func prepareValidatorStartFlags(ctx *cli.Context) (startFlags []string) {
 	startFlags = append(startFlags, fmt.Sprintf("--datadir=%s", ctx.String(validatorDatadirFlag)))
 	startFlags = append(startFlags, fmt.Sprintf("--wallet-dir=%s", ctx.String(validatorWalletDirFlag)))
 	startFlags = append(startFlags, fmt.Sprintf("--wallet-password-file=%s", ctx.String(validatorWalletPasswordFileFlag)))
-	startFlags = append(startFlags, fmt.Sprintf("--chain-config=%s-file", ctx.String(validatorChainConfigFileFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--chain-config-file=%s", ctx.String(validatorChainConfigFileFlag)))
 	startFlags = append(startFlags, fmt.Sprintf("--monitoring-host=%s", ctx.String(validatorMonitoringHostFlag)))
 	startFlags = append(startFlags, fmt.Sprintf("--grpc-gateway-host=%s", ctx.String(validatorGrpcGatewayHostFlag)))
 	startFlags = append(startFlags, fmt.Sprintf("--rpc-host=%s", ctx.String(validatorRpcHostFlag)))
