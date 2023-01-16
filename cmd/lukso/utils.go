@@ -1,9 +1,12 @@
 package main
 
 import (
+	"crypto/rand"
+	"crypto/sha256"
 	"fmt"
 	"github.com/urfave/cli/v2"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -33,4 +36,37 @@ func prepareLogfileFlag(ctx *cli.Context, logDirFlag, dependencyName string) str
 	}
 
 	return fmt.Sprintf("--log-file=%s", prysmFullLogPath)
+}
+
+func createJwtSecret(dest string) error {
+	log.Info("Creating new JWT secret")
+	jwtDir := truncateFileFromDir(dest)
+
+	err := os.MkdirAll(jwtDir, 0750)
+	if err != nil {
+		return err
+	}
+
+	secretBytes := make([]byte, 32)
+
+	_, err = rand.Read(secretBytes)
+
+	secret := sha256.New().Sum(secretBytes)
+
+	err = os.WriteFile(dest, secret, configPerms)
+	if err != nil {
+		return err
+	}
+
+	log.Infof("New JWT secret created in %s", dest)
+
+	return nil
+}
+
+// truncateFileFromDir removes file name from its path.
+// Example: /path/to/foo/foo.txt => /path/to/foo
+func truncateFileFromDir(filePath string) string {
+	segments := strings.Split(filePath, "/")
+
+	return strings.TrimRight(filePath, segments[len(segments)-1])
 }

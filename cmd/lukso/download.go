@@ -114,9 +114,7 @@ func (dependency *ClientDependency) createDir() error {
 		return nil
 	}
 
-	segments := strings.Split(dependency.filePath, "/")
-
-	err := os.MkdirAll(strings.TrimRight(dependency.filePath, segments[len(segments)-1]), configPerms)
+	err := os.MkdirAll(truncateFileFromDir(dependency.filePath), configPerms)
 	if errors.Is(err, os.ErrExist) {
 		log.Errorf("%s already exists!", dependency.name)
 	}
@@ -157,7 +155,12 @@ func downloadBinaries(ctx *cli.Context) (err error) {
 }
 
 func downloadConfigs(ctx *cli.Context) error {
-	err := downloadGenesis(ctx)
+	err := createJwtSecret(jwtSecretDefaultPath)
+	if err != nil {
+		return err
+	}
+
+	err = downloadGenesis(ctx)
 	if nil != err {
 		return err
 	}

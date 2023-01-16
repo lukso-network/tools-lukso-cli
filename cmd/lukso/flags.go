@@ -68,6 +68,9 @@ const (
 	prysmTestnetFlag                 = "prysm-testnet"
 
 	acceptTermsOfUseFlagName = "accept-terms-of-use"
+
+	// shared values
+	jwtSecretDefaultPath = "./config/mainnet/secrets/jwt.hex"
 )
 
 var (
@@ -181,7 +184,7 @@ var (
 		&cli.StringFlag{
 			Name:  gethAuthJWTSecretFlag,
 			Usage: "path to a JWT secret used for secured endpoints authorization",
-			Value: "./config/mainnet/secrets/jwt.hex",
+			Value: jwtSecretDefaultPath,
 		},
 		&cli.BoolFlag{
 			Name:  gethStdOutputFlag,
@@ -240,7 +243,7 @@ var (
 		&cli.StringFlag{
 			Name:  prysmJWTSecretFlag,
 			Usage: "path to your jwt secret",
-			Value: "./config/mainnet/secrets/jwt.hex",
+			Value: jwtSecretDefaultPath,
 		},
 		&cli.StringFlag{
 			Name:  prysmSuggestedFeeRecipientFlag,
