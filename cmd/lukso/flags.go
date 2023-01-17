@@ -67,7 +67,7 @@ const (
 	prysmStdOutputFlag               = "prysm-std-output"
 	prysmTestnetFlag                 = "prysm-testnet"
 
-	acceptTermsOfUseFlagName = "accept-terms-of-use"
+	acceptTermsOfUseFlagName = "accept-terms"
 
 	// shared values
 	jwtSecretDefaultPath = "./config/mainnet/secrets/jwt.hex"
@@ -194,7 +194,7 @@ var (
 		&cli.StringFlag{
 			Name:  gethOutputDirFlag,
 			Usage: "Directory to output logs into",
-			Value: "./logs/geth",
+			Value: "./logs/execution/geth",
 		},
 	}
 	// LOGS
@@ -202,7 +202,7 @@ var (
 		&cli.StringFlag{
 			Name:  gethOutputDirFlag,
 			Usage: "file to output logs into",
-			Value: "./logs/geth",
+			Value: "./logs/execution/geth",
 		},
 	}
 
@@ -308,7 +308,7 @@ var (
 		&cli.StringFlag{
 			Name:  prysmOutputDirFlag,
 			Usage: "output destination folder of prysm logs",
-			Value: "./logs/beacon_chain",
+			Value: "./logs/consensus/beacon_chain",
 		},
 		&cli.BoolFlag{
 			Name:  prysmStdOutputFlag,
@@ -326,7 +326,7 @@ var (
 		&cli.StringFlag{
 			Name:  prysmOutputDirFlag,
 			Usage: "file to output logs into",
-			Value: "./logs/beacon_chain",
+			Value: "./logs/consensus/beacon_chain",
 		},
 	}
 
@@ -397,7 +397,7 @@ var (
 		&cli.StringFlag{
 			Name:  validatorOutputDirFlag,
 			Usage: "output destination folder of validator logs",
-			Value: "./logs/validator",
+			Value: "./logs/consensus/validator",
 		},
 		&cli.BoolFlag{
 			Name:  validatorStdOutputFlag,
@@ -410,7 +410,7 @@ var (
 		&cli.StringFlag{
 			Name:  validatorOutputDirFlag,
 			Usage: "file to output logs into",
-			Value: "./logs/validator",
+			Value: "./logs/consensus/validator",
 		},
 	}
 )

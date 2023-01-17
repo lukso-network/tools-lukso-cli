@@ -178,7 +178,7 @@ func main() {
 			},
 		},
 		{
-			Name:   "stat",
+			Name:   "status",
 			Usage:  "Displays running status of clients",
 			Action: statClients,
 			Subcommands: []*cli.Command{
