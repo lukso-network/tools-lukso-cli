@@ -2,7 +2,7 @@ package main
 
 import (
 	"crypto/rand"
-	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
 	"github.com/urfave/cli/v2"
 	"os"
@@ -51,9 +51,7 @@ func createJwtSecret(dest string) error {
 
 	_, err = rand.Read(secretBytes)
 
-	secret := sha256.New().Sum(secretBytes)
-
-	err = os.WriteFile(dest, secret, configPerms)
+	err = os.WriteFile(dest, []byte(hex.EncodeToString(secretBytes)), configPerms)
 	if err != nil {
 		return err
 	}
