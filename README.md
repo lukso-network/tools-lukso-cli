@@ -22,7 +22,7 @@ Enter `lukso start` to start a node.
 
 ## Available parameters
 `lukso <command> [geth, prysm, validator, *all*] [--flags]`
-> *all* means that you can skip an argument for all possible options to run (default)
+> *all* means that you can skip an argument for all possible options to run (default, only option for download)
 
 | Command  | Description                             |
 |----------|-----------------------------------------|

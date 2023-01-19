@@ -70,7 +70,7 @@ const (
 	prysmStdOutputFlag               = "prysm-std-output"
 	prysmOutputFileFlag              = "prysm-output-file"
 
-	acceptTermsOfUseFlagName = "accept-terms"
+	acceptTermsOfUseFlagName = "accept-terms-of-use"
 
 	// shared values
 	jwtSecretDefaultPath = "./config/mainnet/secrets/jwt.hex"
