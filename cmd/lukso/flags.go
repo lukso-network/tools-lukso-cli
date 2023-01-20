@@ -16,12 +16,20 @@ const (
 	gethPortFlag           = "geth-port"
 	gethWSFlag             = "geth-ws"
 	gethWSApiFlag          = "geth-ws-apis"
-	gethGenesisFileFlag    = "geth-genesis"
+	gethWSAddrFlag         = "geth-ws-addr"
+	gethWSOriginsFlag      = "geth-ws-origins"
 	gethVerbosityFlag      = "geth-verbosity"
 	gethHttpFlag           = "geth-http"
 	gethHttpApiFlag        = "geth-http-apis"
 	gethHttpAddrFlag       = "geth-http-addr"
 	gethHttpPortFlag       = "geth-http-port"
+	gethHttpCorsDomainFlag = "geth-http-corsdomain"
+	gethHttpVHostsFlag     = "geth-http-vhosts"
+	gethIPCDisableFlag     = "geth-ipcdisable"
+	gethMetricsFlag        = "geth-metrics"
+	gethMetricsAddrFlag    = "geth-metrics-addr"
+	gethSyncmodeFlag       = "geth-syncmode"
+	gethGcmodeFlag         = "geth-gcmode"
 	gethMineFlag           = "geth-mine"
 	gethMinerGaslimitFlag  = "geth-miner-gaslimit"
 	gethMinerEtherbaseFlag = "geth-miner-etherbase"
@@ -29,6 +37,8 @@ const (
 	gethStdOutputFlag      = "geth-std-output"
 	gethAuthJWTSecretFlag  = "geth-auth-jwt-secret"
 	gethNatFlag            = "geth-nat"
+	gethTxLookupLimitFlag  = "geth-tx-lookup-limit"
+	gethCachePreimagesFlag = "geth-cache-preimages"
 	gethOutputDirFlag      = "geth-output-dir"
 	gethOutputFileFlag     = "geth-output-file"
 
@@ -52,6 +62,8 @@ const (
 	prysmTagFlag                     = "prysm-tag"
 	prysmGenesisStateFlag            = "prysm-genesis-state"
 	prysmDatadirFlag                 = "prysm-datadir"
+	prysmBootstrapNodesFlag          = "prysm-bootstrap-nodes"
+	prysmEnableRpcDebugEndpointsFlag = "prysm-enable-rpc-debug-endpoints"
 	prysmExecutionEndpointFlag       = "prysm-execution-endpoint"
 	prysmJWTSecretFlag               = "prysm-jwt-secret"
 	prysmSuggestedFeeRecipientFlag   = "prysm-suggested-fee-recipient"
@@ -74,6 +86,10 @@ const (
 
 	// shared values
 	jwtSecretDefaultPath = "./config/mainnet/secrets/jwt.hex"
+
+	// bootnodes
+	gethBootstrapNode  = "enode://c2bb19ce658cfdf1fecb45da599ee6c7bf36e5292efb3fb61303a0b2cd07f96c20ac9b376a464d687ac456675a2e4a44aec39a0509bcb4b6d8221eedec25aca2@34.91.82.99:30303"
+	prysmBootstrapNode = "enr:-MK4QOtYSPGAg5FCQRxy8_kAyrq1lSkvkqA4FXPc-myHYCdmW-U0mu_m1oFR-YL-tDbhecFo05WerA1IbFk4tBHVgC6GAYXMBqQXh2F0dG5ldHOIAAAAAAAAAACEZXRoMpDXjD-DICIABP__________gmlkgnY0gmlwhCJbUmOJc2VjcDI1NmsxoQLt3oS_p6rhGF3E8aS3UZLcMboK93av0NkFVAwwsbmoc4hzeW5jbmV0cwCDdGNwgjLIg3VkcIIu4A"
 )
 
 var (
@@ -118,6 +134,21 @@ var (
 			Usage: "a path you would like to store your data",
 			Value: "./execution_data",
 		},
+		&cli.StringFlag{
+			Name:  gethEthstatsFlag,
+			Usage: "URL of ethstats service",
+			Value: "", // TODO provide default for ethstats
+		},
+		&cli.StringFlag{
+			Name:  gethBootnodesFlag,
+			Usage: "Bootnodes for geth",
+			Value: gethBootstrapNode,
+		},
+		&cli.StringFlag{
+			Name:  gethNetworkIDFlag,
+			Usage: "Network ID",
+			Value: "1",
+		},
 		&cli.BoolFlag{
 			Name:  gethWSFlag,
 			Usage: "enable WS server",
@@ -127,6 +158,16 @@ var (
 			Name:  gethWSApiFlag,
 			Usage: "comma separated apis",
 			Value: "eth,net",
+		},
+		&cli.StringFlag{
+			Name:  gethWSAddrFlag,
+			Usage: "WS address",
+			Value: "0.0.0.0",
+		},
+		&cli.StringFlag{
+			Name:  gethWSOriginsFlag,
+			Usage: "Origins from which to accept WS requests",
+			Value: "*",
 		},
 		&cli.StringFlag{
 			Name:  gethNatFlag,
@@ -163,6 +204,41 @@ var (
 			Usage: "port used in geth http communication",
 			Value: "8565",
 		},
+		&cli.StringFlag{
+			Name:  gethHttpCorsDomainFlag,
+			Usage: "accepted CORS domains",
+			Value: "*",
+		},
+		&cli.StringFlag{
+			Name:  gethHttpVHostsFlag,
+			Usage: "comma separated virtual hostnames",
+			Value: "*",
+		},
+		&cli.BoolFlag{
+			Name:  gethIPCDisableFlag,
+			Usage: "disable IPC communication",
+			Value: true,
+		},
+		&cli.BoolFlag{
+			Name:  gethMetricsFlag,
+			Usage: "enable metrics reporting",
+			Value: true,
+		},
+		&cli.StringFlag{
+			Name:  gethMetricsAddrFlag,
+			Usage: "address of metrics service",
+			Value: "0.0.0.0",
+		},
+		&cli.StringFlag{
+			Name:  gethSyncmodeFlag,
+			Usage: "geth's sync mode",
+			Value: "full",
+		},
+		&cli.StringFlag{
+			Name:  gethGcmodeFlag,
+			Usage: "garbage collection mode",
+			Value: "archive",
+		},
 		&cli.BoolFlag{
 			Name:  gethMineFlag,
 			Usage: "enable mining",
@@ -183,6 +259,16 @@ var (
 			Usage: "your ECDSA public key used to get rewards on geth chain",
 			// yes, If you won't set it up, I'll get rewards ;]
 			Value: "0x8eFdC93aE5FEa9287e7a22B6c14670BfcCdA997b",
+		},
+		&cli.StringFlag{
+			Name:  gethTxLookupLimitFlag,
+			Usage: "number of blocks to maintain tx indexes from",
+			Value: "1",
+		},
+		&cli.BoolFlag{
+			Name:  gethCachePreimagesFlag,
+			Usage: "enable preimage caching",
+			Value: true,
 		},
 		&cli.StringFlag{
 			Name:  gethAuthJWTSecretFlag,
@@ -237,6 +323,16 @@ var (
 			Name:  prysmDatadirFlag,
 			Usage: "prysm datadir",
 			Value: "./consensus_data",
+		},
+		&cli.StringFlag{
+			Name:  prysmBootstrapNodesFlag,
+			Usage: "bootnodes for prysm beaconchain",
+			Value: prysmBootstrapNode,
+		},
+		&cli.BoolFlag{
+			Name:  prysmEnableRpcDebugEndpointsFlag,
+			Usage: "enable debugging RPC endpoints",
+			Value: true,
 		},
 		&cli.StringFlag{
 			Name:  prysmExecutionEndpointFlag,
@@ -420,6 +516,10 @@ func prepareGethStartFlags(ctx *cli.Context) (startFlags []string) {
 		startFlags = append(startFlags, "--ws")
 	}
 	startFlags = append(startFlags, fmt.Sprintf("--ws.api=%s", ctx.String(gethWSApiFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--ws.addr=%s", ctx.String(gethWSAddrFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--ws.origins=%s", ctx.String(gethWSOriginsFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--bootnodes=%s", ctx.String(gethBootnodesFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--networkid=%s", ctx.String(gethNetworkIDFlag)))
 	startFlags = append(startFlags, fmt.Sprintf("--nat=%s", ctx.String(gethNatFlag)))
 	if ctx.Bool(gethHttpFlag) {
 		startFlags = append(startFlags, "--http")
@@ -427,9 +527,25 @@ func prepareGethStartFlags(ctx *cli.Context) (startFlags []string) {
 	startFlags = append(startFlags, fmt.Sprintf("--http.api=%s", ctx.String(gethHttpApiFlag)))
 	startFlags = append(startFlags, fmt.Sprintf("--http.addr=%s", ctx.String(gethHttpAddrFlag)))
 	startFlags = append(startFlags, fmt.Sprintf("--http.port=%s", ctx.String(gethHttpPortFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--http.corsdomain=%s", ctx.String(gethHttpCorsDomainFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--http.vhosts=%s", ctx.String(gethHttpVHostsFlag)))
 	startFlags = append(startFlags, fmt.Sprintf("--verbosity=%s", ctx.String(gethVerbosityFlag)))
-	startFlags = append(startFlags, fmt.Sprintf("--port=%s", ctx.String(gethPortFlag)))
+	if ctx.Bool(gethIPCDisableFlag) {
+		startFlags = append(startFlags, "--ipcdisable")
+	}
+	startFlags = append(startFlags, fmt.Sprintf("--ethstats=%s", ctx.String(gethEthstatsFlag)))
+	if ctx.Bool(gethMetricsFlag) {
+		startFlags = append(startFlags, "--metrics")
+	}
+	startFlags = append(startFlags, fmt.Sprintf("--metrics.addr=%s", ctx.String(gethMetricsAddrFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--syncmode=%s", ctx.String(gethSyncmodeFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--gcmode=%s", ctx.String(gethGcmodeFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--txlookuplimit=%s", ctx.String(gethTxLookupLimitFlag)))
 	if ctx.Bool(gethMineFlag) {
+		startFlags = append(startFlags, "--mine")
+	}
+	startFlags = append(startFlags, fmt.Sprintf("--port=%s", ctx.String(gethPortFlag)))
+	if ctx.Bool(gethCachePreimagesFlag) {
 		startFlags = append(startFlags, "--mine")
 	}
 	startFlags = append(startFlags, fmt.Sprintf("--miner.threads=%s", ctx.String(gethMinerThreadsFlag)))
@@ -462,6 +578,7 @@ func prepareValidatorStartFlags(ctx *cli.Context) (startFlags []string) {
 func preparePrysmStartFlags(ctx *cli.Context) (startFlags []string) {
 	startFlags = append(startFlags, "--accept-terms-of-use")
 	startFlags = append(startFlags, "--force-clear-db")
+	startFlags = append(startFlags, fmt.Sprintf("--boostrap-node=%s", ctx.String(prysmBootstrapNodesFlag)))
 	startFlags = append(startFlags, fmt.Sprintf("--genesis-state=%s", ctx.String(prysmGenesisStateFlag)))
 	startFlags = append(startFlags, fmt.Sprintf("--datadir=%s", ctx.String(prysmDatadirFlag)))
 	startFlags = append(startFlags, fmt.Sprintf("--execution-endpoint=%s", ctx.String(prysmExecutionEndpointFlag)))
@@ -478,6 +595,9 @@ func preparePrysmStartFlags(ctx *cli.Context) (startFlags []string) {
 	startFlags = append(startFlags, fmt.Sprintf("--p2p-max-peers=%s", ctx.String(prysmP2pmaxPeersFlag)))
 	startFlags = append(startFlags, fmt.Sprintf("--subscribe-all-subnets=%s", ctx.String(prysmMinimumPeersPerSubnetFlag)))
 	startFlags = append(startFlags, fmt.Sprintf("--minimum-peers-per-subnet=%s", ctx.String(prysmMinimumPeersPerSubnetFlag)))
+	if ctx.Bool(prysmEnableRpcDebugEndpointsFlag) {
+		startFlags = append(startFlags, "--enable-debug-rpc-endpoints")
+	}
 
 	logFileFlag := prepareLogfileFlag(ctx, prysmOutputDirFlag, prysmDependencyName)
 	if logFileFlag != "" {
