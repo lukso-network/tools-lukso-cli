@@ -85,7 +85,7 @@ const (
 	acceptTermsOfUseFlagName = "accept-terms-of-use"
 
 	// shared values
-	jwtSecretDefaultPath = "./config/mainnet/secrets/jwt.hex"
+	jwtSecretDefaultPath = "./config/mainnet/shared/secrets/jwt.hex"
 
 	// bootnodes
 	gethBootstrapNode  = "enode://c2bb19ce658cfdf1fecb45da599ee6c7bf36e5292efb3fb61303a0b2cd07f96c20ac9b376a464d687ac456675a2e4a44aec39a0509bcb4b6d8221eedec25aca2@34.91.82.99:30303"
@@ -147,7 +147,7 @@ var (
 		&cli.StringFlag{
 			Name:  gethNetworkIDFlag,
 			Usage: "Network ID",
-			Value: "1",
+			Value: "2022",
 		},
 		&cli.BoolFlag{
 			Name:  gethWSFlag,
@@ -461,7 +461,7 @@ var (
 		&cli.StringFlag{
 			Name:  validatorWalletPasswordFileFlag,
 			Usage: "location of file password that you used for generation keys from deposit-cli",
-			Value: "./config/mainnet/secrets/validator-password.txt",
+			Value: "./config/mainnet/shared/secrets/validator-password.txt",
 		},
 		&cli.StringFlag{
 			Name:  validatorChainConfigFileFlag,
