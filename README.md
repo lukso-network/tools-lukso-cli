@@ -43,11 +43,25 @@ How to use flags with values? Provide a flag and value like: `lukso start --data
 |-------------------------------------|---------------------------------------------------------|-----------------------------------|-------------------------------------------------|
 | --geth-datadir                      | A path of geth's data directory                         | Path                              | ./execution_data                                |
 | --geth-ws                           | Enable WS server                                        | None                              | true                                            |
+| --geth-ws-addr                      | Address of WS server                                    | IP Address                        | 0.0.0.0                                         |
+| --geth-ws-origins                   | Origins to accept requests from                         | WS Origins OR wildcard            | *                                               |
 | --geth-ws-apis                      | Comma separated apis                                    | String of apis separated by comma | "eth,net"                                       |
+| --geth-bootnodes                    | Bootnode addresses                                      | Bootnode addresses                | See [Bootnodes](#bootnodes)                     |
+| --geth-networkid                    | Network ID                                              | Integer                           | 2022                                            |
 | --geth-nat                          | Sets HTTP nat to assign static IP for geth              | Example: "extip:0.0.0.0"          | extip:172.16.254.4                              |
 | --geth-http                         | Enable HTTP server                                      | None                              | true                                            |
 | --geth-http-apis                    | Comma separated apis                                    | String of apis separated by comma | "eth,net"                                       |
 | --geth-http-addr                    | Address used in HTTP comunication                       | IP address                        | 0.0.0.0                                         |
+| --geth-http-corsdomain              | Origins to accept requests from                         | HTTP Origins OR wildcard          | *                                               |
+| --geth-http-vhosts                  | Geth's virtual hosts                                    | Virtual hostnames OR wildcard     | *                                               |
+| --geth-ipcdisable                   | Disable IPC communication                               | None                              | True                                            |
+| --geth-ethstats                     | URL of ethstats service                                 | URL                               | ""                                              |
+| --geth-metrics                      | Enable metrics system                                   | None                              | True                                            |
+| --geth-metrics-addr                 | Address of service managing collected metrics           | IP Address                        | 0.0.0.0                                         |
+| --geth-syncmode                     | Sync mode                                               | Sync mode level                   | full                                            |
+| --geth-gcmode                       | Garbage colelction mode                                 | Garbage collection level          | archive                                         |
+| --geth-tx-look-up-limit             | Number of blocks to maintain tx indexes from            | Integer                           | 1                                               |
+| --geth-cache-preimages              | Enable cache preimaging                                 | None                              | True                                            |
 | --geth-verbosity                    | Verbosity for geth logging                              | Verbosity level                   | 3                                               |
 | --geth-port                         | Geth's port                                             | Port                              | 30405                                           |
 | --geth-http-port                    | Geth's HTTP port                                        | Port                              | 8565                                            |
@@ -61,6 +75,7 @@ How to use flags with values? Provide a flag and value like: `lukso start --data
 | --prysm-genesis-state               | Genesis state file path                                 | Path                              | ./config/mainnet/shared/genesis.ssz             |
 | --prysm-datadir                     | A path of prysm's beacon chain data directory           | Path                              | ./consensus_data                                |
 | --prysm-execution-endpoint          | Execution endpoint                                      | URL                               | http://localhost:8551                           |
+| --prysm-bootstrap-nodes             | Bootnode addresses                                      | Bootnode addresses                | See [Bootnodes](#bootnodes)                     |
 | --prysm-jwt-secret                  | Path to JWT 32-byte secret                              | Path                              | ./config/mainnet/secrets/jwt.hex                |
 | --prysm-suggested-fee-recipient     | Address that receives block fees                        | Public address                    | 0x8eFdC93aE5FEa9287e7a22B6c14670BfcCdA997b      |
 | --prysm-min-sync-peers              | Minimum sync peers number for prysm                     | Integer                           | 0                                               |
@@ -74,6 +89,7 @@ How to use flags with values? Provide a flag and value like: `lukso start --data
 | --prysm-p2p-max-peers               | Max peers for prysm                                     | Integer                           | 250                                             |
 | --prysm-subscribe-all-subnets       | Subscribe to all possible subnets                       | None                              | False                                           |
 | --prysm-minimum-peers-per-subnet    | Minimum peers per subnet                                | Integer                           | 0                                               |
+| --prysm-enable-rpc-debug-endpoints  | Enable debugging RPC endpoints                          | None                              | True                                            |
 | --prysm-output-dir                  | Directory where logs are created                        | Path                              | ./logs/consensus/beacon_chain                   |
 | --prysm-std-output                  | Set output to console                                   | None                              | False                                           |
 | --validator-datadir                 | A path of validator's data directory                    | Path                              | ./validator_data                                |
@@ -87,6 +103,8 @@ How to use flags with values? Provide a flag and value like: `lukso start --data
 | --validator-suggested-fee-recipient | Address that receives block fees                        | Public address                    | 0x8eFdC93aE5FEa9287e7a22B6c14670BfcCdA997b      |
 | --validator-output-dir              | Directory where logs are created                        | Path                              | ./logs/consensus/validator                      |
 | --validator-std-output              | Set output to console                                   | None                              | False                                           |
+
+#### Bootnodes
 
 ### download
 | Name               | Description                                           | Argument                    |
@@ -114,4 +132,3 @@ Note difference in tags between geth and prysm/validator (`v` at the beginning)
 | --validator-output-file | Path to validator log file that you want to log | Path, ex. `./logs/log_folder/log_file.log` |
 
 NOTE: `logs` command is broken after changing structure of log files (adding timestamp to filename).
-
