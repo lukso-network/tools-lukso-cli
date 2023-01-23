@@ -533,7 +533,9 @@ func prepareGethStartFlags(ctx *cli.Context) (startFlags []string) {
 	if ctx.Bool(gethIPCDisableFlag) {
 		startFlags = append(startFlags, "--ipcdisable")
 	}
-	startFlags = append(startFlags, fmt.Sprintf("--ethstats=%s", ctx.String(gethEthstatsFlag)))
+	if ctx.String(gethEthstatsFlag) != "" {
+		startFlags = append(startFlags, fmt.Sprintf("--ethstats=%s", ctx.String(gethEthstatsFlag)))
+	}
 	if ctx.Bool(gethMetricsFlag) {
 		startFlags = append(startFlags, "--metrics")
 	}
@@ -578,7 +580,7 @@ func prepareValidatorStartFlags(ctx *cli.Context) (startFlags []string) {
 func preparePrysmStartFlags(ctx *cli.Context) (startFlags []string) {
 	startFlags = append(startFlags, "--accept-terms-of-use")
 	startFlags = append(startFlags, "--force-clear-db")
-	startFlags = append(startFlags, fmt.Sprintf("--boostrap-node=%s", ctx.String(prysmBootstrapNodesFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--bootstrap-node=%s", ctx.String(prysmBootstrapNodesFlag)))
 	startFlags = append(startFlags, fmt.Sprintf("--genesis-state=%s", ctx.String(prysmGenesisStateFlag)))
 	startFlags = append(startFlags, fmt.Sprintf("--datadir=%s", ctx.String(prysmDatadirFlag)))
 	startFlags = append(startFlags, fmt.Sprintf("--execution-endpoint=%s", ctx.String(prysmExecutionEndpointFlag)))
