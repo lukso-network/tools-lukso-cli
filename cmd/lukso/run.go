@@ -18,6 +18,10 @@ func (dependency *ClientDependency) Start(
 	attachStdoutAndErr bool,
 	ctx *cli.Context,
 ) (err error) {
+	fmt.Println("-----------------------")
+	for _, arg := range arguments {
+		fmt.Println(arg)
+	}
 	command := exec.Command(dependency.name, arguments...)
 
 	if attachStdoutAndErr {

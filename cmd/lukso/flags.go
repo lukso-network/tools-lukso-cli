@@ -197,7 +197,7 @@ var (
 		&cli.StringFlag{
 			Name:  gethPortFlag,
 			Usage: "port for geth",
-			Value: "30405",
+			Value: "30303",
 		},
 		&cli.StringFlag{
 			Name:  gethHttpPortFlag,
@@ -232,12 +232,12 @@ var (
 		&cli.StringFlag{
 			Name:  gethSyncmodeFlag,
 			Usage: "geth's sync mode",
-			Value: "full",
+			Value: "snap",
 		},
 		&cli.StringFlag{
 			Name:  gethGcmodeFlag,
 			Usage: "garbage collection mode",
-			Value: "archive",
+			Value: "full",
 		},
 		&cli.BoolFlag{
 			Name:  gethMineFlag,
@@ -252,7 +252,7 @@ var (
 		&cli.StringFlag{
 			Name:  gethMinerGaslimitFlag,
 			Usage: "gas ceiling",
-			Value: "60000000",
+			Value: "1600000000",
 		},
 		&cli.StringFlag{
 			Name:  gethMinerEtherbaseFlag,
@@ -397,7 +397,7 @@ var (
 		&cli.BoolFlag{
 			Name:  prysmSubscribeAllSubnetsFlag,
 			Usage: "subscribe to all possible subnets",
-			Value: false,
+			Value: true,
 		},
 		&cli.StringFlag{
 			Name:  prysmMinimumPeersPerSubnetFlag,
@@ -595,7 +595,9 @@ func preparePrysmStartFlags(ctx *cli.Context) (startFlags []string) {
 	startFlags = append(startFlags, fmt.Sprintf("--rpc-host=%s", ctx.String(prysmRpcHostFlag)))
 	startFlags = append(startFlags, fmt.Sprintf("--verbosity=%s", ctx.String(prysmVerbosityFlag)))
 	startFlags = append(startFlags, fmt.Sprintf("--p2p-max-peers=%s", ctx.String(prysmP2pmaxPeersFlag)))
-	startFlags = append(startFlags, fmt.Sprintf("--subscribe-all-subnets=%s", ctx.String(prysmMinimumPeersPerSubnetFlag)))
+	if ctx.Bool(prysmSubscribeAllSubnetsFlag) {
+		startFlags = append(startFlags, "--subscribe-all-subnets")
+	}
 	startFlags = append(startFlags, fmt.Sprintf("--minimum-peers-per-subnet=%s", ctx.String(prysmMinimumPeersPerSubnetFlag)))
 	if ctx.Bool(prysmEnableRpcDebugEndpointsFlag) {
 		startFlags = append(startFlags, "--enable-debug-rpc-endpoints")
