@@ -20,7 +20,7 @@ const (
 )
 
 var (
-	appName        = "LUKSO"
+	appName        = "lukso"
 	binDir         string
 	gethTag        string
 	gethCommitHash string

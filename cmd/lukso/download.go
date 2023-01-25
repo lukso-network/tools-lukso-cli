@@ -223,17 +223,17 @@ func downloadValidator(ctx *cli.Context) (err error) {
 }
 
 func acceptTermsInteractive() bool {
-	fmt.Printf("You are about to download clients necessary to run %s CLI. "+
-		"By proceeding further you accept Terms of Use of provided clients, you can read more here: "+
-		"https://github.com/prysmaticlabs/prysm/blob/develop/TERMS_OF_SERVICE.md\n"+
-		"Do you wish to continue? [Y/n]: ", appName)
+	fmt.Print("You are about to download clients necessary to run LUKSO CLI. " +
+		"By proceeding further you accept Terms of Use of provided clients, you can read more here: " +
+		"https://github.com/prysmaticlabs/prysm/blob/develop/TERMS_OF_SERVICE.md\n" +
+		"Do you wish to continue? [Y/n]: ")
 
 	scanner := bufio.NewScanner(os.Stdin)
 
 	scanner.Scan()
 	input := scanner.Text()
 	if input != "Y" {
-		log.Error("You need to type uppercase Y to continue.")
+		log.Error("You need to type Y to continue.")
 		return false
 	}
 

@@ -258,7 +258,7 @@ var (
 			Name:  gethMinerEtherbaseFlag,
 			Usage: "your ECDSA public key used to get rewards on geth chain",
 			// yes, If you won't set it up, I'll get rewards ;]
-			Value: "0x2ae4B27f7Af291890Edb293D44E195A34B395c9A",
+			Value: "0x8eFdC93aE5FEa9287e7a22B6c14670BfcCdA997b",
 		},
 		&cli.StringFlag{
 			Name:  gethTxLookupLimitFlag,
