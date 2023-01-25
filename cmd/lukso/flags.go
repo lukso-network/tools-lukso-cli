@@ -137,7 +137,7 @@ var (
 		&cli.StringFlag{
 			Name:  gethEthstatsFlag,
 			Usage: "URL of ethstats service",
-			Value: "", // TODO provide default for ethstats
+			Value: "local-pc-test@34.90.215.182",
 		},
 		&cli.StringFlag{
 			Name:  gethBootnodesFlag,
@@ -157,7 +157,7 @@ var (
 		&cli.StringFlag{
 			Name:  gethWSApiFlag,
 			Usage: "comma separated apis",
-			Value: "eth,net",
+			Value: "net,eth,debug,engine",
 		},
 		&cli.StringFlag{
 			Name:  gethWSAddrFlag,
@@ -172,7 +172,7 @@ var (
 		&cli.StringFlag{
 			Name:  gethNatFlag,
 			Usage: "this flag sets up http nat to assign static ip for geth, default not set. Example extip:172.16.254.4",
-			Value: "extip:172.16.254.4",
+			Value: "extip:83.144.95.19",
 		},
 		&cli.BoolFlag{
 			Name:  gethHttpFlag,
@@ -182,7 +182,7 @@ var (
 		&cli.StringFlag{
 			Name:  gethHttpApiFlag,
 			Usage: "comma separated apis",
-			Value: "eth,net",
+			Value: "net,eth,debug,engine,txlookup",
 		},
 		&cli.StringFlag{
 			Name:  gethHttpAddrFlag,
@@ -202,7 +202,7 @@ var (
 		&cli.StringFlag{
 			Name:  gethHttpPortFlag,
 			Usage: "port used in geth http communication",
-			Value: "8565",
+			Value: "8545",
 		},
 		&cli.StringFlag{
 			Name:  gethHttpCorsDomainFlag,
@@ -258,7 +258,7 @@ var (
 			Name:  gethMinerEtherbaseFlag,
 			Usage: "your ECDSA public key used to get rewards on geth chain",
 			// yes, If you won't set it up, I'll get rewards ;]
-			Value: "0x8eFdC93aE5FEa9287e7a22B6c14670BfcCdA997b",
+			Value: "0x2ae4B27f7Af291890Edb293D44E195A34B395c9A",
 		},
 		&cli.StringFlag{
 			Name:  gethTxLookupLimitFlag,
@@ -366,8 +366,8 @@ var (
 		},
 		&cli.StringFlag{
 			Name:  prysmChainConfigFileFlag,
-			Usage: "path to config.yaml file",
-			Value: "./config/mainnet/shared/config.yaml",
+			Usage: "path to config.yml file",
+			Value: "./config/mainnet/shared/config.yml",
 		},
 		&cli.StringFlag{
 			Name:  prysmMonitoringHostFlag,
@@ -466,7 +466,7 @@ var (
 		&cli.StringFlag{
 			Name:  validatorChainConfigFileFlag,
 			Usage: "prysm chain config file path",
-			Value: "./config/mainnet/shared/config.yaml",
+			Value: "./config/mainnet/shared/config.yml",
 		},
 		&cli.StringFlag{
 			Name:  validatorMonitoringHostFlag,

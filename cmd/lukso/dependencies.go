@@ -52,7 +52,7 @@ var (
 			baseUnixUrl:   "https://raw.githubusercontent.com/lukso-network/network-configs/devnet/dev/2022/prysm/config.yml",
 			baseDarwinUrl: "https://raw.githubusercontent.com/lukso-network/network-configs/devnet/dev/2022/prysm/config.yml",
 			name:          prysmConfigDependencyName,
-			filePath:      "./config/mainnet/shared/config.yaml",
+			filePath:      "./config/mainnet/shared/config.yml",
 		},
 	}
 )
