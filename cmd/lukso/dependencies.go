@@ -25,8 +25,8 @@ var (
 			filePath:      "", // binary dir selected during runtime
 		},
 		gethGenesisDependencyName: {
-			baseUnixUrl:   "https://github.com/lukso-network/network-configs/blob/devnet/dev/2022/geth/genesis.json",
-			baseDarwinUrl: "https://github.com/lukso-network/network-configs/blob/devnet/dev/2022/geth/genesis.json",
+			baseUnixUrl:   "https://raw.githubusercontent.com/lukso-network/network-configs/devnet/dev/2022/geth/genesis.json",
+			baseDarwinUrl: "https://raw.githubusercontent.com/lukso-network/network-configs/devnet/dev/2022/geth/genesis.json",
 			name:          gethGenesisDependencyName,
 			filePath:      "./config/mainnet/geth/genesis.json",
 		},
@@ -43,16 +43,16 @@ var (
 			filePath:      "", // binary dir selected during runtime
 		},
 		prysmGenesisDependencyName: {
-			baseUnixUrl:   "https://github.com/lukso-network/network-configs/blob/devnet/dev/2022/prysm/config.yml",
-			baseDarwinUrl: "https://github.com/lukso-network/network-configs/blob/devnet/dev/2022/prysm/config.yml",
+			baseUnixUrl:   "https://github.com/lukso-network/network-configs/raw/devnet/dev/2022/prysm/genesis.ssz",
+			baseDarwinUrl: "https://github.com/lukso-network/network-configs/raw/devnet/dev/2022/prysm/genesis.ssz",
 			name:          prysmGenesisDependencyName,
 			filePath:      "./config/mainnet/shared/genesis.ssz",
 		},
 		prysmConfigDependencyName: {
-			baseUnixUrl:   "https://github.com/lukso-network/network-configs/blob/devnet/dev/2022/prysm/genesis.ssz",
-			baseDarwinUrl: "https://github.com/lukso-network/network-configs/blob/devnet/dev/2022/prysm/genesis.ssz",
+			baseUnixUrl:   "https://raw.githubusercontent.com/lukso-network/network-configs/devnet/dev/2022/prysm/config.yml",
+			baseDarwinUrl: "https://raw.githubusercontent.com/lukso-network/network-configs/devnet/dev/2022/prysm/config.yml",
 			name:          prysmConfigDependencyName,
-			filePath:      "./config/mainnet/shared/config.yaml",
+			filePath:      "./config/mainnet/shared/config.yml",
 		},
 	}
 )

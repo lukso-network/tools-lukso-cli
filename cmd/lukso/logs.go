@@ -68,13 +68,13 @@ func (dependency *ClientDependency) Stat() (err error) {
 	scan := bufio.NewScanner(buf)
 	for scan.Scan() {
 		if strings.Contains(scan.Text(), dependency.name) {
-			log.Infof("%s: Up and running", dependency.name)
+			log.Infof("%s: Running", dependency.name)
 
 			return
 		}
 	}
 
-	log.Warnf("%s: inactive", dependency.name)
+	log.Warnf("%s: Stopped", dependency.name)
 
 	return
 }

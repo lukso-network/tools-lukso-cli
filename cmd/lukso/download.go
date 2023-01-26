@@ -2,6 +2,7 @@ package main
 
 import (
 	"archive/tar"
+	"bufio"
 	"bytes"
 	"compress/gzip"
 	"errors"
@@ -114,9 +115,7 @@ func (dependency *ClientDependency) createDir() error {
 		return nil
 	}
 
-	segments := strings.Split(dependency.filePath, "/")
-
-	err := os.MkdirAll(strings.TrimRight(dependency.filePath, segments[len(segments)-1]), configPerms)
+	err := os.MkdirAll(truncateFileFromDir(dependency.filePath), configPerms)
 	if errors.Is(err, os.ErrExist) {
 		log.Errorf("%s already exists!", dependency.name)
 	}
@@ -130,7 +129,13 @@ func (dependency *ClientDependency) createDir() error {
 
 func downloadBinaries(ctx *cli.Context) (err error) {
 	if !ctx.Bool(acceptTermsOfUseFlagName) {
-		return errors.New("Terms of Use must be accepted")
+		accepted := acceptTermsInteractive()
+		if !accepted {
+			return errors.New("You need to accept Terms to continue.")
+		}
+	}
+	if ctx.Bool(acceptTermsOfUseFlagName) {
+		log.Info("You accepted Terms of Use provided by clients you want to download. You can read more here: https://github.com/prysmaticlabs/prysm/blob/develop/TERMS_OF_SERVICE.md")
 	}
 	// Get os, then download all binaries into datadir matching desired system
 	// After successful download run binary with desired arguments spin and connect them
@@ -157,7 +162,12 @@ func downloadBinaries(ctx *cli.Context) (err error) {
 }
 
 func downloadConfigs(ctx *cli.Context) error {
-	err := downloadGenesis(ctx)
+	err := createJwtSecret(jwtSecretDefaultPath)
+	if err != nil {
+		return err
+	}
+
+	err = downloadGenesis(ctx)
 	if nil != err {
 		return err
 	}
@@ -210,4 +220,22 @@ func downloadValidator(ctx *cli.Context) (err error) {
 	err = clientDependencies[validatorDependencyName].Download(prysmTag, "", false, binaryPerms)
 
 	return
+}
+
+func acceptTermsInteractive() bool {
+	fmt.Print("You are about to download clients necessary to run LUKSO CLI. " +
+		"By proceeding further you accept Terms of Use of provided clients, you can read more here: " +
+		"https://github.com/prysmaticlabs/prysm/blob/develop/TERMS_OF_SERVICE.md\n" +
+		"Do you wish to continue? [Y/n]: ")
+
+	scanner := bufio.NewScanner(os.Stdin)
+
+	scanner.Scan()
+	input := scanner.Text()
+	if input != "Y" {
+		log.Error("You need to type Y to continue.")
+		return false
+	}
+
+	return true
 }
