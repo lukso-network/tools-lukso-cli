@@ -9,8 +9,8 @@ import (
 )
 
 var (
-	errorCouldntStart = errors.New("Couldn't start client ")
 	errorFlagMissing  = errors.New("Couldn't find given flag ")
+	errorTooManyLines = errors.New("Too many lines from output ")
 )
 
 func (dependency *ClientDependency) Start(

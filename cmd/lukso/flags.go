@@ -289,9 +289,9 @@ var (
 	// LOGS
 	gethLogsFlags = []cli.Flag{
 		&cli.StringFlag{
-			Name:  gethOutputFileFlag,
+			Name:  gethOutputDirFlag,
 			Usage: "path file to log from",
-			Value: "./logs/execution/geth/geth.log",
+			Value: "./logs/execution/geth",
 		},
 	}
 
@@ -418,9 +418,9 @@ var (
 	// LOGS
 	prysmLogsFlags = []cli.Flag{
 		&cli.StringFlag{
-			Name:  prysmOutputFileFlag,
+			Name:  prysmOutputDirFlag,
 			Usage: "path to file to log from",
-			Value: "./logs/consensus/beacon_chain/beachon_chain.log",
+			Value: "./logs/consensus/beacon_chain",
 		},
 	}
 
@@ -502,9 +502,9 @@ var (
 	// LOGS
 	validatorLogsFlags = []cli.Flag{
 		&cli.StringFlag{
-			Name:  validatorOutputFileFlag,
+			Name:  validatorOutputDirFlag,
 			Usage: "path to file to log from",
-			Value: "./logs/consensus/validator/validator.log",
+			Value: "./logs/consensus/validator",
 		},
 	}
 )
