@@ -108,7 +108,8 @@ func getLastFile(dir string) (string, error) {
 
 	lastFile := files[len(files)-1]
 
-	log.Infof("(NOTE: PATH TO FILE: %s)\nDo you want to log file %s? [Y/n]", dir+"/"+lastFile, lastFile)
+	log.Infof("(NOTE: PATH TO FILE: %s)\nDo you want to show log file %s?"+
+		" Doing so can print lots of text on your screen [Y/n]: ", dir+"/"+lastFile, lastFile)
 
 	scanner := bufio.NewScanner(os.Stdin)
 
