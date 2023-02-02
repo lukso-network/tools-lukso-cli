@@ -198,6 +198,11 @@ func main() {
 				},
 			},
 		},
+		{
+			Name:   "reset",
+			Usage:  "Reset data directories of all clients alongside with their log files",
+			Action: resetClients,
+		},
 	}
 
 	app.Before = func(ctx *cli.Context) error {
