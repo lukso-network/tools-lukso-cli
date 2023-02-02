@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-func (dependency *ClientDependency) Log(logFileDir string) (err error) {
+func (dependency *ClientDependency) Log(logFilePath string) (err error) {
 	var commandName string
 	switch systemOs {
 	case ubuntu, macos:
@@ -20,7 +20,7 @@ func (dependency *ClientDependency) Log(logFileDir string) (err error) {
 		commandName = "cat" // For reviewers - do we provide default command? Or omit and return with err?
 	}
 
-	command := exec.Command(commandName, logFileDir)
+	command := exec.Command(commandName, logFilePath)
 
 	command.Stdout = os.Stdout
 
@@ -33,7 +33,7 @@ func (dependency *ClientDependency) Log(logFileDir string) (err error) {
 
 	// error unrelated to command execution
 	if err != nil {
-		log.Errorf("There was an error while executing logs command. Error: %v", err)
+		log.Errorf("There was an error while executing command: %s. Error: %v", commandName, err)
 	}
 
 	return
@@ -60,7 +60,7 @@ func (dependency *ClientDependency) Stat() (err error) {
 
 	err = command.Run()
 	if err != nil {
-		log.Errorf("There was an error while executing logs command. Error: %v", err)
+		log.Errorf("There was an error while executing command: %s. Error: %v", commandName, err)
 
 		return
 	}
@@ -92,7 +92,16 @@ func logClient(dependencyName string, logFileFlag string) func(*cli.Context) err
 			return errorFlagMissing
 		}
 
-		return clientDependencies[dependencyName].Log(logFileDir)
+		latestFile, err := getLastFile(logFileDir)
+		if latestFile == "" && err == nil {
+			return nil
+		}
+
+		if err != nil {
+			return err
+		}
+
+		return clientDependencies[dependencyName].Log(logFileDir + "/" + latestFile)
 	}
 }
 

@@ -8,10 +8,7 @@ import (
 	"os/exec"
 )
 
-var (
-	errorCouldntStart = errors.New("Couldn't start client ")
-	errorFlagMissing  = errors.New("Couldn't find given flag ")
-)
+var errorFlagMissing = errors.New("Couldn't find given flag ")
 
 func (dependency *ClientDependency) Start(
 	arguments []string,

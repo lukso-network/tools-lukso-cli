@@ -1,11 +1,14 @@
 package main
 
 import (
+	"bufio"
+	"bytes"
 	"crypto/rand"
 	"encoding/hex"
 	"fmt"
 	"github.com/urfave/cli/v2"
 	"os"
+	"os/exec"
 	"strings"
 	"time"
 )
@@ -19,7 +22,7 @@ func prepareTimestampedFile(logDir, logFileName string) (logFile string, err err
 		return
 	}
 
-	t := time.Now().Format("02-01-2006_15:04:05")
+	t := time.Now().Format("2006-01-02_15:04:05")
 
 	logFile = fmt.Sprintf("%s/%s_%s.log", logDir, logFileName, t)
 
@@ -67,4 +70,56 @@ func truncateFileFromDir(filePath string) string {
 	segments := strings.Split(filePath, "/")
 
 	return strings.TrimRight(filePath, segments[len(segments)-1])
+}
+
+// getLastFile returns name of last file from given directory in alphabetical order.
+// In case of log files last one is also the newest (format increments similar to typical number - YYYY-MM-DD_HH:MM:SS)
+func getLastFile(dir string) (string, error) {
+	var (
+		commandName string
+		buf         = new(bytes.Buffer)
+		files       []string
+	)
+
+	switch systemOs {
+	case ubuntu, macos:
+		commandName = "ls"
+	case windows:
+		commandName = "type"
+	default:
+		commandName = "ls"
+	}
+
+	command := exec.Command(commandName, dir)
+
+	command.Stdout = buf
+
+	err := command.Run()
+	if err != nil {
+		log.Errorf("There was an error while executing command: %s. Error: %v", commandName, err)
+
+		return "", err
+	}
+
+	scan := bufio.NewScanner(buf)
+	for scan.Scan() {
+		files = append(files, scan.Text())
+	}
+
+	lastFile := files[len(files)-1]
+
+	log.Infof("(NOTE: PATH TO FILE: %s)\nDo you want to show log file %s?"+
+		" Doing so can print lots of text on your screen [Y/n]: ", dir+"/"+lastFile, lastFile)
+
+	scanner := bufio.NewScanner(os.Stdin)
+
+	scanner.Scan()
+	input := scanner.Text()
+	if input != "Y" {
+		log.Info("Aborting...") // there is no error, just a possible change of mind - shouldn't return err
+
+		return "", nil
+	}
+
+	return lastFile, nil
 }
