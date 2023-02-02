@@ -96,7 +96,7 @@ func getLastFile(dir string) (string, error) {
 
 	err := command.Run()
 	if err != nil {
-		log.Errorf("There was an error while executing logs command. Error: %v", err)
+		log.Errorf("There was an error while executing command: %s. Error: %v", commandName, err)
 
 		return "", err
 	}

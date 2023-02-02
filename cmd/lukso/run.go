@@ -8,10 +8,7 @@ import (
 	"os/exec"
 )
 
-var (
-	errorFlagMissing  = errors.New("Couldn't find given flag ")
-	errorTooManyLines = errors.New("Too many lines from output ")
-)
+var errorFlagMissing = errors.New("Couldn't find given flag ")
 
 func (dependency *ClientDependency) Start(
 	arguments []string,

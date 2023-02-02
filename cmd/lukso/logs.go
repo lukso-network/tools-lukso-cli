@@ -33,7 +33,7 @@ func (dependency *ClientDependency) Log(logFilePath string) (err error) {
 
 	// error unrelated to command execution
 	if err != nil {
-		log.Errorf("There was an error while executing logs command. Error: %v", err)
+		log.Errorf("There was an error while executing command: %s. Error: %v", commandName, err)
 	}
 
 	return
@@ -60,7 +60,7 @@ func (dependency *ClientDependency) Stat() (err error) {
 
 	err = command.Run()
 	if err != nil {
-		log.Errorf("There was an error while executing logs command. Error: %v", err)
+		log.Errorf("There was an error while executing command: %s. Error: %v", commandName, err)
 
 		return
 	}
