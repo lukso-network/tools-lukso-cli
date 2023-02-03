@@ -105,6 +105,11 @@ func getLastFile(dir string) (string, error) {
 	for scan.Scan() {
 		files = append(files, scan.Text())
 	}
+	if len(files) < 1 {
+		log.Infof("No log files found in %s", dir)
+
+		return "", nil
+	}
 
 	lastFile := files[len(files)-1]
 
@@ -122,4 +127,8 @@ func getLastFile(dir string) (string, error) {
 	}
 
 	return lastFile, nil
+}
+
+func isRunning(dependency string) (bool, error) {
+	return clientDependencies[dependency].Stat()
 }
