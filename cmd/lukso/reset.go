@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"github.com/urfave/cli/v2"
 	"os"
 )
@@ -40,7 +41,17 @@ func resetClients(ctx *cli.Context) error {
 
 	log.Warnf("WARNING: THIS ACTION WILL REMOVE DATA DIRECTORIES FROM ALL OF RUNNING CLIENTS.\n"+
 		"Are you sure you want to continue?\nDirectories that will be deleted:\n"+
-		"- %s\n- %s\n- %s", ctx.String(gethDatadirFlag), ctx.String(prysmDatadirFlag), ctx.String(validatorDatadirFlag))
+		"- %s\n- %s\n- %s\n[Y/n]", ctx.String(gethDatadirFlag), ctx.String(prysmDatadirFlag), ctx.String(validatorDatadirFlag))
+
+	scanner := bufio.NewScanner(os.Stdin)
+
+	scanner.Scan()
+	input := scanner.Text()
+	if input != "Y" {
+		log.Info("Aborting...")
+
+		return nil
+	}
 
 	err = resetGeth(ctx)
 	if err != nil {
