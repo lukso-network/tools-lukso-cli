@@ -49,6 +49,10 @@ func init() {
 	logsFlags = append(logsFlags, gethLogsFlags...)
 	logsFlags = append(logsFlags, prysmLogsFlags...)
 	logsFlags = append(logsFlags, validatorLogsFlags...)
+
+	resetFlags = append(resetFlags, gethResetFlags...)
+	resetFlags = append(resetFlags, prysmResetFlags...)
+	resetFlags = append(resetFlags, validatorResetFlags...)
 }
 
 func main() {
@@ -197,6 +201,12 @@ func main() {
 					Action: statClient(validatorDependencyName),
 				},
 			},
+		},
+		{
+			Name:   "reset",
+			Usage:  "Reset data directories of all clients alongside with their log files",
+			Flags:  resetFlags,
+			Action: resetClients,
 		},
 	}
 

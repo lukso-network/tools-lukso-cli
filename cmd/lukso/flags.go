@@ -90,6 +90,11 @@ const (
 	// bootnodes
 	gethBootstrapNode  = "enode://c2bb19ce658cfdf1fecb45da599ee6c7bf36e5292efb3fb61303a0b2cd07f96c20ac9b376a464d687ac456675a2e4a44aec39a0509bcb4b6d8221eedec25aca2@34.91.82.99:30303"
 	prysmBootstrapNode = "enr:-MK4QOtYSPGAg5FCQRxy8_kAyrq1lSkvkqA4FXPc-myHYCdmW-U0mu_m1oFR-YL-tDbhecFo05WerA1IbFk4tBHVgC6GAYXMBqQXh2F0dG5ldHOIAAAAAAAAAACEZXRoMpDXjD-DICIABP__________gmlkgnY0gmlwhCJbUmOJc2VjcDI1NmsxoQLt3oS_p6rhGF3E8aS3UZLcMboK93av0NkFVAwwsbmoc4hzeW5jbmV0cwCDdGNwgjLIg3VkcIIu4A"
+
+	// flag defaults used in different contexts
+	gethDefaultDatadir      = "./execution_data"
+	prysmDefaultDatadir     = "./consensus_data"
+	validatorDefaultDatadir = "./validator_data"
 )
 
 var (
@@ -97,6 +102,7 @@ var (
 	updateFlags   []cli.Flag
 	startFlags    []cli.Flag
 	logsFlags     []cli.Flag
+	resetFlags    []cli.Flag
 	appFlags      = []cli.Flag{
 		&cli.BoolFlag{
 			Name:  acceptTermsOfUseFlagName,
@@ -132,7 +138,7 @@ var (
 		&cli.StringFlag{
 			Name:  gethDatadirFlag,
 			Usage: "a path you would like to store your data",
-			Value: "./execution_data",
+			Value: gethDefaultDatadir,
 		},
 		&cli.StringFlag{
 			Name:  gethEthstatsFlag,
@@ -294,6 +300,14 @@ var (
 			Value: "./logs/execution/geth",
 		},
 	}
+	// RESET
+	gethResetFlags = []cli.Flag{
+		&cli.StringFlag{
+			Name:  gethDatadirFlag,
+			Usage: "geth datadir",
+			Value: gethDefaultDatadir,
+		},
+	}
 
 	// PRYSM FLAGS
 	// DOWNLOAD
@@ -322,7 +336,7 @@ var (
 		&cli.StringFlag{
 			Name:  prysmDatadirFlag,
 			Usage: "prysm datadir",
-			Value: "./consensus_data",
+			Value: prysmDefaultDatadir,
 		},
 		&cli.StringFlag{
 			Name:  prysmBootstrapNodesFlag,
@@ -423,6 +437,14 @@ var (
 			Value: "./logs/consensus/beacon_chain",
 		},
 	}
+	// RESET
+	prysmResetFlags = []cli.Flag{
+		&cli.StringFlag{
+			Name:  prysmDatadirFlag,
+			Usage: "prysm datadir",
+			Value: prysmDefaultDatadir,
+		},
+	}
 
 	// VALIDATOR
 	// DOWNLOAD
@@ -446,7 +468,7 @@ var (
 		&cli.StringFlag{
 			Name:  validatorDatadirFlag,
 			Usage: "validator datadir",
-			Value: "./validator_data",
+			Value: validatorDefaultDatadir,
 		},
 		&cli.StringFlag{
 			Name:  validatorVerbosityFlag,
@@ -505,6 +527,13 @@ var (
 			Name:  validatorOutputDirFlag,
 			Usage: "path to file to log from",
 			Value: "./logs/consensus/validator",
+		},
+	} // RESET
+	validatorResetFlags = []cli.Flag{
+		&cli.StringFlag{
+			Name:  validatorDatadirFlag,
+			Usage: "validator datadir",
+			Value: validatorDefaultDatadir,
 		},
 	}
 )

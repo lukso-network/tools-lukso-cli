@@ -40,11 +40,13 @@ func (dependency *ClientDependency) Log(logFilePath string) (err error) {
 }
 
 // Stat returns whether the client is running or not
-func (dependency *ClientDependency) Stat() (err error) {
+func (dependency *ClientDependency) Stat() (isRunning bool, err error) {
 	var (
 		commandName string
 		buf         = new(bytes.Buffer)
 	)
+
+	isRunning = false
 
 	switch systemOs {
 	case ubuntu, macos:
@@ -68,13 +70,11 @@ func (dependency *ClientDependency) Stat() (err error) {
 	scan := bufio.NewScanner(buf)
 	for scan.Scan() {
 		if strings.Contains(scan.Text(), dependency.name) {
-			log.Infof("%s: Running", dependency.name)
+			isRunning = true
 
 			return
 		}
 	}
-
-	log.Warnf("%s: Stopped", dependency.name)
 
 	return
 }
@@ -126,6 +126,19 @@ func statClients(ctx *cli.Context) (err error) {
 
 func statClient(dependencyName string) func(*cli.Context) error {
 	return func(ctx *cli.Context) error {
-		return clientDependencies[dependencyName].Stat()
+		isRunning, err := clientDependencies[dependencyName].Stat()
+		if err != nil {
+			return err
+		}
+
+		if isRunning {
+			log.Infof("%s: Running", dependencyName)
+
+			return nil
+		}
+
+		log.Warnf("%s: Stopped", dependencyName)
+
+		return nil
 	}
 }
