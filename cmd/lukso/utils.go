@@ -22,7 +22,7 @@ func prepareTimestampedFile(logDir, logFileName string) (logFile string, err err
 		return
 	}
 
-	t := time.Now().Format("2006-01-02_15:04:05")
+	t := time.Now().Format("2006-01-02_15-04-05")
 
 	logFile = fmt.Sprintf("%s/%s_%s.log", logDir, logFileName, t)
 

@@ -82,6 +82,12 @@ const (
 	prysmStdOutputFlag               = "prysm-std-output"
 	prysmOutputFileFlag              = "prysm-output-file"
 
+	// non-specific flags
+	enableValidator = "validator"
+	enableMainnet   = "mainnet"
+	enableTestnet   = "testnet"
+	enableDevnet    = "devnet"
+
 	acceptTermsOfUseFlagName = "accept-terms-of-use"
 
 	// shared values
@@ -92,18 +98,43 @@ const (
 	prysmBootstrapNode = "enr:-MK4QOtYSPGAg5FCQRxy8_kAyrq1lSkvkqA4FXPc-myHYCdmW-U0mu_m1oFR-YL-tDbhecFo05WerA1IbFk4tBHVgC6GAYXMBqQXh2F0dG5ldHOIAAAAAAAAAACEZXRoMpDXjD-DICIABP__________gmlkgnY0gmlwhCJbUmOJc2VjcDI1NmsxoQLt3oS_p6rhGF3E8aS3UZLcMboK93av0NkFVAwwsbmoc4hzeW5jbmV0cwCDdGNwgjLIg3VkcIIu4A"
 
 	// flag defaults used in different contexts
-	gethDefaultDatadir      = "./execution_data"
-	prysmDefaultDatadir     = "./consensus_data"
-	validatorDefaultDatadir = "./validator_data"
+	gethDefaultDatadir      = "./mainnet-data/execution_data"
+	prysmDefaultDatadir     = "./mainnet-data/consensus_data"
+	validatorDefaultDatadir = "./mainnet-data/validator_data"
 )
 
 var (
+	mainnetFlag = &cli.BoolFlag{
+		Name:  enableMainnet,
+		Usage: "Run for mainnet",
+		Value: false,
+	}
+	testnetFlag = &cli.BoolFlag{
+		Name:  enableTestnet,
+		Usage: "Run for testnet",
+		Value: false,
+	}
+	devnetFlag = &cli.BoolFlag{
+		Name:  enableDevnet,
+		Usage: "Run for devnet",
+		Value: false,
+	}
+
 	downloadFlags []cli.Flag
 	updateFlags   []cli.Flag
-	startFlags    []cli.Flag
-	logsFlags     []cli.Flag
-	resetFlags    []cli.Flag
-	appFlags      = []cli.Flag{
+	startFlags    = []cli.Flag{
+		&cli.BoolFlag{
+			Name:  enableValidator,
+			Usage: "Run lukso node with validator",
+			Value: false,
+		},
+		mainnetFlag,
+		testnetFlag,
+		devnetFlag,
+	}
+	logsFlags  []cli.Flag
+	resetFlags []cli.Flag
+	appFlags   = []cli.Flag{
 		&cli.BoolFlag{
 			Name:  acceptTermsOfUseFlagName,
 			Usage: "Accept terms of use. Default: false",
@@ -289,7 +320,7 @@ var (
 		&cli.StringFlag{
 			Name:  gethOutputDirFlag,
 			Usage: "Directory to output logs into",
-			Value: "./logs/execution/geth",
+			Value: "./mainnet-logs",
 		},
 	}
 	// LOGS
@@ -297,7 +328,7 @@ var (
 		&cli.StringFlag{
 			Name:  gethOutputDirFlag,
 			Usage: "path file to log from",
-			Value: "./logs/execution/geth",
+			Value: "./mainnet-logs",
 		},
 	}
 	// RESET
@@ -361,7 +392,7 @@ var (
 		&cli.StringFlag{
 			Name:  prysmSuggestedFeeRecipientFlag,
 			Usage: "address that receives block fees",
-			Value: "0x8eFdC93aE5FEa9287e7a22B6c14670BfcCdA997b",
+			Value: "0x0000000000000000000000000000000000000000",
 		},
 		&cli.StringFlag{
 			Name:  prysmMinSyncPeersFlag,
@@ -421,7 +452,7 @@ var (
 		&cli.StringFlag{
 			Name:  prysmOutputDirFlag,
 			Usage: "output destination folder of prysm logs",
-			Value: "./logs/consensus/beacon_chain",
+			Value: "./mainnet-logs",
 		},
 		&cli.BoolFlag{
 			Name:  prysmStdOutputFlag,
@@ -434,7 +465,7 @@ var (
 		&cli.StringFlag{
 			Name:  prysmOutputDirFlag,
 			Usage: "path to file to log from",
-			Value: "./logs/consensus/beacon_chain",
+			Value: "./mainnet-logs",
 		},
 	}
 	// RESET
@@ -478,7 +509,7 @@ var (
 		&cli.StringFlag{
 			Name:  validatorWalletDirFlag,
 			Usage: "location of generated wallet",
-			Value: "./mainnet_keystore",
+			Value: "./mainnet-keystore",
 		},
 		&cli.StringFlag{
 			Name:  validatorWalletPasswordFileFlag,
@@ -508,12 +539,12 @@ var (
 		&cli.StringFlag{
 			Name:  validatorSuggestedFeeRecipientFlag,
 			Usage: "address that receives block fees",
-			Value: "0x8eFdC93aE5FEa9287e7a22B6c14670BfcCdA997b",
+			Value: "0x0000000000000000000000000000000000000000",
 		},
 		&cli.StringFlag{
 			Name:  validatorOutputDirFlag,
 			Usage: "output destination folder of validator logs",
-			Value: "./logs/consensus/validator",
+			Value: "./mainnet-logs",
 		},
 		&cli.BoolFlag{
 			Name:  validatorStdOutputFlag,
@@ -526,7 +557,7 @@ var (
 		&cli.StringFlag{
 			Name:  validatorOutputDirFlag,
 			Usage: "path to file to log from",
-			Value: "./logs/consensus/validator",
+			Value: "./mainnet-logs",
 		},
 	} // RESET
 	validatorResetFlags = []cli.Flag{

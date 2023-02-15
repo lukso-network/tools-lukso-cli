@@ -158,7 +158,7 @@ func main() {
 			},
 		},
 		{
-			Name:   "logs",
+			Name:   "log",
 			Usage:  "Outputs log file of given client",
 			Action: logClients,
 			Flags:  logsFlags,
