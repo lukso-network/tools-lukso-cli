@@ -98,9 +98,21 @@ const (
 	prysmBootstrapNode = "enr:-MK4QOtYSPGAg5FCQRxy8_kAyrq1lSkvkqA4FXPc-myHYCdmW-U0mu_m1oFR-YL-tDbhecFo05WerA1IbFk4tBHVgC6GAYXMBqQXh2F0dG5ldHOIAAAAAAAAAACEZXRoMpDXjD-DICIABP__________gmlkgnY0gmlwhCJbUmOJc2VjcDI1NmsxoQLt3oS_p6rhGF3E8aS3UZLcMboK93av0NkFVAwwsbmoc4hzeW5jbmV0cwCDdGNwgjLIg3VkcIIu4A"
 
 	// flag defaults used in different contexts
-	gethDefaultDatadir      = "./mainnet-data/execution_data"
-	prysmDefaultDatadir     = "./mainnet-data/consensus_data"
-	validatorDefaultDatadir = "./mainnet-data/validator_data"
+	gethMainnetDatadir = "./mainnet-data/execution_data"
+	gethTestnetDatadir = "./testnet-data/execution_data"
+	gethDevnetDatadir  = "./devnet-data/execution_data"
+
+	prysmMainnetDatadir = "./mainnet-data/consensus_data"
+	prysmTestnetDatadir = "./testnet-data/consensus_data"
+	prysmDevnetDatadir  = "./devnet-data/consensus_data"
+
+	validatorMainnetDatadir = "./mainnet-data/validator_data"
+	validatorTestnetDatadir = "./testnet-data/validator_data"
+	validatorDevnetDatadir  = "./devnet-data/validator_data"
+
+	mainnetLogs = "./mainnet-logs"
+	testnetLogs = "./testnet-logs"
+	devnetLogs  = "./devnet-logs"
 )
 
 var (
@@ -169,7 +181,7 @@ var (
 		&cli.StringFlag{
 			Name:  gethDatadirFlag,
 			Usage: "a path you would like to store your data",
-			Value: gethDefaultDatadir,
+			Value: gethMainnetDatadir,
 		},
 		&cli.StringFlag{
 			Name:  gethEthstatsFlag,
@@ -336,7 +348,7 @@ var (
 		&cli.StringFlag{
 			Name:  gethDatadirFlag,
 			Usage: "geth datadir",
-			Value: gethDefaultDatadir,
+			Value: gethMainnetDatadir,
 		},
 	}
 
@@ -367,7 +379,7 @@ var (
 		&cli.StringFlag{
 			Name:  prysmDatadirFlag,
 			Usage: "prysm datadir",
-			Value: prysmDefaultDatadir,
+			Value: prysmMainnetDatadir,
 		},
 		&cli.StringFlag{
 			Name:  prysmBootstrapNodesFlag,
@@ -473,7 +485,7 @@ var (
 		&cli.StringFlag{
 			Name:  prysmDatadirFlag,
 			Usage: "prysm datadir",
-			Value: prysmDefaultDatadir,
+			Value: prysmMainnetDatadir,
 		},
 	}
 
@@ -499,7 +511,7 @@ var (
 		&cli.StringFlag{
 			Name:  validatorDatadirFlag,
 			Usage: "validator datadir",
-			Value: validatorDefaultDatadir,
+			Value: validatorMainnetDatadir,
 		},
 		&cli.StringFlag{
 			Name:  validatorVerbosityFlag,
@@ -564,7 +576,7 @@ var (
 		&cli.StringFlag{
 			Name:  validatorDatadirFlag,
 			Usage: "validator datadir",
-			Value: validatorDefaultDatadir,
+			Value: validatorMainnetDatadir,
 		},
 	}
 )

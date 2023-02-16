@@ -74,10 +74,11 @@ func truncateFileFromDir(filePath string) string {
 
 // getLastFile returns name of last file from given directory in alphabetical order.
 // In case of log files last one is also the newest (format increments similar to typical number - YYYY-MM-DD_HH:MM:SS)
-func getLastFile(dir string) (string, error) {
+func getLastFile(dir string, dependency string) (string, error) {
 	var (
 		commandName string
-		buf         = new(bytes.Buffer)
+		lsBuf       = new(bytes.Buffer)
+		grepBuf     = new(bytes.Buffer)
 		files       []string
 	)
 
@@ -91,8 +92,11 @@ func getLastFile(dir string) (string, error) {
 	}
 
 	command := exec.Command(commandName, dir)
+	command.Stdout = lsBuf
 
-	command.Stdout = buf
+	grepCommand := exec.Command("grep", dependency)
+	grepCommand.Stdin = lsBuf
+	grepCommand.Stdout = grepBuf
 
 	err := command.Run()
 	if err != nil {
@@ -101,7 +105,14 @@ func getLastFile(dir string) (string, error) {
 		return "", err
 	}
 
-	scan := bufio.NewScanner(buf)
+	err = grepCommand.Run()
+	if err != nil {
+		log.Errorf("There was an error while executing command: %s. Error: %v", commandName, err)
+
+		return "", err
+	}
+
+	scan := bufio.NewScanner(grepBuf)
 	for scan.Scan() {
 		files = append(files, scan.Text())
 	}

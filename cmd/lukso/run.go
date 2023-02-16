@@ -82,9 +82,8 @@ func startClients(ctx *cli.Context) error {
 		return err
 	}
 
-	err = startValidatorDetached(ctx)
-	if err != nil {
-		return err
+	if ctx.Bool(enableValidator) {
+		err = startValidatorDetached(ctx)
 	}
 
 	return err
