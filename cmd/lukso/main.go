@@ -45,14 +45,17 @@ func init() {
 	startFlags = append(startFlags, gethStartFlags...)
 	startFlags = append(startFlags, prysmStartFlags...)
 	startFlags = append(startFlags, validatorStartFlags...)
+	startFlags = append(startFlags, networkFlags...)
 
 	logsFlags = append(logsFlags, gethLogsFlags...)
 	logsFlags = append(logsFlags, prysmLogsFlags...)
 	logsFlags = append(logsFlags, validatorLogsFlags...)
+	logsFlags = append(logsFlags, networkFlags...)
 
 	resetFlags = append(resetFlags, gethResetFlags...)
 	resetFlags = append(resetFlags, prysmResetFlags...)
 	resetFlags = append(resetFlags, validatorResetFlags...)
+	resetFlags = append(resetFlags, networkFlags...)
 }
 
 func main() {
@@ -108,7 +111,7 @@ func main() {
 		{
 			Name:   "start",
 			Usage:  "Start all lukso clients",
-			Action: startClients,
+			Action: selectNetworkFor(startClients),
 			Flags:  startFlags,
 			Before: initializeFlags,
 			Subcommands: []*cli.Command{
@@ -117,21 +120,21 @@ func main() {
 					Usage:  "Start Geth client",
 					Flags:  gethStartFlags,
 					Before: initializeFlags,
-					Action: startGeth,
+					Action: selectNetworkFor(startGeth),
 				},
 				{
 					Name:   "prysm",
 					Usage:  "Start Prysm client",
 					Flags:  prysmStartFlags,
 					Before: initializeFlags,
-					Action: startPrysm,
+					Action: selectNetworkFor(startPrysm),
 				},
 				{
 					Name:   "validator",
 					Usage:  "Start Validator client",
 					Flags:  validatorStartFlags,
 					Before: initializeFlags,
-					Action: startValidator,
+					Action: selectNetworkFor(startValidator),
 				},
 			},
 		},
@@ -166,17 +169,17 @@ func main() {
 				{
 					Name:   "geth",
 					Usage:  "Outputs Geth client logs",
-					Action: logClient(gethDependencyName, gethOutputDirFlag),
+					Action: selectNetworkFor(logClient(gethDependencyName, gethOutputDirFlag)),
 				},
 				{
 					Name:   "prysm",
 					Usage:  "Outputs Prysm client logs",
-					Action: logClient(prysmDependencyName, prysmOutputDirFlag),
+					Action: selectNetworkFor(logClient(prysmDependencyName, prysmOutputDirFlag)),
 				},
 				{
 					Name:   "validator",
 					Usage:  "Outputs Validator client logs",
-					Action: logClient(validatorDependencyName, validatorOutputDirFlag),
+					Action: selectNetworkFor(logClient(validatorDependencyName, validatorOutputDirFlag)),
 				},
 			},
 		},
@@ -206,7 +209,7 @@ func main() {
 			Name:   "reset",
 			Usage:  "Reset data directories of all clients alongside with their log files",
 			Flags:  resetFlags,
-			Action: resetClients,
+			Action: selectNetworkFor(resetClients),
 		},
 	}
 

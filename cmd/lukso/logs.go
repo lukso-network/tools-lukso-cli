@@ -89,7 +89,7 @@ func logClient(dependencyName string, logFileFlag string) func(*cli.Context) err
 	return func(ctx *cli.Context) error {
 		logFileDir := ctx.String(logFileFlag)
 		if logFileDir == "" {
-			return errorFlagMissing
+			return errFlagMissing
 		}
 
 		latestFile, err := getLastFile(logFileDir, dependencyName)

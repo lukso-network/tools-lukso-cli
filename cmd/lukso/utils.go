@@ -143,3 +143,10 @@ func getLastFile(dir string, dependency string) (string, error) {
 func isRunning(dependency string) (bool, error) {
 	return clientDependencies[dependency].Stat()
 }
+
+func boolToInt(b bool) int {
+	if b {
+		return 1
+	}
+	return 0
+}

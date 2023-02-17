@@ -83,10 +83,10 @@ const (
 	prysmOutputFileFlag              = "prysm-output-file"
 
 	// non-specific flags
-	enableValidator = "validator"
-	enableMainnet   = "mainnet"
-	enableTestnet   = "testnet"
-	enableDevnet    = "devnet"
+	validatorEnabledFlag = "validator"
+	mainnetEnabledFlag   = "mainnet"
+	testnetEnabledFlag   = "testnet"
+	devnetEnabledFlag    = "devnet"
 
 	acceptTermsOfUseFlagName = "accept-terms-of-use"
 
@@ -117,26 +117,32 @@ const (
 
 var (
 	mainnetFlag = &cli.BoolFlag{
-		Name:  enableMainnet,
-		Usage: "Run for mainnet",
+		Name:  mainnetEnabledFlag,
+		Usage: "Run for mainnet (default)",
 		Value: false,
 	}
 	testnetFlag = &cli.BoolFlag{
-		Name:  enableTestnet,
+		Name:  testnetEnabledFlag,
 		Usage: "Run for testnet",
 		Value: false,
 	}
 	devnetFlag = &cli.BoolFlag{
-		Name:  enableDevnet,
+		Name:  devnetEnabledFlag,
 		Usage: "Run for devnet",
 		Value: false,
+	}
+
+	networkFlags = []cli.Flag{
+		mainnetFlag,
+		testnetFlag,
+		devnetFlag,
 	}
 
 	downloadFlags []cli.Flag
 	updateFlags   []cli.Flag
 	startFlags    = []cli.Flag{
 		&cli.BoolFlag{
-			Name:  enableValidator,
+			Name:  validatorEnabledFlag,
 			Usage: "Run lukso node with validator",
 			Value: false,
 		},

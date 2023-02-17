@@ -1,14 +1,11 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"github.com/urfave/cli/v2"
 	"os"
 	"os/exec"
 )
-
-var errorFlagMissing = errors.New("Couldn't find given flag ")
 
 func (dependency *ClientDependency) Start(
 	arguments []string,
@@ -35,7 +32,7 @@ func (dependency *ClientDependency) Start(
 
 		gethLogDir := ctx.String(gethOutputDirFlag)
 		if gethLogDir == "" {
-			return errorFlagMissing
+			return errFlagMissing
 		}
 
 		fullPath, err = prepareTimestampedFile(gethLogDir, gethDependencyName)
@@ -82,7 +79,7 @@ func startClients(ctx *cli.Context) error {
 		return err
 	}
 
-	if ctx.Bool(enableValidator) {
+	if ctx.Bool(validatorEnabledFlag) {
 		err = startValidatorDetached(ctx)
 	}
 

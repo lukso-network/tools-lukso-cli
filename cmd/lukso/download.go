@@ -19,8 +19,6 @@ const (
 	binaryPerms = int(os.ModePerm)
 )
 
-var errNeedRoot = errors.New("You need root privilages to perform this action")
-
 func (dependency *ClientDependency) Download(tagName, commitHash string, overrideFile bool, permissions int) (err error) {
 	err = dependency.createDir()
 	if err != nil {
