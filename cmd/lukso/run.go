@@ -30,7 +30,7 @@ func (dependency *ClientDependency) Start(
 			fullPath string
 		)
 
-		gethLogDir := ctx.String(gethOutputDirFlag)
+		gethLogDir := ctx.String(gethLogDirFlag)
 		if gethLogDir == "" {
 			return errFlagMissing
 		}
@@ -206,7 +206,7 @@ func stopClient(dependency *ClientDependency) func(ctx *cli.Context) error {
 
 func initGeth(ctx *cli.Context) (err error) {
 	dataDir := fmt.Sprintf("--datadir=%s", ctx.String(gethDatadirFlag))
-	command := exec.Command("geth", "init", dataDir, clientDependencies[gethGenesisDependencyName].filePath)
+	command := exec.Command("geth", "init", dataDir, clientDependencies[gethSelectedGenesis].filePath)
 	command.Stdout = os.Stdout
 	command.Stderr = os.Stderr
 

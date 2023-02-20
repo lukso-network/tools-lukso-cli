@@ -17,6 +17,16 @@ const (
 	// should be a user-created path, like C:\bin,
 	// but since it is not guaranteed that all users vahe it we can leave it as is
 	windowsBinDir = "/Windows/System32"
+
+	// command names
+	installCommand = "install"
+	updateCommand  = "update"
+	startCommand   = "start"
+	stopCommand    = "stop"
+	initCommand    = "init"
+	logCommand     = "log"
+	statusCommand  = "status"
+	resetCommand   = "reset"
 )
 
 var (
@@ -65,21 +75,22 @@ func main() {
 	app.Flags = appFlags
 	app.Commands = []*cli.Command{
 		{
-			Name:   "download",
+			Name:   installCommand,
 			Usage:  "Downloads lukso binary dependencies - needs root privileges",
 			Action: downloadBinaries,
 			Flags:  downloadFlags,
 			Before: initializeFlags,
 		},
 		{
-			Name: "init",
+			Name: initCommand,
 			Usage: "Initializes your lukso working directory, it's structure and configurations for all of your clients. " +
 				"Make sure that you have your clients installed before initializing",
 			Action: downloadConfigs,
-			Before: initializeFlags,
+			Flags:  networkFlags,
+			Before: selectNetworkFor(initializeFlags),
 		},
 		{
-			Name:   "update",
+			Name:   updateCommand,
 			Usage:  "Updates all clients to newest versions",
 			Action: updateClients,
 			Before: initializeFlags,
@@ -109,7 +120,7 @@ func main() {
 			},
 		},
 		{
-			Name:   "start",
+			Name:   startCommand,
 			Usage:  "Start all lukso clients",
 			Action: selectNetworkFor(startClients),
 			Flags:  startFlags,
@@ -139,7 +150,7 @@ func main() {
 			},
 		},
 		{
-			Name:   "stop",
+			Name:   stopCommand,
 			Usage:  "Stops all lukso clients",
 			Action: stopClients,
 			Subcommands: []*cli.Command{
@@ -161,7 +172,7 @@ func main() {
 			},
 		},
 		{
-			Name:   "log",
+			Name:   logCommand,
 			Usage:  "Outputs log file of given client",
 			Action: logClients,
 			Flags:  logsFlags,
@@ -169,22 +180,25 @@ func main() {
 				{
 					Name:   "geth",
 					Usage:  "Outputs Geth client logs",
-					Action: selectNetworkFor(logClient(gethDependencyName, gethOutputDirFlag)),
+					Flags:  networkFlags,
+					Action: selectNetworkFor(logClient(gethDependencyName, gethLogDirFlag)),
 				},
 				{
 					Name:   "prysm",
 					Usage:  "Outputs Prysm client logs",
-					Action: selectNetworkFor(logClient(prysmDependencyName, prysmOutputDirFlag)),
+					Flags:  networkFlags,
+					Action: selectNetworkFor(logClient(prysmDependencyName, prysmLogDirFlag)),
 				},
 				{
 					Name:   "validator",
 					Usage:  "Outputs Validator client logs",
-					Action: selectNetworkFor(logClient(validatorDependencyName, validatorOutputDirFlag)),
+					Flags:  networkFlags,
+					Action: selectNetworkFor(logClient(validatorDependencyName, validatorLogDirFlag)),
 				},
 			},
 		},
 		{
-			Name:   "status",
+			Name:   statusCommand,
 			Usage:  "Displays running status of clients",
 			Action: statClients,
 			Subcommands: []*cli.Command{
@@ -206,7 +220,7 @@ func main() {
 			},
 		},
 		{
-			Name:   "reset",
+			Name:   resetCommand,
 			Usage:  "Reset data directories of all clients alongside with their log files",
 			Flags:  resetFlags,
 			Action: selectNetworkFor(resetClients),

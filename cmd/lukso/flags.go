@@ -39,7 +39,7 @@ const (
 	gethNatFlag            = "geth-nat"
 	gethTxLookupLimitFlag  = "geth-tx-lookup-limit"
 	gethCachePreimagesFlag = "geth-cache-preimages"
-	gethOutputDirFlag      = "geth-output-dir"
+	gethLogDirFlag         = "geth-log-dir"
 	gethOutputFileFlag     = "geth-output-file"
 
 	// Validator related flag names
@@ -53,7 +53,7 @@ const (
 	validatorRpcHostFlag               = "validator-rpc-host"
 	validatorSuggestedFeeRecipientFlag = "validator-suggested-fee-recipient"
 	validatorVerbosityFlag             = "validator-verbosity"
-	validatorOutputDirFlag             = "validator-output-dir"
+	validatorLogDirFlag                = "validator-log-dir"
 	validatorOutputFileFlag            = "validator-output-file"
 
 	validatorStdOutputFlag = "validator-std-output"
@@ -78,7 +78,7 @@ const (
 	prysmSubscribeAllSubnetsFlag     = "prysm-subscribe-all-subnets"
 	prysmMinimumPeersPerSubnetFlag   = "prysm-minimum-peers-per-subnet"
 	prysmVerbosityFlag               = "prysm-verbosity"
-	prysmOutputDirFlag               = "prysm-output-dir"
+	prysmLogDirFlag                  = "prysm-log-dir"
 	prysmStdOutputFlag               = "prysm-std-output"
 	prysmOutputFileFlag              = "prysm-output-file"
 
@@ -98,24 +98,42 @@ const (
 	prysmBootstrapNode = "enr:-MK4QOtYSPGAg5FCQRxy8_kAyrq1lSkvkqA4FXPc-myHYCdmW-U0mu_m1oFR-YL-tDbhecFo05WerA1IbFk4tBHVgC6GAYXMBqQXh2F0dG5ldHOIAAAAAAAAAACEZXRoMpDXjD-DICIABP__________gmlkgnY0gmlwhCJbUmOJc2VjcDI1NmsxoQLt3oS_p6rhGF3E8aS3UZLcMboK93av0NkFVAwwsbmoc4hzeW5jbmV0cwCDdGNwgjLIg3VkcIIu4A"
 
 	// flag defaults used in different contexts
-	gethMainnetDatadir = "./mainnet-data/execution_data"
-	gethTestnetDatadir = "./testnet-data/execution_data"
-	gethDevnetDatadir  = "./devnet-data/execution_data"
+	gethMainnetDatadir = "./mainnet-data/execution"
+	gethTestnetDatadir = "./testnet-data/execution"
+	gethDevnetDatadir  = "./devnet-data/execution"
 
-	prysmMainnetDatadir = "./mainnet-data/consensus_data"
-	prysmTestnetDatadir = "./testnet-data/consensus_data"
-	prysmDevnetDatadir  = "./devnet-data/consensus_data"
+	prysmMainnetDatadir = "./mainnet-data/consensus"
+	prysmTestnetDatadir = "./testnet-data/consensus"
+	prysmDevnetDatadir  = "./devnet-data/consensus"
 
-	validatorMainnetDatadir = "./mainnet-data/validator_data"
-	validatorTestnetDatadir = "./testnet-data/validator_data"
-	validatorDevnetDatadir  = "./devnet-data/validator_data"
+	validatorMainnetDatadir = "./mainnet-data/validator"
+	validatorTestnetDatadir = "./testnet-data/validator"
+	validatorDevnetDatadir  = "./devnet-data/validator"
 
 	mainnetLogs = "./mainnet-logs"
 	testnetLogs = "./testnet-logs"
 	devnetLogs  = "./devnet-logs"
+
+	mainnetConfig = "./config/mainnet"
+	testnetConfig = "./config/testnet"
+	devnetConfig  = "./config/devnet"
+
+	mainnetKeystore = "./mainnet-keystore"
+	testnetKeystore = "./testnet-keystore"
+	devnetKeystore  = "./devnet-keystore"
+
+	// structure inside /config/selected-network directory.
+	// we will select directory based on provided flag, by concatenating config path + file path
+	genesisStateFilePath = "shared/genesis.ssz"
+	configYamlPath       = "shared/config.yml"
+	jwtSecretPath        = "shared/secrets/jwt.hex"
+	configTomlPath       = "geth/config.toml"
+	genesisJsonPath      = "geth/genesis.json"
 )
 
 var (
+	jwtPath = jwtSecretDefaultPath
+
 	mainnetFlag = &cli.BoolFlag{
 		Name:  mainnetEnabledFlag,
 		Usage: "Run for mainnet (default)",
@@ -146,9 +164,6 @@ var (
 			Usage: "Run lukso node with validator",
 			Value: false,
 		},
-		mainnetFlag,
-		testnetFlag,
-		devnetFlag,
 	}
 	logsFlags  []cli.Flag
 	resetFlags []cli.Flag
@@ -313,7 +328,7 @@ var (
 			Name:  gethMinerEtherbaseFlag,
 			Usage: "your ECDSA public key used to get rewards on geth chain",
 			// yes, If you won't set it up, I'll get rewards ;]
-			Value: "0x8eFdC93aE5FEa9287e7a22B6c14670BfcCdA997b",
+			Value: "0x0000000000000000000000000000000000000000",
 		},
 		&cli.StringFlag{
 			Name:  gethTxLookupLimitFlag,
@@ -336,7 +351,7 @@ var (
 			Value: false,
 		},
 		&cli.StringFlag{
-			Name:  gethOutputDirFlag,
+			Name:  gethLogDirFlag,
 			Usage: "Directory to output logs into",
 			Value: "./mainnet-logs",
 		},
@@ -344,7 +359,7 @@ var (
 	// LOGS
 	gethLogsFlags = []cli.Flag{
 		&cli.StringFlag{
-			Name:  gethOutputDirFlag,
+			Name:  gethLogDirFlag,
 			Usage: "path file to log from",
 			Value: "./mainnet-logs",
 		},
@@ -468,7 +483,7 @@ var (
 			Value: "0",
 		},
 		&cli.StringFlag{
-			Name:  prysmOutputDirFlag,
+			Name:  prysmLogDirFlag,
 			Usage: "output destination folder of prysm logs",
 			Value: "./mainnet-logs",
 		},
@@ -481,7 +496,7 @@ var (
 	// LOGS
 	prysmLogsFlags = []cli.Flag{
 		&cli.StringFlag{
-			Name:  prysmOutputDirFlag,
+			Name:  prysmLogDirFlag,
 			Usage: "path to file to log from",
 			Value: "./mainnet-logs",
 		},
@@ -527,7 +542,7 @@ var (
 		&cli.StringFlag{
 			Name:  validatorWalletDirFlag,
 			Usage: "location of generated wallet",
-			Value: "./mainnet-keystore",
+			Value: mainnetKeystore,
 		},
 		&cli.StringFlag{
 			Name:  validatorWalletPasswordFileFlag,
@@ -560,7 +575,7 @@ var (
 			Value: "0x0000000000000000000000000000000000000000",
 		},
 		&cli.StringFlag{
-			Name:  validatorOutputDirFlag,
+			Name:  validatorLogDirFlag,
 			Usage: "output destination folder of validator logs",
 			Value: "./mainnet-logs",
 		},
@@ -573,11 +588,12 @@ var (
 	// LOGS
 	validatorLogsFlags = []cli.Flag{
 		&cli.StringFlag{
-			Name:  validatorOutputDirFlag,
+			Name:  validatorLogDirFlag,
 			Usage: "path to file to log from",
 			Value: "./mainnet-logs",
 		},
-	} // RESET
+	}
+	// RESET
 	validatorResetFlags = []cli.Flag{
 		&cli.StringFlag{
 			Name:  validatorDatadirFlag,
@@ -647,7 +663,7 @@ func prepareValidatorStartFlags(ctx *cli.Context) (startFlags []string) {
 	startFlags = append(startFlags, fmt.Sprintf("--rpc-host=%s", ctx.String(validatorRpcHostFlag)))
 	startFlags = append(startFlags, fmt.Sprintf("--suggested-fee-recipient=%s", ctx.String(validatorSuggestedFeeRecipientFlag)))
 
-	logFileFlag := prepareLogfileFlag(ctx, validatorOutputDirFlag, validatorDependencyName)
+	logFileFlag := prepareLogfileFlag(ctx, validatorLogDirFlag, validatorDependencyName)
 	if logFileFlag != "" {
 		startFlags = append(startFlags, logFileFlag)
 	}
@@ -681,7 +697,7 @@ func preparePrysmStartFlags(ctx *cli.Context) (startFlags []string) {
 		startFlags = append(startFlags, "--enable-debug-rpc-endpoints")
 	}
 
-	logFileFlag := prepareLogfileFlag(ctx, prysmOutputDirFlag, prysmDependencyName)
+	logFileFlag := prepareLogfileFlag(ctx, prysmLogDirFlag, prysmDependencyName)
 	if logFileFlag != "" {
 		startFlags = append(startFlags, logFileFlag)
 	}
