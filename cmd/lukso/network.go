@@ -1,8 +1,11 @@
 package main
 
 import (
+	"errors"
+	"fmt"
 	"github.com/urfave/cli/v2"
 	"os"
+	"strings"
 )
 
 // networkConfig serves as a collection of variables that need to be changed when different network is selected
@@ -15,7 +18,6 @@ type networkConfig struct {
 	prysmConfigDependency  string
 	logPath                string
 	configPath             string
-	keystorePath           string
 	walletPath             string
 	jwtSecretPath          string
 }
@@ -34,7 +36,7 @@ func selectNetworkFor(f func(*cli.Context) error) func(*cli.Context) error {
 		}
 
 		if enabledCount == 0 || testnetEnabled || mainnetEnabled {
-			return errNetworkNotSupported
+			return errNetworkNotSupported // when any other network is supported we can simply pass in the config there
 		}
 
 		var cfg networkConfig
@@ -49,7 +51,6 @@ func selectNetworkFor(f func(*cli.Context) error) func(*cli.Context) error {
 				prysmConfigDependency:  prysmDevnetConfigDependencyName,
 				logPath:                devnetLogs,
 				configPath:             devnetConfig,
-				keystorePath:           devnetKeystore,
 				walletPath:             devnetKeystore,
 			}
 		}
@@ -63,6 +64,7 @@ func selectNetworkFor(f func(*cli.Context) error) func(*cli.Context) error {
 	}
 }
 
+// updateValues is responsible for overriding values for data dirs, log dirs etc.
 func updateValues(ctx *cli.Context, config networkConfig) (err error) {
 	var (
 		//genesisJson  = config.configPath + "/" + genesisJsonPath
@@ -71,63 +73,76 @@ func updateValues(ctx *cli.Context, config networkConfig) (err error) {
 		jwtSecret    = config.configPath + "/" + jwtSecretPath
 	)
 
+	passedArgs := make([]string, 0)
+
+	for _, arg := range os.Args {
+		if strings.Contains(arg, "--") {
+			passedArgs = append(passedArgs, arg)
+		}
+	}
+
+	// selecting dependencies for init
+	gethSelectedGenesis = config.gethGenesisDependency
+	prysmSelectedGenesis = config.prysmGenesisDependency
+	prysmSelectedConfig = config.prysmConfigDependency
+
+	// varyingFlags represents list of all flags that can be affected by selecting network and values that may be replaced
+	varyingFlags := map[string]string{
+		gethDatadirFlag:          config.gethDatadirPath,
+		prysmDatadirFlag:         config.prysmDatadirPath,
+		validatorDatadirFlag:     config.validatorDatadirPath,
+		gethLogDirFlag:           config.logPath,
+		prysmLogDirFlag:          config.logPath,
+		validatorLogDirFlag:      config.logPath,
+		validatorWalletDirFlag:   config.walletPath,
+		gethAuthJWTSecretFlag:    jwtSecret,
+		prysmJWTSecretFlag:       jwtSecret,
+		prysmChainConfigFileFlag: configYaml,
+		prysmGenesisStateFlag:    genesisState,
+	}
+
 	if len(os.Args) < 2 {
 		return errNotEnoughArguments
 	}
 
-	commandName := os.Args[1]
-	switch commandName {
-	case startCommand:
-		// -- CONFIGS --
-		gethSelectedGenesis = config.gethGenesisDependency
-		if err = ctx.Set(prysmGenesisStateFlag, genesisState); err != nil {
-			return
-		}
-		if err = ctx.Set(prysmChainConfigFileFlag, configYaml); err != nil {
-			return
+	for _, flag := range ctx.Command.VisibleFlags() {
+		names := flag.Names()
+		if len(names) < 1 {
+			return errNotEnoughArguments
 		}
 
-		// -- DATADIRS --
-		if err = ctx.Set(gethDatadirFlag, config.gethDatadirPath); err != nil {
-			return
-		}
-		if err = ctx.Set(prysmDatadirFlag, config.prysmDatadirPath); err != nil {
-			return
-		}
-		if err = ctx.Set(validatorDatadirFlag, config.validatorDatadirPath); err != nil {
-			return
-		}
+		targetName := names[0]
 
-		// -- LOGS --
-		if err = ctx.Set(gethLogDirFlag, config.logPath); err != nil {
-			return
-		}
-		if err = ctx.Set(prysmLogDirFlag, config.logPath); err != nil {
-			return
-		}
-		if err = ctx.Set(validatorLogDirFlag, config.logPath); err != nil {
-			return
-		}
+		// search for flags that need to be changed during network selection
+		for flagName, changedValue := range varyingFlags {
+			if flagName == targetName {
+				// BUT keep those that are passed in
+				isPassed := false
+				for _, passedValue := range passedArgs {
+					if strings.Contains(passedValue, targetName) {
+						isPassed = true
+					}
+				}
+				if isPassed { // ignore
+					continue
+				}
 
-		// -- JWT --
-		if err = ctx.Set(prysmJWTSecretFlag, jwtSecret); err != nil {
-			return
-		}
-		if err = ctx.Set(gethAuthJWTSecretFlag, jwtSecret); err != nil {
-			return
-		}
+				// at last, update value when flag that needs to be changed is found, and it isn't passed manually
+				err = ctx.Set(targetName, changedValue)
+				if err != nil {
+					return
+				}
 
-		// -- KEYSTORE
-		if err = ctx.Set(validatorWalletDirFlag, config.keystorePath); err != nil {
-			return
+				delete(varyingFlags, flagName)
+				break
+			}
 		}
-
-	case initCommand:
-		gethSelectedGenesis = config.gethGenesisDependency
-		prysmSelectedGenesis = config.prysmGenesisDependency
-		prysmSelectedConfig = config.prysmConfigDependency
-		jwtPath = jwtSecret
 	}
 
-	return
+	for _, flag := range ctx.Command.VisibleFlags() {
+		name := flag.Names()[0]
+		fmt.Printf("%s: %s\n", name, ctx.String(name))
+	}
+
+	return errors.New("PANIC")
 }
