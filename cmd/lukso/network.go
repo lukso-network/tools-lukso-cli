@@ -1,8 +1,6 @@
 package main
 
 import (
-	"errors"
-	"fmt"
 	"github.com/urfave/cli/v2"
 	"os"
 	"strings"
@@ -22,7 +20,7 @@ type networkConfig struct {
 	jwtSecretPath          string
 }
 
-// selectNetworkFor accepts a CLI func as an argument, and adjusts all values that need to be changed depending on
+// selectNetwork accepts a CLI func as an argument, and adjusts all values that need to be changed depending on
 // network passed as a flag. Works as a wrapper for selecting current working network
 func selectNetworkFor(f func(*cli.Context) error) func(*cli.Context) error {
 	return func(ctx *cli.Context) error {
@@ -85,6 +83,7 @@ func updateValues(ctx *cli.Context, config networkConfig) (err error) {
 	gethSelectedGenesis = config.gethGenesisDependency
 	prysmSelectedGenesis = config.prysmGenesisDependency
 	prysmSelectedConfig = config.prysmConfigDependency
+	jwtSelectedPath = jwtSecret
 
 	// varyingFlags represents list of all flags that can be affected by selecting network and values that may be replaced
 	varyingFlags := map[string]string{
@@ -139,10 +138,5 @@ func updateValues(ctx *cli.Context, config networkConfig) (err error) {
 		}
 	}
 
-	for _, flag := range ctx.Command.VisibleFlags() {
-		name := flag.Names()[0]
-		fmt.Printf("%s: %s\n", name, ctx.String(name))
-	}
-
-	return errors.New("PANIC")
+	return nil
 }

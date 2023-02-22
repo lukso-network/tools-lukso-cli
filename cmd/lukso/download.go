@@ -160,7 +160,7 @@ func downloadBinaries(ctx *cli.Context) (err error) {
 }
 
 func downloadConfigs(ctx *cli.Context) error {
-	err := createJwtSecret(jwtPath) // jwtPath var can be altered by network selector
+	err := createJwtSecret(jwtSelectedPath) // jwtSelectedPath var can be altered by network selector
 	if err != nil {
 		return err
 	}

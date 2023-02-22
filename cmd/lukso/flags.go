@@ -132,7 +132,7 @@ const (
 )
 
 var (
-	jwtPath = jwtSecretDefaultPath
+	jwtSelectedPath = jwtSecretDefaultPath
 
 	mainnetFlag = &cli.BoolFlag{
 		Name:  mainnetEnabledFlag,
@@ -656,7 +656,6 @@ func prepareValidatorStartFlags(ctx *cli.Context) (startFlags []string) {
 	startFlags = append(startFlags, "--accept-terms-of-use")
 	startFlags = append(startFlags, fmt.Sprintf("--datadir=%s", ctx.String(validatorDatadirFlag)))
 	startFlags = append(startFlags, fmt.Sprintf("--wallet-dir=%s", ctx.String(validatorWalletDirFlag)))
-	startFlags = append(startFlags, fmt.Sprintf("--wallet-password-file=%s", ctx.String(validatorWalletPasswordFileFlag)))
 	startFlags = append(startFlags, fmt.Sprintf("--chain-config-file=%s", ctx.String(validatorChainConfigFileFlag)))
 	startFlags = append(startFlags, fmt.Sprintf("--monitoring-host=%s", ctx.String(validatorMonitoringHostFlag)))
 	startFlags = append(startFlags, fmt.Sprintf("--grpc-gateway-host=%s", ctx.String(validatorGrpcGatewayHostFlag)))
@@ -666,6 +665,13 @@ func prepareValidatorStartFlags(ctx *cli.Context) (startFlags []string) {
 	logFileFlag := prepareLogfileFlag(ctx, validatorLogDirFlag, validatorDependencyName)
 	if logFileFlag != "" {
 		startFlags = append(startFlags, logFileFlag)
+	}
+
+	walletPasswordFile := ctx.String(validatorWalletPasswordFileFlag)
+	if walletPasswordFile != "" {
+		startFlags = append(startFlags, fmt.Sprintf("--wallet-password-file=%s", ctx.String(validatorWalletPasswordFileFlag)))
+
+		return
 	}
 
 	return

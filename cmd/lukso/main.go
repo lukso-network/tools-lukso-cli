@@ -14,19 +14,11 @@ const (
 	windows = "windows"
 
 	unixBinDir = "/usr/local/bin"
+	pidFileDir = "/var/run/lukso" // should be created when downloading and setting up privileges for lukso
+
 	// should be a user-created path, like C:\bin,
 	// but since it is not guaranteed that all users vahe it we can leave it as is
 	windowsBinDir = "/Windows/System32"
-
-	// command names
-	installCommand = "install"
-	updateCommand  = "update"
-	startCommand   = "start"
-	stopCommand    = "stop"
-	initCommand    = "init"
-	logCommand     = "log"
-	statusCommand  = "status"
-	resetCommand   = "reset"
 )
 
 var (
@@ -66,6 +58,19 @@ func init() {
 	resetFlags = append(resetFlags, prysmResetFlags...)
 	resetFlags = append(resetFlags, validatorResetFlags...)
 	resetFlags = append(resetFlags, networkFlags...)
+
+	// after we exported flags from each command we can update them
+	gethStartFlags = append(gethStartFlags, networkFlags...)
+	gethLogsFlags = append(gethLogsFlags, networkFlags...)
+	gethResetFlags = append(gethResetFlags, networkFlags...)
+
+	prysmStartFlags = append(prysmStartFlags, networkFlags...)
+	prysmLogsFlags = append(prysmLogsFlags, networkFlags...)
+	prysmResetFlags = append(prysmResetFlags, networkFlags...)
+
+	validatorStartFlags = append(validatorStartFlags, networkFlags...)
+	validatorLogsFlags = append(validatorLogsFlags, networkFlags...)
+	validatorResetFlags = append(validatorResetFlags, networkFlags...)
 }
 
 func main() {
@@ -75,22 +80,22 @@ func main() {
 	app.Flags = appFlags
 	app.Commands = []*cli.Command{
 		{
-			Name:   installCommand,
+			Name:   "install",
 			Usage:  "Downloads lukso binary dependencies - needs root privileges",
 			Action: downloadBinaries,
 			Flags:  downloadFlags,
 			Before: initializeFlags,
 		},
 		{
-			Name: initCommand,
+			Name: "init",
 			Usage: "Initializes your lukso working directory, it's structure and configurations for all of your clients. " +
 				"Make sure that you have your clients installed before initializing",
-			Action: downloadConfigs,
+			Action: selectNetworkFor(downloadConfigs),
 			Flags:  networkFlags,
-			Before: selectNetworkFor(initializeFlags),
+			Before: initializeFlags,
 		},
 		{
-			Name:   updateCommand,
+			Name:   "update",
 			Usage:  "Updates all clients to newest versions",
 			Action: updateClients,
 			Before: initializeFlags,
@@ -120,7 +125,7 @@ func main() {
 			},
 		},
 		{
-			Name:   startCommand,
+			Name:   "start",
 			Usage:  "Start all lukso clients",
 			Action: selectNetworkFor(startClients),
 			Flags:  startFlags,
@@ -150,7 +155,7 @@ func main() {
 			},
 		},
 		{
-			Name:   stopCommand,
+			Name:   "stop",
 			Usage:  "Stops all lukso clients",
 			Action: stopClients,
 			Subcommands: []*cli.Command{
@@ -172,7 +177,7 @@ func main() {
 			},
 		},
 		{
-			Name:   logCommand,
+			Name:   "log",
 			Usage:  "Outputs log file of given client",
 			Action: logClients,
 			Flags:  logsFlags,
@@ -180,25 +185,25 @@ func main() {
 				{
 					Name:   "geth",
 					Usage:  "Outputs Geth client logs",
-					Flags:  networkFlags,
+					Flags:  gethLogsFlags,
 					Action: selectNetworkFor(logClient(gethDependencyName, gethLogDirFlag)),
 				},
 				{
 					Name:   "prysm",
 					Usage:  "Outputs Prysm client logs",
-					Flags:  networkFlags,
+					Flags:  prysmLogsFlags,
 					Action: selectNetworkFor(logClient(prysmDependencyName, prysmLogDirFlag)),
 				},
 				{
 					Name:   "validator",
 					Usage:  "Outputs Validator client logs",
-					Flags:  networkFlags,
+					Flags:  validatorLogsFlags,
 					Action: selectNetworkFor(logClient(validatorDependencyName, validatorLogDirFlag)),
 				},
 			},
 		},
 		{
-			Name:   statusCommand,
+			Name:   "status",
 			Usage:  "Displays running status of clients",
 			Action: statClients,
 			Subcommands: []*cli.Command{
@@ -220,7 +225,7 @@ func main() {
 			},
 		},
 		{
-			Name:   resetCommand,
+			Name:   "reset",
 			Usage:  "Reset data directories of all clients alongside with their log files",
 			Flags:  resetFlags,
 			Action: selectNetworkFor(resetClients),
