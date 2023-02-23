@@ -83,10 +83,12 @@ const (
 	prysmOutputFileFlag              = "prysm-output-file"
 
 	// non-specific flags
-	validatorEnabledFlag = "validator"
-	mainnetEnabledFlag   = "mainnet"
-	testnetEnabledFlag   = "testnet"
-	devnetEnabledFlag    = "devnet"
+	mainnetFlag   = "mainnet"
+	testnetFlag   = "testnet"
+	devnetFlag    = "devnet"
+	validatorFlag = "validator"
+	consensusFlag = "consensus"
+	executionFlag = "execution"
 
 	acceptTermsOfUseFlagName = "accept-terms-of-use"
 
@@ -134,33 +136,54 @@ const (
 var (
 	jwtSelectedPath = jwtSecretDefaultPath
 
-	mainnetFlag = &cli.BoolFlag{
-		Name:  mainnetEnabledFlag,
-		Usage: "Run for mainnet (default)",
+	mainnetEnabledFlag = &cli.BoolFlag{
+		Name:  mainnetFlag,
+		Usage: "Run for mainnetFlag (default)",
 		Value: false,
 	}
-	testnetFlag = &cli.BoolFlag{
-		Name:  testnetEnabledFlag,
-		Usage: "Run for testnet",
+	testnetEnabledFlag = &cli.BoolFlag{
+		Name:  testnetFlag,
+		Usage: "Run for testnetFlag",
 		Value: false,
 	}
-	devnetFlag = &cli.BoolFlag{
-		Name:  devnetEnabledFlag,
+	devnetEnabledFlag = &cli.BoolFlag{
+		Name:  devnetFlag,
 		Usage: "Run for devnet",
 		Value: false,
 	}
 
+	consensusSelectedFlag = &cli.BoolFlag{
+		Name:  consensusFlag,
+		Usage: "Run for consensus",
+		Value: false,
+	}
+	executionSelectedFlag = &cli.BoolFlag{
+		Name:  executionFlag,
+		Usage: "Run for execution",
+		Value: false,
+	}
+	validatorSelectedFlag = &cli.BoolFlag{
+		Name:  validatorFlag,
+		Usage: "Run for validator",
+		Value: false,
+	}
+
 	networkFlags = []cli.Flag{
-		mainnetFlag,
-		testnetFlag,
-		devnetFlag,
+		mainnetEnabledFlag,
+		testnetEnabledFlag,
+		devnetEnabledFlag,
 	}
 
 	downloadFlags []cli.Flag
 	updateFlags   []cli.Flag
-	startFlags    = []cli.Flag{
+	stopFlags     = []cli.Flag{
+		executionSelectedFlag,
+		consensusSelectedFlag,
+		validatorSelectedFlag,
+	}
+	startFlags = []cli.Flag{
 		&cli.BoolFlag{
-			Name:  validatorEnabledFlag,
+			Name:  validatorFlag,
 			Usage: "Run lukso node with validator",
 			Value: false,
 		},

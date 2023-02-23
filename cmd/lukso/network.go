@@ -24,9 +24,9 @@ type networkConfig struct {
 // network passed as a flag. Works as a wrapper for selecting current working network
 func selectNetworkFor(f func(*cli.Context) error) func(*cli.Context) error {
 	return func(ctx *cli.Context) error {
-		mainnetEnabled := ctx.Bool(mainnetEnabledFlag)
-		testnetEnabled := ctx.Bool(testnetEnabledFlag)
-		devnetEnabled := ctx.Bool(devnetEnabledFlag)
+		mainnetEnabled := ctx.Bool(mainnetFlag)
+		testnetEnabled := ctx.Bool(testnetFlag)
+		devnetEnabled := ctx.Bool(devnetFlag)
 
 		enabledCount := boolToInt(mainnetEnabled) + boolToInt(testnetEnabled) + boolToInt(devnetEnabled)
 		if enabledCount > 1 {

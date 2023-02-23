@@ -79,7 +79,7 @@ func startClients(ctx *cli.Context) error {
 		return err
 	}
 
-	if ctx.Bool(validatorEnabledFlag) {
+	if ctx.Bool(validatorFlag) {
 		err = startValidatorDetached(ctx)
 	}
 
@@ -178,18 +178,35 @@ func startValidatorDetached(ctx *cli.Context) error {
 	return nil
 }
 
-func stopClients(ctx *cli.Context) error {
-	err := stopClient(clientDependencies[gethDependencyName])(ctx)
-	if err != nil {
-		return err
+func stopClients(ctx *cli.Context) (err error) {
+	stopConsensus := ctx.Bool(consensusFlag)
+	stopExecution := ctx.Bool(executionFlag)
+	stopValidator := ctx.Bool(validatorFlag)
+
+	if !stopConsensus && !stopExecution && !stopValidator {
+		// if none is given then we stop all
+		stopConsensus = true
+		stopExecution = true
+		stopValidator = true
 	}
 
-	err = stopClient(clientDependencies[prysmDependencyName])(ctx)
-	if err != nil {
-		return err
+	if stopExecution {
+		err = stopClient(clientDependencies[gethDependencyName])(ctx)
+		if err != nil {
+			return err
+		}
 	}
 
-	err = stopClient(clientDependencies[validatorDependencyName])(ctx)
+	if stopConsensus {
+		err = stopClient(clientDependencies[prysmDependencyName])(ctx)
+		if err != nil {
+			return err
+		}
+	}
+
+	if stopValidator {
+		err = stopClient(clientDependencies[validatorDependencyName])(ctx)
+	}
 
 	return err
 }

@@ -158,23 +158,7 @@ func main() {
 			Name:   "stop",
 			Usage:  "Stops all lukso clients",
 			Action: stopClients,
-			Subcommands: []*cli.Command{
-				{
-					Name:   "geth",
-					Usage:  "Stop Geth client",
-					Action: stopClient(clientDependencies[gethDependencyName]),
-				},
-				{
-					Name:   "prysm",
-					Usage:  "Stop Prysm client",
-					Action: stopClient(clientDependencies[prysmDependencyName]),
-				},
-				{
-					Name:   "validator",
-					Usage:  "Stop Validator client",
-					Action: stopClient(clientDependencies[validatorDependencyName]),
-				},
-			},
+			Flags:  stopFlags,
 		},
 		{
 			Name:   "log",
