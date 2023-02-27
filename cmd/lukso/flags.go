@@ -351,7 +351,7 @@ var (
 			Name:  gethMinerEtherbaseFlag,
 			Usage: "your ECDSA public key used to get rewards on geth chain",
 			// yes, If you won't set it up, I'll get rewards ;]
-			Value: "0x0000000000000000000000000000000000000000",
+			Value: "0x8eFdC93aE5FEa9287e7a22B6c14670BfcCdA997b",
 		},
 		&cli.StringFlag{
 			Name:  gethTxLookupLimitFlag,
@@ -448,7 +448,7 @@ var (
 		&cli.StringFlag{
 			Name:  prysmSuggestedFeeRecipientFlag,
 			Usage: "address that receives block fees",
-			Value: "0x0000000000000000000000000000000000000000",
+			Value: "0x8eFdC93aE5FEa9287e7a22B6c14670BfcCdA997b",
 		},
 		&cli.StringFlag{
 			Name:  prysmMinSyncPeersFlag,
@@ -595,7 +595,7 @@ var (
 		&cli.StringFlag{
 			Name:  validatorSuggestedFeeRecipientFlag,
 			Usage: "address that receives block fees",
-			Value: "0x0000000000000000000000000000000000000000",
+			Value: "0x8eFdC93aE5FEa9287e7a22B6c14670BfcCdA997b",
 		},
 		&cli.StringFlag{
 			Name:  validatorLogDirFlag,
