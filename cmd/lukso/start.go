@@ -69,18 +69,18 @@ func (dependency *ClientDependency) Stop() error {
 func startClients(ctx *cli.Context) error {
 	log.Info("Starting all clients")
 
-	err := startGethDetached(ctx)
+	err := startGeth(ctx)
 	if err != nil {
 		return err
 	}
 
-	err = startPrysmDetached(ctx)
+	err = startPrysm(ctx)
 	if err != nil {
 		return err
 	}
 
 	if ctx.Bool(validatorFlag) {
-		err = startValidatorDetached(ctx)
+		err = startValidator(ctx)
 	}
 
 	return err
@@ -127,49 +127,6 @@ func startValidator(ctx *cli.Context) error {
 	stdAttached := ctx.Bool(validatorStdOutputFlag)
 
 	err := clientDependencies[validatorDependencyName].Start(prepareValidatorStartFlags(ctx), stdAttached, ctx)
-	if err != nil {
-		return err
-	}
-
-	log.Info("Validator started! Use lukso logs command to see logs")
-	return nil
-}
-
-func startGethDetached(ctx *cli.Context) error {
-	log.Info("Running geth init first...")
-
-	err := initGeth(ctx)
-	if err != nil {
-		log.Errorf("There was an error while initalizing geth. Error: %v", err)
-	}
-
-	log.Info("Starting Geth")
-
-	err = clientDependencies[gethDependencyName].Start(prepareGethStartFlags(ctx), false, ctx)
-	if err != nil {
-		return err
-	}
-
-	log.Info("Geth started! Use lukso logs command to see logs")
-	return nil
-}
-
-func startPrysmDetached(ctx *cli.Context) error {
-	log.Info("Starting Prysm")
-
-	err := clientDependencies[prysmDependencyName].Start(preparePrysmStartFlags(ctx), false, ctx)
-	if err != nil {
-		return err
-	}
-
-	log.Info("Prysm started! Use lukso logs command to see logs")
-	return nil
-}
-
-func startValidatorDetached(ctx *cli.Context) error {
-	log.Info("Starting Validator")
-
-	err := clientDependencies[validatorDependencyName].Start(prepareValidatorStartFlags(ctx), false, ctx)
 	if err != nil {
 		return err
 	}
