@@ -214,6 +214,10 @@ func main() {
 			Flags:  resetFlags,
 			Action: selectNetworkFor(resetClients),
 		},
+		{
+			Name:  "validator",
+			Usage: "Manage everything validator-related: initialize accounts, send deposits etc.",
+		},
 	}
 
 	app.Before = func(ctx *cli.Context) error {
