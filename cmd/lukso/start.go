@@ -1,14 +1,11 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"github.com/urfave/cli/v2"
 	"os"
 	"os/exec"
 )
-
-var errorFlagMissing = errors.New("Couldn't find given flag ")
 
 func (dependency *ClientDependency) Start(
 	arguments []string,
@@ -33,9 +30,9 @@ func (dependency *ClientDependency) Start(
 			fullPath string
 		)
 
-		gethLogDir := ctx.String(gethOutputDirFlag)
+		gethLogDir := ctx.String(gethLogDirFlag)
 		if gethLogDir == "" {
-			return errorFlagMissing
+			return errFlagMissing
 		}
 
 		fullPath, err = prepareTimestampedFile(gethLogDir, gethDependencyName)
@@ -72,19 +69,18 @@ func (dependency *ClientDependency) Stop() error {
 func startClients(ctx *cli.Context) error {
 	log.Info("Starting all clients")
 
-	err := startGethDetached(ctx)
+	err := startGeth(ctx)
 	if err != nil {
 		return err
 	}
 
-	err = startPrysmDetached(ctx)
+	err = startPrysm(ctx)
 	if err != nil {
 		return err
 	}
 
-	err = startValidatorDetached(ctx)
-	if err != nil {
-		return err
+	if ctx.Bool(validatorFlag) {
+		err = startValidator(ctx)
 	}
 
 	return err
@@ -139,61 +135,35 @@ func startValidator(ctx *cli.Context) error {
 	return nil
 }
 
-func startGethDetached(ctx *cli.Context) error {
-	log.Info("Running geth init first...")
+func stopClients(ctx *cli.Context) (err error) {
+	stopConsensus := ctx.Bool(consensusFlag)
+	stopExecution := ctx.Bool(executionFlag)
+	stopValidator := ctx.Bool(validatorFlag)
 
-	err := initGeth(ctx)
-	if err != nil {
-		log.Errorf("There was an error while initalizing geth. Error: %v", err)
+	if !stopConsensus && !stopExecution && !stopValidator {
+		// if none is given then we stop all
+		stopConsensus = true
+		stopExecution = true
+		stopValidator = true
 	}
 
-	log.Info("Starting Geth")
-
-	err = clientDependencies[gethDependencyName].Start(prepareGethStartFlags(ctx), false, ctx)
-	if err != nil {
-		return err
+	if stopExecution {
+		err = stopClient(clientDependencies[gethDependencyName])(ctx)
+		if err != nil {
+			return err
+		}
 	}
 
-	log.Info("Geth started! Use lukso logs command to see logs")
-	return nil
-}
-
-func startPrysmDetached(ctx *cli.Context) error {
-	log.Info("Starting Prysm")
-
-	err := clientDependencies[prysmDependencyName].Start(preparePrysmStartFlags(ctx), false, ctx)
-	if err != nil {
-		return err
+	if stopConsensus {
+		err = stopClient(clientDependencies[prysmDependencyName])(ctx)
+		if err != nil {
+			return err
+		}
 	}
 
-	log.Info("Prysm started! Use lukso logs command to see logs")
-	return nil
-}
-
-func startValidatorDetached(ctx *cli.Context) error {
-	log.Info("Starting Validator")
-
-	err := clientDependencies[validatorDependencyName].Start(prepareValidatorStartFlags(ctx), false, ctx)
-	if err != nil {
-		return err
+	if stopValidator {
+		err = stopClient(clientDependencies[validatorDependencyName])(ctx)
 	}
-
-	log.Info("Validator started! Use lukso logs command to see logs")
-	return nil
-}
-
-func stopClients(ctx *cli.Context) error {
-	err := stopClient(clientDependencies[gethDependencyName])(ctx)
-	if err != nil {
-		return err
-	}
-
-	err = stopClient(clientDependencies[prysmDependencyName])(ctx)
-	if err != nil {
-		return err
-	}
-
-	err = stopClient(clientDependencies[validatorDependencyName])(ctx)
 
 	return err
 }
@@ -210,7 +180,7 @@ func stopClient(dependency *ClientDependency) func(ctx *cli.Context) error {
 
 func initGeth(ctx *cli.Context) (err error) {
 	dataDir := fmt.Sprintf("--datadir=%s", ctx.String(gethDatadirFlag))
-	command := exec.Command("geth", "init", dataDir, clientDependencies[gethGenesisDependencyName].filePath)
+	command := exec.Command("geth", "init", dataDir, clientDependencies[gethSelectedGenesis].filePath)
 	command.Stdout = os.Stdout
 	command.Stderr = os.Stderr
 

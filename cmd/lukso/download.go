@@ -19,8 +19,6 @@ const (
 	binaryPerms = int(os.ModePerm)
 )
 
-var errNeedRoot = errors.New("You need root privilages to perform this action")
-
 func (dependency *ClientDependency) Download(tagName, commitHash string, overrideFile bool, permissions int) (err error) {
 	err = dependency.createDir()
 	if err != nil {
@@ -162,7 +160,7 @@ func downloadBinaries(ctx *cli.Context) (err error) {
 }
 
 func downloadConfigs(ctx *cli.Context) error {
-	err := createJwtSecret(jwtSecretDefaultPath)
+	err := createJwtSecret(jwtSelectedPath) // jwtSelectedPath var can be altered by network selector
 	if err != nil {
 		return err
 	}
@@ -186,7 +184,7 @@ func downloadGeth(ctx *cli.Context) (err error) {
 func downloadGenesis(ctx *cli.Context) (err error) {
 	log.WithField("dependencyTag", gethTag).Info("Downloading Execution Genesis")
 
-	err = clientDependencies[gethGenesisDependencyName].Download(gethTag, "", false, configPerms)
+	err = clientDependencies[gethSelectedGenesis].Download(gethTag, "", false, configPerms)
 
 	if nil != err {
 		return
@@ -194,7 +192,7 @@ func downloadGenesis(ctx *cli.Context) (err error) {
 
 	log.WithField("dependencyTag", prysmTag).Info("Downloading Consensus Genesis")
 
-	err = clientDependencies[prysmGenesisDependencyName].Download(prysmTag, "", false, configPerms)
+	err = clientDependencies[prysmSelectedGenesis].Download(prysmTag, "", false, configPerms)
 
 	return
 }
@@ -202,7 +200,7 @@ func downloadGenesis(ctx *cli.Context) (err error) {
 func downloadPrysmConfig(ctx *cli.Context) (err error) {
 	log.WithField("dependencyTag", prysmTag).Info("Downloading Prysm Config")
 
-	err = clientDependencies[prysmConfigDependencyName].Download(prysmTag, "", false, configPerms)
+	err = clientDependencies[prysmSelectedConfig].Download(prysmTag, "", false, configPerms)
 
 	return
 }

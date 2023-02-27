@@ -11,16 +11,19 @@ import (
 
 func (dependency *ClientDependency) Log(logFilePath string) (err error) {
 	var commandName string
+	var commandArgs []string
 	switch systemOs {
 	case ubuntu, macos:
-		commandName = "cat"
+		commandName = "tail"
+		commandArgs = []string{"-f", "-n", "+0"}
 	case windows:
 		commandName = "type"
 	default:
-		commandName = "cat" // For reviewers - do we provide default command? Or omit and return with err?
+		commandName = "tail" // For reviewers - do we provide default command? Or omit and return with err?
+		commandArgs = []string{"-f", "-n", "+0"}
 	}
 
-	command := exec.Command(commandName, logFilePath)
+	command := exec.Command(commandName, append(commandArgs, logFilePath)...)
 
 	command.Stdout = os.Stdout
 
@@ -89,10 +92,10 @@ func logClient(dependencyName string, logFileFlag string) func(*cli.Context) err
 	return func(ctx *cli.Context) error {
 		logFileDir := ctx.String(logFileFlag)
 		if logFileDir == "" {
-			return errorFlagMissing
+			return errFlagMissing
 		}
 
-		latestFile, err := getLastFile(logFileDir)
+		latestFile, err := getLastFile(logFileDir, dependencyName)
 		if latestFile == "" && err == nil {
 			return nil
 		}

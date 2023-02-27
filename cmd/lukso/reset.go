@@ -71,7 +71,7 @@ func resetClients(ctx *cli.Context) error {
 func resetGeth(ctx *cli.Context) error {
 	dataDirPath := ctx.String(gethDatadirFlag)
 	if dataDirPath == "" {
-		return errorFlagMissing
+		return errFlagMissing
 	}
 
 	return os.RemoveAll(dataDirPath)
@@ -80,7 +80,7 @@ func resetGeth(ctx *cli.Context) error {
 func resetPrysm(ctx *cli.Context) error {
 	dataDirPath := ctx.String(prysmDatadirFlag)
 	if dataDirPath == "" {
-		return errorFlagMissing
+		return errFlagMissing
 	}
 
 	return os.RemoveAll(dataDirPath)
@@ -89,7 +89,7 @@ func resetPrysm(ctx *cli.Context) error {
 func resetValidator(ctx *cli.Context) error {
 	dataDirPath := ctx.String(validatorDatadirFlag)
 	if dataDirPath == "" {
-		return errorFlagMissing
+		return errFlagMissing
 	}
 
 	return os.RemoveAll(dataDirPath)

@@ -14,6 +14,8 @@ const (
 	windows = "windows"
 
 	unixBinDir = "/usr/local/bin"
+	pidFileDir = "/var/run/lukso" // should be created when downloading and setting up privileges for lukso
+
 	// should be a user-created path, like C:\bin,
 	// but since it is not guaranteed that all users vahe it we can leave it as is
 	windowsBinDir = "/Windows/System32"
@@ -45,14 +47,30 @@ func init() {
 	startFlags = append(startFlags, gethStartFlags...)
 	startFlags = append(startFlags, prysmStartFlags...)
 	startFlags = append(startFlags, validatorStartFlags...)
+	startFlags = append(startFlags, networkFlags...)
 
 	logsFlags = append(logsFlags, gethLogsFlags...)
 	logsFlags = append(logsFlags, prysmLogsFlags...)
 	logsFlags = append(logsFlags, validatorLogsFlags...)
+	logsFlags = append(logsFlags, networkFlags...)
 
 	resetFlags = append(resetFlags, gethResetFlags...)
 	resetFlags = append(resetFlags, prysmResetFlags...)
 	resetFlags = append(resetFlags, validatorResetFlags...)
+	resetFlags = append(resetFlags, networkFlags...)
+
+	// after we exported flags from each command we can update them
+	gethStartFlags = append(gethStartFlags, networkFlags...)
+	gethLogsFlags = append(gethLogsFlags, networkFlags...)
+	gethResetFlags = append(gethResetFlags, networkFlags...)
+
+	prysmStartFlags = append(prysmStartFlags, networkFlags...)
+	prysmLogsFlags = append(prysmLogsFlags, networkFlags...)
+	prysmResetFlags = append(prysmResetFlags, networkFlags...)
+
+	validatorStartFlags = append(validatorStartFlags, networkFlags...)
+	validatorLogsFlags = append(validatorLogsFlags, networkFlags...)
+	validatorResetFlags = append(validatorResetFlags, networkFlags...)
 }
 
 func main() {
@@ -62,7 +80,7 @@ func main() {
 	app.Flags = appFlags
 	app.Commands = []*cli.Command{
 		{
-			Name:   "download",
+			Name:   "install",
 			Usage:  "Downloads lukso binary dependencies - needs root privileges",
 			Action: downloadBinaries,
 			Flags:  downloadFlags,
@@ -72,7 +90,8 @@ func main() {
 			Name: "init",
 			Usage: "Initializes your lukso working directory, it's structure and configurations for all of your clients. " +
 				"Make sure that you have your clients installed before initializing",
-			Action: downloadConfigs,
+			Action: selectNetworkFor(downloadConfigs),
+			Flags:  networkFlags,
 			Before: initializeFlags,
 		},
 		{
@@ -108,7 +127,7 @@ func main() {
 		{
 			Name:   "start",
 			Usage:  "Start all lukso clients",
-			Action: startClients,
+			Action: selectNetworkFor(startClients),
 			Flags:  startFlags,
 			Before: initializeFlags,
 			Subcommands: []*cli.Command{
@@ -117,21 +136,21 @@ func main() {
 					Usage:  "Start Geth client",
 					Flags:  gethStartFlags,
 					Before: initializeFlags,
-					Action: startGeth,
+					Action: selectNetworkFor(startGeth),
 				},
 				{
 					Name:   "prysm",
 					Usage:  "Start Prysm client",
 					Flags:  prysmStartFlags,
 					Before: initializeFlags,
-					Action: startPrysm,
+					Action: selectNetworkFor(startPrysm),
 				},
 				{
 					Name:   "validator",
 					Usage:  "Start Validator client",
 					Flags:  validatorStartFlags,
 					Before: initializeFlags,
-					Action: startValidator,
+					Action: selectNetworkFor(startValidator),
 				},
 			},
 		},
@@ -139,26 +158,10 @@ func main() {
 			Name:   "stop",
 			Usage:  "Stops all lukso clients",
 			Action: stopClients,
-			Subcommands: []*cli.Command{
-				{
-					Name:   "geth",
-					Usage:  "Stop Geth client",
-					Action: stopClient(clientDependencies[gethDependencyName]),
-				},
-				{
-					Name:   "prysm",
-					Usage:  "Stop Prysm client",
-					Action: stopClient(clientDependencies[prysmDependencyName]),
-				},
-				{
-					Name:   "validator",
-					Usage:  "Stop Validator client",
-					Action: stopClient(clientDependencies[validatorDependencyName]),
-				},
-			},
+			Flags:  stopFlags,
 		},
 		{
-			Name:   "logs",
+			Name:   "log",
 			Usage:  "Outputs log file of given client",
 			Action: logClients,
 			Flags:  logsFlags,
@@ -166,17 +169,20 @@ func main() {
 				{
 					Name:   "geth",
 					Usage:  "Outputs Geth client logs",
-					Action: logClient(gethDependencyName, gethOutputDirFlag),
+					Flags:  gethLogsFlags,
+					Action: selectNetworkFor(logClient(gethDependencyName, gethLogDirFlag)),
 				},
 				{
 					Name:   "prysm",
 					Usage:  "Outputs Prysm client logs",
-					Action: logClient(prysmDependencyName, prysmOutputDirFlag),
+					Flags:  prysmLogsFlags,
+					Action: selectNetworkFor(logClient(prysmDependencyName, prysmLogDirFlag)),
 				},
 				{
 					Name:   "validator",
 					Usage:  "Outputs Validator client logs",
-					Action: logClient(validatorDependencyName, validatorOutputDirFlag),
+					Flags:  validatorLogsFlags,
+					Action: selectNetworkFor(logClient(validatorDependencyName, validatorLogDirFlag)),
 				},
 			},
 		},
@@ -206,7 +212,7 @@ func main() {
 			Name:   "reset",
 			Usage:  "Reset data directories of all clients alongside with their log files",
 			Flags:  resetFlags,
-			Action: resetClients,
+			Action: selectNetworkFor(resetClients),
 		},
 	}
 
