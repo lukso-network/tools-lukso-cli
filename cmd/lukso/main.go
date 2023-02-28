@@ -215,8 +215,10 @@ func main() {
 			Action: selectNetworkFor(resetClients),
 		},
 		{
-			Name:  "validator",
-			Usage: "Manage everything validator-related: initialize accounts, send deposits etc.",
+			Name:   "validator",
+			Usage:  "Send deposits from your deposit file",
+			Flags:  validatorFlags,
+			Action: sendDeposit,
 		},
 	}
 

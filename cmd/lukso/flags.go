@@ -131,6 +131,13 @@ const (
 	jwtSecretPath        = "shared/secrets/jwt.hex"
 	configTomlPath       = "geth/config.toml"
 	genesisJsonPath      = "geth/genesis.json"
+
+	// validator tool related flags
+	depositFlag        = "deposit"
+	genesisDepositFlag = "genesis-deposit"
+	validatorKeysFlag  = "validator-keys"
+	gasPriceFlag       = "gas-price"
+	rpcFlag            = "rpc"
 )
 
 var (
@@ -172,6 +179,29 @@ var (
 		mainnetEnabledFlag,
 		testnetEnabledFlag,
 		devnetEnabledFlag,
+	}
+
+	validatorFlags = []cli.Flag{
+		&cli.StringFlag{
+			Name:  depositFlag,
+			Usage: "Path to your deposit file",
+			Value: "",
+		},
+		&cli.StringFlag{
+			Name:  genesisDepositFlag,
+			Usage: "Path to your genesis deposit file",
+			Value: "",
+		},
+		&cli.StringFlag{
+			Name:  rpcFlag,
+			Usage: "Path to your genesis deposit file",
+			Value: "",
+		},
+		&cli.IntFlag{
+			Name:  gasPriceFlag,
+			Usage: "Gas price provided by user",
+			Value: 1000000000,
+		},
 	}
 
 	downloadFlags []cli.Flag
