@@ -5,19 +5,24 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 	"math/big"
 	"os"
+	"os/exec"
 
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/urfave/cli/v2"
 )
 
-const gasLimit = 21_000
+const (
+	gasLimit               = 21_000
+	depositContractAddress = "0xcd2a3d9f938e13cd947ec0i8um67fe734df8d8861"
+)
 
 type DepositDataKey struct {
-	Pubkey                string   `json:"pubkey"`
+	PubKey                string   `json:"pubkey"`
 	WithdrawalCredentials string   `json:"withdrawal_credentials"`
 	Amount                *big.Int `json:"amount"`
 	Signature             string   `json:"signature"`
@@ -86,28 +91,29 @@ func sendDeposit(ctx *cli.Context) error {
 		return err
 	}
 
-	t := &types.LegacyTx{
-		Nonce:    0,
-		GasPrice: nil,
-		Gas:      0,
-		To:       nil,
-		Value:    nil,
-		Data:     nil,
-		V:        nil,
-		R:        nil,
-		S:        nil,
-	}
-
-	tx, err := types.SignTx(types.NewTx(t), nil, privKey)
-
-	err = eth.SendTransaction(c, tx)
-	if err != nil {
-		return err
-	}
+	senderAddr := crypto.PubkeyToAddress(privKey.PublicKey)
 
 	for i, key := range depositKeys {
+		nonce, err := eth.PendingNonceAt(c, senderAddr)
+
+		validatorPubKey, err := crypto.UnmarshalPubkey([]byte(key.PubKey))
+		if err != nil {
+			return err
+		}
+
+		validatorAddr := crypto.PubkeyToAddress(*validatorPubKey)
+		fmt.Println(validatorAddr)
+
+		tx := types.NewTransaction(nonce, common.HexToAddress(depositContractAddress), big.NewInt(0), gasLimit, gasPrice, []byte{}) // contract data in []byte
+
+		signedTx, err := types.SignTx(tx, nil, privKey)
+
+		err = eth.SendTransaction(c, signedTx)
+		if err != nil {
+			return err
+		}
 		fmt.Printf("Deposit %d/%d\n", i+1, keysNum)
-		fmt.Println("Pubkey:", key.Pubkey)
+		fmt.Println("PubKey:", validatorPubKey)
 		fmt.Println("Withdraw credentials:", key.WithdrawalCredentials)
 		fmt.Println("Amount:", key.Amount.String())
 		fmt.Println("Signature:", key.Signature)
@@ -119,6 +125,20 @@ func sendDeposit(ctx *cli.Context) error {
 	}
 
 	return err
+}
+
+func initValidator(ctx *cli.Context) error {
+	initCommand := exec.Command("validator", "accounts", "import", ctx.String(validatorWalletDirFlag))
+
+	initCommand.Stdout = os.Stdout
+	initCommand.Stderr = os.Stderr
+
+	err := initCommand.Run()
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func parseDepositFile(depositFilePath string) (keys []DepositDataKey, err error) {

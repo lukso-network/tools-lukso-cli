@@ -204,6 +204,10 @@ var (
 		},
 	}
 
+	validatorInitFlags = []cli.Flag{
+		&cli.StringFlag{},
+	}
+
 	downloadFlags []cli.Flag
 	updateFlags   []cli.Flag
 	stopFlags     = []cli.Flag{

@@ -219,6 +219,14 @@ func main() {
 			Usage:  "Send deposits from your deposit file",
 			Flags:  validatorFlags,
 			Action: sendDeposit,
+			Subcommands: []*cli.Command{
+				{
+					Name:   "init",
+					Usage:  "Initializes your validator with keys generated using keygen tools",
+					Flags:  validatorInitFlags,
+					Action: initValidator,
+				},
+			},
 		},
 	}
 

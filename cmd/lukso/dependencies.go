@@ -39,13 +39,13 @@ var (
 			filePath:      "", // binary dir selected during runtime
 		},
 		prysmDependencyName: {
-			baseUnixUrl:   "https://github.com/mxmar/prysm/releases/download/v3.2.0-dev/beacon-chain-v3.2.0-linux-amd64",
+			baseUnixUrl:   "https://github.com/prysmaticlabs/prysm/releases/download/%s/beacon-chain-%s-linux-amd64",
 			baseDarwinUrl: "https://github.com/prysmaticlabs/prysm/releases/download/%s/beacon-chain-%s-darwin-amd64",
 			name:          prysmDependencyName,
 			filePath:      "", // binary dir selected during runtime
 		},
 		validatorDependencyName: {
-			baseUnixUrl:   "https://github.com/mxmar/prysm/releases/download/v3.2.0-dev/validator-v3.2.0-linux-amd64",
+			baseUnixUrl:   "https://github.com/prysmaticlabs/prysm/releases/download/%s/validator-%s-linux-amd64",
 			baseDarwinUrl: "https://github.com/prysmaticlabs/prysm/releases/download/%s/validator-%s-darwin-amd64",
 			name:          validatorDependencyName,
 			filePath:      "", // binary dir selected during runtime
