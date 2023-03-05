@@ -4,9 +4,12 @@ import (
 	"bufio"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
+	depositMock "github.com/m8b-dev/lukso-cli/contracts/bindings"
 	"math/big"
 	"os"
 	"os/exec"
@@ -35,7 +38,7 @@ type DepositDataKey struct {
 
 func sendDeposit(ctx *cli.Context) error {
 	log.Info("Dialing up blockchain for gas info...")
-	eth, err := ethclient.Dial("https://mainnet.infura.io/v3/ab367e2f12804177b29bade35c399475")
+	eth, err := ethclient.Dial("https://rpc.2022.l16.lukso.network")
 	if err != nil {
 		return err
 	}
@@ -104,10 +107,6 @@ func sendDeposit(ctx *cli.Context) error {
 		validatorAddr := crypto.PubkeyToAddress(*validatorPubKey)
 		fmt.Println(validatorAddr)
 
-		tx := types.NewTransaction(nonce, common.HexToAddress(depositContractAddress), big.NewInt(0), gasLimit, gasPrice, []byte{}) // contract data in []byte
-
-		signedTx, err := types.SignTx(tx, nil, privKey)
-
 		err = eth.SendTransaction(c, signedTx)
 		if err != nil {
 			return err
@@ -122,9 +121,40 @@ func sendDeposit(ctx *cli.Context) error {
 		fmt.Println("Fork version:", key.ForkVersion)
 		fmt.Println("Network name:", key.NetworkName)
 		fmt.Println("Deposit CLI version:", key.DepositCliVersion, "\n")
+
+		dep, err := depositMock.NewDepositMock(common.Address{}, eth)
+		if err != nil {
+			return err
+		}
+
+		var byteSlice [32]byte
+		byteData := []byte(key.DepositDataRoot)
+		if len(byteData) != 32 {
+			return errors.New("asdasdasdasdasdsadasd")
+		}
+
+		for i := range byteSlice {
+			byteSlice[i] = byteData[i]
+		}
+
+		opts, err := bind.NewKeyedTransactorWithChainID(privKey, big.NewInt(2022))
+		if err != nil {
+			return err
+		}
+
+		tx, err := dep.Deposit(opts, []byte(key.PubKey), []byte(key.WithdrawalCredentials), []byte(key.Signature), byteSlice)
+		if err != nil {
+			return err
+		}
+
+		signedTx, err := types.SignTx(tx, opts.Signer, privKey)
+		if err != nil {
+			return err
+		}
+
 	}
 
-	return err
+	return nil
 }
 
 func initValidator(ctx *cli.Context) error {
