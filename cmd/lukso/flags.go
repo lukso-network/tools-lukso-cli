@@ -194,7 +194,7 @@ var (
 		},
 		&cli.StringFlag{
 			Name:  rpcFlag,
-			Usage: "Path to your genesis deposit file",
+			Usage: "Your RPC provider",
 			Value: "",
 		},
 		&cli.IntFlag{

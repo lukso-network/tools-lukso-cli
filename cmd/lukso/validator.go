@@ -3,25 +3,24 @@ package main
 import (
 	"bufio"
 	"context"
+	"encoding/hex"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
-	depositMock "github.com/m8b-dev/lukso-cli/contracts/bindings"
+	"github.com/ethereum/go-ethereum/ethclient"
+	"github.com/m8b-dev/lukso-cli/contracts/bindings"
+	"github.com/urfave/cli/v2"
 	"math/big"
 	"os"
 	"os/exec"
-
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/ethclient"
-	"github.com/urfave/cli/v2"
 )
 
 const (
 	gasLimit               = 21_000
-	depositContractAddress = "0xcd2a3d9f938e13cd947ec0i8um67fe734df8d8861"
+	depositContractAddress = "0x75D1f4695Eb87d60eD4EAE2c0CF05e7428Fa4b5F"
+	lyxeContractAddress    = "0x7A2AC110202ebFdBB5dB15Ea994ba6bFbFcFc215"
 )
 
 type DepositDataKey struct {
@@ -48,6 +47,7 @@ func sendDeposit(ctx *cli.Context) error {
 	if err != nil {
 		return err
 	}
+
 	log.Infof("Gas Price fetched: %v WEI (~%v GWEI)", gasPrice, big.NewInt(0).Div(gasPrice, big.NewInt(1_000_000_000)))
 
 	var selectedDeposit string
@@ -74,18 +74,19 @@ func sendDeposit(ctx *cli.Context) error {
 	}
 
 	keysNum := len(depositKeys)
-	overallGasPrice := gasPrice.Mul(gasPrice, big.NewInt(int64(keysNum*gasLimit)))
+	singleTxGasPrice := big.NewInt(0).Mul(gasPrice, big.NewInt(int64(gasLimit)))
+	overallGasPrice := big.NewInt(0).Mul(singleTxGasPrice, big.NewInt(int64(keysNum)))
 	overallGasPriceInt := overallGasPrice.Int64()
 	overallGasPriceEth, _ := big.NewRat(overallGasPriceInt, 1_000_000_000_000_000_000).Float64()
 
-	log.Infof("Before proceeding make sure that your private key has sufficient balance :\n"+
+	log.Infof("Before proceeding make sure that your private key has sufficient balance:\n"+
 		"- %v ETH\n"+
 		"- %v LYXe\n\n", overallGasPriceEth, keysNum*32)
 
 	fmt.Println("Please enter your private key")
 	fmt.Print(">")
-	scanner := bufio.NewScanner(os.Stdin)
 
+	scanner := bufio.NewScanner(os.Stdin)
 	scanner.Scan()
 	input := scanner.Text()
 
@@ -95,24 +96,25 @@ func sendDeposit(ctx *cli.Context) error {
 	}
 
 	senderAddr := crypto.PubkeyToAddress(privKey.PublicKey)
+	chainId, err := eth.ChainID(c)
+	if err != nil {
+		return err
+	}
 
 	for i, key := range depositKeys {
 		nonce, err := eth.PendingNonceAt(c, senderAddr)
 
-		validatorPubKey, err := crypto.UnmarshalPubkey([]byte(key.PubKey))
+		opts, err := bind.NewKeyedTransactorWithChainID(privKey, chainId)
 		if err != nil {
 			return err
 		}
 
-		validatorAddr := crypto.PubkeyToAddress(*validatorPubKey)
-		fmt.Println(validatorAddr)
-
-		err = eth.SendTransaction(c, signedTx)
+		lyxMock, err := bindings.NewLYXe(common.HexToAddress(lyxeContractAddress), eth)
 		if err != nil {
 			return err
 		}
+
 		fmt.Printf("Deposit %d/%d\n", i+1, keysNum)
-		fmt.Println("PubKey:", validatorPubKey)
 		fmt.Println("Withdraw credentials:", key.WithdrawalCredentials)
 		fmt.Println("Amount:", key.Amount.String())
 		fmt.Println("Signature:", key.Signature)
@@ -122,36 +124,22 @@ func sendDeposit(ctx *cli.Context) error {
 		fmt.Println("Network name:", key.NetworkName)
 		fmt.Println("Deposit CLI version:", key.DepositCliVersion, "\n")
 
-		dep, err := depositMock.NewDepositMock(common.Address{}, eth)
+		opts.From = senderAddr
+		//opts.GasPrice = singleTxGasPrice
+		opts.Value = big.NewInt(0)
+		opts.Nonce = big.NewInt(int64(nonce))
+
+		depositData, err := prepareDepositData(key)
 		if err != nil {
 			return err
 		}
 
-		var byteSlice [32]byte
-		byteData := []byte(key.DepositDataRoot)
-		if len(byteData) != 32 {
-			return errors.New("asdasdasdasdasdsadasd")
-		}
-
-		for i := range byteSlice {
-			byteSlice[i] = byteData[i]
-		}
-
-		opts, err := bind.NewKeyedTransactorWithChainID(privKey, big.NewInt(2022))
+		tx, err := lyxMock.Send(opts, common.HexToAddress(depositContractAddress), big.NewInt(0).Mul(big.NewInt(32), big.NewInt(1000000000000000000)), depositData)
 		if err != nil {
 			return err
 		}
 
-		tx, err := dep.Deposit(opts, []byte(key.PubKey), []byte(key.WithdrawalCredentials), []byte(key.Signature), byteSlice)
-		if err != nil {
-			return err
-		}
-
-		signedTx, err := types.SignTx(tx, opts.Signer, privKey)
-		if err != nil {
-			return err
-		}
-
+		fmt.Println("GAS PRICE:", tx.GasPrice().Int64(), "GAS TIP:", tx.GasTipCap().Int64(), "GAS FEE:", tx.GasFeeCap().Int64())
 	}
 
 	return nil
@@ -178,6 +166,48 @@ func parseDepositFile(depositFilePath string) (keys []DepositDataKey, err error)
 	}
 
 	err = json.Unmarshal(f, &keys)
+
+	return
+}
+
+func prepareDepositData(key DepositDataKey) (depositData []byte, err error) {
+	bytePubKey, err := hex.DecodeString(key.PubKey)
+	if err != nil {
+		return
+	}
+	if len(bytePubKey) != 48 {
+		return
+	}
+
+	byteWithdrawalCredentials, err := hex.DecodeString(key.WithdrawalCredentials)
+	if err != nil {
+		return
+	}
+	if len(byteWithdrawalCredentials) != 32 {
+		return
+	}
+
+	byteSignature, err := hex.DecodeString(key.Signature)
+	if err != nil {
+		return
+	}
+	if len(byteSignature) != 96 {
+		return
+	}
+
+	byteDepositDataRoot, err := hex.DecodeString(key.DepositDataRoot)
+	if err != nil {
+		return
+	}
+	if len(byteDepositDataRoot) != 32 {
+		return
+	}
+
+	depositData = append(depositData, bytePubKey...)
+	depositData = append(depositData, byteWithdrawalCredentials...)
+	depositData = append(depositData, byteSignature...)
+	depositData = append(depositData, byteDepositDataRoot...)
+	depositData = append(depositData, byte(32))
 
 	return
 }
