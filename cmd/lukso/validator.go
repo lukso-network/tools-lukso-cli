@@ -15,12 +15,15 @@ import (
 	"math/big"
 	"os"
 	"os/exec"
+	"time"
 )
 
 const (
 	gasLimit               = 21_000
 	depositContractAddress = "0x75D1f4695Eb87d60eD4EAE2c0CF05e7428Fa4b5F"
 	lyxeContractAddress    = "0x7A2AC110202ebFdBB5dB15Ea994ba6bFbFcFc215"
+	maxTxsPerBlock         = 10
+	blockFetchInterval     = 3 // in seconds
 )
 
 type DepositDataKey struct {
@@ -48,7 +51,7 @@ func sendDeposit(ctx *cli.Context) error {
 		return err
 	}
 
-	log.Infof("Gas Price fetched: %v WEI (~%v GWEI)", gasPrice, big.NewInt(0).Div(gasPrice, big.NewInt(1_000_000_000)))
+	log.Infof("Gas Price fetched: %v", gasPrice)
 
 	var selectedDeposit string
 
@@ -101,33 +104,61 @@ func sendDeposit(ctx *cli.Context) error {
 		return err
 	}
 
-	for i, key := range depositKeys {
-		nonce, err := eth.PendingNonceAt(c, senderAddr)
+	opts, err := bind.NewKeyedTransactorWithChainID(privKey, chainId)
+	if err != nil {
+		return err
+	}
 
-		opts, err := bind.NewKeyedTransactorWithChainID(privKey, chainId)
+	lyxMock, err := bindings.NewLYXe(common.HexToAddress(lyxeContractAddress), eth)
+	if err != nil {
+		return err
+	}
+
+	startingBlock, err := eth.BlockNumber(c)
+	if err != nil {
+		return err
+	}
+
+	// we take nonce once for 1st transaction and increment it manually
+	nonce, err := eth.PendingNonceAt(c, senderAddr)
+	if err != nil {
+		return err
+	}
+
+	txCount := 1 // if txCount reaches 10 then we have to wait for another block
+	txHashes := make([]common.Hash, 0)
+
+	for i, key := range depositKeys {
+		currentBlock, err := eth.BlockNumber(c)
 		if err != nil {
 			return err
 		}
 
-		lyxMock, err := bindings.NewLYXe(common.HexToAddress(lyxeContractAddress), eth)
-		if err != nil {
-			return err
+		if currentBlock != startingBlock {
+			startingBlock = currentBlock
+			txCount = 1
+		}
+
+		if txCount > maxTxsPerBlock {
+			fmt.Println("Reached 10 tx per block - waiting for next block...")
+			startingBlock, err = waitForNextBlock(c, eth, currentBlock)
+			if err != nil {
+				return err
+			}
+
+			txCount = 1
 		}
 
 		fmt.Printf("Deposit %d/%d\n", i+1, keysNum)
-		fmt.Println("Withdraw credentials:", key.WithdrawalCredentials)
 		fmt.Println("Amount:", key.Amount.String())
-		fmt.Println("Signature:", key.Signature)
-		fmt.Println("Deposit message root:", key.DepositMessageRoot)
-		fmt.Println("Deposit data root:", key.DepositDataRoot)
+		fmt.Println("Public Key:", key.PubKey)
+		fmt.Println("Withdraw credentials:", key.WithdrawalCredentials)
 		fmt.Println("Fork version:", key.ForkVersion)
-		fmt.Println("Network name:", key.NetworkName)
-		fmt.Println("Deposit CLI version:", key.DepositCliVersion, "\n")
+		fmt.Println("Deposit data root:", key.DepositDataRoot)
+		fmt.Println("Signature:", key.Signature, "\n")
 
-		opts.From = senderAddr
-		//opts.GasPrice = singleTxGasPrice
-		opts.Value = big.NewInt(0)
 		opts.Nonce = big.NewInt(int64(nonce))
+		opts.From = senderAddr
 
 		depositData, err := prepareDepositData(key)
 		if err != nil {
@@ -139,7 +170,11 @@ func sendDeposit(ctx *cli.Context) error {
 			return err
 		}
 
-		fmt.Println("GAS PRICE:", tx.GasPrice().Int64(), "GAS TIP:", tx.GasTipCap().Int64(), "GAS FEE:", tx.GasFeeCap().Int64())
+		fmt.Printf("Transaction %d/%d successful! Transaction hash: %v\n\n", i+1, keysNum, tx.Hash().String())
+
+		nonce = tx.Nonce() + 1 // we could do nonce += 1, but it's just to make sure we are +1 ahead of previous tx
+		txCount++
+		txHashes = append(txHashes, tx.Hash())
 	}
 
 	return nil
@@ -208,6 +243,23 @@ func prepareDepositData(key DepositDataKey) (depositData []byte, err error) {
 	depositData = append(depositData, byteSignature...)
 	depositData = append(depositData, byteDepositDataRoot...)
 	depositData = append(depositData, byte(32))
+
+	return
+}
+
+// waitForNextBlock fetches current block in 3 second intervals, and
+func waitForNextBlock(c context.Context, eth *ethclient.Client, currentBlock uint64) (blockNumber uint64, err error) {
+	for {
+		time.Sleep(time.Second * blockFetchInterval)
+		blockNumber, err = eth.BlockNumber(c)
+		if err != nil {
+			return
+		}
+
+		if currentBlock != blockNumber {
+			break
+		}
+	}
 
 	return
 }
