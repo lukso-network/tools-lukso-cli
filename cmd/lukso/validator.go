@@ -154,12 +154,11 @@ func sendDeposit(ctx *cli.Context) error {
 			depositData,
 		)
 
-		gas := tx.Gas() * tx.GasPrice().Uint64() * uint64(keysNum)
-		gasInEther, _ := big.NewRat(int64(gas), ether).Float64()
+		gasReadable := estimateGas(tx, int64(keysNum))
 
 		message = fmt.Sprintf("Before proceeding make sure that your private key has sufficient balance:\n"+
 			"- %v ETH\n"+
-			"- %v LYXe\nDo you wish to continue? [Y/n]: ", gasInEther, keysNum*32)
+			"- %v LYXe\nDo you wish to continue? [Y/n]: ", gasReadable, keysNum*32)
 
 	case depositPath:
 		opts.Value = big.NewInt(0).Mul(big.NewInt(32), big.NewInt(ether))
@@ -186,11 +185,10 @@ func sendDeposit(ctx *cli.Context) error {
 			return err
 		}
 
-		gas := tx.Gas() * tx.GasPrice().Uint64() * uint64(keysNum)
-		gasInEther, _ := big.NewRat(int64(gas), ether).Float64()
+		gasReadable := estimateGas(tx, int64(keysNum))
 
 		message = fmt.Sprintf("Before proceeding make sure that your private key has sufficient balance:\n"+
-			"- %v LYX\nDo you wish to continue? [Y/n]: ", float64(keysNum*32)+gasInEther)
+			"- %v LYX\nDo you wish to continue? [Y/n]: ", float64(keysNum*32)+gasReadable)
 
 	}
 
@@ -441,4 +439,15 @@ Please enter your choice (1-5):
 	}
 
 	return
+}
+
+// estimateGas estimates a human-readable gas price for txCount transactions summed.
+func estimateGas(tx *types.Transaction, txCount int64) float64 {
+	txGas := big.NewInt(int64(tx.Gas()))
+	txGasFeeCap := tx.GasFeeCap()
+	txGas = txGas.Mul(txGas, txGasFeeCap)
+	allTxGas := big.NewInt(0).Mul(txGas, big.NewInt(txCount))
+	gasInEther, _ := big.NewRat(allTxGas.Int64(), ether).Float64()
+
+	return gasInEther
 }
