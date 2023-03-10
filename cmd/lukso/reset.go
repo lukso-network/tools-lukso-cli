@@ -1,9 +1,10 @@
 package main
 
 import (
-	"bufio"
+	"fmt"
 	"github.com/urfave/cli/v2"
 	"os"
+	"strings"
 )
 
 func resetClients(ctx *cli.Context) error {
@@ -39,15 +40,12 @@ func resetClients(ctx *cli.Context) error {
 		return nil
 	}
 
-	log.Warnf("WARNING: THIS ACTION WILL REMOVE DATA DIRECTORIES FROM ALL OF RUNNING CLIENTS.\n"+
+	message := fmt.Sprintf("WARNING: THIS ACTION WILL REMOVE DATA DIRECTORIES FROM ALL OF RUNNING CLIENTS.\n"+
 		"Are you sure you want to continue?\nDirectories that will be deleted:\n"+
 		"- %s\n- %s\n- %s\n[Y/n]", ctx.String(gethDatadirFlag), ctx.String(prysmDatadirFlag), ctx.String(validatorDatadirFlag))
 
-	scanner := bufio.NewScanner(os.Stdin)
-
-	scanner.Scan()
-	input := scanner.Text()
-	if input != "Y" {
+	input := registerInputWithMessage(message)
+	if !strings.EqualFold(input, "y") {
 		log.Info("Aborting...")
 
 		return nil

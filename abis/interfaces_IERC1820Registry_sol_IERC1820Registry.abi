@@ -1,0 +1,1 @@
+[{"inputs":[{"internalType":"address","name":"_addr","type":"address"},{"internalType":"bytes32","name":"_interfaceHash","type":"bytes32"},{"internalType":"address","name":"_implementer","type":"address"}],"name":"setInterfaceImplementer","outputs":[],"stateMutability":"nonpayable","type":"function"}]

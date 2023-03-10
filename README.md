@@ -3,7 +3,10 @@
 
 
 ## Repository struct
-In `./cmd/lukso` lies code of Lukso CLI
+- [`./cmd/lukso`](./cmd/lukso): code of LUKSO CLI
+- [`./abis`](./abis) - collection of ABIs from smart contracts that are being interacted with
+- [`./contracts`](./contracts) - collection of said smart contracts
+- [`./contracts/bindings`](./contracts/bindings) - bindings generated from ABIs - to generate new bindings see [Generate bindings](#generate-bindings) section.
 
 ## Installation ( Linux/MacOS )
 
@@ -19,15 +22,18 @@ Enter `lukso start` to start a node.
 `lukso <command> [geth, prysm, validator, *all*] [--flags]`
 > *all* means that you can skip an argument for all possible options to run (default, only option for download)
 
-| Command  | Description                             |
-|----------|-----------------------------------------|
-| download | Downloads all client(s)                 |
-| init     | Initializes configuration files         |
-| update   | sets client(s) to desired version       |
-| start    | Starts up all or specific client(s)     |
-| stop     | Stops all or specific client(s)         |
-| logs     | Show logs                               |
-| status   | Shows status of all or specified client |
+| Command        | Description                                  |
+|----------------|----------------------------------------------|
+| install        | Downloads all client(s)                      |
+| init           | Initializes configuration files              |
+| update         | sets client(s) to desired version            |
+| start          | Starts up all or specific client(s)          |
+| stop           | Stops all or specific client(s)              |
+| log            | Show logs                                    |
+| status         | Shows status of all or specified client      |
+| reset          | Resets data directories                      |
+| validator      | Manages validator-related commands           |
+| validator init | Initializes your validator with deposit keys | 
 
 
 ### start
@@ -36,6 +42,9 @@ How to use flags with values? Provide a flag and value like: `lukso start --data
 
 | Name                                | Description                                             | Argument                          | Default value                                          |
 |-------------------------------------|---------------------------------------------------------|-----------------------------------|--------------------------------------------------------|
+| --mainnet                           | Run for mainnet (default network)                       | Bool                              | false                                                  |
+| --testnet                           | Run for testnet                                         | Bool                              | false                                                  |
+| --devnet                            | Run for devnet                                          | Bool                              | false                                                  |
 | --geth-datadir                      | A path of geth's data directory                         | Path                              | ./execution_data                                       |
 | --geth-ws                           | Enable WS server                                        | None                              | true                                                   |
 | --geth-ws-addr                      | Address of WS server                                    | IP Address                        | 0.0.0.0                                                |
@@ -119,11 +128,69 @@ Note difference in tags between geth and prysm/validator (`v` at the beginning)
 | --validator-tag | Tag of validator's version that you want to download | Tag, ex. `v1.0.0` |
 | --prysm-tag     | Tag of prysm's version that you want to download     | Tag, ex. `v1.0.0` |
 
-### logs
-| Name                    | Description                                     | Argument                                   |
-|-------------------------|-------------------------------------------------|--------------------------------------------|
-| --geth-output-file      | Path to geth log file that you want to log      | Path, ex. `./logs/log_folder/log_file.log` |
-| --prysm-output-file     | Path to prysm log file that you want to log     | Path, ex. `./logs/log_folder/log_file.log` |
-| --validator-output-file | Path to validator log file that you want to log | Path, ex. `./logs/log_folder/log_file.log` |
+### log
+| Name                    | Description                                     | Argument | Default          |
+|-------------------------|-------------------------------------------------|----------|------------------|
+| --geth-output-file      | Path to geth log file that you want to log      | Path     | "./mainnet-logs" |
+| --prysm-output-file     | Path to prysm log file that you want to log     | Path     | "./mainnet-logs" |
+| --validator-output-file | Path to validator log file that you want to log | Path     | "./mainnet-logs" |
+| --mainnet               | Run for mainnet (default network)               | Bool     | false            |
+| --testnet               | Run for testnet                                 | Bool     | false            |
+| --devnet                | Run for devnet                                  | Bool     | false            |
 
-NOTE: `logs` command is broken after changing structure of log files (adding timestamp to filename).
+### reset
+| Name                | Description                       | Argument | Default                    |
+|---------------------|-----------------------------------|----------|----------------------------|
+| --geth-datadir      | geth datadir                      | Path     | "./mainnet-data/execution" |
+| --prysm-datadir     | prysm datadir                     | Path     | "./mainnet-data/consensus" |
+| --validator-datadir | validator datadir                 | Path     | "./mainnet-data/validator" |
+| --mainnet           | Run for mainnet (default network) | Bool     | false                      |
+| --testnet           | Run for testnet                   | Bool     | false                      |
+| --devnet            | Run for devnet                    | Bool     | false                      |
+
+
+
+### validator
+| Name                | Description                                                                       | Argument | Default                              |
+|---------------------|-----------------------------------------------------------------------------------|----------|--------------------------------------|
+| --deposit           | Path to your deposit file - makes a deposit to a deposit contract                 | Path     | ""                                   |
+| --genesis-deposit   | Path to your genesis deposit file - makes a deposit to genesis validator contract | Path     | ""                                   |
+| --rpc               | Your RPC provider                                                                 | URL      | "https://rpc.2022.l16.lukso.network" |
+| --gas-price         | Gas price provided by user                                                        | Int      | 1000000000                           |
+| --max-txs-per-block | Maximum amount of txs sent per single block                                       | Int      | 10                                   |
+
+### validator init
+| Name                                   | Description                           | Argument | Default              |
+|----------------------------------------|---------------------------------------|----------|----------------------|
+| --validator-wallet-dir value           | location of generated wallet          | Path     | "./mainnet-keystore" |
+| --validator-keys-dir value             | Path to your validator keys           | Path     |                      |
+| --validator-wallet-password-file value | Path to your password file            | Path     |                      |
+| --mainnet                              | Run for mainnetFlag (default network) | Bool     | false                |
+| --testnet                              | Run for testnetFlag                   | Bool     | false                |
+| --devnet                               | Run for devnet                        | Bool     | false                |
+
+## Generate bindings
+### Prerequisites:
+- solc (https://github.com/ethereum/solidity)
+- abigen (https://geth.ethereum.org/docs/tools/abigen)
+
+### Steps
+
+1) Paste your smart contract that you want to interact with into [`./contracts`](./contracts) directory
+2) Generate ABI from your smart contract:
+```bash
+$ solcjs --output-dir abis --abi contracts/depositContract.sol
+```
+3) Generate bindings using newly generated ABI
+```bash
+abigen --abi abis/your-abi-file --pkg bindings --out contracts/bindings/yourBindingFile.go --type TypeName
+```
+4) To use binding in code type in:
+```go
+bind, err := bindings.NewTypeName(common.HexToAddress(contractAddress), ethClient)
+if err != nil {
+	return
+}
+
+tx, err := bind.DoSomething(...)
+```

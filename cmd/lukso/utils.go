@@ -124,14 +124,11 @@ func getLastFile(dir string, dependency string) (string, error) {
 
 	lastFile := files[len(files)-1]
 
-	log.Infof("(NOTE: PATH TO FILE: %s)\nDo you want to show log file %s?"+
+	message := fmt.Sprintf("(NOTE: PATH TO FILE: %s)\nDo you want to show log file %s?"+
 		" Doing so can print lots of text on your screen [Y/n]: ", dir+"/"+lastFile, lastFile)
 
-	scanner := bufio.NewScanner(os.Stdin)
-
-	scanner.Scan()
-	input := scanner.Text()
-	if input != "Y" {
+	input := registerInputWithMessage(message)
+	if !strings.EqualFold(input, "y") {
 		log.Info("Aborting...") // there is no error, just a possible change of mind - shouldn't return err
 
 		return "", nil
@@ -149,4 +146,13 @@ func boolToInt(b bool) int {
 		return 1
 	}
 	return 0
+}
+
+func registerInputWithMessage(message string) (input string) {
+	fmt.Print(message)
+
+	scanner := bufio.NewScanner(os.Stdin)
+	scanner.Scan()
+
+	return scanner.Text()
 }

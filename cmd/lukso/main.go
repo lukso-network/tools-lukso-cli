@@ -71,6 +71,8 @@ func init() {
 	validatorStartFlags = append(validatorStartFlags, networkFlags...)
 	validatorLogsFlags = append(validatorLogsFlags, networkFlags...)
 	validatorResetFlags = append(validatorResetFlags, networkFlags...)
+
+	validatorInitFlags = append(validatorInitFlags, networkFlags...)
 }
 
 func main() {
@@ -213,6 +215,20 @@ func main() {
 			Usage:  "Reset data directories of all clients alongside with their log files",
 			Flags:  resetFlags,
 			Action: selectNetworkFor(resetClients),
+		},
+		{
+			Name:   "validator",
+			Usage:  "Send deposits from your deposit file",
+			Flags:  validatorFlags,
+			Action: sendDeposit,
+			Subcommands: []*cli.Command{
+				{
+					Name:   "init",
+					Usage:  "Initializes your validator with keys generated using keygen tools",
+					Flags:  validatorInitFlags,
+					Action: selectNetworkFor(initValidator),
+				},
+			},
 		},
 	}
 

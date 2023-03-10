@@ -46,6 +46,7 @@ const (
 	validatorTagFlag                   = "validator-tag"
 	validatorDatadirFlag               = "validator-datadir"
 	validatorWalletDirFlag             = "validator-wallet-dir"
+	validatorKeysDirFlag               = "validator-keys-dir"
 	validatorWalletPasswordFileFlag    = "validator-wallet-password-file"
 	validatorChainConfigFileFlag       = "validator-chain-config-file"
 	validatorMonitoringHostFlag        = "validator-monitoring-host"
@@ -131,6 +132,14 @@ const (
 	jwtSecretPath        = "shared/secrets/jwt.hex"
 	configTomlPath       = "geth/config.toml"
 	genesisJsonPath      = "geth/genesis.json"
+
+	// validator tool related flags
+	depositFlag        = "deposit"
+	genesisDepositFlag = "genesis-deposit"
+	validatorKeysFlag  = "validator-keys"
+	gasPriceFlag       = "gas-price"
+	rpcFlag            = "rpc"
+	maxTxsPerBlock     = "max-txs-per-block"
 )
 
 var (
@@ -172,6 +181,52 @@ var (
 		mainnetEnabledFlag,
 		testnetEnabledFlag,
 		devnetEnabledFlag,
+	}
+
+	validatorFlags = []cli.Flag{
+		&cli.StringFlag{
+			Name:  depositFlag,
+			Usage: "Path to your deposit file",
+			Value: "",
+		},
+		&cli.StringFlag{
+			Name:  genesisDepositFlag,
+			Usage: "Path to your genesis deposit file",
+			Value: "",
+		},
+		&cli.StringFlag{
+			Name:  rpcFlag,
+			Usage: "Your RPC provider",
+			Value: "https://rpc.2022.l16.lukso.network",
+		},
+		&cli.IntFlag{
+			Name:  gasPriceFlag,
+			Usage: "Gas price provided by user",
+			Value: 1000000000,
+		},
+		&cli.IntFlag{
+			Name:  maxTxsPerBlock,
+			Usage: "Maximum amount of txs sent per single block",
+			Value: 10,
+		},
+	}
+
+	validatorInitFlags = []cli.Flag{
+		&cli.StringFlag{
+			Name:  validatorWalletDirFlag,
+			Usage: "location of generated wallet",
+			Value: mainnetKeystore,
+		},
+		&cli.StringFlag{
+			Name:  validatorKeysDirFlag,
+			Usage: "Path to your validator keys",
+			Value: "",
+		},
+		&cli.StringFlag{
+			Name:  validatorWalletPasswordFileFlag,
+			Usage: "Path to your password file",
+			Value: "",
+		},
 	}
 
 	downloadFlags []cli.Flag
