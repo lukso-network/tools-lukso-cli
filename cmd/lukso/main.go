@@ -71,6 +71,8 @@ func init() {
 	validatorStartFlags = append(validatorStartFlags, networkFlags...)
 	validatorLogsFlags = append(validatorLogsFlags, networkFlags...)
 	validatorResetFlags = append(validatorResetFlags, networkFlags...)
+
+	validatorInitFlags = append(validatorInitFlags, networkFlags...)
 }
 
 func main() {
@@ -224,7 +226,7 @@ func main() {
 					Name:   "init",
 					Usage:  "Initializes your validator with keys generated using keygen tools",
 					Flags:  validatorInitFlags,
-					Action: initValidator,
+					Action: selectNetworkFor(initValidator),
 				},
 			},
 		},

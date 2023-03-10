@@ -46,6 +46,7 @@ const (
 	validatorTagFlag                   = "validator-tag"
 	validatorDatadirFlag               = "validator-datadir"
 	validatorWalletDirFlag             = "validator-wallet-dir"
+	validatorKeysDirFlag               = "validator-keys-dir"
 	validatorWalletPasswordFileFlag    = "validator-wallet-password-file"
 	validatorChainConfigFileFlag       = "validator-chain-config-file"
 	validatorMonitoringHostFlag        = "validator-monitoring-host"
@@ -195,7 +196,7 @@ var (
 		&cli.StringFlag{
 			Name:  rpcFlag,
 			Usage: "Your RPC provider",
-			Value: "",
+			Value: "https://rpc.2022.l16.lukso.network",
 		},
 		&cli.IntFlag{
 			Name:  gasPriceFlag,
@@ -205,7 +206,21 @@ var (
 	}
 
 	validatorInitFlags = []cli.Flag{
-		&cli.StringFlag{},
+		&cli.StringFlag{
+			Name:  validatorWalletDirFlag,
+			Usage: "location of generated wallet",
+			Value: mainnetKeystore,
+		},
+		&cli.StringFlag{
+			Name:  validatorKeysDirFlag,
+			Usage: "Path to your validator keys",
+			Value: "",
+		},
+		&cli.StringFlag{
+			Name:  validatorWalletPasswordFileFlag,
+			Usage: "Path to your password file",
+			Value: "",
+		},
 	}
 
 	downloadFlags []cli.Flag

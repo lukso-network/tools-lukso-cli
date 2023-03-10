@@ -1,29 +1,34 @@
 package main
 
 import (
-	"bufio"
 	"context"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"github.com/ethereum/go-ethereum/accounts/abi/bind"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/ethclient"
-	"github.com/m8b-dev/lukso-cli/contracts/bindings"
-	"github.com/urfave/cli/v2"
 	"math/big"
 	"os"
 	"os/exec"
+	"strconv"
 	"time"
+
+	"github.com/ethereum/go-ethereum/accounts/abi/bind"
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/core/types"
+	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/ethereum/go-ethereum/ethclient"
+	"github.com/urfave/cli/v2"
+
+	"github.com/m8b-dev/lukso-cli/contracts/bindings"
 )
 
 const (
-	gasLimit               = 21_000
-	depositContractAddress = "0x75D1f4695Eb87d60eD4EAE2c0CF05e7428Fa4b5F"
-	lyxeContractAddress    = "0x7A2AC110202ebFdBB5dB15Ea994ba6bFbFcFc215"
-	maxTxsPerBlock         = 10
-	blockFetchInterval     = 3 // in seconds
+	gasLimit                      = 21_000
+	depositContractAddress        = "0x000000000000000000000000000000000000cafe"
+	genesisDepositContractAddress = "0x75D1f4695Eb87d60eD4EAE2c0CF05e7428Fa4b5F"
+	lyxeContractAddress           = "0x7A2AC110202ebFdBB5dB15Ea994ba6bFbFcFc215"
+
+	maxTxsPerBlock     = 10
+	blockFetchInterval = 3 // in seconds
 )
 
 type DepositDataKey struct {
@@ -40,7 +45,7 @@ type DepositDataKey struct {
 
 func sendDeposit(ctx *cli.Context) error {
 	log.Info("Dialing up blockchain for gas info...")
-	eth, err := ethclient.Dial("https://rpc.2022.l16.lukso.network")
+	eth, err := ethclient.Dial(ctx.String(rpcFlag))
 	if err != nil {
 		return err
 	}
@@ -53,7 +58,10 @@ func sendDeposit(ctx *cli.Context) error {
 
 	log.Infof("Gas Price fetched: %v", gasPrice)
 
-	var selectedDeposit string
+	var (
+		selectedDeposit string
+		supplyAmount    int
+	)
 
 	depositPath := ctx.String(depositFlag)
 	genesisDepositPath := ctx.String(genesisDepositFlag)
@@ -67,6 +75,11 @@ func sendDeposit(ctx *cli.Context) error {
 		selectedDeposit = depositPath
 	case genesisDepositPath != "":
 		selectedDeposit = genesisDepositPath
+		supplyAmount, err = processTokenOption()
+		if err != nil {
+			return err
+		}
+
 	default:
 		return errDepositNotProvided
 	}
@@ -86,12 +99,8 @@ func sendDeposit(ctx *cli.Context) error {
 		"- %v ETH\n"+
 		"- %v LYXe\n\n", overallGasPriceEth, keysNum*32)
 
-	fmt.Println("Please enter your private key")
-	fmt.Print(">")
-
-	scanner := bufio.NewScanner(os.Stdin)
-	scanner.Scan()
-	input := scanner.Text()
+	message := "Please enter your private key: \n> "
+	input := registerInputWithMessage(message)
 
 	privKey, err := crypto.HexToECDSA(input)
 	if err != nil {
@@ -110,6 +119,11 @@ func sendDeposit(ctx *cli.Context) error {
 	}
 
 	lyxMock, err := bindings.NewLYXe(common.HexToAddress(lyxeContractAddress), eth)
+	if err != nil {
+		return err
+	}
+
+	ethDeposit, err := bindings.NewEthereumDeposit(common.HexToAddress(depositContractAddress), eth)
 	if err != nil {
 		return err
 	}
@@ -160,14 +174,49 @@ func sendDeposit(ctx *cli.Context) error {
 		opts.Nonce = big.NewInt(int64(nonce))
 		opts.From = senderAddr
 
-		depositData, err := prepareDepositData(key)
-		if err != nil {
-			return err
-		}
+		var tx *types.Transaction
+		switch selectedDeposit {
+		case genesisDepositPath:
+			depositData, err := prepareDepositData(key, supplyAmount)
+			if err != nil {
+				log.Error("Couldn't send transaction - deposit data provided is invalid  - skipping...")
+			}
 
-		tx, err := lyxMock.Send(opts, common.HexToAddress(depositContractAddress), big.NewInt(0).Mul(big.NewInt(32), big.NewInt(1000000000000000000)), depositData)
-		if err != nil {
-			return err
+			tx, err = lyxMock.Send(
+				opts,
+				common.HexToAddress(genesisDepositContractAddress),
+				big.NewInt(0).Mul(big.NewInt(32), big.NewInt(1000000000000000000)),
+				depositData,
+			)
+
+			if err != nil {
+				return err
+			}
+
+		case depositPath:
+			var depositDataRoot [32]byte
+
+			depositDataRootBytes := []byte(key.DepositDataRoot)
+			if len(depositDataRootBytes) != 32 {
+				log.Error("Couldn't send transaction - deposit data root is not 32 bytes long - skipping...")
+
+				continue
+			}
+
+			for depI := range depositDataRoot {
+				depositDataRoot[depI] = depositDataRootBytes[depI]
+			}
+
+			tx, err = ethDeposit.Deposit(
+				opts,
+				[]byte(key.PubKey),
+				[]byte(key.WithdrawalCredentials),
+				[]byte(key.Signature),
+				depositDataRoot,
+			)
+			if err != nil {
+				return err
+			}
 		}
 
 		fmt.Printf("Transaction %d/%d successful! Transaction hash: %v\n\n", i+1, keysNum, tx.Hash().String())
@@ -181,10 +230,25 @@ func sendDeposit(ctx *cli.Context) error {
 }
 
 func initValidator(ctx *cli.Context) error {
-	initCommand := exec.Command("validator", "accounts", "import", ctx.String(validatorWalletDirFlag))
+	if ctx.String(validatorKeysDirFlag) == "" {
+		return errKeysNotProvided
+	}
+	args := []string{
+		"accounts",
+		"import",
+		"--keys-dir", ctx.String(validatorWalletDirFlag),
+		"--wallet-dir", ctx.String(validatorWalletDirFlag),
+	}
+
+	if ctx.String(validatorWalletPasswordFileFlag) != "" {
+		args = append(args, "--wallet-password-file", ctx.String(validatorWalletPasswordFileFlag))
+	}
+
+	initCommand := exec.Command("validator", args...)
 
 	initCommand.Stdout = os.Stdout
 	initCommand.Stderr = os.Stderr
+	initCommand.Stdin = os.Stdin
 
 	err := initCommand.Run()
 	if err != nil {
@@ -205,7 +269,7 @@ func parseDepositFile(depositFilePath string) (keys []DepositDataKey, err error)
 	return
 }
 
-func prepareDepositData(key DepositDataKey) (depositData []byte, err error) {
+func prepareDepositData(key DepositDataKey, amount int) (depositData []byte, err error) {
 	bytePubKey, err := hex.DecodeString(key.PubKey)
 	if err != nil {
 		return
@@ -242,7 +306,8 @@ func prepareDepositData(key DepositDataKey) (depositData []byte, err error) {
 	depositData = append(depositData, byteWithdrawalCredentials...)
 	depositData = append(depositData, byteSignature...)
 	depositData = append(depositData, byteDepositDataRoot...)
-	depositData = append(depositData, byte(32))
+	depositData = append(depositData, byte(amount))
+	log.Error("AMOUNT: ", amount)
 
 	return
 }
@@ -259,6 +324,61 @@ func waitForNextBlock(c context.Context, eth *ethclient.Client, currentBlock uin
 		if currentBlock != blockNumber {
 			break
 		}
+	}
+
+	return
+}
+
+func processTokenOption() (amount int, err error) {
+	message := `As a Genesis Validator you can provide an indicative voting for the preferred initial token supply of LYX, which will determine how much the Foundation will receive. See the https://deposit.mainnet.lukso.network website for details.
+You can choose between:
+1: 35M LYX
+2: 42M LYX (This option is the prefered one by the Foundation)
+3: 100M LYX
+4: An arbitrary amount from 0-100
+5: No vote
+Please enter your choice (1-5):
+> `
+	var option int
+	for option < 1 || option > 5 {
+		input := registerInputWithMessage(message)
+		option, err = strconv.Atoi(input)
+		if err != nil {
+			log.Warn("Please provide a valid option")
+
+			continue
+		}
+		if option < 1 || option > 5 {
+			log.Warn("Please provide an option between 1-5")
+		}
+	}
+
+	// we only get here when user provides valid option, so no need for catching weird options
+	switch option {
+	case 1:
+		amount = 35
+	case 2:
+		amount = 42
+	case 3:
+		amount = 100
+	case 4:
+		option = -1
+		for option < 0 || option > 100 {
+			input := registerInputWithMessage("Please enter initial token supply: \n> ")
+			option, err = strconv.Atoi(input)
+			if err != nil {
+				log.Warn("Please provide a valid option")
+
+				continue
+			}
+			if option < 0 || option > 100 {
+				log.Warn("Please provide an option between 0-100")
+			}
+		}
+
+		amount = option
+	case 5:
+		amount = 0
 	}
 
 	return
