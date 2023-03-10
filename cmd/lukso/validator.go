@@ -9,6 +9,7 @@ import (
 	"os"
 	"os/exec"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
@@ -22,12 +23,11 @@ import (
 )
 
 const (
-	gasLimit                      = 21_000
+	ether                         = 1_000_000_000_000_000_000
 	depositContractAddress        = "0x000000000000000000000000000000000000cafe"
 	genesisDepositContractAddress = "0x75D1f4695Eb87d60eD4EAE2c0CF05e7428Fa4b5F"
 	lyxeContractAddress           = "0x7A2AC110202ebFdBB5dB15Ea994ba6bFbFcFc215"
 
-	maxTxsPerBlock     = 10
 	blockFetchInterval = 3 // in seconds
 )
 
@@ -44,19 +44,24 @@ type DepositDataKey struct {
 }
 
 func sendDeposit(ctx *cli.Context) error {
+	// Dialing clients and creating bindings
 	log.Info("Dialing up blockchain for gas info...")
 	eth, err := ethclient.Dial(ctx.String(rpcFlag))
 	if err != nil {
 		return err
 	}
 
-	c := context.Background()
-	gasPrice, err := eth.SuggestGasPrice(c)
+	lyxMock, err := bindings.NewLYXe(common.HexToAddress(lyxeContractAddress), eth)
 	if err != nil {
 		return err
 	}
 
-	log.Infof("Gas Price fetched: %v", gasPrice)
+	ethDeposit, err := bindings.NewEthereumDeposit(common.HexToAddress(depositContractAddress), eth)
+	if err != nil {
+		return err
+	}
+
+	c := context.Background()
 
 	var (
 		selectedDeposit string
@@ -84,20 +89,12 @@ func sendDeposit(ctx *cli.Context) error {
 		return errDepositNotProvided
 	}
 
-	depositKeys, err := parseDepositFile(selectedDeposit)
+	depositKeys, err := parseDepositDataFile(selectedDeposit)
 	if err != nil {
 		return err
 	}
 
 	keysNum := len(depositKeys)
-	singleTxGasPrice := big.NewInt(0).Mul(gasPrice, big.NewInt(int64(gasLimit)))
-	overallGasPrice := big.NewInt(0).Mul(singleTxGasPrice, big.NewInt(int64(keysNum)))
-	overallGasPriceInt := overallGasPrice.Int64()
-	overallGasPriceEth, _ := big.NewRat(overallGasPriceInt, 1_000_000_000_000_000_000).Float64()
-
-	log.Infof("Before proceeding make sure that your private key has sufficient balance:\n"+
-		"- %v ETH\n"+
-		"- %v LYXe\n\n", overallGasPriceEth, keysNum*32)
 
 	message := "Please enter your private key: \n> "
 	input := registerInputWithMessage(message)
@@ -118,16 +115,6 @@ func sendDeposit(ctx *cli.Context) error {
 		return err
 	}
 
-	lyxMock, err := bindings.NewLYXe(common.HexToAddress(lyxeContractAddress), eth)
-	if err != nil {
-		return err
-	}
-
-	ethDeposit, err := bindings.NewEthereumDeposit(common.HexToAddress(depositContractAddress), eth)
-	if err != nil {
-		return err
-	}
-
 	startingBlock, err := eth.BlockNumber(c)
 	if err != nil {
 		return err
@@ -139,8 +126,82 @@ func sendDeposit(ctx *cli.Context) error {
 		return err
 	}
 
+	// estimate gas based on 1st deposit and inform user before proceeding
+	if keysNum < 1 {
+		return errDepositNotProvided
+	}
+
+	opts.Nonce = big.NewInt(int64(nonce))
+	opts.From = senderAddr
+	opts.NoSend = true
+
+	key := depositKeys[0]
+
+	var tx *types.Transaction
+
+	switch selectedDeposit {
+	case genesisDepositPath:
+		depositData, err := parseDepositDataKey(key, supplyAmount)
+
+		if err != nil {
+			return err
+		}
+
+		tx, err = lyxMock.Send(
+			opts,
+			common.HexToAddress(genesisDepositContractAddress),
+			big.NewInt(0).Mul(big.NewInt(32), big.NewInt(ether)),
+			depositData,
+		)
+
+		gas := tx.Gas() * tx.GasPrice().Uint64() * uint64(keysNum)
+		gasInEther, _ := big.NewRat(int64(gas), ether).Float64()
+
+		message = fmt.Sprintf("Before proceeding make sure that your private key has sufficient balance:\n"+
+			"- %v ETH\n"+
+			"- %v LYXe\nDo you wish to continue? [Y/n]: ", gasInEther, keysNum*32)
+
+	case depositPath:
+		opts.Value = big.NewInt(0).Mul(big.NewInt(32), big.NewInt(ether))
+		var depositDataRoot [32]byte
+
+		depositData, err := parseDepositDataKey(key, 0)
+		if err != nil {
+			return err
+		}
+
+		startI := 176
+		for i := 0; i < 32; i++ {
+			depositDataRoot[i] = depositData[startI+i]
+		}
+
+		tx, err = ethDeposit.Deposit(
+			opts,
+			depositData[:48],
+			depositData[48:80],
+			depositData[80:176],
+			depositDataRoot,
+		)
+		if err != nil {
+			return err
+		}
+
+		gas := tx.Gas() * tx.GasPrice().Uint64() * uint64(keysNum)
+		gasInEther, _ := big.NewRat(int64(gas), ether).Float64()
+
+		message = fmt.Sprintf("Before proceeding make sure that your private key has sufficient balance:\n"+
+			"- %v LYX\nDo you wish to continue? [Y/n]: ", float64(keysNum*32)+gasInEther)
+
+	}
+
+	input = registerInputWithMessage(message)
+	if !strings.EqualFold(input, "y") {
+		log.Info("Aborting...")
+
+		return nil
+	}
+
 	txCount := 1 // if txCount reaches 10 then we have to wait for another block
-	txHashes := make([]common.Hash, 0)
 
 	for i, key := range depositKeys {
 		currentBlock, err := eth.BlockNumber(c)
@@ -153,8 +214,8 @@ func sendDeposit(ctx *cli.Context) error {
 			txCount = 1
 		}
 
-		if txCount > maxTxsPerBlock {
-			fmt.Println("Reached 10 tx per block - waiting for next block...")
+		if txCount > ctx.Int(maxTxsPerBlock) {
+			fmt.Printf("Reached %d tx per block - waiting for next block...", ctx.Int(maxTxsPerBlock))
 			startingBlock, err = waitForNextBlock(c, eth, currentBlock)
 			if err != nil {
 				return err
@@ -177,7 +238,7 @@ func sendDeposit(ctx *cli.Context) error {
 		var tx *types.Transaction
 		switch selectedDeposit {
 		case genesisDepositPath:
-			depositData, err := prepareDepositData(key, supplyAmount)
+			depositData, err := parseDepositDataKey(key, supplyAmount)
 			if err != nil {
 				log.Error("Couldn't send transaction - deposit data provided is invalid  - skipping...")
 			}
@@ -185,7 +246,7 @@ func sendDeposit(ctx *cli.Context) error {
 			tx, err = lyxMock.Send(
 				opts,
 				common.HexToAddress(genesisDepositContractAddress),
-				big.NewInt(0).Mul(big.NewInt(32), big.NewInt(1000000000000000000)),
+				big.NewInt(0).Mul(big.NewInt(32), big.NewInt(ether)),
 				depositData,
 			)
 
@@ -194,24 +255,24 @@ func sendDeposit(ctx *cli.Context) error {
 			}
 
 		case depositPath:
+			opts.Value = big.NewInt(0).Mul(big.NewInt(32), big.NewInt(ether))
 			var depositDataRoot [32]byte
 
-			depositDataRootBytes := []byte(key.DepositDataRoot)
-			if len(depositDataRootBytes) != 32 {
-				log.Error("Couldn't send transaction - deposit data root is not 32 bytes long - skipping...")
-
-				continue
+			depositData, err := parseDepositDataKey(key, 0)
+			if err != nil {
+				return err
 			}
 
-			for depI := range depositDataRoot {
-				depositDataRoot[depI] = depositDataRootBytes[depI]
+			startI := 176
+			for i := 0; i < 32; i++ {
+				depositDataRoot[i] = depositData[startI+i]
 			}
 
 			tx, err = ethDeposit.Deposit(
 				opts,
-				[]byte(key.PubKey),
-				[]byte(key.WithdrawalCredentials),
-				[]byte(key.Signature),
+				depositData[:48],
+				depositData[48:80],
+				depositData[80:176],
 				depositDataRoot,
 			)
 			if err != nil {
@@ -219,11 +280,10 @@ func sendDeposit(ctx *cli.Context) error {
 			}
 		}
 
-		fmt.Printf("Transaction %d/%d successful! Transaction hash: %v\n\n", i+1, keysNum, tx.Hash().String())
+		fmt.Printf("Transaction %d/%d sent! Transaction hash: %v\n\n", i+1, keysNum, tx.Hash().String())
 
 		nonce = tx.Nonce() + 1 // we could do nonce += 1, but it's just to make sure we are +1 ahead of previous tx
 		txCount++
-		txHashes = append(txHashes, tx.Hash())
 	}
 
 	return nil
@@ -258,7 +318,7 @@ func initValidator(ctx *cli.Context) error {
 	return nil
 }
 
-func parseDepositFile(depositFilePath string) (keys []DepositDataKey, err error) {
+func parseDepositDataFile(depositFilePath string) (keys []DepositDataKey, err error) {
 	f, err := os.ReadFile(depositFilePath)
 	if err != nil {
 		return
@@ -269,7 +329,7 @@ func parseDepositFile(depositFilePath string) (keys []DepositDataKey, err error)
 	return
 }
 
-func prepareDepositData(key DepositDataKey, amount int) (depositData []byte, err error) {
+func parseDepositDataKey(key DepositDataKey, amount int) (depositData []byte, err error) {
 	bytePubKey, err := hex.DecodeString(key.PubKey)
 	if err != nil {
 		return
@@ -307,7 +367,6 @@ func prepareDepositData(key DepositDataKey, amount int) (depositData []byte, err
 	depositData = append(depositData, byteSignature...)
 	depositData = append(depositData, byteDepositDataRoot...)
 	depositData = append(depositData, byte(amount))
-	log.Error("AMOUNT: ", amount)
 
 	return
 }

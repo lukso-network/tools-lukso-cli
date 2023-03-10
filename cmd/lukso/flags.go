@@ -139,6 +139,7 @@ const (
 	validatorKeysFlag  = "validator-keys"
 	gasPriceFlag       = "gas-price"
 	rpcFlag            = "rpc"
+	maxTxsPerBlock     = "max-txs-per-block"
 )
 
 var (
@@ -202,6 +203,11 @@ var (
 			Name:  gasPriceFlag,
 			Usage: "Gas price provided by user",
 			Value: 1000000000,
+		},
+		&cli.IntFlag{
+			Name:  maxTxsPerBlock,
+			Usage: "Maximum amount of txs sent per single block",
+			Value: 10,
 		},
 	}
 
