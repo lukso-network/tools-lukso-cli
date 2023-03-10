@@ -226,7 +226,7 @@ func acceptTermsInteractive() bool {
 		"Do you wish to continue? [Y/n]: "
 
 	input := registerInputWithMessage(message)
-	if input != "Y" {
+	if !strings.EqualFold(input, "y") {
 		log.Error("You need to type Y to continue.")
 		return false
 	}

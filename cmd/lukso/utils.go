@@ -128,7 +128,7 @@ func getLastFile(dir string, dependency string) (string, error) {
 		" Doing so can print lots of text on your screen [Y/n]: ", dir+"/"+lastFile, lastFile)
 
 	input := registerInputWithMessage(message)
-	if input != "Y" {
+	if !strings.EqualFold(input, "y") {
 		log.Info("Aborting...") // there is no error, just a possible change of mind - shouldn't return err
 
 		return "", nil

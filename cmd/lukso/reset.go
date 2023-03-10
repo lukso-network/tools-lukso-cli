@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/urfave/cli/v2"
 	"os"
+	"strings"
 )
 
 func resetClients(ctx *cli.Context) error {
@@ -44,7 +45,7 @@ func resetClients(ctx *cli.Context) error {
 		"- %s\n- %s\n- %s\n[Y/n]", ctx.String(gethDatadirFlag), ctx.String(prysmDatadirFlag), ctx.String(validatorDatadirFlag))
 
 	input := registerInputWithMessage(message)
-	if input != "Y" {
+	if !strings.EqualFold(input, "y") {
 		log.Info("Aborting...")
 
 		return nil
