@@ -392,12 +392,11 @@ You can choose between:
 1: 35M LYX
 2: 42M LYX (This option is the prefered one by the Foundation)
 3: 100M LYX
-4: An arbitrary amount from 0-100
-5: No vote
-Please enter your choice (1-5):
+4: No vote
+Please enter your choice (1-4):
 > `
 	var option int
-	for option < 1 || option > 5 {
+	for option < 1 || option > 4 {
 		input := registerInputWithMessage(message)
 		option, err = strconv.Atoi(input)
 		if err != nil {
@@ -405,8 +404,8 @@ Please enter your choice (1-5):
 
 			continue
 		}
-		if option < 1 || option > 5 {
-			log.Warn("Please provide an option between 1-5")
+		if option < 1 || option > 4 {
+			log.Warn("Please provide an option between 1-4")
 		}
 	}
 
@@ -419,22 +418,6 @@ Please enter your choice (1-5):
 	case 3:
 		amount = 100
 	case 4:
-		option = -1
-		for option < 0 || option > 100 {
-			input := registerInputWithMessage("Please enter initial token supply: \n> ")
-			option, err = strconv.Atoi(input)
-			if err != nil {
-				log.Warn("Please provide a valid option")
-
-				continue
-			}
-			if option < 0 || option > 100 {
-				log.Warn("Please provide an option between 0-100")
-			}
-		}
-
-		amount = option
-	case 5:
 		amount = 0
 	}
 
