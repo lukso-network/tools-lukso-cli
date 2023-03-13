@@ -4,12 +4,23 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"syscall"
 )
 
 var FileDir = "/var/run/lukso"
 
 func Exists(path string) bool {
-	_, err := os.Stat(path)
+	pidVal, err := Load(path)
+	if err != nil {
+		return false
+	}
+
+	p, err := os.FindProcess(pidVal)
+	if err != nil {
+		return false
+	}
+
+	err = p.Signal(syscall.Signal(0))
 	if err != nil {
 		return false
 	}
@@ -30,6 +41,11 @@ func Kill(path string, pid int) error {
 	}
 
 	p, err := os.FindProcess(pid)
+	if err != nil {
+		return err
+	}
+
+	err = p.Signal(syscall.Signal(0))
 	if err != nil {
 		return err
 	}
