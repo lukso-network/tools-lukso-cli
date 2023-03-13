@@ -8,20 +8,9 @@ import (
 )
 
 func resetClients(ctx *cli.Context) error {
-	gethRunning, err := isRunning(gethDependencyName)
-	if err != nil {
-		return err
-	}
-
-	prysmRunning, err := isRunning(prysmDependencyName)
-	if err != nil {
-		return err
-	}
-
-	validatorRunning, err := isRunning(validatorDependencyName)
-	if err != nil {
-		return err
-	}
+	gethRunning := isRunning(gethDependencyName)
+	prysmRunning := isRunning(prysmDependencyName)
+	validatorRunning := isRunning(validatorDependencyName)
 
 	if gethRunning || prysmRunning || validatorRunning {
 		message := "Please stop the following clients before resetting: "
@@ -42,7 +31,7 @@ func resetClients(ctx *cli.Context) error {
 
 	message := fmt.Sprintf("WARNING: THIS ACTION WILL REMOVE DATA DIRECTORIES FROM ALL OF RUNNING CLIENTS.\n"+
 		"Are you sure you want to continue?\nDirectories that will be deleted:\n"+
-		"- %s\n- %s\n- %s\n[Y/n]", ctx.String(gethDatadirFlag), ctx.String(prysmDatadirFlag), ctx.String(validatorDatadirFlag))
+		"- %s\n- %s\n- %s\n[Y/n]: ", ctx.String(gethDatadirFlag), ctx.String(prysmDatadirFlag), ctx.String(validatorDatadirFlag))
 
 	input := registerInputWithMessage(message)
 	if !strings.EqualFold(input, "y") {
@@ -51,7 +40,7 @@ func resetClients(ctx *cli.Context) error {
 		return nil
 	}
 
-	err = resetGeth(ctx)
+	err := resetGeth(ctx)
 	if err != nil {
 		return err
 	}

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/m8b-dev/lukso-cli/pid"
 	"github.com/urfave/cli/v2"
 	"os"
 	"os/exec"
@@ -12,6 +13,13 @@ func (dependency *ClientDependency) Start(
 	attachStdoutAndErr bool,
 	ctx *cli.Context,
 ) (err error) {
+	pidLocation := fmt.Sprintf("%s/%s.pid", pid.FileDir, dependency.name)
+
+	exists := pid.Exists(pidLocation)
+	if exists {
+		return errAlreadyRunning
+	}
+
 	command := exec.Command(dependency.name, arguments...)
 
 	if attachStdoutAndErr {
@@ -55,15 +63,29 @@ func (dependency *ClientDependency) Start(
 	}
 
 	err = command.Start()
+	if err != nil {
+		return
+	}
+
+	err = pid.Create(pidLocation, command.Process.Pid)
 
 	return
 }
 
 func (dependency *ClientDependency) Stop() error {
-	// since there aren't commands for stopping clients we have to kill them manually
-	command := exec.Command("killall", "-HUP", dependency.name)
+	pidLocation := fmt.Sprintf("%s/%s.pid", pidFileDir, dependency.name)
 
-	return command.Start()
+	pidVal, err := pid.Load(pidLocation)
+	if err != nil {
+		return errProcessNotFound
+	}
+
+	err = pid.Kill(pidLocation, pidVal)
+	if err != nil {
+		return errProcessNotFound
+	}
+
+	return nil
 }
 
 func startClients(ctx *cli.Context) error {

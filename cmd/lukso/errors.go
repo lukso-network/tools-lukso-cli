@@ -11,4 +11,6 @@ var (
 	errDepositNotProvided      = errors.New("You need to provide a deposit data to send your deposit ")
 	errKeysNotProvided         = errors.New("You need to provide a path to your keys directory ")
 	errTooManyDepositsProvided = errors.New("You can only provide 1 deposit data file ")
+	errAlreadyRunning          = errors.New("Process is already running ")
+	errProcessNotFound         = errors.New("Process not found ")
 )
