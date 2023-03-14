@@ -232,6 +232,8 @@ func sendDeposit(ctx *cli.Context) error {
 
 		opts.Nonce = big.NewInt(int64(nonce))
 		opts.From = senderAddr
+		opts.NoSend = false
+		opts.Value = big.NewInt(0)
 
 		var tx *types.Transaction
 		switch selectedDeposit {
