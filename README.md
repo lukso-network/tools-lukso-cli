@@ -43,15 +43,34 @@ Enter `lukso start` to start a node.
 # starts your currently installed default clients and connects to LUKSO mainnet
 $ lukso start
 
+# starts your nodes connecting to the testnet
+$ lukso start --testnet
+
+# starts your nodes connecting to the mainet as a validator
+# use default keystore folder (/mainnet-keystore)
+$ lukso start --validator
+
 ```
 
 The following flags are available:
 
 | Name                                | Description                                             | Argument                          | Default value                                          |
 |-------------------------------------|---------------------------------------------------------|-----------------------------------|--------------------------------------------------------|
-| --mainnet                           | Run for mainnet (default network)                       | Bool                              | false                                                  |
-| --testnet                           | Run for testnet                                         | Bool                              | false                                                  |
-| --devnet                            | Run for devnet                                          | Bool                              | false                                                  |
+| --mainnet                           | Run for mainnet (default network)                       |                               |                                                   |
+| --testnet                           | Run for testnet                                         |                               |                                                   |
+| --devnet                            | Run for devnet                                          |                               |                                                   |
+| --validator                         | Start your node as validator node                       |                               |                                        |
+| --validator-datadir                 | A path of validator's data directory                    | Path                              | ./validator_data                                       |
+| --validator-verbosity               | Verbosity for validator logs                            | Log level                         | info                                                   |
+| --validator-wallet-dir              | Location of generated wallet                            | Path                              | ./mainnet_keystore                                     |
+| --validator-wallet-password-file    | Location of password used for wallet generation         | Path                              | ./config/mainnet/shared/secrets/validator-password.txt |
+| --validator-chain-config-file       | Path to config.yaml file                                | Path                              | ./config/mainnet/shared/config.yaml                    |
+| --validator-monitoring-host         | Host used for interacting with Prometheus metrics       | IP address                        | 0.0.0.0                                                |
+| --validator-grpc-gateway-host       | Host for gRPC gateway                                   | IP address                        | 0.0.0.0                                                |
+| --validator-rpc-host                | RPC server host                                         | IP address                        | 0.0.0.0                                                |
+| --validator-suggested-fee-recipient | Address that receives block fees                        | Public address                    | 0x8eFdC93aE5FEa9287e7a22B6c14670BfcCdA997b             |
+| --validator-output-dir              | Directory where logs are created                        | Path                              | ./logs/consensus/validator                             |
+| --validator-std-output              | Set output to console                                   | None                              | False                                                  |
 | --geth-datadir                      | A path of geth's data directory                         | Path                              | ./execution_data                                       |
 | --geth-ws                           | Enable WS server                                        | None                              | true                                                   |
 | --geth-ws-addr                      | Address of WS server                                    | IP Address                        | 0.0.0.0                                                |
@@ -103,17 +122,7 @@ The following flags are available:
 | --prysm-enable-rpc-debug-endpoints  | Enable debugging RPC endpoints                          | None                              | True                                                   |
 | --prysm-output-dir                  | Directory where logs are created                        | Path                              | ./logs/consensus/beacon_chain                          |
 | --prysm-std-output                  | Set output to console                                   | None                              | False                                                  |
-| --validator-datadir                 | A path of validator's data directory                    | Path                              | ./validator_data                                       |
-| --validator-verbosity               | Verbosity for validator logs                            | Log level                         | info                                                   |
-| --validator-wallet-dir              | Location of generated wallet                            | Path                              | ./mainnet_keystore                                     |
-| --validator-wallet-password-file    | Location of password used for wallet generation         | Path                              | ./config/mainnet/shared/secrets/validator-password.txt |
-| --validator-chain-config-file       | Path to config.yaml file                                | Path                              | ./config/mainnet/shared/config.yaml                    |
-| --validator-monitoring-host         | Host used for interacting with Prometheus metrics       | IP address                        | 0.0.0.0                                                |
-| --validator-grpc-gateway-host       | Host for gRPC gateway                                   | IP address                        | 0.0.0.0                                                |
-| --validator-rpc-host                | RPC server host                                         | IP address                        | 0.0.0.0                                                |
-| --validator-suggested-fee-recipient | Address that receives block fees                        | Public address                    | 0x8eFdC93aE5FEa9287e7a22B6c14670BfcCdA997b             |
-| --validator-output-dir              | Directory where logs are created                        | Path                              | ./logs/consensus/validator                             |
-| --validator-std-output              | Set output to console                                   | None                              | False                                                  |
+
 
 #### Bootnodes
 
