@@ -36,12 +36,12 @@ Enter `lukso start` to start a node.
 | validator init | Initializes your validator with deposit keys | 
 
 
-### start
+### Start your node
 
 ```bash
 
 # starts your currently installed default clients and connects to LUKSO mainnet
-lukso start
+$ lukso start
 
 ```
 
