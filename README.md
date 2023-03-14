@@ -24,21 +24,28 @@ Enter `lukso start` to start a node.
 
 | Command        | Description                                  |
 |----------------|----------------------------------------------|
-| install        | Downloads all client(s)                      |
 | init           | Initializes configuration files              |
-| update         | sets client(s) to desired version            |
 | start          | Starts up all or specific client(s)          |
 | stop           | Stops all or specific client(s)              |
 | log            | Show logs                                    |
 | status         | Shows status of all or specified client      |
 | reset          | Resets data directories                      |
+| install        | Downloads all default client(s)              |
+| update         | sets client(s) to desired version            |
 | validator      | Manages validator-related commands           |
 | validator init | Initializes your validator with deposit keys | 
 
 
 ### start
 
-How to use flags with values? Provide a flag and value like: `lukso start --datadir /data/network-node`
+```bash
+
+# starts your currently installed default clients and connects to LUKSO mainnet
+lukso start
+
+```
+
+The following flags are available:
 
 | Name                                | Description                                             | Argument                          | Default value                                          |
 |-------------------------------------|---------------------------------------------------------|-----------------------------------|--------------------------------------------------------|
