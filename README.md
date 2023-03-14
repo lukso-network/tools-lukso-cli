@@ -68,7 +68,7 @@ The following flags are available:
 | --validator-monitoring-host         | Host used for interacting with Prometheus metrics       | IP address                        | 0.0.0.0                                                |
 | --validator-grpc-gateway-host       | Host for gRPC gateway                                   | IP address                        | 0.0.0.0                                                |
 | --validator-rpc-host                | RPC server host                                         | IP address                        | 0.0.0.0                                                |
-| --validator-suggested-fee-recipient | Address that receives block fees                        | Public address                    | 0x8eFdC93aE5FEa9287e7a22B6c14670BfcCdA997b             |
+| --validator-suggested-fee-recipient | Address that receives block fees                        | Public address                    | 0x0000000000000000000000000000000000000000             |
 | --validator-output-dir              | Directory where logs are created                        | Path                              | ./logs/consensus/validator                             |
 | --validator-std-output              | Set output to console                                   | None                              | False                                                  |
 | --geth-datadir                      | A path of geth's data directory                         | Path                              | ./execution_data                                       |
