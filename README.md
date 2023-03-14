@@ -98,7 +98,7 @@ The following flags are available:
 | --geth-mine                         | Enable mining                                           | None                              | True                                                   |
 | --geth-miner-threads                | Number of CPU threads used for mining                   | Integer                           | 1                                                      |
 | --geth-miner-gaslimit               | Gas ceiling                                             | Integer                           | 60000000                                               |
-| --geth-miner-etherbase              | Your ECDSA public key used to get rewards on geth chain | Public address                    | 0x8eFdC93aE5FEa9287e7a22B6c14670BfcCdA997b             |
+| --geth-miner-etherbase              | Your ECDSA public key used to get rewards on geth chain | Public address                    | 0x0000000000000000000000000000000000000000             |
 | --geth-auth-jwt-secret              | Path to JWT 32-byte secret                              | Path                              | ./config/mainnet/shared/secrets/jwt.hex                |
 | --geth-std-output                   | Set output to console                                   | None                              | False                                                  |
 | --geth-output-dir                   | Directory where logs are created                        | Path                              | ./logs/execution/geth                                  |
@@ -107,7 +107,7 @@ The following flags are available:
 | --prysm-execution-endpoint          | Execution endpoint                                      | URL                               | http://localhost:8551                                  |
 | --prysm-bootstrap-nodes             | Bootnode addresses                                      | Bootnode addresses                | See [Bootnodes](#bootnodes)                            |
 | --prysm-jwt-secret                  | Path to JWT 32-byte secret                              | Path                              | ./config/mainnet/shared/secrets/jwt.hex                |
-| --prysm-suggested-fee-recipient     | Address that receives block fees                        | Public address                    | 0x8eFdC93aE5FEa9287e7a22B6c14670BfcCdA997b             |
+| --prysm-suggested-fee-recipient     | Address that receives block fees                        | Public address                    | 0x0000000000000000000000000000000000000000             |
 | --prysm-min-sync-peers              | Minimum sync peers number for prysm                     | Integer                           | 0                                                      |
 | --prysm-p2p-host                    | P2P host IP                                             | IP address                        | Empty                                                  |
 | --prysm-deposit-deployment          | Deployemnt height of deposit contract                   | Integer                           | 0                                                      |
