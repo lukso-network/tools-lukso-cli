@@ -25,8 +25,8 @@ import (
 const (
 	ether                         = 1_000_000_000_000_000_000
 	depositContractAddress        = "0x000000000000000000000000000000000000cafe"
-	genesisDepositContractAddress = "0x75D1f4695Eb87d60eD4EAE2c0CF05e7428Fa4b5F"
-	lyxeContractAddress           = "0x7A2AC110202ebFdBB5dB15Ea994ba6bFbFcFc215"
+	genesisDepositContractAddress = "0x9C2Ae5bC047Ca794d9388aB7A2Bf37778f9aBA73"
+	lyxeContractAddress           = "0x790c4379C82582F569899b3Ca71E78f19AeF82a5"
 
 	blockFetchInterval = 3 // in seconds
 )
