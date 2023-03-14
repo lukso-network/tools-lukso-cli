@@ -1,12 +1,11 @@
 package main
 
 import (
-	"bufio"
-	"bytes"
+	"fmt"
+	"github.com/m8b-dev/lukso-cli/pid"
 	"github.com/urfave/cli/v2"
 	"os"
 	"os/exec"
-	"strings"
 )
 
 func (dependency *ClientDependency) Log(logFilePath string) (err error) {
@@ -42,44 +41,11 @@ func (dependency *ClientDependency) Log(logFilePath string) (err error) {
 	return
 }
 
-// Stat returns whether the client is running or not
-func (dependency *ClientDependency) Stat() (isRunning bool, err error) {
-	var (
-		commandName string
-		buf         = new(bytes.Buffer)
-	)
+// Stat returns whether the client is running or not, along with PID
+func (dependency *ClientDependency) Stat() (isRunning bool) {
+	pidLocation := fmt.Sprintf("%s/%s.pid", pid.FileDir, dependency.name)
 
-	isRunning = false
-
-	switch systemOs {
-	case ubuntu, macos:
-		commandName = "ps"
-	case windows:
-		commandName = "tasklist"
-	default:
-		commandName = "ps"
-	}
-
-	command := exec.Command(commandName)
-	command.Stdout = buf
-
-	err = command.Run()
-	if err != nil {
-		log.Errorf("There was an error while executing command: %s. Error: %v", commandName, err)
-
-		return
-	}
-
-	scan := bufio.NewScanner(buf)
-	for scan.Scan() {
-		if strings.Contains(scan.Text(), dependency.name) {
-			isRunning = true
-
-			return
-		}
-	}
-
-	return
+	return pid.Exists(pidLocation)
 }
 
 func logClients(ctx *cli.Context) error {
@@ -129,13 +95,18 @@ func statClients(ctx *cli.Context) (err error) {
 
 func statClient(dependencyName string) func(*cli.Context) error {
 	return func(ctx *cli.Context) error {
-		isRunning, err := clientDependencies[dependencyName].Stat()
-		if err != nil {
-			return err
-		}
+		isRunning := clientDependencies[dependencyName].Stat()
 
 		if isRunning {
-			log.Infof("%s: Running", dependencyName)
+			pidLocation := fmt.Sprintf("%s/%s.pid", pid.FileDir, dependencyName)
+
+			// since we now that process is, in fact, running (from previous checks) this shouldn't fail
+			pidVal, err := pid.Load(pidLocation)
+			if err != nil {
+				return errProcessNotFound
+			}
+
+			log.Infof("%s: Running - PID: %d", dependencyName, pidVal)
 
 			return nil
 		}
