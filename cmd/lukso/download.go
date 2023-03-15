@@ -169,6 +169,11 @@ func downloadConfigs(ctx *cli.Context) error {
 		return err
 	}
 
+	err = downloadGethConfig(ctx)
+	if nil != err {
+		return err
+	}
+
 	return downloadPrysmConfig(ctx)
 }
 
@@ -200,6 +205,14 @@ func downloadPrysmConfig(ctx *cli.Context) (err error) {
 	log.WithField("dependencyTag", prysmTag).Info("Downloading Prysm Config")
 
 	err = clientDependencies[prysmSelectedConfig].Download(prysmTag, "", false, configPerms)
+
+	return
+}
+
+func downloadGethConfig(ctx *cli.Context) (err error) {
+	log.WithField("dependencyTag", prysmTag).Info("Downloading Geth Config")
+
+	err = clientDependencies[gethSelectedConfig].Download(prysmTag, "", false, configPerms)
 
 	return
 }

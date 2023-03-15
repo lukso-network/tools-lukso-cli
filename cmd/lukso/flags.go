@@ -32,8 +32,8 @@ const (
 	gethGcmodeFlag         = "geth-gcmode"
 	gethMineFlag           = "geth-mine"
 	gethMinerGaslimitFlag  = "geth-miner-gaslimit"
-	gethMinerEtherbaseFlag = "geth-miner-etherbase"
 	gethMinerThreadsFlag   = "geth-miner-threads"
+	gethConfigFileFlag     = "geth-config-file"
 	gethStdOutputFlag      = "geth-std-output"
 	gethAuthJWTSecretFlag  = "geth-auth-jwt-secret"
 	gethNatFlag            = "geth-nat"
@@ -43,19 +43,17 @@ const (
 	gethOutputFileFlag     = "geth-output-file"
 
 	// Validator related flag names
-	validatorTagFlag                   = "validator-tag"
-	validatorDatadirFlag               = "validator-datadir"
-	validatorWalletDirFlag             = "validator-wallet-dir"
-	validatorKeysDirFlag               = "validator-keys-dir"
-	validatorWalletPasswordFileFlag    = "validator-wallet-password-file"
-	validatorChainConfigFileFlag       = "validator-chain-config-file"
-	validatorMonitoringHostFlag        = "validator-monitoring-host"
-	validatorGrpcGatewayHostFlag       = "validator-grpc-gateway-host"
-	validatorRpcHostFlag               = "validator-rpc-host"
-	validatorSuggestedFeeRecipientFlag = "validator-suggested-fee-recipient"
-	validatorVerbosityFlag             = "validator-verbosity"
-	validatorLogDirFlag                = "validator-log-dir"
-	validatorOutputFileFlag            = "validator-output-file"
+	validatorTagFlag                = "validator-tag"
+	validatorDatadirFlag            = "validator-datadir"
+	validatorWalletDirFlag          = "validator-wallet-dir"
+	validatorKeysDirFlag            = "validator-keys-dir"
+	validatorWalletPasswordFileFlag = "validator-wallet-password-file"
+	validatorChainConfigFileFlag    = "validator-chain-config-file"
+	validatorMonitoringHostFlag     = "validator-monitoring-host"
+	validatorGrpcGatewayHostFlag    = "validator-grpc-gateway-host"
+	validatorRpcHostFlag            = "validator-rpc-host"
+	validatorVerbosityFlag          = "validator-verbosity"
+	validatorLogDirFlag             = "validator-log-dir"
 
 	validatorStdOutputFlag = "validator-std-output"
 
@@ -67,7 +65,6 @@ const (
 	prysmEnableRpcDebugEndpointsFlag = "prysm-enable-rpc-debug-endpoints"
 	prysmExecutionEndpointFlag       = "prysm-execution-endpoint"
 	prysmJWTSecretFlag               = "prysm-jwt-secret"
-	prysmSuggestedFeeRecipientFlag   = "prysm-suggested-fee-recipient"
 	prysmMinSyncPeersFlag            = "prysm-min-sync-peers"
 	prysmContractDeploymentBlockFlag = "prysm-deposit-deployment"
 	prysmP2pHostFlag                 = "prysm-p2p-host"
@@ -81,7 +78,10 @@ const (
 	prysmVerbosityFlag               = "prysm-verbosity"
 	prysmLogDirFlag                  = "prysm-log-dir"
 	prysmStdOutputFlag               = "prysm-std-output"
-	prysmOutputFileFlag              = "prysm-output-file"
+	noSlasherFlag                    = "no-slasher"
+
+	// shared flags
+	coinBaseFlag = "coinbase"
 
 	// non-specific flags
 	mainnetFlag   = "mainnet"
@@ -241,6 +241,17 @@ var (
 			Name:  validatorFlag,
 			Usage: "Run lukso node with validator",
 			Value: false,
+		},
+		&cli.BoolFlag{
+			Name:  noSlasherFlag,
+			Usage: "disable slasher",
+			Value: true, // default is true, we change it to false only when running validator
+		},
+		&cli.StringFlag{
+			Name:     coinBaseFlag,
+			Usage:    "address to receive fees from blocks",
+			Value:    "",
+			Required: true,
 		},
 	}
 	logsFlags  []cli.Flag
@@ -403,12 +414,6 @@ var (
 			Value: "1600000000",
 		},
 		&cli.StringFlag{
-			Name:  gethMinerEtherbaseFlag,
-			Usage: "your ECDSA public key used to get rewards on geth chain",
-			// yes, If you won't set it up, I'll get rewards ;]
-			Value: "0x8eFdC93aE5FEa9287e7a22B6c14670BfcCdA997b",
-		},
-		&cli.StringFlag{
 			Name:  gethTxLookupLimitFlag,
 			Usage: "number of blocks to maintain tx indexes from",
 			Value: "1",
@@ -417,6 +422,11 @@ var (
 			Name:  gethCachePreimagesFlag,
 			Usage: "enable preimage caching",
 			Value: true,
+		},
+		&cli.StringFlag{
+			Name:  gethConfigFileFlag,
+			Usage: "path to geth.toml config file",
+			Value: "./config/mainnet/geth/config.toml",
 		},
 		&cli.StringFlag{
 			Name:  gethAuthJWTSecretFlag,
@@ -499,11 +509,6 @@ var (
 			Name:  prysmJWTSecretFlag,
 			Usage: "path to your jwt secret",
 			Value: jwtSecretDefaultPath,
-		},
-		&cli.StringFlag{
-			Name:  prysmSuggestedFeeRecipientFlag,
-			Usage: "address that receives block fees",
-			Value: "0x8eFdC93aE5FEa9287e7a22B6c14670BfcCdA997b",
 		},
 		&cli.StringFlag{
 			Name:  prysmMinSyncPeersFlag,
@@ -648,11 +653,6 @@ var (
 			Value: "0.0.0.0",
 		},
 		&cli.StringFlag{
-			Name:  validatorSuggestedFeeRecipientFlag,
-			Usage: "address that receives block fees",
-			Value: "0x8eFdC93aE5FEa9287e7a22B6c14670BfcCdA997b",
-		},
-		&cli.StringFlag{
 			Name:  validatorLogDirFlag,
 			Usage: "output destination folder of validator logs",
 			Value: "./mainnet-logs",
@@ -693,6 +693,7 @@ func prepareGethStartFlags(ctx *cli.Context) (startFlags []string) {
 	startFlags = append(startFlags, fmt.Sprintf("--bootnodes=%s", ctx.String(gethBootnodesFlag)))
 	startFlags = append(startFlags, fmt.Sprintf("--networkid=%s", ctx.String(gethNetworkIDFlag)))
 	startFlags = append(startFlags, fmt.Sprintf("--nat=%s", ctx.String(gethNatFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--config=%s", ctx.String(gethConfigFileFlag)))
 	if ctx.Bool(gethHttpFlag) {
 		startFlags = append(startFlags, "--http")
 	}
@@ -724,7 +725,7 @@ func prepareGethStartFlags(ctx *cli.Context) (startFlags []string) {
 	}
 	startFlags = append(startFlags, fmt.Sprintf("--miner.threads=%s", ctx.String(gethMinerThreadsFlag)))
 	startFlags = append(startFlags, fmt.Sprintf("--miner.gaslimit=%s", ctx.String(gethMinerGaslimitFlag)))
-	startFlags = append(startFlags, fmt.Sprintf("--miner.etherbase=%s", ctx.String(gethMinerEtherbaseFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--miner.etherbase=%s", ctx.String(coinBaseFlag)))
 	startFlags = append(startFlags, fmt.Sprintf("--authrpc.jwtsecret=%s", ctx.String(gethAuthJWTSecretFlag)))
 
 	return
@@ -738,7 +739,7 @@ func prepareValidatorStartFlags(ctx *cli.Context) (startFlags []string) {
 	startFlags = append(startFlags, fmt.Sprintf("--monitoring-host=%s", ctx.String(validatorMonitoringHostFlag)))
 	startFlags = append(startFlags, fmt.Sprintf("--grpc-gateway-host=%s", ctx.String(validatorGrpcGatewayHostFlag)))
 	startFlags = append(startFlags, fmt.Sprintf("--rpc-host=%s", ctx.String(validatorRpcHostFlag)))
-	startFlags = append(startFlags, fmt.Sprintf("--suggested-fee-recipient=%s", ctx.String(validatorSuggestedFeeRecipientFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--suggested-fee-recipient=%s", ctx.String(coinBaseFlag)))
 
 	logFileFlag := prepareLogfileFlag(ctx, validatorLogDirFlag, validatorDependencyName)
 	if logFileFlag != "" {
@@ -769,7 +770,7 @@ func preparePrysmStartFlags(ctx *cli.Context) (startFlags []string) {
 	startFlags = append(startFlags, fmt.Sprintf("--chain-config-file=%s", ctx.String(prysmChainConfigFileFlag)))
 	startFlags = append(startFlags, fmt.Sprintf("--monitoring-host=%s", ctx.String(prysmMonitoringHostFlag)))
 	startFlags = append(startFlags, fmt.Sprintf("--grpc-gateway-host=%s", ctx.String(prysmGrpcGatewayHostFlag)))
-	startFlags = append(startFlags, fmt.Sprintf("--suggested-fee-recipient=%s", ctx.String(prysmSuggestedFeeRecipientFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--suggested-fee-recipient=%s", ctx.String(coinBaseFlag)))
 	startFlags = append(startFlags, fmt.Sprintf("--rpc-host=%s", ctx.String(prysmRpcHostFlag)))
 	startFlags = append(startFlags, fmt.Sprintf("--verbosity=%s", ctx.String(prysmVerbosityFlag)))
 	startFlags = append(startFlags, fmt.Sprintf("--p2p-max-peers=%s", ctx.String(prysmP2pmaxPeersFlag)))
@@ -784,6 +785,17 @@ func preparePrysmStartFlags(ctx *cli.Context) (startFlags []string) {
 	logFileFlag := prepareLogfileFlag(ctx, prysmLogDirFlag, prysmDependencyName)
 	if logFileFlag != "" {
 		startFlags = append(startFlags, logFileFlag)
+	}
+
+	noSlasher := ctx.Bool(noSlasherFlag)
+	validator := ctx.Bool(validatorFlag)
+
+	if noSlasher {
+		return
+	}
+
+	if validator {
+		startFlags = append(startFlags, "--slasher")
 	}
 
 	return

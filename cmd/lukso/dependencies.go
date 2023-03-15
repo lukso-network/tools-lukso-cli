@@ -13,20 +13,24 @@ const (
 	validatorDependencyName = "validator"
 
 	gethMainnetGenesisDependencyName  = "geth_mainnet_genesis"
+	gethMainnetConfigName             = "geth_mainnet_config"
 	prysmMainnetGenesisDependencyName = "prysm_mainnet_genesis_state"
 	prysmMainnetConfigDependencyName  = "prysm_mainnet_config"
 
 	gethTestnetGenesisDependencyName  = "geth_testnet_genesis"
+	gethTestnetConfigName             = "geth_testnet_config"
 	prysmTestnetGenesisDependencyName = "prysm_testnet_genesis_state"
 	prysmTestnetConfigDependencyName  = "prysm_testnet_config"
 
 	gethDevnetGenesisDependencyName  = "geth_devnet_genesis"
+	gethDevnetConfigName             = "geth_devnet_config"
 	prysmDevnetGenesisDependencyName = "prysm_devnet_genesis_state"
 	prysmDevnetConfigDependencyName  = "prysm_devnet_config"
 )
 
 var (
 	gethSelectedGenesis  = gethMainnetGenesisDependencyName
+	gethSelectedConfig   = gethMainnetConfigName
 	prysmSelectedGenesis = prysmMainnetGenesisDependencyName
 	prysmSelectedConfig  = prysmMainnetConfigDependencyName
 
@@ -59,6 +63,12 @@ var (
 			name:          gethMainnetGenesisDependencyName,
 			filePath:      "./config/mainnet/geth/genesis.json",
 		},
+		gethMainnetConfigName: {
+			baseUnixUrl:   "NOT SUPPORTED",
+			baseDarwinUrl: "NOT SUPPORTED",
+			name:          gethMainnetConfigName,
+			filePath:      "./config/mainnet/geth/geth.toml",
+		},
 		prysmMainnetGenesisDependencyName: {
 			baseUnixUrl:   "NOT SUPPORTED",
 			baseDarwinUrl: "NOT SUPPORTED",
@@ -78,6 +88,12 @@ var (
 			name:          gethTestnetGenesisDependencyName,
 			filePath:      "./config/testnet/geth/genesis.json",
 		},
+		gethTestnetConfigName: {
+			baseUnixUrl:   "NOT SUPPORTED",
+			baseDarwinUrl: "NOT SUPPORTED",
+			name:          gethTestnetConfigName,
+			filePath:      "./config/testnet/geth/geth.toml",
+		},
 		prysmTestnetGenesisDependencyName: {
 			baseUnixUrl:   "NOT SUPPORTED",
 			baseDarwinUrl: "NOT SUPPORTED",
@@ -92,20 +108,26 @@ var (
 		},
 		// ----- DEVNET -----
 		gethDevnetGenesisDependencyName: {
-			baseUnixUrl:   "https://raw.githubusercontent.com/lukso-network/network-configs/devnet/dev/2022/geth/genesis.json",
-			baseDarwinUrl: "https://raw.githubusercontent.com/lukso-network/network-configs/devnet/dev/2022/geth/genesis.json",
+			baseUnixUrl:   "https://raw.githubusercontent.com/lukso-network/network-configs/main/dev/2022/geth/genesis.json",
+			baseDarwinUrl: "https://raw.githubusercontent.com/lukso-network/network-configs/main/dev/2022/geth/genesis.json",
 			name:          gethDevnetGenesisDependencyName,
 			filePath:      "./config/devnet/geth/genesis.json",
 		},
+		gethDevnetConfigName: {
+			baseUnixUrl:   "https://raw.githubusercontent.com/lukso-network/network-configs/main/dev/2022/geth/geth.toml",
+			baseDarwinUrl: "https://raw.githubusercontent.com/lukso-network/network-configs/main/dev/2022/geth/geth.toml",
+			name:          gethDevnetConfigName,
+			filePath:      "./config/devnet/geth/geth.toml",
+		},
 		prysmDevnetGenesisDependencyName: {
-			baseUnixUrl:   "https://github.com/lukso-network/network-configs/raw/devnet/dev/2022/prysm/genesis.ssz",
-			baseDarwinUrl: "https://github.com/lukso-network/network-configs/raw/devnet/dev/2022/prysm/genesis.ssz",
+			baseUnixUrl:   "https://github.com/lukso-network/network-configs/raw/main/dev/2022/prysm/genesis.ssz",
+			baseDarwinUrl: "https://github.com/lukso-network/network-configs/raw/main/dev/2022/prysm/genesis.ssz",
 			name:          prysmDevnetGenesisDependencyName,
 			filePath:      "./config/devnet/shared/genesis.ssz",
 		},
 		prysmDevnetConfigDependencyName: {
-			baseUnixUrl:   "https://raw.githubusercontent.com/lukso-network/network-configs/devnet/dev/2022/prysm/config.yml",
-			baseDarwinUrl: "https://raw.githubusercontent.com/lukso-network/network-configs/devnet/dev/2022/prysm/config.yml",
+			baseUnixUrl:   "https://raw.githubusercontent.com/lukso-network/network-configs/main/dev/2022/prysm/config.yml",
+			baseDarwinUrl: "https://raw.githubusercontent.com/lukso-network/network-configs/main/dev/2022/prysm/config.yml",
 			name:          prysmDevnetConfigDependencyName,
 			filePath:      "./config/devnet/shared/config.yml",
 		},

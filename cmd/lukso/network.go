@@ -12,6 +12,7 @@ type networkConfig struct {
 	prysmDatadirPath       string
 	validatorDatadirPath   string
 	gethGenesisDependency  string
+	gethConfigDependency   string
 	prysmGenesisDependency string
 	prysmConfigDependency  string
 	logPath                string
@@ -45,6 +46,7 @@ func selectNetworkFor(f func(*cli.Context) error) func(*cli.Context) error {
 				prysmDatadirPath:       prysmDevnetDatadir,
 				validatorDatadirPath:   validatorDevnetDatadir,
 				gethGenesisDependency:  gethDevnetGenesisDependencyName,
+				gethConfigDependency:   gethDevnetConfigName,
 				prysmGenesisDependency: prysmDevnetGenesisDependencyName,
 				prysmConfigDependency:  prysmDevnetConfigDependencyName,
 				logPath:                devnetLogs,
@@ -66,6 +68,7 @@ func selectNetworkFor(f func(*cli.Context) error) func(*cli.Context) error {
 func updateValues(ctx *cli.Context, config networkConfig) (err error) {
 	var (
 		//genesisJson  = config.configPath + "/" + genesisJsonPath
+		gethToml     = config.configPath + "/" + configTomlPath
 		genesisState = config.configPath + "/" + genesisStateFilePath
 		configYaml   = config.configPath + "/" + configYamlPath
 		jwtSecret    = config.configPath + "/" + jwtSecretPath
@@ -81,6 +84,7 @@ func updateValues(ctx *cli.Context, config networkConfig) (err error) {
 
 	// selecting dependencies for init
 	gethSelectedGenesis = config.gethGenesisDependency
+	gethSelectedConfig = config.gethConfigDependency
 	prysmSelectedGenesis = config.prysmGenesisDependency
 	prysmSelectedConfig = config.prysmConfigDependency
 	jwtSelectedPath = jwtSecret
@@ -96,6 +100,7 @@ func updateValues(ctx *cli.Context, config networkConfig) (err error) {
 		validatorWalletDirFlag:   config.walletPath,
 		gethAuthJWTSecretFlag:    jwtSecret,
 		prysmJWTSecretFlag:       jwtSecret,
+		gethConfigFileFlag:       gethToml,
 		prysmChainConfigFileFlag: configYaml,
 		prysmGenesisStateFlag:    genesisState,
 	}
