@@ -1,5 +1,5 @@
 # LUKSO CLI
->⚠️ This page may change. Not everything is ready yet.
+>⚠️ DO NOT USE YET, this is WIP!
 
 
 ## Repository struct
