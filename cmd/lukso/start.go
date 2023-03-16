@@ -10,7 +10,6 @@ import (
 
 func (dependency *ClientDependency) Start(
 	arguments []string,
-	attachStdoutAndErr bool,
 	ctx *cli.Context,
 ) (err error) {
 	pidLocation := fmt.Sprintf("%s/%s.pid", pid.FileDir, dependency.name)
@@ -22,15 +21,6 @@ func (dependency *ClientDependency) Start(
 
 	command := exec.Command(dependency.name, arguments...)
 
-	if attachStdoutAndErr {
-		command.Stdout = os.Stdout
-		command.Stderr = os.Stderr
-
-		err = command.Run()
-
-		return
-	}
-
 	// since geth removed --logfile flag we have to manually adjust geth's stdout
 	if dependency.name == gethDependencyName {
 		var (
@@ -38,7 +28,7 @@ func (dependency *ClientDependency) Start(
 			fullPath string
 		)
 
-		gethLogDir := ctx.String(gethLogDirFlag)
+		gethLogDir := ctx.String(logFolderFlag)
 		if gethLogDir == "" {
 			return errFlagMissing
 		}
@@ -77,7 +67,9 @@ func (dependency *ClientDependency) Stop() error {
 
 	pidVal, err := pid.Load(pidLocation)
 	if err != nil {
-		return errProcessNotFound
+		log.Warnf("%s is not running - skipping...", dependency.name)
+
+		return nil
 	}
 
 	err = pid.Kill(pidLocation, pidVal)
@@ -118,9 +110,7 @@ func startGeth(ctx *cli.Context) error {
 
 	log.Info("Starting Geth")
 
-	stdAttached := ctx.Bool(gethStdOutputFlag)
-
-	err = clientDependencies[gethDependencyName].Start(prepareGethStartFlags(ctx), stdAttached, ctx)
+	err = clientDependencies[gethDependencyName].Start(prepareGethStartFlags(ctx), ctx)
 	if err != nil {
 		return err
 	}
@@ -132,9 +122,7 @@ func startGeth(ctx *cli.Context) error {
 func startPrysm(ctx *cli.Context) error {
 	log.Info("Starting Prysm")
 
-	stdAttached := ctx.Bool(prysmStdOutputFlag)
-
-	err := clientDependencies[prysmDependencyName].Start(preparePrysmStartFlags(ctx), stdAttached, ctx)
+	err := clientDependencies[prysmDependencyName].Start(preparePrysmStartFlags(ctx), ctx)
 	if err != nil {
 		return err
 	}
@@ -146,9 +134,7 @@ func startPrysm(ctx *cli.Context) error {
 func startValidator(ctx *cli.Context) error {
 	log.Info("Starting Validator")
 
-	stdAttached := ctx.Bool(validatorStdOutputFlag)
-
-	err := clientDependencies[validatorDependencyName].Start(prepareValidatorStartFlags(ctx), stdAttached, ctx)
+	err := clientDependencies[validatorDependencyName].Start(prepareValidatorStartFlags(ctx), ctx)
 	if err != nil {
 		return err
 	}

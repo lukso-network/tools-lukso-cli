@@ -17,8 +17,7 @@ type networkConfig struct {
 	prysmConfigDependency  string
 	logPath                string
 	configPath             string
-	walletPath             string
-	jwtSecretPath          string
+	keysPath               string
 }
 
 // selectNetwork accepts a CLI func as an argument, and adjusts all values that need to be changed depending on
@@ -51,7 +50,7 @@ func selectNetworkFor(f func(*cli.Context) error) func(*cli.Context) error {
 				prysmConfigDependency:  prysmDevnetConfigDependencyName,
 				logPath:                devnetLogs,
 				configPath:             devnetConfig,
-				walletPath:             devnetKeystore,
+				keysPath:               devnetKeystore,
 			}
 		}
 
@@ -94,12 +93,9 @@ func updateValues(ctx *cli.Context, config networkConfig) (err error) {
 		gethDatadirFlag:          config.gethDatadirPath,
 		prysmDatadirFlag:         config.prysmDatadirPath,
 		validatorDatadirFlag:     config.validatorDatadirPath,
-		gethLogDirFlag:           config.logPath,
-		prysmLogDirFlag:          config.logPath,
-		validatorLogDirFlag:      config.logPath,
-		validatorWalletDirFlag:   config.walletPath,
-		gethAuthJWTSecretFlag:    jwtSecret,
-		prysmJWTSecretFlag:       jwtSecret,
+		logFolderFlag:            config.logPath,
+		validatorKeysFlag:        config.keysPath,
+		jwtSecretFlag:            jwtSecret,
 		gethConfigFileFlag:       gethToml,
 		prysmChainConfigFileFlag: configYaml,
 		prysmGenesisStateFlag:    genesisState,

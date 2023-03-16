@@ -63,33 +63,19 @@ func sendDeposit(ctx *cli.Context) error {
 
 	c := context.Background()
 
-	var (
-		selectedDeposit string
-		supplyAmount    int
-	)
+	var supplyAmount int
 
-	depositPath := ctx.String(depositFlag)
-	genesisDepositPath := ctx.String(genesisDepositFlag)
+	depositPath := ctx.String(depositDataJson)
+	isGenesisDeposit := ctx.Bool(genesisDepositFlag)
 
-	if depositPath != "" && genesisDepositPath != "" {
-		return errTooManyDepositsProvided
-	}
-
-	switch {
-	case depositPath != "":
-		selectedDeposit = depositPath
-	case genesisDepositPath != "":
-		selectedDeposit = genesisDepositPath
-		supplyAmount, err = processTokenOption()
+	if isGenesisDeposit {
+		supplyAmount, err = chooseSupply()
 		if err != nil {
 			return err
 		}
-
-	default:
-		return errDepositNotProvided
 	}
 
-	depositKeys, err := parseDepositDataFile(selectedDeposit)
+	depositKeys, err := parseDepositDataFile(depositPath)
 	if err != nil {
 		return err
 	}
@@ -139,9 +125,9 @@ func sendDeposit(ctx *cli.Context) error {
 
 	var tx *types.Transaction
 
-	switch selectedDeposit {
-	case genesisDepositPath:
-		depositData, err := parseDepositDataKey(key, supplyAmount)
+	switch isGenesisDeposit {
+	case true:
+		depositData, err := encodeGenesisDepositDataKey(key, supplyAmount)
 
 		if err != nil {
 			return err
@@ -154,17 +140,17 @@ func sendDeposit(ctx *cli.Context) error {
 			depositData,
 		)
 
-		gasReadable := estimateGas(tx, int64(keysNum))
+		gasReadable := estimateGas(tx, int64(keysNum)) // TODO add a safety margin: 500_000 gas
 
 		message = fmt.Sprintf("Before proceeding make sure that your private key has sufficient balance:\n"+
 			"- %v ETH\n"+
 			"- %v LYXe\nDo you wish to continue? [Y/n]: ", gasReadable, keysNum*32)
 
-	case depositPath:
+	case false:
 		opts.Value = big.NewInt(0).Mul(big.NewInt(32), big.NewInt(ether))
 		var depositDataRoot [32]byte
 
-		depositData, err := parseDepositDataKey(key, 0)
+		depositData, err := encodeGenesisDepositDataKey(key, 0)
 		if err != nil {
 			return err
 		}
@@ -236,9 +222,9 @@ func sendDeposit(ctx *cli.Context) error {
 		opts.Value = big.NewInt(0)
 
 		var tx *types.Transaction
-		switch selectedDeposit {
-		case genesisDepositPath:
-			depositData, err := parseDepositDataKey(key, supplyAmount)
+		switch isGenesisDeposit {
+		case true:
+			depositData, err := encodeGenesisDepositDataKey(key, supplyAmount)
 			if err != nil {
 				log.Error("Couldn't send transaction - deposit data provided is invalid  - skipping...")
 			}
@@ -254,11 +240,11 @@ func sendDeposit(ctx *cli.Context) error {
 				return err
 			}
 
-		case depositPath:
+		case false:
 			opts.Value = big.NewInt(0).Mul(big.NewInt(32), big.NewInt(ether))
 			var depositDataRoot [32]byte
 
-			depositData, err := parseDepositDataKey(key, 0)
+			depositData, err := encodeGenesisDepositDataKey(key, 0)
 			if err != nil {
 				return err
 			}
@@ -290,14 +276,11 @@ func sendDeposit(ctx *cli.Context) error {
 }
 
 func initValidator(ctx *cli.Context) error {
-	if ctx.String(validatorKeysDirFlag) == "" {
-		return errKeysNotProvided
-	}
 	args := []string{
 		"accounts",
 		"import",
-		"--keys-dir", ctx.String(validatorWalletDirFlag),
-		"--wallet-dir", ctx.String(validatorWalletDirFlag),
+		"--keys-dir", ctx.String(validatorKeysFlag),
+		"--wallet-dir", ctx.String(validatorKeysFlag),
 	}
 
 	if ctx.String(validatorWalletPasswordFileFlag) != "" {
@@ -329,7 +312,7 @@ func parseDepositDataFile(depositFilePath string) (keys []DepositDataKey, err er
 	return
 }
 
-func parseDepositDataKey(key DepositDataKey, amount int) (depositData []byte, err error) {
+func encodeGenesisDepositDataKey(key DepositDataKey, amount int) (depositData []byte, err error) {
 	bytePubKey, err := hex.DecodeString(key.PubKey)
 	if err != nil {
 		return
@@ -388,11 +371,11 @@ func waitForNextBlock(c context.Context, eth *ethclient.Client, currentBlock uin
 	return
 }
 
-func processTokenOption() (amount int, err error) {
+func chooseSupply() (amount int, err error) {
 	message := `As a Genesis Validator you can provide an indicative voting for the preferred initial token supply of LYX, which will determine how much the Foundation will receive. See the https://deposit.mainnet.lukso.network website for details.
 You can choose between:
 1: 35M LYX
-2: 42M LYX (This option is the prefered one by the Foundation)
+2: 42M LYX (This option is the preferred one by the Foundation)
 3: 100M LYX
 4: No vote
 Please enter your choice (1-4):

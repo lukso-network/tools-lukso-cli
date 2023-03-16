@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 	"os"
@@ -172,19 +173,19 @@ func main() {
 					Name:   "geth",
 					Usage:  "Outputs Geth client logs",
 					Flags:  gethLogsFlags,
-					Action: selectNetworkFor(logClient(gethDependencyName, gethLogDirFlag)),
+					Action: selectNetworkFor(logClient(gethDependencyName)),
 				},
 				{
 					Name:   "prysm",
 					Usage:  "Outputs Prysm client logs",
 					Flags:  prysmLogsFlags,
-					Action: selectNetworkFor(logClient(prysmDependencyName, prysmLogDirFlag)),
+					Action: selectNetworkFor(logClient(prysmDependencyName)),
 				},
 				{
 					Name:   "validator",
 					Usage:  "Outputs Validator client logs",
 					Flags:  validatorLogsFlags,
-					Action: selectNetworkFor(logClient(validatorDependencyName, validatorLogDirFlag)),
+					Action: selectNetworkFor(logClient(validatorDependencyName)),
 				},
 			},
 		},
@@ -228,6 +229,22 @@ func main() {
 					Flags:  validatorInitFlags,
 					Action: selectNetworkFor(initValidator),
 				},
+			},
+		},
+		{
+			Name: "test",
+			Action: func(ctx *cli.Context) error {
+				fmt.Println("ARGS:", ctx.Args())
+				flags := clientDependencies[gethDependencyName].ParseStartFlags(ctx)
+				fmt.Println(flags)
+				return nil
+			},
+		},
+		{
+			Name: "t",
+			Action: func(ctx *cli.Context) error {
+				fmt.Println(os.Getenv("ANENV"))
+				return nil
 			},
 		},
 	}

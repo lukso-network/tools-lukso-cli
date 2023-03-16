@@ -125,13 +125,13 @@ func (dependency *ClientDependency) createDir() error {
 }
 
 func downloadBinaries(ctx *cli.Context) (err error) {
-	if !ctx.Bool(acceptTermsOfUseFlagName) {
+	if !ctx.Bool(acceptTermsOfUseFlag) {
 		accepted := acceptTermsInteractive()
 		if !accepted {
 			return errors.New("You need to accept Terms to continue.")
 		}
 	}
-	if ctx.Bool(acceptTermsOfUseFlagName) {
+	if ctx.Bool(acceptTermsOfUseFlag) {
 		log.Info("You accepted Terms of Use provided by clients you want to download. You can read more here: https://github.com/prysmaticlabs/prysm/blob/develop/TERMS_OF_SERVICE.md")
 	}
 	// Get os, then download all binaries into datadir matching desired system
