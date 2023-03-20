@@ -14,6 +14,8 @@ cmd/lukso/deps
 
 # Dist files
 dist
+/target
+/public
 
 # Configs and logs
 cmd/lukso/config

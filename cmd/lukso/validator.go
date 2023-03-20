@@ -221,7 +221,8 @@ func sendDeposit(ctx *cli.Context) error {
 		fmt.Println("Withdraw credentials:", key.WithdrawalCredentials)
 		fmt.Println("Fork version:", key.ForkVersion)
 		fmt.Println("Deposit data root:", key.DepositDataRoot)
-		fmt.Println("Signature:", key.Signature, "\n")
+		fmt.Println("Signature:", key.Signature)
+		fmt.Println("")
 
 		opts.Nonce = big.NewInt(int64(nonce))
 		opts.From = senderAddr

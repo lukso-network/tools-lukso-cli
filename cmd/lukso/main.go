@@ -1,12 +1,16 @@
 package main
 
 import (
-	"github.com/sirupsen/logrus"
-	"github.com/urfave/cli/v2"
+	"fmt"
 	"os"
 	"runtime"
 	runtimeDebug "runtime/debug"
+
+	"github.com/sirupsen/logrus"
+	"github.com/urfave/cli/v2"
 )
+
+var Version = "develop"
 
 const (
 	ubuntu  = "linux"
@@ -211,6 +215,11 @@ func main() {
 				},
 			},
 		},
+		{
+			Name:   "version",
+			Usage:  "Display version of the lukso command",
+			Action: displayVersion,
+		},
 	}
 
 	app.Before = func(ctx *cli.Context) error {
@@ -264,4 +273,9 @@ func initializeFlags(ctx *cli.Context) error {
 func fileExists(path string) bool {
 	_, err := os.Stat(path)
 	return !os.IsNotExist(err)
+}
+
+func displayVersion(ctx *cli.Context) error {
+	fmt.Println("Version:", Version)
+	return nil
 }

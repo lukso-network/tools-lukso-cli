@@ -1,0 +1,339 @@
+name: Release
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - "*"
+
+env:
+  CARGO_INCREMENTAL: 0
+  CARGO_NET_RETRY: 10
+  RUST_BACKTRACE: short
+  RUSTUP_MAX_RETRIES: 10
+  MACOSX_DEPLOYMENT_TARGET: 10.7
+
+jobs:
+  # Update release PR
+  release_please:
+    name: Release Please
+    runs-on: ubuntu-latest
+    if: github.repository == 'lukso-network/tools-lukso-cli'
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+      tag_name: ${{ steps.release.outputs.tag_name }}
+      version_name: ${{ steps.calc.outputs.version }}
+    steps:
+      - name: Validate | Checkout
+        uses: actions/checkout@v3
+      - uses: google-github-actions/release-please-action@v3
+        id: release
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          release-type: go
+          draft: true
+      - id: calc
+        name: Detect final version name
+        run: |
+          if [ "${{ steps.release.outputs.release_created }}" != "true" ]
+          then
+            SHA="${{ github.sha }}"
+            # For the extension we cannot use - but must use . for the PR number.
+            VERSION="v$(node -pe 'require("./.release-please-manifest.json")["."]')+${SHA:0:7}"
+            if [ -n "${{ github.event.number }}" ]
+            then
+              VERSION="${VERSION}+pr-${{ github.event.number }}"
+            else
+              VERSION="${VERSION}+${{ github.ref }}"
+            fi
+          else
+            VERSION="${{ steps.release.outputs.tag_name }}"
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+  check_test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate | Checkout
+        uses: actions/checkout@v3
+
+      - uses: actions/setup-go@v3
+        with:
+          go-version: "^1.19" # The Go version to download (if necessary) and use.
+
+      - name: Validate | Fmt
+        run: gofmt -l cmd/lukso
+
+      - name: Validate | Test
+        run: go test -C cmd/lukso
+
+  # Build sources for every OS
+  github_build:
+    name: Build release binaries
+    needs: [release_please, check_test]
+    # Testing...
+    # if: ${{ needs.release_please.outputs.release_created == 'true' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: x86_64-unknown-linux-gnu
+            os: ubuntu-latest
+            name: lukso-x86_64-unknown-linux-gnu.tar.gz
+            goos: linux
+            goarch: amd64
+
+          - target: x86_64-unknown-linux-musl
+            os: ubuntu-latest
+            name: lukso-x86_64-unknown-linux-musl.tar.gz
+            goos: linux
+            goarch: amd64
+
+          - target: i686-unknown-linux-musl
+            os: ubuntu-latest
+            name: lukso-i686-unknown-linux-musl.tar.gz
+            goos: linux
+            goarch: "386"
+
+          - target: aarch64-unknown-linux-musl
+            os: ubuntu-latest
+            name: lukso-aarch64-unknown-linux-musl.tar.gz
+            goos: linux
+            goarch: arm64
+
+          - target: arm-unknown-linux-musleabihf
+            os: ubuntu-latest
+            name: lukso-arm-unknown-linux-musleabihf.tar.gz
+            goos: linux
+            goarch: arm
+
+          - target: x86_64-apple-darwin
+            os: macOS-11
+            name: lukso-x86_64-apple-darwin.tar.gz
+            goos: darwin
+            goarch: amd64
+
+          - target: aarch64-apple-darwin
+            os: macOS-11
+            name: lukso-aarch64-apple-darwin.tar.gz
+            goos: darwin
+            goarch: arm64
+
+          - target: x86_64-unknown-freebsd
+            os: ubuntu-latest
+            name: lukso-x86_64-unknown-freebsd.tar.gz
+            goos: freebsd
+            goarch: amd64
+
+    runs-on: ${{ matrix.os }}
+    continue-on-error: true
+    steps:
+      - name: Setup | Checkout
+        uses: actions/checkout@v3
+
+      - uses: actions/setup-go@v3
+        with:
+          go-version: "^1.19" # The Go version to download (if necessary) and use.
+
+      - name: Build | Build
+        run: |
+          env GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build \
+              -C cmd/lukso \
+              -o "$(pwd)/target/${{ matrix.target }}/release/lukso${{ matrix.bin }}" \
+              -ldflags="-X 'main.Version=${{ needs.release_please.outputs.version_name }}'"
+
+      - name: Post Build | Prepare artifacts [-nix]
+        run: |
+          cd target/${{ matrix.target }}/release
+          tar czvf ../../../${{ matrix.name }} lukso
+          cd -
+
+      - name: Release | Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ matrix.name }}
+          path: ${{ matrix.name }}
+
+  # Notarize lukso binaries for MacOS and build notarized pkg installers
+  notarize_and_pkgbuild:
+    runs-on: macos-latest
+    continue-on-error: true
+    needs: [github_build]
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: x86_64-apple-darwin
+            arch: x86_64
+            name: lukso-x86_64-apple-darwin.tar.gz
+            pkgname: lukso-x86_64-apple-darwin.pkg
+
+          - target: aarch64-apple-darwin
+            arch: aarch64
+            name: lukso-aarch64-apple-darwin.tar.gz
+            pkgname: lukso-aarch64-apple-darwin.pkg
+
+    env:
+      KEYCHAIN_FILENAME: app-signing.keychain-db
+      KEYCHAIN_ENTRY: AC_PASSWORD
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Notarize | Set up secrets
+        env:
+          APP_CERTIFICATE_BASE64: ${{ secrets.APPLEDEV_APPSIGNKEY_BASE64 }}
+          INSTALL_CERTIFICATE_BASE64: ${{ secrets.APPLEDEV_INSTALLERSIGNKEY_BASE64 }}
+          P12_PASSWORD: ${{ secrets.APPLEDEV_SIGNKEY_PASS }}
+          KEYCHAIN_PASSWORD: ${{ secrets.APPLEDEV_SIGNKEY_PASS }}
+          APPLEID_USERNAME: ${{ secrets.APPLEDEV_ID_NAME }}
+          APPLEID_TEAMID: ${{ secrets.APPLEDEV_TEAM_ID }}
+          APPLEID_PASSWORD: ${{ secrets.APPLEDEV_PASSWORD }}
+        run: |
+          APP_CERTIFICATE_PATH="$RUNNER_TEMP/app_certificate.p12"
+          INSTALL_CERTIFICATE_PATH="$RUNNER_TEMP/install_certificate.p12"
+          KEYCHAIN_PATH="$RUNNER_TEMP/$KEYCHAIN_FILENAME"
+
+          # import certificates from secrets
+          echo -n "$APP_CERTIFICATE_BASE64" | base64 --decode --output $APP_CERTIFICATE_PATH
+          echo -n "$INSTALL_CERTIFICATE_BASE64" | base64 --decode --output $INSTALL_CERTIFICATE_PATH
+
+          # create temporary keychain
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+
+          # import certificates to keychain
+          security import $APP_CERTIFICATE_PATH -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+          security import $INSTALL_CERTIFICATE_PATH -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+          security list-keychain -d user -s $KEYCHAIN_PATH
+
+          # Add Apple Developer ID credentials to keychain
+          xcrun notarytool store-credentials "$KEYCHAIN_ENTRY" --team-id "$APPLEID_TEAMID" --apple-id "$APPLEID_USERNAME" --password "$APPLEID_PASSWORD" --keychain "$KEYCHAIN_PATH"
+
+      - name: Notarize | Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ matrix.name }}
+          path: artifacts
+
+      - name: Notarize | Unpack Binaries
+        run: tar xf artifacts/${{ matrix.name }}
+
+      - name: Setup nodejs
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18.12.1"
+          cache: "yarn"
+          cache-dependency-path: "./install/docs-processor/yarn.lock"
+
+      - name: Small docs build
+        run: |
+          cd install/docs-processor
+          yarn
+          node ./convert.js --in ../../docs --out ../../public
+
+      - name: Notarize | Build, Sign, and Notarize Pkg
+        run: bash install/macos_packages/build_and_notarize.sh lukso ./public ${{ matrix.arch }} ${{ matrix.pkgname }}
+
+      - name: Notarize | Upload Notarized Flat Installer
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ matrix.pkgname }}
+          path: ${{ matrix.pkgname }}
+
+      - name: Notarize | Package Notarized Binary
+        run: tar czvf ${{ matrix.name }} lukso
+
+      - name: Notarize | Upload Notarized Binary
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ matrix.name }}
+          path: ${{ matrix.name }}
+
+      - name: Cleanup Secrets
+        if: ${{ always() }}
+        run: |
+          KEYCHAIN_PATH="$RUNNER_TEMP/$KEYCHAIN_FILENAME"
+          security delete-keychain $KEYCHAIN_PATH
+
+  upload_artifacts:
+    name: Add Build Artifacts to Release
+    needs: [release_please, github_build, notarize_and_pkgbuild]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup | Artifacts
+        uses: actions/download-artifact@v3
+
+      - name: Setup | Checksums
+        run: for file in lukso-*/lukso-*; do openssl dgst -sha256 -r "$file" | awk '{print $1}' > "${file}.sha256"; done
+
+      - name: Setup | Publish Release
+        if: ${{ needs.release_please.outputs.release_created == 'true' }}
+        run: gh release edit ${{ needs.release_please.outputs.tag_name }} --draft=false --repo=lukso/lukso
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build | Add Artifacts to Release
+        uses: softprops/action-gh-release@v1
+        if: ${{ needs.release_please.outputs.release_created == 'true' }}
+        with:
+          files: lukso-*/lukso-*
+          tag_name: ${{ needs.release_please.outputs.tag_name }}
+
+  update_brew_formula:
+    name: Update Brew Formula
+    runs-on: ubuntu-latest
+    needs: [release_please, upload_artifacts]
+    # if: ${{ needs.release_please.outputs.release_created == 'true' }}
+    if: false
+    steps:
+      - uses: mislav/bump-homebrew-formula-action@v2.2
+        with:
+          formula-name: lukso
+          tag-name: ${{ needs.release_please.outputs.tag_name }}
+        env:
+          # Used for creating the formula update PR
+          COMMITTER_TOKEN: ${{ secrets.GH_PAT }}
+          # Used for verifying the SHA256 sum of the draft release
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+
+  publish_docs:
+    name: Publish script
+    needs: [notarize_and_pkgbuild]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup | Checkout
+        uses: actions/checkout@v3
+      - name: Copy script
+        if: ${{ needs.release_please.outputs.release_created == 'true' }}
+        run: |
+          mkdir -p dist
+          cp install/install.sh dist/index.html
+      - name: Notarize | Download artifacts
+        uses: actions/download-artifact@v3
+        if: ${{ needs.release_please.outputs.release_created != 'true' }}
+        with:
+          path: artifacts
+      - name: Copy PR scripts
+        if: ${{ needs.release_please.outputs.release_created != 'true' }}
+        run: |
+          mkdir -p dist
+          rm -rf dist/artifacts
+          mkdir -p dist/artifacts
+          find artifacts -type f -exec cp {} dist/artifacts \;
+          sed \
+            -e 's#https://github.com/lukso-network/tools-lukso-cli/releases#https://lukso-network.github.io/tools-lukso-cli/pr-preview/pr-${{ github.event.number }}#g' \
+            -e 's#${BASE_URL}/latest/download#${BASE_URL}/artifacts#g' \
+            install/install.sh > dist/index.html
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@v4
+        if: ${{ needs.release_please.outputs.release_created == 'true' }}
+        with:
+          folder: ./dist
+          clean-exclude: pr-preview/
+      - name: Deploy PR
+        uses: rossjrw/pr-preview-action@v1
+        with:
+          source-dir: ./dist
