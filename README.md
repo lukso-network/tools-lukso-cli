@@ -116,10 +116,11 @@ The following flags are available to the `$ lukso start` command:
 
 All the flags included in each of the clients (geth, erigon, prysm and lighthouse) are also available and can be passed as valid commands.
 Documentation for other client's CLIs can be found:
-Geth: https://geth.ethereum.org/docs/fundamentals/command-line-options
-Erigon: https://github.com/ledgerwatch/erigon
-Prysm: https://docs.prylabs.network/docs/prysm-usage/parameters
-Lighthouse: https://lighthouse-book.sigmaprime.io/advanced-datadir.html
+
+- Geth: https://geth.ethereum.org/docs/fundamentals/command-line-options
+- Erigon: https://github.com/ledgerwatch/erigon
+- Prysm: https://docs.prylabs.network/docs/prysm-usage/parameters
+- Lighthouse: https://lighthouse-book.sigmaprime.io/advanced-datadir.html
 
 ## Update
 
