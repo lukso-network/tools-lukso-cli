@@ -233,6 +233,11 @@ jobs:
           cd install/docs-processor
           yarn
           node ./convert.js --in ../../docs --out ../../public
+      
+      - name: Update pkg docs
+        run: |
+          cp -r ./public/* ./install/macos_packages/pkg_resources/English.lproj/
+          rm ./install/macos_packages/pkg_resources/English.lproj/index.html
 
       - name: Notarize | Build, Sign, and Notarize Pkg
         run: bash install/macos_packages/build_and_notarize.sh lukso ./public ${{ matrix.arch }} ${{ matrix.pkgname }}
