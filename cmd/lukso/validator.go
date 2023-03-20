@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"math/big"
 	"os"
@@ -24,9 +25,13 @@ import (
 
 const (
 	ether                         = 1_000_000_000_000_000_000
+	gasMargin                     = 500_000
+	gasBump                       = 50_000
 	depositContractAddress        = "0x000000000000000000000000000000000000cafe"
 	genesisDepositContractAddress = "0x9C2Ae5bC047Ca794d9388aB7A2Bf37778f9aBA73"
 	lyxeContractAddress           = "0x790c4379C82582F569899b3Ca71E78f19AeF82a5"
+
+	errUnderpriced = "transaction underpriced" // catches both replacement and normal underpriced
 
 	blockFetchInterval = 3 // in seconds
 )
@@ -188,7 +193,9 @@ func sendDeposit(ctx *cli.Context) error {
 	txCount := 1 // if txCount reaches 10 then we have to wait for another block
 
 	for i, key := range depositKeys {
-		currentBlock, err := eth.BlockNumber(c)
+		var currentBlock uint64
+
+		currentBlock, err = eth.BlockNumber(c)
 		if err != nil {
 			return err
 		}
@@ -224,7 +231,9 @@ func sendDeposit(ctx *cli.Context) error {
 		var tx *types.Transaction
 		switch isGenesisDeposit {
 		case true:
-			depositData, err := encodeGenesisDepositDataKey(key, supplyAmount)
+			var depositData []byte
+
+			depositData, err = encodeGenesisDepositDataKey(key, supplyAmount)
 			if err != nil {
 				log.Error("Couldn't send transaction - deposit data provided is invalid  - skipping...")
 			}
@@ -236,15 +245,14 @@ func sendDeposit(ctx *cli.Context) error {
 				depositData,
 			)
 
-			if err != nil {
-				return err
-			}
-
 		case false:
 			opts.Value = big.NewInt(0).Mul(big.NewInt(32), big.NewInt(ether))
-			var depositDataRoot [32]byte
+			var (
+				depositData     []byte
+				depositDataRoot [32]byte
+			)
 
-			depositData, err := encodeGenesisDepositDataKey(key, 0)
+			depositData, err = encodeGenesisDepositDataKey(key, 0)
 			if err != nil {
 				return err
 			}
@@ -261,7 +269,13 @@ func sendDeposit(ctx *cli.Context) error {
 				depositData[80:176],
 				depositDataRoot,
 			)
+		}
+
+		if err != nil && strings.Contains(err.Error(), errUnderpriced) {
+			tx, err = bumpGasAndSend(eth, tx, opts)
 			if err != nil {
+				log.Fatalf("Couldn't bump transation gas: %v", err)
+
 				return err
 			}
 		}
@@ -273,6 +287,62 @@ func sendDeposit(ctx *cli.Context) error {
 	}
 
 	return nil
+}
+
+func bumpGasAndSend(eth *ethclient.Client, tx *types.Transaction, signer *bind.TransactOpts) (*types.Transaction, error) {
+	log.Warn("Transaction failed with underpriced error - resending...")
+	gas := tx.Gas() + uint64(gasBump)
+
+	log.Debugf("Bumping gas, had %d, added %d", tx.Gas(), gas)
+	gas += tx.Gas()
+
+	fee := tx.GasFeeCap()
+	feeFloat, ok := big.NewFloat(0).SetString(fee.String())
+	if ok {
+		feeFloat = feeFloat.Mul(feeFloat, big.NewFloat(1.15))
+		feeFloat.Int(fee)
+		log.Debugf("Bumping fee %s -> %s WEI", tx.GasFeeCap().String(), fee.String())
+	} else {
+		log.Warnf("Failed to bump base fee: not ok fir bigFloat construction")
+	}
+
+	timeout := time.Now().Add(time.Second * 10)
+	nonce := tx.Nonce()
+	for {
+		if time.Now().After(timeout) {
+			return nil, errors.New("failed to send transaction - timed out with handleable noncing errors")
+		}
+
+		signed, err := signer.Signer(signer.From, types.NewTx(&types.DynamicFeeTx{
+			ChainID:   tx.ChainId(),
+			Nonce:     nonce,
+			GasTipCap: tx.GasTipCap(),
+			GasFeeCap: fee,
+			Gas:       gas,
+			To:        tx.To(),
+			Value:     tx.Value(),
+			Data:      tx.Data(),
+		}))
+
+		if err != nil {
+			return nil, err
+		}
+
+		log.Debugf("Signed bumped gas tx, gas=%d hash=%s", signed.Gas(), signed.Hash().String())
+
+		err = eth.SendTransaction(context.Background(), signed)
+		if err != nil {
+			switch strings.Contains(err.Error(), errUnderpriced) {
+			case true: // ie. data race for nonce getter
+				nonce++
+				continue
+			default:
+				return nil, err
+			}
+		}
+
+		return signed, nil
+	}
 }
 
 func initValidator(ctx *cli.Context) error {
@@ -415,6 +485,7 @@ func estimateGas(tx *types.Transaction, txCount int64) float64 {
 	txGasFeeCap := tx.GasFeeCap()
 	txGas = txGas.Mul(txGas, txGasFeeCap)
 	allTxGas := big.NewInt(0).Mul(txGas, big.NewInt(txCount))
+	allTxGas.Add(allTxGas, big.NewInt(gasMargin))
 	gasInEther, _ := big.NewRat(allTxGas.Int64(), ether).Float64()
 
 	return gasInEther

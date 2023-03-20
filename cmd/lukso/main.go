@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 	"os"
@@ -218,10 +217,8 @@ func main() {
 			Action: selectNetworkFor(resetClients),
 		},
 		{
-			Name:   "validator",
-			Usage:  "Send deposits from your deposit file",
-			Flags:  validatorFlags,
-			Action: sendDeposit,
+			Name:  "validator",
+			Usage: "Manage your lukso validator",
 			Subcommands: []*cli.Command{
 				{
 					Name:   "init",
@@ -229,22 +226,12 @@ func main() {
 					Flags:  validatorInitFlags,
 					Action: selectNetworkFor(initValidator),
 				},
-			},
-		},
-		{
-			Name: "test",
-			Action: func(ctx *cli.Context) error {
-				fmt.Println("ARGS:", ctx.Args())
-				flags := clientDependencies[gethDependencyName].ParseStartFlags(ctx)
-				fmt.Println(flags)
-				return nil
-			},
-		},
-		{
-			Name: "t",
-			Action: func(ctx *cli.Context) error {
-				fmt.Println(os.Getenv("ANENV"))
-				return nil
+				{
+					Name:   "deposit",
+					Usage:  "Initializes your validator with keys generated using keygen tools",
+					Flags:  validatorDepositFlags,
+					Action: sendDeposit,
+				},
 			},
 		},
 	}

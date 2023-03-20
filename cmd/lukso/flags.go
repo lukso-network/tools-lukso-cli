@@ -127,7 +127,7 @@ var (
 		devnetEnabledFlag,
 	}
 
-	validatorFlags = []cli.Flag{
+	validatorDepositFlags = []cli.Flag{
 		&cli.StringFlag{
 			Name:     depositDataJson,
 			Usage:    "Path to your deposit file",
