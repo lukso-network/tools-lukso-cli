@@ -73,11 +73,15 @@ $ lukso install --agree-terms
 ## init
 
 This command downloads the network configs from https://github.com/lukso-network/network-configs to your recently created "myLUKSOFolder/configs"
-It will not overwrite any existing config folders, data or keystore the user might have
+It will not overwrite any existing config folders, data or keystore the user might have.
+
+The init command should be run from the user's "myLUKSOFolder" directory.
 
 ```bash
 
-$ lukso init
+$ cd myLUKSOFolder/
+
+myLUKSOFolder $ lukso init
 ```
 
 ## install
