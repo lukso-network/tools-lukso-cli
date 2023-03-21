@@ -283,15 +283,10 @@ check_bin_dir() {
 }
 
 print_install() {
-  # if the shell does not fit the default case change the config file
-  # and or the config cmd variable
-  echo "> starts your currently installed default clients and connects to LUKSO mainnet"
-  echo "${BOLD}\$${NO_COLOR} lukso start\n"
-  echo "> starts your nodes connecting to the testnet"
-  echo "${BOLD}\$${NO_COLOR} lukso start --testnet\n"
-  echo "> starts your nodes connecting to the mainet as a validator"
-  echo "> use default keystore folder (/mainnet-keystore)"
-  echo "${BOLD}\$${NO_COLOR} lukso start --validator\n"
+  echo "To get started do the following:"
+  echo "${BOLD}1.${NO_COLOR} Create a working folder where you want your clients to store their data: \"mkdir myLUKSOFolder && cd ./myLUKSOFolder\""
+  echo "${BOLD}2.${NO_COLOR} Initialize the folder using \"${BOLD}lukso init${NO_COLOR}\""
+  echo "${BOLD}3.${NO_COLOR} Install your desired clients using \"${BOLD}lukso install${NO_COLOR}\""
 }
 
 is_build_available() {
@@ -410,10 +405,43 @@ TARGET="$(detect_target "${ARCH}" "${PLATFORM}")"
 
 is_build_available "${ARCH}" "${PLATFORM}" "${TARGET}"
 
+if WHERE=$(which lukso)
+then
+  WHERE=$(dirname "${WHERE}")
+  PREVIOUS=""
+  if ! PREVIOUS=$(lukso version)
+  then
+    if PREVIOUS=$(lukso -v)
+    then
+      PREVIOUS="${PREVIOUS} (deprecated)"
+    else
+      PREVIOUS=""    
+    fi
+  fi
+  PREVIOUS=$(echo "${PREVIOUS}" | sed -n -e "s#.*\(v[0-9][0-9]*\..*\)\$#\1#p" -e "s#.*\(develop\)\$#\1#p")
+  if [ -n "${PREVIOUS}" ]
+  then
+    printf "  %s\n" "${UNDERLINE}You currently have a previous version installed${NO_COLOR}"
+    info "${BOLD}Current bin${NO_COLOR}:      ${GREEN}${WHERE}${NO_COLOR}"
+    info "${BOLD}Current version${NO_COLOR}:  ${GREEN}${PREVIOUS}${NO_COLOR}"
+    if [ "${BIN_DIR}" != "${WHERE}" ]
+    then
+      echo ""
+      info "${RED}CAUTION: This installer will install the bin into ${GREEN}${BIN_DIR}${RED}"
+      info "${RED}while your old executable is in ${GREEN}${WHERE}${RED}"
+      info "${RED}make sure your ${GREEN}\$PATH${RED} includes the new one first${NO_COLOR}"
+    fi
+    echo ""
+    info "${RED}Press Ctrl-C or reply ${BOLD}N${NO_COLOR}${RED} if you don't want to upgrade to version __VERSION__${NO_COLOR}"
+    echo ""
+  fi
+fi
 printf "  %s\n" "${UNDERLINE}Configuration${NO_COLOR}"
-info "${BOLD}Bin directory${NO_COLOR}: ${GREEN}${BIN_DIR}${NO_COLOR}"
-info "${BOLD}Platform${NO_COLOR}:      ${GREEN}${PLATFORM}${NO_COLOR}"
-info "${BOLD}Arch${NO_COLOR}:          ${GREEN}${ARCH}${NO_COLOR}"
+info "${BOLD}Repository${NO_COLOR}:       ${GREEN}https://github.com/lukso-network/tools-lukso-cli"
+info "${BOLD}Bin directory${NO_COLOR}:    ${GREEN}${BIN_DIR}${NO_COLOR}"
+info "${BOLD}Platform${NO_COLOR}:         ${GREEN}${PLATFORM}${NO_COLOR}"
+info "${BOLD}Arch${NO_COLOR}:             ${GREEN}${ARCH}${NO_COLOR}"
+info "${BOLD}Version${NO_COLOR}:          ${GREEN}__VERSION__${NO_COLOR}"
 
 # non-empty VERBOSE enables verbose untarring
 if [ -n "${VERBOSE-}" ]; then
@@ -430,17 +458,18 @@ EXT=tar.gz
 URL="${BASE_URL}/latest/download/lukso-${TARGET}.${EXT}"
 info "Tarball URL: ${UNDERLINE}${BLUE}${URL}${NO_COLOR}"
 info ""
-info "You need to agree to the lukso-cli terms before continuing:"
-info "${BOLD}https://github.com/lukso-network/tools-lukso-cli/blob/main/LICENSE${NO_COLOR}"
-info ""
-info "Our readme is at ${BOLD}https://github.com/lukso-network/tools-lukso-cli/blob/main/README.md${NO_COLOR}"
-confirm "Agree and install lukso ${GREEN}latest${NO_COLOR} to ${BOLD}${GREEN}${BIN_DIR}${NO_COLOR}?"
+info "You need to agree to the LUKSO CLI terms before continuing:"
+info "${BOLD}https://github.com/lukso-network/tools-lukso-cli/blob/main/LICENSE.md${NO_COLOR}"
+confirm "Agree and install lukso ${GREEN}__VERSION__${NO_COLOR} to ${BOLD}${GREEN}${BIN_DIR}${NO_COLOR}?"
 check_bin_dir "${BIN_DIR}"
 
+# if the shell does not fit the default case change the config file
+# and or the config cmd variable
+info "Installing ${BOLD}LUKSO CLI${NO_COLOR}..."
+
 install "${EXT}"
-completed "lukso installed"
+completed "${GREEN}lukso${NO_COLOR} installed"
 
 printf '\n'
-info "Please refer to the documentation for detail here are a few commands for reference"
 
 print_install
