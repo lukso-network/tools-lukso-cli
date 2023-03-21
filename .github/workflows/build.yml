@@ -307,7 +307,7 @@ jobs:
 
   publish_docs:
     name: Publish script
-    needs: [notarize_and_pkgbuild]
+    needs: [notarize_and_pkgbuild, release_please]
     runs-on: ubuntu-latest
     steps:
       - name: Setup | Checkout
