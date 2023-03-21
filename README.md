@@ -86,7 +86,10 @@ myLUKSOFolder $ lukso init
 
 ## install
 
-Installs will install LUKSO's default clients. This command can also be used to install any other desired client of your choice (Geth/Erigon - Prysm/Lighthouse)
+Installs and prompts the user to select which Execution and which Consensus client he choses to install. It will detect if the user already has any client installed and confirms an override to a newer version in case needed. It will prompt the user to agree with Terms & Conditions of certain clients (when needed) to continue with installation. User also has the choice to "agree with all Terms & Conditions" by passing the flag --agree-terms.
+Execution Clients available are Geth or Erigon;
+Consensus Clients available are Prysm or Lighthouse.
+The install command can also be used to install any other desired client directly (Geth/Erigon - Prysm/Lighthouse).
 
 ```bash
 $ lukso install
