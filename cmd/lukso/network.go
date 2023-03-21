@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/urfave/cli/v2"
 	"os"
 	"strings"
@@ -24,6 +25,17 @@ type networkConfig struct {
 // network passed as a flag. Works as a wrapper for selecting current working network
 func selectNetworkFor(f func(*cli.Context) error) func(*cli.Context) error {
 	return func(ctx *cli.Context) error {
+		if ctx.Command.SkipFlagParsing {
+			fmt.Println("ASDASDASD")
+			log.Debug("Skipping flag parsing on - parsing flags manually...")
+			err := parseFlags(ctx)
+			if err != nil {
+				return err
+			}
+		}
+
+		fmt.Println(ctx.Args())
+
 		mainnetEnabled := ctx.Bool(mainnetFlag)
 		testnetEnabled := ctx.Bool(testnetFlag)
 		devnetEnabled := ctx.Bool(devnetFlag)
@@ -68,6 +80,7 @@ func updateValues(ctx *cli.Context, config networkConfig) (err error) {
 	var (
 		//genesisJson  = config.configPath + "/" + genesisJsonPath
 		gethToml     = config.configPath + "/" + configTomlPath
+		gethGenesis  = config.configPath + "/" + genesisJsonPath
 		genesisState = config.configPath + "/" + genesisStateFilePath
 		configYaml   = config.configPath + "/" + configYamlPath
 		jwtSecret    = config.configPath + "/" + jwtSecretPath
@@ -97,6 +110,7 @@ func updateValues(ctx *cli.Context, config networkConfig) (err error) {
 		validatorKeysFlag:        config.keysPath,
 		jwtSecretFlag:            jwtSecret,
 		gethConfigFileFlag:       gethToml,
+		genesisJsonFlag:          gethGenesis,
 		prysmChainConfigFileFlag: configYaml,
 		prysmGenesisStateFlag:    genesisState,
 	}
@@ -105,7 +119,7 @@ func updateValues(ctx *cli.Context, config networkConfig) (err error) {
 		return errNotEnoughArguments
 	}
 
-	for _, flag := range ctx.Command.VisibleFlags() {
+	for _, flag := range ctx.Command.Flags {
 		names := flag.Names()
 		if len(names) < 1 {
 			return errNotEnoughArguments

@@ -127,34 +127,12 @@ func main() {
 			},
 		},
 		{
-			Name:   "start",
-			Usage:  "Start all lukso clients",
-			Action: selectNetworkFor(startClients),
-			Flags:  startFlags,
-			Before: initializeFlags,
-			Subcommands: []*cli.Command{
-				{
-					Name:   "geth",
-					Usage:  "Start Geth client",
-					Flags:  gethStartFlags,
-					Before: initializeFlags,
-					Action: selectNetworkFor(startGeth),
-				},
-				{
-					Name:   "prysm",
-					Usage:  "Start Prysm client",
-					Flags:  prysmStartFlags,
-					Before: initializeFlags,
-					Action: selectNetworkFor(startPrysm),
-				},
-				{
-					Name:   "validator",
-					Usage:  "Start Validator client",
-					Flags:  validatorStartFlags,
-					Before: initializeFlags,
-					Action: selectNetworkFor(startValidator),
-				},
-			},
+			Name:            "start",
+			Usage:           "Start all lukso clients",
+			Action:          selectNetworkFor(startClients),
+			SkipFlagParsing: true,
+			Flags:           startFlags,
+			Before:          initializeFlags,
 		},
 		{
 			Name:   "stop",
@@ -166,7 +144,6 @@ func main() {
 			Name:   "log",
 			Usage:  "Outputs log file of given client",
 			Action: logClients,
-			Flags:  logsFlags,
 			Subcommands: []*cli.Command{
 				{
 					Name:   "geth",

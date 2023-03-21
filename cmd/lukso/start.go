@@ -133,6 +133,11 @@ func startPrysm(ctx *cli.Context) error {
 
 func startValidator(ctx *cli.Context) error {
 	log.Info("Starting Validator")
+	if ctx.String(transactionFeeRecipientFlag) == "" {
+		log.Errorf("%s flag is required but wasn't provided", transactionFeeRecipientFlag)
+
+		return errFlagMissing
+	}
 
 	err := clientDependencies[validatorDependencyName].Start(prepareValidatorStartFlags(ctx), ctx)
 	if err != nil {
@@ -188,7 +193,7 @@ func stopClient(dependency *ClientDependency) func(ctx *cli.Context) error {
 
 func initGeth(ctx *cli.Context) (err error) {
 	dataDir := fmt.Sprintf("--datadir=%s", ctx.String(gethDatadirFlag))
-	command := exec.Command("geth", "init", dataDir, clientDependencies[gethSelectedGenesis].filePath)
+	command := exec.Command("geth", "init", dataDir, ctx.String(genesisJsonFlag))
 	command.Stdout = os.Stdout
 	command.Stderr = os.Stderr
 

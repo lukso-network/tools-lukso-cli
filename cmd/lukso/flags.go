@@ -12,12 +12,7 @@ const (
 	gethCommitHashFlag = "geth-commit-hash"
 	gethDatadirFlag    = "geth-datadir"
 	gethConfigFileFlag = "geth-config"
-
-	// Validator related flag names
-	validatorTagFlag                = "validator-tag"
-	validatorDatadirFlag            = "validator-datadir"
-	validatorWalletPasswordFileFlag = "validator-password"
-	validatorChainConfigFileFlag    = "validator-chain-config-file"
+	genesisJsonFlag    = "genesis-json"
 
 	// Prysm related flag names
 	prysmTagFlag             = "prysm-tag"
@@ -25,6 +20,12 @@ const (
 	prysmChainConfigFileFlag = "prysm-chain-config"
 	prysmDatadirFlag         = "prysm-datadir"
 	noSlasherFlag            = "no-slasher"
+
+	// Validator related flag names
+	validatorTagFlag                = "validator-tag"
+	validatorDatadirFlag            = "validator-datadir"
+	validatorWalletPasswordFileFlag = "validator-password"
+	validatorChainConfigFileFlag    = "validator-chain-config-file"
 
 	// shared flags
 	transactionFeeRecipientFlag = "transaction-fee-recipient"
@@ -91,12 +92,12 @@ var (
 
 	mainnetEnabledFlag = &cli.BoolFlag{
 		Name:  mainnetFlag,
-		Usage: "Run for mainnetFlag (default)",
+		Usage: "Run for mainnet (default)",
 		Value: false,
 	}
 	testnetEnabledFlag = &cli.BoolFlag{
 		Name:  testnetFlag,
-		Usage: "Run for testnetFlag",
+		Usage: "Run for testnet",
 		Value: false,
 	}
 	devnetEnabledFlag = &cli.BoolFlag{
@@ -187,9 +188,8 @@ var (
 			Value: false, // default is true, we change it to false only when running validator
 		},
 		&cli.StringFlag{
-			Name:     transactionFeeRecipientFlag,
-			Usage:    "address to receive fees from blocks",
-			Required: true,
+			Name:  transactionFeeRecipientFlag,
+			Usage: "address to receive fees from blocks",
 		},
 		&cli.StringFlag{
 			Name:  logFolderFlag,
@@ -197,9 +197,10 @@ var (
 			Value: "./mainnet-logs",
 		},
 		&cli.StringFlag{
-			Name:  jwtSecretFlag,
-			Usage: "Path to jwt secret used for clients communication",
-			Value: jwtSecretDefaultPath,
+			Name:   jwtSecretFlag,
+			Usage:  "Path to jwt secret used for clients communication",
+			Value:  jwtSecretDefaultPath,
+			Hidden: true,
 		},
 	}
 	logsFlags  []cli.Flag
@@ -237,24 +238,37 @@ var (
 	// START
 	gethStartFlags = []cli.Flag{
 		&cli.StringFlag{
-			Name:  gethDatadirFlag,
-			Usage: "a path you would like to store your data",
-			Value: gethMainnetDatadir,
+			Name:   gethDatadirFlag,
+			Usage:  "a path you would like to store your data",
+			Value:  gethMainnetDatadir,
+			Hidden: true,
 		},
 		&cli.StringFlag{
 			Name:  gethConfigFileFlag,
 			Usage: "path to geth.toml config file",
 			Value: "./config/mainnet/geth/geth.toml",
 		},
+		&cli.StringFlag{
+			Name:  genesisJsonFlag,
+			Usage: "path to genesis.json file",
+			Value: "./config/mainnet/geth/genesis.json",
+		},
 	}
 	// LOGS
-	gethLogsFlags = []cli.Flag{}
+	gethLogsFlags = []cli.Flag{
+		&cli.StringFlag{
+			Name:  logFolderFlag,
+			Usage: "Directory to output logs into",
+			Value: "./mainnet-logs",
+		},
+	}
 	// RESET
 	gethResetFlags = []cli.Flag{
 		&cli.StringFlag{
-			Name:  gethDatadirFlag,
-			Usage: "geth datadir",
-			Value: gethMainnetDatadir,
+			Name:   gethDatadirFlag,
+			Usage:  "geth datadir",
+			Value:  gethMainnetDatadir,
+			Hidden: true,
 		},
 	}
 
@@ -283,24 +297,33 @@ var (
 			Value: "./config/mainnet/shared/genesis.ssz",
 		},
 		&cli.StringFlag{
-			Name:  prysmDatadirFlag,
-			Usage: "prysm datadir",
-			Value: prysmMainnetDatadir,
+			Name:   prysmDatadirFlag,
+			Usage:  "prysm datadir",
+			Value:  prysmMainnetDatadir,
+			Hidden: true,
 		},
 		&cli.StringFlag{
-			Name:  prysmChainConfigFileFlag,
-			Usage: "path to config.yml file",
-			Value: "./config/mainnet/shared/config.yml",
+			Name:   prysmChainConfigFileFlag,
+			Usage:  "path to config.yml file",
+			Value:  "./config/mainnet/shared/config.yml",
+			Hidden: true,
 		},
 	}
 	// LOGS
-	prysmLogsFlags = []cli.Flag{}
+	prysmLogsFlags = []cli.Flag{
+		&cli.StringFlag{
+			Name:  logFolderFlag,
+			Usage: "Directory to output logs into",
+			Value: "./mainnet-logs",
+		},
+	}
 	// RESET
 	prysmResetFlags = []cli.Flag{
 		&cli.StringFlag{
-			Name:  prysmDatadirFlag,
-			Usage: "prysm datadir",
-			Value: prysmMainnetDatadir,
+			Name:   prysmDatadirFlag,
+			Usage:  "prysm datadir",
+			Value:  prysmMainnetDatadir,
+			Hidden: true,
 		},
 	}
 
@@ -324,9 +347,10 @@ var (
 	// START
 	validatorStartFlags = []cli.Flag{
 		&cli.StringFlag{
-			Name:  validatorDatadirFlag,
-			Usage: "validator datadir",
-			Value: validatorMainnetDatadir,
+			Name:   validatorDatadirFlag,
+			Usage:  "validator datadir",
+			Value:  validatorMainnetDatadir,
+			Hidden: true,
 		},
 		&cli.StringFlag{
 			Name:  validatorKeysFlag,
@@ -336,27 +360,35 @@ var (
 		&cli.StringFlag{
 			Name:  validatorWalletPasswordFileFlag,
 			Usage: "location of file password that you used for generation keys from deposit-cli",
-			Value: "./config/mainnet/shared/secrets/validator-password.txt",
+			Value: "",
 		},
 		&cli.StringFlag{
-			Name:  validatorChainConfigFileFlag,
-			Usage: "prysm chain config file path",
-			Value: "./config/mainnet/shared/config.yml",
+			Name:   validatorChainConfigFileFlag,
+			Usage:  "prysm chain config file path",
+			Value:  "./config/mainnet/shared/config.yml",
+			Hidden: true,
 		},
 	}
 	// LOGS
-	validatorLogsFlags = []cli.Flag{}
+	validatorLogsFlags = []cli.Flag{
+		&cli.StringFlag{
+			Name:  logFolderFlag,
+			Usage: "Directory to output logs into",
+			Value: "./mainnet-logs",
+		},
+	}
 	// RESET
 	validatorResetFlags = []cli.Flag{
 		&cli.StringFlag{
-			Name:  validatorDatadirFlag,
-			Usage: "validator datadir",
-			Value: validatorMainnetDatadir,
+			Name:   validatorDatadirFlag,
+			Usage:  "validator datadir",
+			Value:  validatorMainnetDatadir,
+			Hidden: true,
 		},
 	}
 )
 
-func (dependency *ClientDependency) ParseStartFlags(ctx *cli.Context) (startFlags []string) {
+func (dependency *ClientDependency) PassStartFlags(ctx *cli.Context) (startFlags []string) {
 	name := dependency.name
 	args := ctx.Args()
 	argsLen := args.Len()
@@ -387,7 +419,7 @@ func (dependency *ClientDependency) ParseStartFlags(ctx *cli.Context) (startFlag
 }
 
 func prepareGethStartFlags(ctx *cli.Context) (startFlags []string) {
-	startFlags = clientDependencies[gethDependencyName].ParseStartFlags(ctx)
+	startFlags = clientDependencies[gethDependencyName].PassStartFlags(ctx)
 	startFlags = append(startFlags, fmt.Sprintf("--config=%s", ctx.String(gethConfigFileFlag)))
 	startFlags = append(startFlags, fmt.Sprintf("--authrpc.jwtsecret=%s", ctx.String(jwtSecretFlag)))
 
@@ -395,18 +427,25 @@ func prepareGethStartFlags(ctx *cli.Context) (startFlags []string) {
 }
 
 func prepareValidatorStartFlags(ctx *cli.Context) (startFlags []string) {
-	startFlags = clientDependencies[validatorDependencyName].ParseStartFlags(ctx)
+	startFlags = clientDependencies[validatorDependencyName].PassStartFlags(ctx)
 
 	startFlags = append(startFlags, "--accept-terms-of-use")
-	startFlags = append(startFlags, fmt.Sprintf("--log-file=%s", prepareLogfileFlag(ctx, ctx.String(logFolderFlag), validatorDependencyName)))
-
+	startFlags = append(startFlags, prepareLogfileFlag(ctx.String(logFolderFlag), validatorDependencyName))
+	startFlags = append(startFlags, fmt.Sprintf("--suggested-fee-recipient=%s", ctx.String(transactionFeeRecipientFlag)))
+	if ctx.String(validatorKeysFlag) != "" {
+		startFlags = append(startFlags, fmt.Sprintf("--wallet-dir=%s", ctx.String(validatorKeysFlag)))
+	}
+	if ctx.String(validatorWalletPasswordFileFlag) != "" {
+		startFlags = append(startFlags, fmt.Sprintf("--wallet-password-file=%s", ctx.String(validatorWalletPasswordFileFlag)))
+	}
 	return
 }
 
 func preparePrysmStartFlags(ctx *cli.Context) (startFlags []string) {
-	startFlags = clientDependencies[prysmDependencyName].ParseStartFlags(ctx)
-	startFlags = append(startFlags, fmt.Sprintf("--log-file=%s", prepareLogfileFlag(ctx, ctx.String(logFolderFlag), prysmDependencyName)))
+	startFlags = clientDependencies[prysmDependencyName].PassStartFlags(ctx)
+	startFlags = append(startFlags, prepareLogfileFlag(ctx.String(logFolderFlag), prysmDependencyName))
 	startFlags = append(startFlags, fmt.Sprintf("--jwt-secret=%s", ctx.String(jwtSecretFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--suggested-fee-recipient=%s", ctx.String(transactionFeeRecipientFlag)))
 
 	return
 }
