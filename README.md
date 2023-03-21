@@ -102,13 +102,13 @@ $ lukso install --agree-terms
 
 ```
 
-| Flag             | Description                                                                                                                 |
-| ---------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| --agree-terms    | installs LUKSO client and agrees with Terms & Conditions                                                                    |
-| --geth -\*       | \* Pass any flag to the Geth node [See docs for details](https://geth.ethereum.org/docs/fundamentals/command-line-options)  |
-| --erigon -\*     | \* Pass any flag to the Erigon node [See docs for details](https://github.com/ledgerwatch/erigon)                           |
-| --prysm -\*      | \* Pass any flag to the Prysm node [See docs for details](https://docs.prylabs.network/docs/prysm-usage/parameters)         |
-| --lighthouse -\* | \* Pass any flag to the Lighthouse node [See docs for details](https://lighthouse-book.sigmaprime.io/advanced-datadir.html) |
+| Flag            | Description                                                                                                                 |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| --agree-terms   | installs LUKSO client and agrees with Terms & Conditions                                                                    |
+| --geth-\*       | \* Pass any flag to the Geth node [See docs for details](https://geth.ethereum.org/docs/fundamentals/command-line-options)  |
+| --erigon-\*     | \* Pass any flag to the Erigon node [See docs for details](https://github.com/ledgerwatch/erigon)                           |
+| --prysm-\*      | \* Pass any flag to the Prysm node [See docs for details](https://docs.prylabs.network/docs/prysm-usage/parameters)         |
+| --lighthouse-\* | \* Pass any flag to the Lighthouse node [See docs for details](https://lighthouse-book.sigmaprime.io/advanced-datadir.html) |
 
 #### Examples
 
@@ -134,15 +134,11 @@ $ lukso log consensus
 $ lukso log validator
 ```
 
-| Flag             | Description                                                                                                                 |
-| ---------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| --testnet        | displays client's testnet logs                                                                                              |
-| --devnet         | displays client's devnet logs                                                                                               |
-| --log-folder     | user can access their custom log folder "./myCustomLogFolder" [learn how to setup log folder]()                             |
-| --geth -\*       | \* Pass any flag to the Geth node [See docs for details](https://geth.ethereum.org/docs/fundamentals/command-line-options)  |
-| --erigon -\*     | \* Pass any flag to the Erigon node [See docs for details](https://github.com/ledgerwatch/erigon)                           |
-| --prysm -\*      | \* Pass any flag to the Prysm node [See docs for details](https://docs.prylabs.network/docs/prysm-usage/parameters)         |
-| --lighthouse -\* | \* Pass any flag to the Lighthouse node [See docs for details](https://lighthouse-book.sigmaprime.io/advanced-datadir.html) |
+| Flag         | Description                                                                                     |
+| ------------ | ----------------------------------------------------------------------------------------------- |
+| --testnet    | displays client's testnet logs                                                                  |
+| --devnet     | displays client's devnet logs                                                                   |
+| --log-folder | user can access their custom log folder "./myCustomLogFolder" [learn how to setup log folder]() |
 
 #### Examples
 
@@ -167,17 +163,17 @@ $ lukso reset
 $ lukso reset --testnet
 ```
 
-| Flag                  | Description                                                                                                                 |
-| --------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| --testnet             | resets the client's testnet                                                                                                 |
-| --devnet              | resets the client's devnet                                                                                                  |
-| --geth -\*            | \* Pass any flag to the Geth node [See docs for details](https://geth.ethereum.org/docs/fundamentals/command-line-options)  |
-| --geth -data-dir      | resets the "./mainnet/data/execution" directory                                                                             |
-| --erigon -\*          | \* Pass any flag to the Erigon node [See docs for details](https://github.com/ledgerwatch/erigon)                           |
-| --prysm -\*           | \* Pass any flag to the Prysm node [See docs for details](https://docs.prylabs.network/docs/prysm-usage/parameters)         |
-| --prysm -data-dir     | resets the "./mainnet/data/consensus" directory                                                                             |
-| --lighthouse -\*      | \* Pass any flag to the Lighthouse node [See docs for details](https://lighthouse-book.sigmaprime.io/advanced-datadir.html) |
-| --validator -data-dir | resets the "./mainnet/data/validator" directory                                                                             |
+| Flag                 | Description                                                                                                                 |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| --testnet            | resets the client's testnet                                                                                                 |
+| --devnet             | resets the client's devnet                                                                                                  |
+| --geth-\*            | \* Pass any flag to the Geth node [See docs for details](https://geth.ethereum.org/docs/fundamentals/command-line-options)  |
+| --geth-data-dir      | resets the "./mainnet/data/execution" directory                                                                             |
+| --erigon-\*          | \* Pass any flag to the Erigon node [See docs for details](https://github.com/ledgerwatch/erigon)                           |
+| --prysm-\*           | \* Pass any flag to the Prysm node [See docs for details](https://docs.prylabs.network/docs/prysm-usage/parameters)         |
+| --prysm-data-dir     | resets the "./mainnet/data/consensus" directory                                                                             |
+| --lighthouse-\*      | \* Pass any flag to the Lighthouse node [See docs for details](https://lighthouse-book.sigmaprime.io/advanced-datadir.html) |
+| --validator-data-dir | resets the "./mainnet/data/validator" directory                                                                             |
 
 ## start
 
@@ -209,10 +205,10 @@ $ lukso start --genesis-ssz "./config/mainnet/shared/genesis.ssz" --genesis-json
 | --mainnet                            | starts LUKSO's mainnet                                                                                                      |
 | --testnet                            | starts LUKSO's testnet                                                                                                      |
 | --devnet                             | starts LUKSO's devnet                                                                                                       |
-| --geth -\*                           | \* Pass any flag to the Geth node [See docs for details](https://geth.ethereum.org/docs/fundamentals/command-line-options)  |
-| --erigon -\*                         | \* Pass any flag to the Erigon node [See docs for details](https://github.com/ledgerwatch/erigon)                           |
-| --prysm -\*                          | \* Pass any flag to the Prysm node [See docs for details](https://docs.prylabs.network/docs/prysm-usage/parameters)         |
-| --lighthouse -\*                     | \* Pass any flag to the Lighthouse node [See docs for details](https://lighthouse-book.sigmaprime.io/advanced-datadir.html) |
+| --geth-\*                            | \* Pass any flag to the Geth node [See docs for details](https://geth.ethereum.org/docs/fundamentals/command-line-options)  |
+| --erigon-\*                          | \* Pass any flag to the Erigon node [See docs for details](https://github.com/ledgerwatch/erigon)                           |
+| --prysm-\*                           | \* Pass any flag to the Prysm node [See docs for details](https://docs.prylabs.network/docs/prysm-usage/parameters)         |
+| --lighthouse-\*                      | \* Pass any flag to the Lighthouse node [See docs for details](https://lighthouse-book.sigmaprime.io/advanced-datadir.html) |
 | --validator -data-dir                | A path of validator's data directory (./validator_data)                                                                     |
 | --validator -verbosity               | verbosity for validator logs                                                                                                |
 | --validator -wallet-dir              | location of a generated wallet (./mainnet_keystore)                                                                         |
@@ -262,16 +258,16 @@ Updates LUKSO client to the latest available version
 $ lukso update
 ```
 
-| Flag             | Description                                                                                                                 |
-| ---------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| --mainnet        | updates LUKSO's mainnet                                                                                                     |
-| --testnet        | updates LUKSO's testnet                                                                                                     |
-| --devnet         | updates LUKSO's devnet                                                                                                      |
-| --geth -\*       | \* Pass any flag to the Geth node [See docs for details](https://geth.ethereum.org/docs/fundamentals/command-line-options)  |
-| --erigon -\*     | \* Pass any flag to the Erigon node [See docs for details](https://github.com/ledgerwatch/erigon)                           |
-| --prysm -\*      | \* Pass any flag to the Prysm node [See docs for details](https://docs.prylabs.network/docs/prysm-usage/parameters)         |
-| --lighthouse -\* | \* Pass any flag to the Lighthouse node [See docs for details](https://lighthouse-book.sigmaprime.io/advanced-datadir.html) |
-| --validator      | updates a specific version of the validator                                                                                 |
+| Flag            | Description                                                                                                                 |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| --mainnet       | updates LUKSO's mainnet                                                                                                     |
+| --testnet       | updates LUKSO's testnet                                                                                                     |
+| --devnet        | updates LUKSO's devnet                                                                                                      |
+| --geth-\*       | \* Pass any flag to the Geth node [See docs for details](https://geth.ethereum.org/docs/fundamentals/command-line-options)  |
+| --erigon-\*     | \* Pass any flag to the Erigon node [See docs for details](https://github.com/ledgerwatch/erigon)                           |
+| --prysm-\*      | \* Pass any flag to the Prysm node [See docs for details](https://docs.prylabs.network/docs/prysm-usage/parameters)         |
+| --lighthouse-\* | \* Pass any flag to the Lighthouse node [See docs for details](https://lighthouse-book.sigmaprime.io/advanced-datadir.html) |
+| --validator     | updates a specific version of the validator                                                                                 |
 
 #### Examples:
 
@@ -296,10 +292,10 @@ $ lukso start --validator
 | --mainnet                        | runs a validator on LUKSO's mainnet (default)                                                                               |
 | --testnet                        | runs a validator on LUKSO's testnet                                                                                         |
 | --devnet                         | runs a validator on LUKSO's devnet                                                                                          |
-| --geth -\*                       | \* Pass any flag to the Geth node [See docs for details](https://geth.ethereum.org/docs/fundamentals/command-line-options)  |
-| --erigon -\*                     | \* Pass any flag to the Erigon node [See docs for details](https://github.com/ledgerwatch/erigon)                           |
-| --prysm -\*                      | \* Pass any flag to the Prysm node [See docs for details](https://docs.prylabs.network/docs/prysm-usage/parameters)         |
-| --lighthouse -\*                 | \* Pass any flag to the Lighthouse node [See docs for details](https://lighthouse-book.sigmaprime.io/advanced-datadir.html) |
+| --geth-\*                        | \* Pass any flag to the Geth node [See docs for details](https://geth.ethereum.org/docs/fundamentals/command-line-options)  |
+| --erigon-\*                      | \* Pass any flag to the Erigon node [See docs for details](https://github.com/ledgerwatch/erigon)                           |
+| --prysm-\*                       | \* Pass any flag to the Prysm node [See docs for details](https://docs.prylabs.network/docs/prysm-usage/parameters)         |
+| --lighthouse-\*                  | \* Pass any flag to the Lighthouse node [See docs for details](https://lighthouse-book.sigmaprime.io/advanced-datadir.html) |
 | --deposit                        | path to your deposit file. Makes a deposit to a deposit contract                                                            |
 | --genesis-deposit                | path to your genesis deposit file; makes a deposit to genesis validator contract                                            |
 | --rpc                            | your RPC provider (URL) - "https//rpc.2022.l16.lukso.network"                                                               |
