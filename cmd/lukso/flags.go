@@ -394,6 +394,9 @@ func (dependency *ClientDependency) PassStartFlags(ctx *cli.Context) (startFlags
 	argsLen := args.Len()
 	for i := 0; i < argsLen; i++ {
 		arg := args.Get(i)
+		if arg == fmt.Sprintf("--%s", dependency.name) {
+			continue // when running lukso start --validator we don't want --valdiator falg passed into validator
+		}
 
 		if strings.HasPrefix(arg, fmt.Sprintf("--%s", name)) {
 			if i+1 == argsLen {
@@ -430,6 +433,7 @@ func prepareValidatorStartFlags(ctx *cli.Context) (startFlags []string) {
 	startFlags = clientDependencies[validatorDependencyName].PassStartFlags(ctx)
 
 	startFlags = append(startFlags, "--accept-terms-of-use")
+	startFlags = append(startFlags, "--force-clear-db")
 	startFlags = append(startFlags, prepareLogfileFlag(ctx.String(logFolderFlag), validatorDependencyName))
 	startFlags = append(startFlags, fmt.Sprintf("--suggested-fee-recipient=%s", ctx.String(transactionFeeRecipientFlag)))
 	if ctx.String(validatorKeysFlag) != "" {
@@ -438,14 +442,25 @@ func prepareValidatorStartFlags(ctx *cli.Context) (startFlags []string) {
 	if ctx.String(validatorWalletPasswordFileFlag) != "" {
 		startFlags = append(startFlags, fmt.Sprintf("--wallet-password-file=%s", ctx.String(validatorWalletPasswordFileFlag)))
 	}
+	if ctx.String(validatorChainConfigFileFlag) != "" {
+		startFlags = append(startFlags, fmt.Sprintf("--chain-config-file=%s", ctx.String(validatorChainConfigFileFlag)))
+	}
 	return
 }
 
 func preparePrysmStartFlags(ctx *cli.Context) (startFlags []string) {
 	startFlags = clientDependencies[prysmDependencyName].PassStartFlags(ctx)
 	startFlags = append(startFlags, prepareLogfileFlag(ctx.String(logFolderFlag), prysmDependencyName))
+	startFlags = append(startFlags, "--force-clear-db")
+
 	startFlags = append(startFlags, fmt.Sprintf("--jwt-secret=%s", ctx.String(jwtSecretFlag)))
 	startFlags = append(startFlags, fmt.Sprintf("--suggested-fee-recipient=%s", ctx.String(transactionFeeRecipientFlag)))
+	if ctx.String(prysmGenesisStateFlag) != "" {
+		startFlags = append(startFlags, fmt.Sprintf("--genesis-state=%s", ctx.String(prysmGenesisStateFlag)))
+	}
+	if ctx.String(prysmChainConfigFileFlag) != "" {
+		startFlags = append(startFlags, fmt.Sprintf("--chain-config-file=%s", ctx.String(prysmChainConfigFileFlag)))
+	}
 
 	return
 }

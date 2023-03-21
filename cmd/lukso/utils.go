@@ -97,7 +97,6 @@ func getLastFile(dir string, dependency string) (string, error) {
 	grepCommand.Stdin = lsBuf
 	grepCommand.Stdout = grepBuf
 
-	fmt.Println(command.Args)
 	err := command.Run()
 	if err != nil {
 		log.Errorf("There was an error while executing command: %s. Error: %v", commandName, err)
@@ -167,11 +166,14 @@ func parseFlags(ctx *cli.Context) (err error) {
 		arg := args.Get(i)
 
 		if strings.HasPrefix(arg, "--") {
-			arg = strings.TrimLeft(arg, "--")
 			if i+1 == argsLen {
+				arg = strings.TrimLeft(arg, "--")
+
 				err = ctx.Set(arg, "true")
 				if err != nil && strings.Contains(err.Error(), noSuchFlag) {
-					continue
+					err = nil
+
+					return
 				}
 
 				return
@@ -183,14 +185,20 @@ func parseFlags(ctx *cli.Context) (err error) {
 				arg = strings.TrimLeft(arg, "--")
 
 				err = ctx.Set(arg, "true")
-				if err != nil && strings.Contains(err.Error(), noSuchFlag) {
+				if err == nil || (err != nil && strings.Contains(err.Error(), noSuchFlag)) {
+					err = nil
+
 					continue
 				}
 
 				return
 			} else {
+				arg = strings.TrimLeft(arg, "--")
+
 				err = ctx.Set(arg, nextArg)
-				if err != nil && strings.Contains(err.Error(), noSuchFlag) {
+				if err == nil || (err != nil && strings.Contains(err.Error(), noSuchFlag)) {
+					err = nil
+
 					continue
 				}
 

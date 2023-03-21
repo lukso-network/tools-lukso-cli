@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/urfave/cli/v2"
 	"os"
 	"strings"
@@ -26,15 +25,12 @@ type networkConfig struct {
 func selectNetworkFor(f func(*cli.Context) error) func(*cli.Context) error {
 	return func(ctx *cli.Context) error {
 		if ctx.Command.SkipFlagParsing {
-			fmt.Println("ASDASDASD")
 			log.Debug("Skipping flag parsing on - parsing flags manually...")
 			err := parseFlags(ctx)
 			if err != nil {
 				return err
 			}
 		}
-
-		fmt.Println(ctx.Args())
 
 		mainnetEnabled := ctx.Bool(mainnetFlag)
 		testnetEnabled := ctx.Bool(testnetFlag)
@@ -103,16 +99,17 @@ func updateValues(ctx *cli.Context, config networkConfig) (err error) {
 
 	// varyingFlags represents list of all flags that can be affected by selecting network and values that may be replaced
 	varyingFlags := map[string]string{
-		gethDatadirFlag:          config.gethDatadirPath,
-		prysmDatadirFlag:         config.prysmDatadirPath,
-		validatorDatadirFlag:     config.validatorDatadirPath,
-		logFolderFlag:            config.logPath,
-		validatorKeysFlag:        config.keysPath,
-		jwtSecretFlag:            jwtSecret,
-		gethConfigFileFlag:       gethToml,
-		genesisJsonFlag:          gethGenesis,
-		prysmChainConfigFileFlag: configYaml,
-		prysmGenesisStateFlag:    genesisState,
+		gethDatadirFlag:              config.gethDatadirPath,
+		prysmDatadirFlag:             config.prysmDatadirPath,
+		validatorDatadirFlag:         config.validatorDatadirPath,
+		logFolderFlag:                config.logPath,
+		validatorKeysFlag:            config.keysPath,
+		jwtSecretFlag:                jwtSecret,
+		gethConfigFileFlag:           gethToml,
+		genesisJsonFlag:              gethGenesis,
+		prysmChainConfigFileFlag:     configYaml,
+		validatorChainConfigFileFlag: configYaml,
+		prysmGenesisStateFlag:        genesisState,
 	}
 
 	if len(os.Args) < 2 {
