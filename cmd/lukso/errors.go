@@ -14,3 +14,5 @@ var (
 	errAlreadyRunning          = errors.New("Process is already running ")
 	errProcessNotFound         = errors.New("Process not found ")
 )
+
+const noSuchFlag = "no such flag"

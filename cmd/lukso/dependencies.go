@@ -13,135 +13,130 @@ const (
 	validatorDependencyName = "validator"
 
 	gethMainnetGenesisDependencyName  = "geth_mainnet_genesis"
+	gethMainnetConfigName             = "geth_mainnet_config"
 	prysmMainnetGenesisDependencyName = "prysm_mainnet_genesis_state"
 	prysmMainnetConfigDependencyName  = "prysm_mainnet_config"
 
 	gethTestnetGenesisDependencyName  = "geth_testnet_genesis"
+	gethTestnetConfigName             = "geth_testnet_config"
 	prysmTestnetGenesisDependencyName = "prysm_testnet_genesis_state"
 	prysmTestnetConfigDependencyName  = "prysm_testnet_config"
 
 	gethDevnetGenesisDependencyName  = "geth_devnet_genesis"
+	gethDevnetConfigName             = "geth_devnet_config"
 	prysmDevnetGenesisDependencyName = "prysm_devnet_genesis_state"
 	prysmDevnetConfigDependencyName  = "prysm_devnet_config"
 )
 
 var (
 	gethSelectedGenesis  = gethMainnetGenesisDependencyName
+	gethSelectedConfig   = gethMainnetConfigName
 	prysmSelectedGenesis = prysmMainnetGenesisDependencyName
 	prysmSelectedConfig  = prysmMainnetConfigDependencyName
 
 	clientDependencies = map[string]*ClientDependency{
 		// ----- BINARIES -----
 		gethDependencyName: {
-			baseUnixUrl:   "https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-%s-%s.tar.gz",
-			baseDarwinUrl: "https://gethstore.blob.core.windows.net/builds/geth-darwin-amd64-%s-%s.tar.gz",
-			name:          gethDependencyName,
-			filePath:      "", // binary dir selected during runtime
+			baseUrl:  "https://gethstore.blob.core.windows.net/builds/geth-%s-amd64-%s-%s.tar.gz",
+			name:     gethDependencyName,
+			filePath: "", // binary dir selected during runtime
 		},
 		prysmDependencyName: {
-			baseUnixUrl:   "https://github.com/prysmaticlabs/prysm/releases/download/%s/beacon-chain-%s-linux-amd64",
-			baseDarwinUrl: "https://github.com/prysmaticlabs/prysm/releases/download/%s/beacon-chain-%s-darwin-amd64",
-			name:          prysmDependencyName,
-			filePath:      "", // binary dir selected during runtime
+			baseUrl:  "https://github.com/prysmaticlabs/prysm/releases/download/%s/beacon-chain-%s-%s-amd64",
+			name:     prysmDependencyName,
+			filePath: "", // binary dir selected during runtime
 		},
 		validatorDependencyName: {
-			baseUnixUrl:   "https://github.com/prysmaticlabs/prysm/releases/download/%s/validator-%s-linux-amd64",
-			baseDarwinUrl: "https://github.com/prysmaticlabs/prysm/releases/download/%s/validator-%s-darwin-amd64",
-			name:          validatorDependencyName,
-			filePath:      "", // binary dir selected during runtime
+			baseUrl:  "https://github.com/prysmaticlabs/prysm/releases/download/%s/validator-%s-%s-amd64",
+			name:     validatorDependencyName,
+			filePath: "", // binary dir selected during runtime
 		},
 
 		// ----- CONFIGS -----
 		// ----- MAINNET -----
 		gethMainnetGenesisDependencyName: {
-			baseUnixUrl:   "NOT SUPPORTED",
-			baseDarwinUrl: "NOT SUPPORTED",
-			name:          gethMainnetGenesisDependencyName,
-			filePath:      "./config/mainnet/geth/genesis.json",
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/genesis.json",
+			name:     gethMainnetGenesisDependencyName,
+			filePath: "./config/mainnet/shared/genesis.json",
+		},
+		gethMainnetConfigName: {
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/geth/geth.toml",
+			name:     gethMainnetConfigName,
+			filePath: "./config/mainnet/geth/geth.toml",
 		},
 		prysmMainnetGenesisDependencyName: {
-			baseUnixUrl:   "NOT SUPPORTED",
-			baseDarwinUrl: "NOT SUPPORTED",
-			name:          prysmMainnetGenesisDependencyName,
-			filePath:      "./config/mainnet/shared/genesis.ssz",
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/genesis.ssz", // no genesis state file for mainnet yet
+			name:     prysmMainnetGenesisDependencyName,
+			filePath: "./config/mainnet/shared/genesis.ssz",
 		},
 		prysmMainnetConfigDependencyName: {
-			baseUnixUrl:   "NOT SUPPORTED",
-			baseDarwinUrl: "NOT SUPPORTED",
-			name:          prysmMainnetConfigDependencyName,
-			filePath:      "./config/mainnet/shared/config.yml",
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/config.yaml",
+			name:     prysmMainnetConfigDependencyName,
+			filePath: "./config/mainnet/shared/config.yaml",
 		},
 		// ----- TESTNET -----
 		gethTestnetGenesisDependencyName: {
-			baseUnixUrl:   "NOT SUPPORTED",
-			baseDarwinUrl: "NOT SUPPORTED",
-			name:          gethTestnetGenesisDependencyName,
-			filePath:      "./config/testnet/geth/genesis.json",
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/shared/genesis.json",
+			name:     gethTestnetGenesisDependencyName,
+			filePath: "./config/testnet/shared/genesis.json",
+		},
+		gethTestnetConfigName: {
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/geth/geth.toml",
+			name:     gethTestnetConfigName,
+			filePath: "./config/testnet/geth/geth.toml",
 		},
 		prysmTestnetGenesisDependencyName: {
-			baseUnixUrl:   "NOT SUPPORTED",
-			baseDarwinUrl: "NOT SUPPORTED",
-			name:          prysmTestnetGenesisDependencyName,
-			filePath:      "./config/testnet/shared/genesis.ssz",
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/shared/genesis.ssz", // no genesis state file for testnet yet
+			name:     prysmTestnetGenesisDependencyName,
+			filePath: "./config/testnet/shared/genesis.ssz",
 		},
 		prysmTestnetConfigDependencyName: {
-			baseUnixUrl:   "NOT SUPPORTED",
-			baseDarwinUrl: "NOT SUPPORTED",
-			name:          prysmTestnetConfigDependencyName,
-			filePath:      "./config/testnet/shared/config.yml",
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/shared/config.yaml",
+			name:     prysmTestnetConfigDependencyName,
+			filePath: "./config/testnet/shared/config.yaml",
 		},
 		// ----- DEVNET -----
 		gethDevnetGenesisDependencyName: {
-			baseUnixUrl:   "https://raw.githubusercontent.com/lukso-network/network-configs/devnet/dev/2022/geth/genesis.json",
-			baseDarwinUrl: "https://raw.githubusercontent.com/lukso-network/network-configs/devnet/dev/2022/geth/genesis.json",
-			name:          gethDevnetGenesisDependencyName,
-			filePath:      "./config/devnet/geth/genesis.json",
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/devnets/2022/geth/genesis.json",
+			name:     gethDevnetGenesisDependencyName,
+			filePath: "./config/devnet/shared/genesis.json",
+		},
+		gethDevnetConfigName: {
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/devnets/2022/geth/geth.toml",
+			name:     gethDevnetConfigName,
+			filePath: "./config/devnet/geth/geth.toml",
 		},
 		prysmDevnetGenesisDependencyName: {
-			baseUnixUrl:   "https://github.com/lukso-network/network-configs/raw/devnet/dev/2022/prysm/genesis.ssz",
-			baseDarwinUrl: "https://github.com/lukso-network/network-configs/raw/devnet/dev/2022/prysm/genesis.ssz",
-			name:          prysmDevnetGenesisDependencyName,
-			filePath:      "./config/devnet/shared/genesis.ssz",
+			baseUrl:  "https://github.com/lukso-network/network-configs/raw/main/devnets/2022/prysm/genesis.ssz",
+			name:     prysmDevnetGenesisDependencyName,
+			filePath: "./config/devnet/shared/genesis.ssz",
 		},
 		prysmDevnetConfigDependencyName: {
-			baseUnixUrl:   "https://raw.githubusercontent.com/lukso-network/network-configs/devnet/dev/2022/prysm/config.yml",
-			baseDarwinUrl: "https://raw.githubusercontent.com/lukso-network/network-configs/devnet/dev/2022/prysm/config.yml",
-			name:          prysmDevnetConfigDependencyName,
-			filePath:      "./config/devnet/shared/config.yml",
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/devnets/2022/prysm/config.yml",
+			name:     prysmDevnetConfigDependencyName,
+			filePath: "./config/devnet/shared/config.yaml",
 		},
 	}
 )
 
 type ClientDependency struct {
-	baseUnixUrl   string
-	baseDarwinUrl string
-	name          string
-	filePath      string
+	baseUrl  string
+	name     string
+	filePath string
 }
 
-func (dependency *ClientDependency) ParseUrl(tagName, commitHash string) (url string) {
+func (dependency *ClientDependency) ParseUrl(tag, commitHash string) (url string) {
 	// do not parse when no occurrences
-	sprintOccurrences := strings.Count(dependency.baseUnixUrl, "%s")
-	currentOs := systemOs
-	baseUrl := ""
+	sprintOccurrences := strings.Count(dependency.baseUrl, "%s")
 
-	switch currentOs {
-	case ubuntu:
-		baseUrl = dependency.baseUnixUrl
-	case macos:
-		baseUrl = dependency.baseDarwinUrl
-	default:
-		baseUrl = dependency.baseUnixUrl // defaulting to unix, as in previous implementation
-	}
+	baseUrl := dependency.baseUrl
 
 	switch sprintOccurrences {
-	case 1:
-		return fmt.Sprintf(baseUrl, tagName)
-	case 2:
+	case 3:
 		if commitHash != "" {
-			return fmt.Sprintf(baseUrl, tagName, commitHash)
+			return fmt.Sprintf(baseUrl, systemOs, tag, commitHash)
 		}
-		return fmt.Sprintf(baseUrl, tagName, tagName)
+		return fmt.Sprintf(baseUrl, tag, tag, systemOs)
 	default:
 		return baseUrl
 	}

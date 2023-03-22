@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"math/big"
 	"os"
@@ -24,9 +25,13 @@ import (
 
 const (
 	ether                         = 1_000_000_000_000_000_000
+	gasMargin                     = 500_000
+	gasBump                       = 50_000
 	depositContractAddress        = "0x000000000000000000000000000000000000cafe"
 	genesisDepositContractAddress = "0x9C2Ae5bC047Ca794d9388aB7A2Bf37778f9aBA73"
 	lyxeContractAddress           = "0x790c4379C82582F569899b3Ca71E78f19AeF82a5"
+
+	errUnderpriced = "transaction underpriced" // catches both replacement and normal underpriced
 
 	blockFetchInterval = 3 // in seconds
 )
@@ -63,33 +68,19 @@ func sendDeposit(ctx *cli.Context) error {
 
 	c := context.Background()
 
-	var (
-		selectedDeposit string
-		supplyAmount    int
-	)
+	var supplyAmount int
 
-	depositPath := ctx.String(depositFlag)
-	genesisDepositPath := ctx.String(genesisDepositFlag)
+	depositPath := ctx.String(depositDataJson)
+	isGenesisDeposit := ctx.Bool(genesisDepositFlag)
 
-	if depositPath != "" && genesisDepositPath != "" {
-		return errTooManyDepositsProvided
-	}
-
-	switch {
-	case depositPath != "":
-		selectedDeposit = depositPath
-	case genesisDepositPath != "":
-		selectedDeposit = genesisDepositPath
-		supplyAmount, err = processTokenOption()
+	if isGenesisDeposit {
+		supplyAmount, err = chooseSupply()
 		if err != nil {
 			return err
 		}
-
-	default:
-		return errDepositNotProvided
 	}
 
-	depositKeys, err := parseDepositDataFile(selectedDeposit)
+	depositKeys, err := parseDepositDataFile(depositPath)
 	if err != nil {
 		return err
 	}
@@ -139,9 +130,9 @@ func sendDeposit(ctx *cli.Context) error {
 
 	var tx *types.Transaction
 
-	switch selectedDeposit {
-	case genesisDepositPath:
-		depositData, err := parseDepositDataKey(key, supplyAmount)
+	switch isGenesisDeposit {
+	case true:
+		depositData, err := encodeGenesisDepositDataKey(key, supplyAmount)
 
 		if err != nil {
 			return err
@@ -160,11 +151,11 @@ func sendDeposit(ctx *cli.Context) error {
 			"- %v ETH\n"+
 			"- %v LYXe\nDo you wish to continue? [Y/n]: ", gasReadable, keysNum*32)
 
-	case depositPath:
+	case false:
 		opts.Value = big.NewInt(0).Mul(big.NewInt(32), big.NewInt(ether))
 		var depositDataRoot [32]byte
 
-		depositData, err := parseDepositDataKey(key, 0)
+		depositData, err := encodeGenesisDepositDataKey(key, 0)
 		if err != nil {
 			return err
 		}
@@ -202,7 +193,9 @@ func sendDeposit(ctx *cli.Context) error {
 	txCount := 1 // if txCount reaches 10 then we have to wait for another block
 
 	for i, key := range depositKeys {
-		currentBlock, err := eth.BlockNumber(c)
+		var currentBlock uint64
+
+		currentBlock, err = eth.BlockNumber(c)
 		if err != nil {
 			return err
 		}
@@ -232,11 +225,15 @@ func sendDeposit(ctx *cli.Context) error {
 
 		opts.Nonce = big.NewInt(int64(nonce))
 		opts.From = senderAddr
+		opts.NoSend = false
+		opts.Value = big.NewInt(0)
 
 		var tx *types.Transaction
-		switch selectedDeposit {
-		case genesisDepositPath:
-			depositData, err := parseDepositDataKey(key, supplyAmount)
+		switch isGenesisDeposit {
+		case true:
+			var depositData []byte
+
+			depositData, err = encodeGenesisDepositDataKey(key, supplyAmount)
 			if err != nil {
 				log.Error("Couldn't send transaction - deposit data provided is invalid  - skipping...")
 			}
@@ -248,15 +245,14 @@ func sendDeposit(ctx *cli.Context) error {
 				depositData,
 			)
 
-			if err != nil {
-				return err
-			}
-
-		case depositPath:
+		case false:
 			opts.Value = big.NewInt(0).Mul(big.NewInt(32), big.NewInt(ether))
-			var depositDataRoot [32]byte
+			var (
+				depositData     []byte
+				depositDataRoot [32]byte
+			)
 
-			depositData, err := parseDepositDataKey(key, 0)
+			depositData, err = encodeGenesisDepositDataKey(key, 0)
 			if err != nil {
 				return err
 			}
@@ -273,7 +269,13 @@ func sendDeposit(ctx *cli.Context) error {
 				depositData[80:176],
 				depositDataRoot,
 			)
+		}
+
+		if err != nil && strings.Contains(err.Error(), errUnderpriced) {
+			tx, err = bumpGasAndSend(eth, tx, opts)
 			if err != nil {
+				log.Fatalf("Couldn't bump transation gas: %v", err)
+
 				return err
 			}
 		}
@@ -287,15 +289,68 @@ func sendDeposit(ctx *cli.Context) error {
 	return nil
 }
 
-func initValidator(ctx *cli.Context) error {
-	if ctx.String(validatorKeysDirFlag) == "" {
-		return errKeysNotProvided
+func bumpGasAndSend(eth *ethclient.Client, tx *types.Transaction, signer *bind.TransactOpts) (*types.Transaction, error) {
+	log.Warn("Transaction failed with underpriced error - resending...")
+	gas := tx.Gas() + uint64(gasBump)
+
+	log.Debugf("Bumping gas, had %d, added %d", tx.Gas(), gas)
+	gas += tx.Gas()
+
+	fee := tx.GasFeeCap()
+	feeFloat, ok := big.NewFloat(0).SetString(fee.String())
+	if ok {
+		feeFloat = feeFloat.Mul(feeFloat, big.NewFloat(1.15))
+		feeFloat.Int(fee)
+		log.Debugf("Bumping fee %s -> %s WEI", tx.GasFeeCap().String(), fee.String())
+	} else {
+		log.Warnf("Failed to bump base fee: not ok fir bigFloat construction")
 	}
+
+	timeout := time.Now().Add(time.Second * 10)
+	nonce := tx.Nonce()
+	for {
+		if time.Now().After(timeout) {
+			return nil, errors.New("failed to send transaction - timed out with handleable noncing errors")
+		}
+
+		signed, err := signer.Signer(signer.From, types.NewTx(&types.DynamicFeeTx{
+			ChainID:   tx.ChainId(),
+			Nonce:     nonce,
+			GasTipCap: tx.GasTipCap(),
+			GasFeeCap: fee,
+			Gas:       gas,
+			To:        tx.To(),
+			Value:     tx.Value(),
+			Data:      tx.Data(),
+		}))
+
+		if err != nil {
+			return nil, err
+		}
+
+		log.Debugf("Signed bumped gas tx, gas=%d hash=%s", signed.Gas(), signed.Hash().String())
+
+		err = eth.SendTransaction(context.Background(), signed)
+		if err != nil {
+			switch strings.Contains(err.Error(), errUnderpriced) {
+			case true: // ie. data race for nonce getter
+				nonce++
+				continue
+			default:
+				return nil, err
+			}
+		}
+
+		return signed, nil
+	}
+}
+
+func initValidator(ctx *cli.Context) error {
 	args := []string{
 		"accounts",
 		"import",
-		"--keys-dir", ctx.String(validatorWalletDirFlag),
-		"--wallet-dir", ctx.String(validatorWalletDirFlag),
+		"--keys-dir", ctx.String(validatorKeysFlag),
+		"--wallet-dir", ctx.String(validatorKeysFlag),
 	}
 
 	if ctx.String(validatorWalletPasswordFileFlag) != "" {
@@ -327,7 +382,7 @@ func parseDepositDataFile(depositFilePath string) (keys []DepositDataKey, err er
 	return
 }
 
-func parseDepositDataKey(key DepositDataKey, amount int) (depositData []byte, err error) {
+func encodeGenesisDepositDataKey(key DepositDataKey, amount int) (depositData []byte, err error) {
 	bytePubKey, err := hex.DecodeString(key.PubKey)
 	if err != nil {
 		return
@@ -386,11 +441,11 @@ func waitForNextBlock(c context.Context, eth *ethclient.Client, currentBlock uin
 	return
 }
 
-func processTokenOption() (amount int, err error) {
+func chooseSupply() (amount int, err error) {
 	message := `As a Genesis Validator you can provide an indicative voting for the preferred initial token supply of LYX, which will determine how much the Foundation will receive. See the https://deposit.mainnet.lukso.network website for details.
 You can choose between:
 1: 35M LYX
-2: 42M LYX (This option is the prefered one by the Foundation)
+2: 42M LYX (This option is the preferred one by the Foundation)
 3: 100M LYX
 4: No vote
 Please enter your choice (1-4):
@@ -430,6 +485,7 @@ func estimateGas(tx *types.Transaction, txCount int64) float64 {
 	txGasFeeCap := tx.GasFeeCap()
 	txGas = txGas.Mul(txGas, txGasFeeCap)
 	allTxGas := big.NewInt(0).Mul(txGas, big.NewInt(txCount))
+	allTxGas.Add(allTxGas, big.NewInt(gasMargin))
 	gasInEther, _ := big.NewRat(allTxGas.Int64(), ether).Float64()
 
 	return gasInEther

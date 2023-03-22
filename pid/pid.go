@@ -47,7 +47,7 @@ func Kill(path string, pid int) error {
 
 	err = p.Signal(syscall.Signal(0))
 	if err != nil {
-		return err
+		return nil //  we just return, if we get an error it means process is already dead - pid is cleared, we're good to go
 	}
 
 	return p.Kill()
