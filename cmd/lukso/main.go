@@ -205,7 +205,7 @@ func main() {
 				},
 				{
 					Name:   "deposit",
-					Usage:  "Initializes your validator with keys generated using keygen tools",
+					Usage:  "Sends deposits for your validator keys",
 					Flags:  validatorDepositFlags,
 					Action: sendDeposit,
 				},

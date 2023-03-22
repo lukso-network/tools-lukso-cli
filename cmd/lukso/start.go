@@ -83,6 +83,12 @@ func (dependency *ClientDependency) Stop() error {
 func startClients(ctx *cli.Context) error {
 	log.Info("Starting all clients")
 
+	if ctx.Bool(validatorFlag) && ctx.String(transactionFeeRecipientFlag) == "" {
+		log.Errorf("%s flag is required but wasn't provided", transactionFeeRecipientFlag)
+
+		return errFlagMissing
+	}
+
 	err := startGeth(ctx)
 	if err != nil {
 		return err
@@ -133,11 +139,6 @@ func startPrysm(ctx *cli.Context) error {
 
 func startValidator(ctx *cli.Context) error {
 	log.Info("Starting Validator")
-	if ctx.String(transactionFeeRecipientFlag) == "" {
-		log.Errorf("%s flag is required but wasn't provided", transactionFeeRecipientFlag)
-
-		return errFlagMissing
-	}
 
 	err := clientDependencies[validatorDependencyName].Start(prepareValidatorStartFlags(ctx), ctx)
 	if err != nil {

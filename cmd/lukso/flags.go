@@ -462,5 +462,11 @@ func preparePrysmStartFlags(ctx *cli.Context) (startFlags []string) {
 		startFlags = append(startFlags, fmt.Sprintf("--chain-config-file=%s", ctx.String(prysmChainConfigFileFlag)))
 	}
 
+	isSlasher := !ctx.Bool(noSlasherFlag)
+	isValidator := ctx.Bool(validatorFlag)
+	if isSlasher && isValidator {
+		startFlags = append(startFlags, "--slasher")
+	}
+
 	return
 }
