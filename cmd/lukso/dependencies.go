@@ -65,7 +65,7 @@ var (
 			filePath: "./config/mainnet/geth/geth.toml",
 		},
 		prysmMainnetGenesisDependencyName: {
-			baseUrl:  "", // no genesis state file for mainnet yet
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/genesis.ssz", // no genesis state file for mainnet yet
 			name:     prysmMainnetGenesisDependencyName,
 			filePath: "./config/mainnet/shared/genesis.ssz",
 		},
@@ -86,7 +86,7 @@ var (
 			filePath: "./config/testnet/geth/geth.toml",
 		},
 		prysmTestnetGenesisDependencyName: {
-			baseUrl:  "", // no genesis state file for testnet yet
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/shared/genesis.ssz", // no genesis state file for testnet yet
 			name:     prysmTestnetGenesisDependencyName,
 			filePath: "./config/testnet/shared/genesis.ssz",
 		},
