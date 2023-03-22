@@ -186,33 +186,33 @@ func downloadGeth(ctx *cli.Context) (err error) {
 }
 
 func downloadGenesis(ctx *cli.Context) (err error) {
-	log.WithField("dependencyTag", gethTag).Info("Downloading Execution Genesis")
+	log.Info("Downloading Execution Genesis")
 
-	err = clientDependencies[gethSelectedGenesis].Download(gethTag, "", false, configPerms)
+	err = clientDependencies[gethSelectedGenesis].Download("", "", false, configPerms)
 
 	if nil != err {
 		return
 	}
 
-	log.WithField("dependencyTag", prysmTag).Info("Downloading Consensus Genesis")
+	log.Info("Downloading Consensus Genesis")
 
-	err = clientDependencies[prysmSelectedGenesis].Download(prysmTag, "", false, configPerms)
+	err = clientDependencies[prysmSelectedGenesis].Download("", "", false, configPerms)
 
 	return
 }
 
 func downloadPrysmConfig(ctx *cli.Context) (err error) {
-	log.WithField("dependencyTag", prysmTag).Info("Downloading Prysm Config")
+	log.Info("Downloading Prysm Config")
 
-	err = clientDependencies[prysmSelectedConfig].Download(prysmTag, "", false, configPerms)
+	err = clientDependencies[prysmSelectedConfig].Download("", "", false, configPerms)
 
 	return
 }
 
 func downloadGethConfig(ctx *cli.Context) (err error) {
-	log.WithField("dependencyTag", prysmTag).Info("Downloading Geth Config")
+	log.Info("Downloading Geth Config")
 
-	err = clientDependencies[gethSelectedConfig].Download(prysmTag, "", false, configPerms)
+	err = clientDependencies[gethSelectedConfig].Download("", "", false, configPerms)
 
 	return
 }

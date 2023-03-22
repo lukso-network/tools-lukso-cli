@@ -145,7 +145,7 @@ func sendDeposit(ctx *cli.Context) error {
 			depositData,
 		)
 
-		gasReadable := estimateGas(tx, int64(keysNum)) // TODO add a safety margin: 500_000 gas
+		gasReadable := estimateGas(tx, int64(keysNum))
 
 		message = fmt.Sprintf("Before proceeding make sure that your private key has sufficient balance:\n"+
 			"- %v ETH\n"+

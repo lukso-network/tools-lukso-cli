@@ -73,10 +73,10 @@ const (
 	// structure inside /config/selected-network directory.
 	// we will select directory based on provided flag, by concatenating config path + file path
 	genesisStateFilePath = "shared/genesis.ssz"
-	configYamlPath       = "shared/config.yml"
+	configYamlPath       = "shared/config.yaml"
 	jwtSecretPath        = "shared/secrets/jwt.hex"
 	configTomlPath       = "geth/geth.toml"
-	genesisJsonPath      = "geth/genesis.json"
+	genesisJsonPath      = "shared/genesis.json"
 
 	// validator tool related flags
 	depositDataJson    = "deposit-data-json"
@@ -251,7 +251,7 @@ var (
 		&cli.StringFlag{
 			Name:  genesisJsonFlag,
 			Usage: "path to genesis.json file",
-			Value: "./config/mainnet/geth/genesis.json",
+			Value: "./config/mainnet/shared/genesis.json",
 		},
 	}
 	// LOGS
@@ -304,8 +304,8 @@ var (
 		},
 		&cli.StringFlag{
 			Name:   prysmChainConfigFileFlag,
-			Usage:  "path to config.yml file",
-			Value:  "./config/mainnet/shared/config.yml",
+			Usage:  "path to config.yaml file",
+			Value:  "./config/mainnet/shared/config.yaml",
 			Hidden: true,
 		},
 	}
@@ -365,7 +365,7 @@ var (
 		&cli.StringFlag{
 			Name:   validatorChainConfigFileFlag,
 			Usage:  "prysm chain config file path",
-			Value:  "./config/mainnet/shared/config.yml",
+			Value:  "./config/mainnet/shared/config.yaml",
 			Hidden: true,
 		},
 	}
@@ -409,12 +409,14 @@ func (dependency *ClientDependency) PassStartFlags(ctx *cli.Context) (startFlags
 			nextArg := args.Get(i + 1)
 			if strings.HasPrefix(nextArg, "--") { // we found a next flag, so current one is a bool
 				startFlags = append(startFlags, arg)
-			} else {
-				startFlags = append(
-					startFlags,
-					fmt.Sprintf("--%s=%s", strings.TrimLeft(arg, fmt.Sprintf("--%s-", name)), nextArg),
-				)
+
+				continue
 			}
+
+			startFlags = append(
+				startFlags,
+				fmt.Sprintf("--%s=%s", strings.TrimLeft(arg, fmt.Sprintf("--%s-", name)), nextArg),
+			)
 		}
 	}
 
@@ -433,7 +435,6 @@ func prepareValidatorStartFlags(ctx *cli.Context) (startFlags []string) {
 	startFlags = clientDependencies[validatorDependencyName].PassStartFlags(ctx)
 
 	startFlags = append(startFlags, "--accept-terms-of-use")
-	startFlags = append(startFlags, "--force-clear-db")
 	startFlags = append(startFlags, prepareLogfileFlag(ctx.String(logFolderFlag), validatorDependencyName))
 	startFlags = append(startFlags, fmt.Sprintf("--suggested-fee-recipient=%s", ctx.String(transactionFeeRecipientFlag)))
 	if ctx.String(validatorKeysFlag) != "" {
@@ -451,7 +452,6 @@ func prepareValidatorStartFlags(ctx *cli.Context) (startFlags []string) {
 func preparePrysmStartFlags(ctx *cli.Context) (startFlags []string) {
 	startFlags = clientDependencies[prysmDependencyName].PassStartFlags(ctx)
 	startFlags = append(startFlags, prepareLogfileFlag(ctx.String(logFolderFlag), prysmDependencyName))
-	startFlags = append(startFlags, "--force-clear-db")
 
 	startFlags = append(startFlags, fmt.Sprintf("--jwt-secret=%s", ctx.String(jwtSecretFlag)))
 	startFlags = append(startFlags, fmt.Sprintf("--suggested-fee-recipient=%s", ctx.String(transactionFeeRecipientFlag)))

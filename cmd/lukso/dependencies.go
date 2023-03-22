@@ -55,51 +55,51 @@ var (
 		// ----- CONFIGS -----
 		// ----- MAINNET -----
 		gethMainnetGenesisDependencyName: {
-			baseUrl:  "NOT SUPPORTED",
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/genesis.json",
 			name:     gethMainnetGenesisDependencyName,
-			filePath: "./config/mainnet/geth/genesis.json",
+			filePath: "./config/mainnet/shared/genesis.json",
 		},
 		gethMainnetConfigName: {
-			baseUrl:  "NOT SUPPORTED",
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/geth/geth.toml",
 			name:     gethMainnetConfigName,
 			filePath: "./config/mainnet/geth/geth.toml",
 		},
 		prysmMainnetGenesisDependencyName: {
-			baseUrl:  "NOT SUPPORTED",
+			baseUrl:  "", // no genesis state file for mainnet yet
 			name:     prysmMainnetGenesisDependencyName,
 			filePath: "./config/mainnet/shared/genesis.ssz",
 		},
 		prysmMainnetConfigDependencyName: {
-			baseUrl:  "NOT SUPPORTED",
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/config.yaml",
 			name:     prysmMainnetConfigDependencyName,
-			filePath: "./config/mainnet/shared/config.yml",
+			filePath: "./config/mainnet/shared/config.yaml",
 		},
 		// ----- TESTNET -----
 		gethTestnetGenesisDependencyName: {
-			baseUrl:  "NOT SUPPORTED",
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/shared/genesis.json",
 			name:     gethTestnetGenesisDependencyName,
-			filePath: "./config/testnet/geth/genesis.json",
+			filePath: "./config/testnet/shared/genesis.json",
 		},
 		gethTestnetConfigName: {
-			baseUrl:  "NOT SUPPORTED",
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/geth/geth.toml",
 			name:     gethTestnetConfigName,
 			filePath: "./config/testnet/geth/geth.toml",
 		},
 		prysmTestnetGenesisDependencyName: {
-			baseUrl:  "NOT SUPPORTED",
+			baseUrl:  "", // no genesis state file for testnet yet
 			name:     prysmTestnetGenesisDependencyName,
 			filePath: "./config/testnet/shared/genesis.ssz",
 		},
 		prysmTestnetConfigDependencyName: {
-			baseUrl:  "NOT SUPPORTED",
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/shared/config.yaml",
 			name:     prysmTestnetConfigDependencyName,
-			filePath: "./config/testnet/shared/config.yml",
+			filePath: "./config/testnet/shared/config.yaml",
 		},
 		// ----- DEVNET -----
 		gethDevnetGenesisDependencyName: {
 			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/devnets/2022/geth/genesis.json",
 			name:     gethDevnetGenesisDependencyName,
-			filePath: "./config/devnet/geth/genesis.json",
+			filePath: "./config/devnet/shared/genesis.json",
 		},
 		gethDevnetConfigName: {
 			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/devnets/2022/geth/geth.toml",
