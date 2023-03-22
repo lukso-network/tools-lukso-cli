@@ -188,13 +188,6 @@ You can setup a custom log directory when starting LUKSO client by indicating th
 $ lukso start --log-folder "./myCustomLogFolder"
 ```
 
-Log files are by default un-capped. Be aware that the # of these files can grow very large. You can cap the file size in n MB.
-Example: `lukso start --log-size 3` to cap the file to 3MB of data
-
-```bash
-$ lukso start --log-size n
-```
-
 | Flag                                                                                  | Description                                                                                                                 |
 | ------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
 | --mainnet                                                                             | starts LUKSO's mainnet. User is connected to mainnet by default.                                                            |
@@ -208,9 +201,7 @@ $ lukso start --log-size n
 | --prysm-config "./myconfig.yaml" --geth-bootnodes "mycustombootnode00000"             | path to "./myconfig.yaml" file & custom geth boot nodes                                                                     |
 | --validator --transaction-fee-recipient                                               | address that receives block fees (0x12345..abcd).                                                                           |
 | --validator --validator-keys "./mainnet-keystore" --validator-password "./myfile.txt" | passes the validator keys and password from a custom directory                                                              |
-| --validator -std-output                                                               | set output to console                                                                                                       |
 | --log -folder "./myCustomLogFolder"                                                   | user can setup a custom log directory when starting LUKSO client                                                            |
-| --log -size n                                                                         | Log files capped to the size in MB                                                                                          |
 
 ## How to check the status of LUKSO node
 
@@ -295,25 +286,21 @@ Enter private key:
 
 > \_
 
-| Flag                             | Description                                                                                                                 |
-| -------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| --mainnet                        | runs a validator on LUKSO's mainnet (default)                                                                               |
-| --testnet                        | runs a validator on LUKSO's testnet                                                                                         |
-| --devnet                         | runs a validator on LUKSO's devnet                                                                                          |
-| --geth-\*                        | \* Pass any flag to the Geth node [See docs for details](https://geth.ethereum.org/docs/fundamentals/command-line-options)  |
-| --erigon-\*                      | \* Pass any flag to the Erigon node [See docs for details](https://github.com/ledgerwatch/erigon)                           |
-| --prysm-\*                       | \* Pass any flag to the Prysm node [See docs for details](https://docs.prylabs.network/docs/prysm-usage/parameters)         |
-| --lighthouse-\*                  | \* Pass any flag to the Lighthouse node [See docs for details](https://lighthouse-book.sigmaprime.io/advanced-datadir.html) |
-| --deposit                        | path to your deposit file. Makes a deposit to a deposit contract                                                            |
-| --genesis-deposit                | path to your genesis deposit file; makes a deposit to genesis validator contract                                            |
-| --rpc                            | your RPC provider (URL) - "https//rpc.2022.l16.lukso.network"                                                               |
-| --gas-price                      | Gas price provided by user (int) 1000000000                                                                                 |
-| --max-txs-per-block              | Maximum amount of txs sent per single block (int) 10                                                                        |
-| --validator-wallet-dir           | location of a generated wallet "./mainnet/keystore"                                                                         |
-| --validator-keys-dir             | path to your validator keys                                                                                                 |
-| --validator-wallet-password-file | path to your password file                                                                                                  |
+| Flag                             | Description                                                                      |
+| -------------------------------- | -------------------------------------------------------------------------------- |
+| --mainnet                        | runs a validator on LUKSO's mainnet (default)                                    |
+| --testnet                        | runs a validator on LUKSO's testnet                                              |
+| --devnet                         | runs a validator on LUKSO's devnet                                               |
+| --deposit                        | path to your deposit file. Makes a deposit to a deposit contract                 |
+| --genesis-deposit                | path to your genesis deposit file; makes a deposit to genesis validator contract |
+| --rpc                            | your RPC provider (URL) - "https//rpc.2022.l16.lukso.network"                    |
+| --gas-price                      | Gas price provided by user (int) 1000000000                                      |
+| --max-txs-per-block              | Maximum amount of txs sent per single block (int) 10                             |
+| --validator-wallet-dir           | location of a generated wallet "./mainnet/keystore"                              |
+| --validator-keys-dir             | path to your validator keys                                                      |
+| --validator-wallet-password-file | path to your password file                                                       |
 
-## version
+## Checking the version
 
 Displays the current version of your LUKSO client
 
