@@ -114,7 +114,7 @@ var (
 		prysmDevnetConfigDependencyName: {
 			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/devnets/2022/prysm/config.yml",
 			name:     prysmDevnetConfigDependencyName,
-			filePath: "./config/devnet/shared/config.yml",
+			filePath: "./config/devnet/shared/config.yaml",
 		},
 	}
 )
