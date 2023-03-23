@@ -65,11 +65,11 @@ $ lukso install --agree-terms
 
 ## Initializing your working folder
 
-Running the init command will initialize your working folder by downloading the [network configs](https://github.com/lukso-network/network-configs)
+Running the init command will initialize your working folder by downloading the [network configs](https://github.com/lukso-network/network-configs)  
 NOTE: This will not overwrite any existing config, data or keystore folders
 
 ```bash
-$ cd myLUKSOFolder
+$ mkdir myLUKSOFolder && cd ./myLUKSOFolder
 
 # inside the myLUKSOFolder run
 $ lukso init
@@ -86,7 +86,7 @@ $ lukso install
 ```
 
 ```bash
-# Or simply type to accept all Terms & Conditions of LUKSO's clients.
+# Or simply type to accept all Terms & Conditions of LUKSO's compatible clients.
 # You don't need to run this if you already installed LUKSO.
 $ lukso install --agree-terms
 ```
@@ -97,14 +97,16 @@ $ lukso install --agree-terms
 
 ## How to view logs
 
-Displays the logs of LUKSO's execution/consensus/validator clients. Here are the common flags:
+Displays the logs of LUKSO's compatible clients. Here are the common flags:
 
 ```bash
-# displays the logs of LUKSO's execution client
+# displays the logs of execution client
 $ lukso log execution
-# displays the LUKSO's consensus client's logs
+
+# displays the consensus client's logs
 $ lukso log consensus
-# displays the LUKSO's validator client's logs
+
+# displays the validator client's logs
 $ lukso log validator
 ```
 
@@ -121,38 +123,47 @@ $ lukso reset --testnet
 
 ## How to start a node
 
-Starts your currently installed execution and consensus clients and connects, by default, to LUKSO's mainnet. LUKSO start takes the default config files from the default path "./config/mainnet/geth/config.toml" for you.
-
 ```bash
-
+# starts LUKSO's compatible clients and connects to mainnet.
+# takes the default config files from the path "./config/mainnet/geth/config.toml"
 $ lukso start
-```
 
-```bash
 # starts and connects to the testnet
 $ lukso start --testnet
+
 # starts and connects to the devnet
 $ lukso start --devnet
+
 # starts and connects to mainnet as a validator, using the default keystore folder (/mainnet-keystore)
 $ lukso start --validator
 ```
 
-#### How Genesis Validators should start their nodes
-
-The LUKSO start command for Genesis validators should be run as the following:
+#### How to start a Genesis Validator node
 
 ```bash
-
+# start command for Genesis Validators should be run as the following:
 $ lukso start --genesis-ssz "./config/mainnet/shared/genesis.ssz" --genesis-json "./config/mainnet/geth/genesis.json"
 ```
 
-#### How to start a node with your own config files
+#### How to start your validator (keys & tx fee recipient)
 
-As an experienced validator; you might want to pass your own config files "./myconfig.toml". In this case, the flags available for Geth/Erigon, Prysm/Lighthouse are available. Here's an example:
+```bash
+# starts your node as a validator node
+$ lukso start --validator
+
+# The transaction fee recipient; aka coinbase, is the address where the transactions fees are sent to.
+$ lukso start --validator --transaction-fee-recipient  "0x12345678..."
+
+# validator keys and password
+$ lukso start --validator --validator-keys "./mainnet-keystore" --validator-password "./myfile.txt"
+```
+
+#### How to start a node using config files
 
 ```bash
 # Geth Configs
 $ lukso start --geth-config "./myconfig.toml"
+
 # Prysm Configs
 $ lukso start --prysm-config "./myconfig.yaml" --geth-bootnodes "mycustombootnode0000"
 
@@ -160,31 +171,10 @@ $ lukso start --prysm-config "./myconfig.yaml" --geth-bootnodes "mycustombootnod
 $ lukso start --lighthouse --erigon
 ```
 
-#### How to start your validator (keys & tx fee recipient)
-
-Starts your node as a validator node
-
-```bash
-$ lukso start --validator
-```
-
-The transaction fee recipient; aka coinbase, is the address where the transactions fees are sent to. To start your validator, you will pass this transaction fee recipient address and LUKSO's CLI will perform a few checks regarding your keys.
-
-```bash
-$ lukso start --validator --transaction-fee-recipient  "0x12345678..."
-```
-
-```bash
-# validator keys and password
-$ lukso start --validator --validator-keys "./mainnet-keystore" --validator-password "./myfile.txt"
-```
-
 #### How to set & customize a log folder
 
-You can setup a custom log directory when starting LUKSO client by indicating the location of your folder.
-
 ```bash
-# Path to geth log file that you want to log
+# Setting up a custom log directory
 $ lukso start --log-folder "./myCustomLogFolder"
 ```
 
@@ -205,32 +195,31 @@ $ lukso start --log-folder "./myCustomLogFolder"
 
 ## How to check the status of LUKSO node
 
-Displays the most recent status of LUKSO's node
-
 ```bash
+# displays the status of LUKSO's node
 $ lukso status
 ```
 
 ## How to stop LUKSO node
 
-Stops all client's activities. usually used when upgrading the client or running maintenance tasks.
-
 ```bash
 # This command stops all your client's activities
 $ lukso stop
+
 # only stops the validator client
 $ lukso stop --validator
+
 # only stops the execution client
 $ lukso stop --execution
+
 # only stops the consensus client
 $ lukso stop --consensus
 ```
 
 ## How to update LUKSO
 
-Updates LUKSO client to the latest available version
-
 ```bash
+# Updates the clients to the latest available version
 $ lukso update
 ```
 
@@ -259,15 +248,13 @@ $ lukso update --validator-tag
 
 The main activity you can perform as a validator is depositing your keys.
 
-## How Genesis Validators proceed with their deposits
-
-As a validator you can deposit your keys using an RPC connection of your choice.
+## How to deposit as a Validator and as a Genesis Validator
 
 ```bash
+# Validator's deposits setting gas price and an RPC connection
 $ lukso validator deposit --deposit-data-json "./validator-deposit-data.json" [--gasPrice "1000000000" --rpc "https://infura.io./apiv1"]
-```
 
-```bash
+# Genesis validator's deposits setting gas price and an RPC connection
 $ lukso validator deposit --genesis --deposit-data-json "./validator-deposit-data.json" --rpc "https://infura.io./apiv1" [--gas-price "1000000000" --start-from-index N]
 ```
 
