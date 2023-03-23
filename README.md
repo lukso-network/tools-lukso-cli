@@ -2,7 +2,7 @@
 
 > ⚠️ DO NOT USE YET, this is WIP!
 
-The `lukso` CLI serves the following purposes:
+The LUKSO Command Line Interface (lukso-cli) serves the following purposes:
 
 - easy installation of all node types (full installs into `/bin/` , not docker containers)
 - easy starts and stops local nodes (as it runs as a daemon)
@@ -10,7 +10,7 @@ The `lukso` CLI serves the following purposes:
 - running a node as a validator
 - making validator deposits
 
-## Repository struct
+## Repository Structure
 
 - [`./cmd/lukso`](./cmd/lukso): code of LUKSO CLI
 - [`./abis`](./abis) - collection of ABIs from smart contracts that are being interacted with
@@ -28,7 +28,7 @@ The `lukso` CLI serves the following purposes:
 ## Downloading and Installing LUKSO
 
 ```bash
-# 1. To install the LUKSO Command Line Interface  (CLI)
+# 1. To install the LUKSO Command Line Interface (CLI)
 $ curl https://install.lukso.network | sh
 
 # 2. Create a working folder where you want your clients to store their data
@@ -50,18 +50,18 @@ $ lukso install --agree-terms
 
 `lukso <command>  [--flags]`
 
-| Command   | Description                             |
-| --------- | --------------------------------------- |
-| init      | Initializes configuration files         |
-| install   | Downloads all default client(s)         |
-| log       | Show logs                               |
-| reset     | Resets data directories                 |
-| start     | Starts up all or specific client(s)     |
-| status    | Shows status of all or specified client |
-| stop      | Stops all or specific client(s)         |
-| update    | Sets client(s) to desired version       |
-| validator | Manages validator-related commands      |
-| version   | Display version of LUKSO CLI            |
+| Command   | Description                                                             |
+| --------- | ----------------------------------------------------------------------- |
+| init      | Initializes with the network configuration files                        |
+| install   | Installs clients globally                                               |
+| log       | List logs from the different clients                                    |
+| reset     | Resets data directories                                                 |
+| start     | Starts your installed clients and connects it to the respective network |
+| status    | Shows your current process running                                      |
+| stop      | Stops all or specific client(s)                                         |
+| update    | Sets client(s) to desired version                                       |
+| validator | Init and deposits your validator keys                                   |
+| version   | Display version of lukso-cli                                            |
 
 ## Initializing your working folder
 
@@ -76,14 +76,14 @@ $ lukso init
 
 Network configs: https://github.com/lukso-network/network-configs
 
-## How to install LUKSO
+## How to install LUKSO CLI
 
 ```bash
-# Installs LUKSO and prompts user to select its Consensus and Execution clients.
+# Installs the LUKSO CLI and prompts user to select its Consensus and Execution clients.
 # Install also detects if you have any pre-installed client and confirms an override to a newer version in case needed.
 $ lukso install
 
-# Installs clients and agrees with Terms & Conditions
+# Installs clients and agrees with Terms & Conditions automatically
 $ lukso install --agree-terms
 ```
 
@@ -113,30 +113,30 @@ $ lukso reset --testnet
 ## How to start a node
 
 ```bash
-# Starts LUKSO's compatible clients and connects to mainnet.
+# Starts your currently installed default clients and connects to LUKSO mainnet.
 # Takes the default config files from the path "./config/mainnet/geth/config.toml"
 $ lukso start
 
-# Starts and connects to the testnet
+# Starts your nodes connecting to the testnet
 $ lukso start --testnet
 
-# Starts and connects to the devnet
+# Starts your nodes connecting to the devnet
 $ lukso start --devnet
 
-# Starts and connects to mainnet as a validator, using the default keystore folder (/mainnet-keystore)
+# Starts your nodes connecting to mainnet as a validator, using the default keystore folder (/mainnet-keystore)
 $ lukso start --validator
-```
 
-#### How to start a Genesis Validator node
 
-```bash
+# How to start a Genesis Validator node
+
+
 # Start command for Genesis Validators should be run as the following:
 $ lukso start --genesis-ssz "./config/mainnet/shared/genesis.ssz" --genesis-json "./config/mainnet/geth/genesis.json"
-```
 
-#### How to start your validator (keys & tx fee recipient)
 
-```bash
+# How to start your validator (keys & tx fee recipient)
+
+
 # Starts your node as a validator node
 $ lukso start --validator
 
@@ -145,11 +145,11 @@ $ lukso start --validator --transaction-fee-recipient  "0x12345678..."
 
 # Validator keys and password
 $ lukso start --validator --validator-keys "./mainnet-keystore" --validator-password "./myfile.txt"
-```
 
-#### How to start a node using config files
 
-```bash
+# How to start a node using config files
+
+
 # Geth Configs
 $ lukso start --geth-config "./myconfig.toml"
 
@@ -158,11 +158,11 @@ $ lukso start --prysm-config "./myconfig.yaml" --geth-bootnodes "mycustombootnod
 
 # An experienced user might also want to start custom clients
 $ lukso start --lighthouse --erigon
-```
 
-#### How to set & customize a log folder
 
-```bash
+# How to set & customize a log folder
+
+
 # Setting up a custom log directory
 $ lukso start --log-folder "./myCustomLogFolder"
 ```
@@ -179,19 +179,19 @@ $ lukso start --log-folder "./myCustomLogFolder"
 | --prysm-config "./myconfig.yaml" --geth-bootnodes "mycustombootnode00000"             | Path to "./myconfig.yaml" file & custom geth boot nodes                                                                     |
 | --validator --transaction-fee-recipient                                               | Address that receives block fees (0x12345..abcd).                                                                           |
 | --validator --validator-keys "./mainnet-keystore" --validator-password "./myfile.txt" | Passes the validator keys and password from a custom directory                                                              |
-| --log -folder "./myCustomLogFolder"                                                   | Sets up a custom log directory when starting LUKSO                                                                          |
+| --log -folder "./myCustomLogFolder"                                                   | Sets up a custom log directory when starting lukso-cli                                                                      |
 
 ## How to check the status of LUKSO node
 
 ```bash
-# Displays the status of LUKSO's node
+# Shows you which processes are running
 $ lukso status
 ```
 
 ## How to stop LUKSO node
 
 ```bash
-# This command stops all your client's activities
+# Stops currently running clients
 $ lukso stop
 
 # Only stops the validator client
@@ -204,7 +204,7 @@ $ lukso stop --execution
 $ lukso stop --consensus
 ```
 
-## How to update LUKSO
+## How to update lukso-cli
 
 ```bash
 # Updates installed clients
@@ -239,25 +239,12 @@ $ lukso validator deposit --deposit-data-json "./validator-deposit-data.json" [-
 $ lukso validator deposit --genesis --deposit-data-json "./validator-deposit-data.json" --rpc "https://infura.io./apiv1" [--gas-price "1000000000" --start-from-index N]
 ```
 
-As a Genesis Validator you can provide an indicative voting for the prefered initial token supply of LYX, which will determine how much the Foundation will receive. See the https://deposit.mainnet.lukso.network website for details.
-You can choose between:
-1: 35M LYX
-2: 42M LYX (This option is the prefered one by the Foundation)
-3: 100M LYX
-4: No vote
+All Genesis Validators will be prompted to vote for the initial token supply of LYX; determining how much the Foundation will receive. More details at: https://deposit.mainnet.lukso.network
 
-The private key you are using requires enough the LYXe to fund pay for validator keys deposits.
-Make sure your privatekey has sufficient balances:
-320 LYXe
-1.6 ETH for GAS
-Enter private key:
-
-> \_
+Genesis Validators need to have at least 320 LYXe per validator and a minimum balance of 1.6 ETH for gas expenses.
 
 | Flag                             | Description                                                                      |
 | -------------------------------- | -------------------------------------------------------------------------------- |
-| --testnet                        | Runs a validator on LUKSO's testnet                                              |
-| --devnet                         | Runs a validator on LUKSO's devnet                                               |
 | --deposit                        | Path to your deposit file. Makes a deposit to a deposit contract                 |
 | --genesis-deposit                | Path to your genesis deposit file; makes a deposit to genesis validator contract |
 | --rpc                            | Your RPC provider (URL) - "https//rpc.2022.l16.lukso.network"                    |
@@ -270,18 +257,20 @@ Enter private key:
 ## Checking the version
 
 ```bash
-# Displays the current version of your LUKSO CLI
+# Displays the current version of your lukso-cli
 $ lukso version
 ```
 
 ## Development
+
+## Generate bindings
 
 ### Prerequisites:
 
 - solc (https://github.com/ethereum/solidity)
 - abigen (https://geth.ethereum.org/docs/tools/abigen)
 
-### Steps
+#### Steps
 
 1. Paste your smart contract that you want to interact with into [`./contracts`](./contracts) directory
 2. Generate ABI from your smart contract:
