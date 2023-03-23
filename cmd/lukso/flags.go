@@ -84,7 +84,8 @@ const (
 	validatorKeysFlag  = "validator-keys"
 	gasPriceFlag       = "gas-price"
 	rpcFlag            = "rpc"
-	maxTxsPerBlock     = "max-txs-per-block"
+	maxTxsPerBatchFlag = "max-txs-per-batch"
+	startFromIndexFlag = "start-from-index"
 )
 
 var (
@@ -150,9 +151,14 @@ var (
 			Value: 1000000000,
 		},
 		&cli.IntFlag{
-			Name:  maxTxsPerBlock,
+			Name:  maxTxsPerBatchFlag,
 			Usage: "Maximum amount of txs sent per single block",
 			Value: 10,
+		},
+		&cli.IntFlag{
+			Name:  startFromIndexFlag,
+			Usage: "Maximum amount of txs sent per single block",
+			Value: 0, // start from beginning by default
 		},
 	}
 
