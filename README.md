@@ -65,96 +65,85 @@ $ lukso install --agree-terms
 
 ## Initializing your working folder
 
-Running the init command will initialize your working folder by downloading the [network configs](https://github.com/lukso-network/network-configs)  
-NOTE: This will not overwrite any existing config, data or keystore folders
-
 ```bash
+# Running the init command will initialize your working folder by downloading the network configs
+# NOTE: This will not overwrite any existing config, data or keystore folders
 $ mkdir myLUKSOFolder && cd ./myLUKSOFolder
 
-# inside the myLUKSOFolder run
+# Initalize LUKSO
 $ lukso init
 ```
 
-## How to install LUKSO clients
+Network configs: https://github.com/lukso-network/network-configs
 
-The install command prompts you to select which Execution (Geth or Erigon) and which Consensus (Prysm or Lighthouse) client you want to install.
-
-Install also detects if you have any pre-installed client and confirms an override to a newer version in case needed.
+## How to install LUKSO
 
 ```bash
+# Installs LUKSO and prompts user to select its Consensus and Execution clients.
+# Install also detects if you have any pre-installed client and confirms an override to a newer version in case needed.
 $ lukso install
-```
 
-```bash
-# Or simply type to accept all Terms & Conditions of LUKSO's compatible clients.
-# You don't need to run this if you already installed LUKSO.
+# Installs clients and agrees with Terms & Conditions
 $ lukso install --agree-terms
 ```
 
-| Flag          | Description                                              |
-| ------------- | -------------------------------------------------------- |
-| --agree-terms | installs LUKSO client and agrees with Terms & Conditions |
-
 ## How to view logs
 
-Displays the logs of LUKSO's compatible clients. Here are the common flags:
-
 ```bash
-# displays the logs of execution client
+# Displays the logs of execution client
 $ lukso log execution
 
-# displays the consensus client's logs
+# Displays the consensus client's logs
 $ lukso log consensus
 
-# displays the validator client's logs
+# Displays the validator client's logs
 $ lukso log validator
 ```
 
 ## How to reset your data directory
 
-LUKSO reset will reset the mainnet data directory, not the keys
-
 ```bash
-# resets LUKSO data
+# Resets LUKSO mainnet data directory
 $ lukso reset
-# resets LUKSO's testnet data
+
+# Resets LUKSO's testnet data
 $ lukso reset --testnet
 ```
 
 ## How to start a node
 
 ```bash
-# starts LUKSO's compatible clients and connects to mainnet.
-# takes the default config files from the path "./config/mainnet/geth/config.toml"
+# Starts LUKSO's compatible clients and connects to mainnet.
+# Takes the default config files from the path "./config/mainnet/geth/config.toml"
 $ lukso start
 
-# starts and connects to the testnet
+# Starts and connects to the testnet
 $ lukso start --testnet
 
-# starts and connects to the devnet
+# Starts and connects to the devnet
 $ lukso start --devnet
 
-# starts and connects to mainnet as a validator, using the default keystore folder (/mainnet-keystore)
+# Starts and connects to mainnet as a validator, using the default keystore folder (/mainnet-keystore)
 $ lukso start --validator
 ```
 
 #### How to start a Genesis Validator node
 
 ```bash
-# start command for Genesis Validators should be run as the following:
+# Start command for Genesis Validators should be run as the following:
 $ lukso start --genesis-ssz "./config/mainnet/shared/genesis.ssz" --genesis-json "./config/mainnet/geth/genesis.json"
 ```
 
 #### How to start your validator (keys & tx fee recipient)
 
 ```bash
-# starts your node as a validator node
+# Starts your node as a validator node
 $ lukso start --validator
 
 # The transaction fee recipient; aka coinbase, is the address where the transactions fees are sent to.
 $ lukso start --validator --transaction-fee-recipient  "0x12345678..."
 
-# validator keys and password
+# Validator keys and password
 $ lukso start --validator --validator-keys "./mainnet-keystore" --validator-password "./myfile.txt"
 ```
 
@@ -180,23 +169,22 @@ $ lukso start --log-folder "./myCustomLogFolder"
 
 | Flag                                                                                  | Description                                                                                                                 |
 | ------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| --mainnet                                                                             | starts LUKSO's mainnet. User is connected to mainnet by default.                                                            |
-| --testnet                                                                             | starts LUKSO's testnet                                                                                                      |
-| --devnet                                                                              | starts LUKSO's devnet                                                                                                       |
+| --testnet                                                                             | Starts LUKSO's testnet                                                                                                      |
+| --devnet                                                                              | Starts LUKSO's devnet                                                                                                       |
 | --geth-\*                                                                             | \* Pass any flag to the Geth node [See docs for details](https://geth.ethereum.org/docs/fundamentals/command-line-options)  |
 | --erigon-\*                                                                           | \* Pass any flag to the Erigon node [See docs for details](https://github.com/ledgerwatch/erigon)                           |
 | --prysm-\*                                                                            | \* Pass any flag to the Prysm node [See docs for details](https://docs.prylabs.network/docs/prysm-usage/parameters)         |
 | --lighthouse-\*                                                                       | \* Pass any flag to the Lighthouse node [See docs for details](https://lighthouse-book.sigmaprime.io/advanced-datadir.html) |
-| --geth-config                                                                         | path to "./myconfig.toml" file                                                                                              |
-| --prysm-config "./myconfig.yaml" --geth-bootnodes "mycustombootnode00000"             | path to "./myconfig.yaml" file & custom geth boot nodes                                                                     |
-| --validator --transaction-fee-recipient                                               | address that receives block fees (0x12345..abcd).                                                                           |
-| --validator --validator-keys "./mainnet-keystore" --validator-password "./myfile.txt" | passes the validator keys and password from a custom directory                                                              |
-| --log -folder "./myCustomLogFolder"                                                   | user can setup a custom log directory when starting LUKSO client                                                            |
+| --geth-config                                                                         | Path to "./myconfig.toml" file                                                                                              |
+| --prysm-config "./myconfig.yaml" --geth-bootnodes "mycustombootnode00000"             | Path to "./myconfig.yaml" file & custom geth boot nodes                                                                     |
+| --validator --transaction-fee-recipient                                               | Address that receives block fees (0x12345..abcd).                                                                           |
+| --validator --validator-keys "./mainnet-keystore" --validator-password "./myfile.txt" | Passes the validator keys and password from a custom directory                                                              |
+| --log -folder "./myCustomLogFolder"                                                   | Sets up a custom log directory when starting LUKSO                                                                          |
 
 ## How to check the status of LUKSO node
 
 ```bash
-# displays the status of LUKSO's node
+# Displays the status of LUKSO's node
 $ lukso status
 ```
 
@@ -206,49 +194,42 @@ $ lukso status
 # This command stops all your client's activities
 $ lukso stop
 
-# only stops the validator client
+# Only stops the validator client
 $ lukso stop --validator
 
-# only stops the execution client
+# Only stops the execution client
 $ lukso stop --execution
 
-# only stops the consensus client
+# Only stops the consensus client
 $ lukso stop --consensus
 ```
 
 ## How to update LUKSO
 
 ```bash
-# Updates the clients to the latest available version
+# Updates installed clients
 $ lukso update
+
+# Updates to the specific version of (geth/prysm/erigon/lighthouse) client - Example Geth v1.11.4
+$ lukso update --geth-tag
+
+# Updates a specific version of the validator
+$ lukso update --validator-tag
 ```
 
 | Flag            | Description                                                                                                                 |
 | --------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| --mainnet       | updates LUKSO's mainnet                                                                                                     |
-| --testnet       | updates LUKSO's testnet                                                                                                     |
-| --devnet        | updates LUKSO's devnet                                                                                                      |
 | --geth-\*       | \* Pass any flag to the Geth node [See docs for details](https://geth.ethereum.org/docs/fundamentals/command-line-options)  |
 | --erigon-\*     | \* Pass any flag to the Erigon node [See docs for details](https://github.com/ledgerwatch/erigon)                           |
 | --prysm-\*      | \* Pass any flag to the Prysm node [See docs for details](https://docs.prylabs.network/docs/prysm-usage/parameters)         |
 | --lighthouse-\* | \* Pass any flag to the Lighthouse node [See docs for details](https://lighthouse-book.sigmaprime.io/advanced-datadir.html) |
 | --validator     | updates a specific version of the validator                                                                                 |
 
-#### How to update a specific client to a specific version
-
-```bash
-# updates to the specific version of (geth/prysm/erigon/lighthouse) client - Example Geth v1.11.4
-$ lukso update --geth-tag
-
-#  updates a specific version of the validator
-$ lukso update --validator-tag
-```
-
 ## Running your validator
 
 The main activity you can perform as a validator is depositing your keys.
 
-## How to deposit as a Validator and as a Genesis Validator
+#### How to deposit as a Validator and as a Genesis Validator
 
 ```bash
 # Validator's deposits setting gas price and an RPC connection
@@ -275,27 +256,25 @@ Enter private key:
 
 | Flag                             | Description                                                                      |
 | -------------------------------- | -------------------------------------------------------------------------------- |
-| --mainnet                        | runs a validator on LUKSO's mainnet (default)                                    |
-| --testnet                        | runs a validator on LUKSO's testnet                                              |
-| --devnet                         | runs a validator on LUKSO's devnet                                               |
-| --deposit                        | path to your deposit file. Makes a deposit to a deposit contract                 |
-| --genesis-deposit                | path to your genesis deposit file; makes a deposit to genesis validator contract |
-| --rpc                            | your RPC provider (URL) - "https//rpc.2022.l16.lukso.network"                    |
+| --testnet                        | Runs a validator on LUKSO's testnet                                              |
+| --devnet                         | Runs a validator on LUKSO's devnet                                               |
+| --deposit                        | Path to your deposit file. Makes a deposit to a deposit contract                 |
+| --genesis-deposit                | Path to your genesis deposit file; makes a deposit to genesis validator contract |
+| --rpc                            | Your RPC provider (URL) - "https//rpc.2022.l16.lukso.network"                    |
 | --gas-price                      | Gas price provided by user (int) 1000000000                                      |
 | --max-txs-per-block              | Maximum amount of txs sent per single block (int) 10                             |
-| --validator-wallet-dir           | location of a generated wallet "./mainnet/keystore"                              |
-| --validator-keys-dir             | path to your validator keys                                                      |
-| --validator-wallet-password-file | path to your password file                                                       |
+| --validator-wallet-dir           | Location of a generated wallet "./mainnet/keystore"                              |
+| --validator-keys-dir             | Path to your validator keys                                                      |
+| --validator-wallet-password-file | Path to your password file                                                       |
 
 ## Checking the version
 
-Displays the current version of your LUKSO client
-
 ```bash
+# Displays the current version of your LUKSO CLI
 $ lukso version
 ```
 
-## Generate bindings
+## Development
 
 ### Prerequisites:
 
