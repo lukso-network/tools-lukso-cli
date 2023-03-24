@@ -1,0 +1,8 @@
+name = "install-proxy"
+main = "src/index.js"
+compatibility_date = "2023-03-16"
+usage_model = "bundled"
+env = { }
+
+[triggers]
+crons = [ ]

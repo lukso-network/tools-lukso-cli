@@ -7,13 +7,14 @@
 - [`./abis`](./abis) - collection of ABIs from smart contracts that are being interacted with
 - [`./contracts`](./contracts) - collection of said smart contracts
 - [`./contracts/bindings`](./contracts/bindings) - bindings generated from ABIs - to generate new bindings see [Generate bindings](#generate-bindings) section.
+- [`./install`](./install/) - collection of things to support the various installation, signing and notarization requirements.
+- [`./docs`](./docs) Some small content to be inserted into mac pgk file
 
 ## Installation ( Linux/MacOS )
 
->🛠️ Work In Progress, available soon.
-
-## Installation ( Windows )
->🛠️ Work In Progress, available soon.
+```sh
+curl https://install.lukso.network | sh
+```
 
 ## Running
 Enter `lukso start` to start a node.
@@ -33,7 +34,8 @@ Enter `lukso start` to start a node.
 | install        | Downloads all default client(s)              |
 | update         | sets client(s) to desired version            |
 | validator      | Manages validator-related commands           |
-| validator init | Initializes your validator with deposit keys | 
+| validator init | Initializes your validator with deposit keys |
+| version        | Display version of LUKSO CLI                 |
 
 
 ### Start your node
@@ -209,4 +211,19 @@ if err != nil {
 }
 
 tx, err := bind.DoSomething(...)
+```
+
+## PR Testing ( MacOS/Linux )
+
+For PR builds please use the PR gh deployment for example
+
+```sh
+curl https://install.lukso.network/25 | sh
+```
+
+where 25 is the sample pull request ID. You can also directly use the PR preview URL mentioned inside
+of the PR status similar to:
+
+```sh
+curl https://lukso-network.github.io/tools-lukso-cli/pr-preview/pr-25 | sh
 ```
