@@ -211,19 +211,15 @@ $ lukso stop --consensus
 $ lukso update
 
 # Updates to the specific version of (geth/prysm/erigon/lighthouse) client - Example Geth v1.11.4
-$ lukso update --geth-tag
-
-# Updates a specific version of the validator
-$ lukso update --validator-tag
+$ lukso update geth-tag
 ```
 
-| Flag            | Description                                                                                                                 |
-| --------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| --geth-\*       | \* Pass any flag to the Geth node [See docs for details](https://geth.ethereum.org/docs/fundamentals/command-line-options)  |
-| --erigon-\*     | \* Pass any flag to the Erigon node [See docs for details](https://github.com/ledgerwatch/erigon)                           |
-| --prysm-\*      | \* Pass any flag to the Prysm node [See docs for details](https://docs.prylabs.network/docs/prysm-usage/parameters)         |
-| --lighthouse-\* | \* Pass any flag to the Lighthouse node [See docs for details](https://lighthouse-book.sigmaprime.io/advanced-datadir.html) |
-| --validator     | updates a specific version of the validator                                                                                 |
+| Flag          | Description                                                                                                                 |
+| ------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| geth-\*       | \* Pass any flag to the Geth node [See docs for details](https://geth.ethereum.org/docs/fundamentals/command-line-options)  |
+| erigon-\*     | \* Pass any flag to the Erigon node [See docs for details](https://github.com/ledgerwatch/erigon)                           |
+| prysm-\*      | \* Pass any flag to the Prysm node [See docs for details](https://docs.prylabs.network/docs/prysm-usage/parameters)         |
+| lighthouse-\* | \* Pass any flag to the Lighthouse node [See docs for details](https://lighthouse-book.sigmaprime.io/advanced-datadir.html) |
 
 ## Running your validator
 
