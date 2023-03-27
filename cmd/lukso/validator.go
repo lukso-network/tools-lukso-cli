@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/hex"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"math/big"
 	"os"
@@ -33,7 +32,7 @@ const (
 
 	errUnderpriced = "transaction underpriced" // catches both replacement and normal underpriced
 
-	blockFetchInterval = 3 // in seconds
+	blockFetchInterval = 12 // in seconds
 )
 
 type DepositDataKey struct {
@@ -48,116 +47,141 @@ type DepositDataKey struct {
 	DepositCliVersion     string   `json:"deposit_cli_version"`
 }
 
-func sendDeposit(ctx *cli.Context) error {
-	// Dialing clients and creating bindings
-	log.Info("Dialing up blockchain for gas info...")
-	eth, err := ethclient.Dial(ctx.String(rpcFlag))
-	if err != nil {
-		return err
-	}
+type depositController struct {
+	c context.Context
 
-	lyxMock, err := bindings.NewLYXe(common.HexToAddress(lyxeContractAddress), eth)
-	if err != nil {
-		return err
-	}
+	eth            *ethclient.Client
+	genesisDeposit *bindings.LYXe
+	deposit        *bindings.EthereumDeposit
+	senderAddr     common.Address
 
-	ethDeposit, err := bindings.NewEthereumDeposit(common.HexToAddress(depositContractAddress), eth)
-	if err != nil {
-		return err
-	}
+	depositKeys   []DepositDataKey
+	startingIndex int
+	keysNum       int
+	txOpts        *bind.TransactOpts
+}
 
+func newDepositController(rpc string, depositKeys []DepositDataKey, startingIndex int) (dc depositController, err error) {
 	c := context.Background()
+	keysLen := len(depositKeys)
+	if keysLen < 1 {
+		err = errDepositNotProvided
 
-	var supplyAmount int
-
-	depositPath := ctx.String(depositDataJson)
-	isGenesisDeposit := ctx.Bool(genesisDepositFlag)
-
-	if isGenesisDeposit {
-		supplyAmount, err = chooseSupply()
-		if err != nil {
-			return err
-		}
+		return
 	}
 
-	depositKeys, err := parseDepositDataFile(depositPath)
+	log.Info("Dialing up blockchain for gas info...")
+	eth, err := ethclient.Dial(rpc)
 	if err != nil {
-		return err
+		return
 	}
 
-	keysNum := len(depositKeys)
+	genDep, err := bindings.NewLYXe(common.HexToAddress(lyxeContractAddress), eth)
+	if err != nil {
+		return
+	}
+
+	dep, err := bindings.NewEthereumDeposit(common.HexToAddress(depositContractAddress), eth)
+	if err != nil {
+		return
+	}
+
+	if startingIndex < 0 {
+		log.Error("Couldn't send deposits: starting index is smaller than 0")
+		err = errIndexOutOfBounds
+
+		return
+	}
+	if startingIndex >= keysLen {
+		log.Error("Couldn't send deposits: starting index is greater than number of deposits")
+		err = errIndexOutOfBounds
+
+		return
+	}
+
+	depositKeys = depositKeys[startingIndex:]
 
 	message := "Please enter your private key: \n> "
 	input := registerInputWithMessage(message)
 
 	privKey, err := crypto.HexToECDSA(input)
 	if err != nil {
-		return err
+		return
 	}
 
 	senderAddr := crypto.PubkeyToAddress(privKey.PublicKey)
 	chainId, err := eth.ChainID(c)
 	if err != nil {
-		return err
+		return
 	}
 
-	opts, err := bind.NewKeyedTransactorWithChainID(privKey, chainId)
+	txOpts, err := bind.NewKeyedTransactorWithChainID(privKey, chainId)
 	if err != nil {
-		return err
+		return
 	}
 
-	startingBlock, err := eth.BlockNumber(c)
+	txOpts.From = senderAddr // will stay global, no matter what deposit we are making
+
+	dc = depositController{
+		c,
+		eth,
+		genDep,
+		dep,
+		senderAddr,
+		depositKeys,
+		startingIndex,
+		len(depositKeys),
+		txOpts,
+	}
+
+	return
+}
+
+// estimateGas estimates gas for sending all deposits, displays this information to user and waits for his confirmation
+func (dc depositController) estimateGas(isGenesisDeposit bool) (accepted bool, err error) {
+	var (
+		message     string
+		tx          *types.Transaction
+		depositData []byte
+	)
+
+	nonce, err := dc.eth.PendingNonceAt(dc.c, dc.senderAddr)
 	if err != nil {
-		return err
+		return
 	}
 
-	// we take nonce once for 1st transaction and increment it manually
-	nonce, err := eth.PendingNonceAt(c, senderAddr)
-	if err != nil {
-		return err
-	}
-
-	// estimate gas based on 1st deposit and inform user before proceeding
-	if keysNum < 1 {
-		return errDepositNotProvided
-	}
-
-	opts.Nonce = big.NewInt(int64(nonce))
-	opts.From = senderAddr
-	opts.NoSend = true
-
-	key := depositKeys[0]
-
-	var tx *types.Transaction
+	dc.txOpts.NoSend = true
+	dc.txOpts.Nonce = big.NewInt(int64(nonce))
 
 	switch isGenesisDeposit {
 	case true:
-		depositData, err := encodeGenesisDepositDataKey(key, supplyAmount)
+		depositData, err = encodeGenesisDepositDataKey(dc.depositKeys[0], 0)
 
 		if err != nil {
-			return err
+			return
 		}
 
-		tx, err = lyxMock.Send(
-			opts,
+		tx, err = dc.genesisDeposit.Send(
+			dc.txOpts,
 			common.HexToAddress(genesisDepositContractAddress),
 			big.NewInt(0).Mul(big.NewInt(32), big.NewInt(ether)),
 			depositData,
 		)
 
-		gasReadable := estimateGas(tx, int64(keysNum))
+		gasReadable := estimateGas(tx, int64(dc.keysNum))
 
 		message = fmt.Sprintf("Before proceeding make sure that your private key has sufficient balance:\n"+
 			"- %v ETH\n"+
-			"- %v LYXe\nDo you wish to continue? [Y/n]: ", gasReadable, keysNum*32)
+			"- %v LYXe\nDo you wish to continue? [Y/n]: ", gasReadable, dc.keysNum*32)
 
 	case false:
-		opts.Value = big.NewInt(0).Mul(big.NewInt(32), big.NewInt(ether))
+		dc.txOpts.Value = big.NewInt(0).Mul(big.NewInt(32), big.NewInt(ether))
+
 		var depositDataRoot [32]byte
 
-		depositData, err := encodeGenesisDepositDataKey(key, 0)
+		depositData, err = encodeGenesisDepositDataKey(dc.depositKeys[0], 0)
 		if err != nil {
-			return err
+			return
 		}
 
 		startI := 176
@@ -165,57 +189,81 @@ func sendDeposit(ctx *cli.Context) error {
 			depositDataRoot[i] = depositData[startI+i]
 		}
 
-		tx, err = ethDeposit.Deposit(
-			opts,
+		tx, err = dc.deposit.Deposit(
+			dc.txOpts,
 			depositData[:48],
 			depositData[48:80],
 			depositData[80:176],
 			depositDataRoot,
 		)
 		if err != nil {
-			return err
+			return
 		}
 
-		gasReadable := estimateGas(tx, int64(keysNum))
+		gasReadable := estimateGas(tx, int64(dc.keysNum))
 
 		message = fmt.Sprintf("Before proceeding make sure that your private key has sufficient balance:\n"+
-			"- %v LYX\nDo you wish to continue? [Y/n]: ", float64(keysNum*32)+gasReadable)
+			"- %v LYX\nDo you wish to continue? [Y/n]: ", float64(dc.keysNum*32)+gasReadable)
 
 	}
 
-	input = registerInputWithMessage(message)
+	accepted = true
+	input := registerInputWithMessage(message)
 	if !strings.EqualFold(input, "y") {
 		log.Info("Aborting...")
 
-		return nil
+		accepted = false
 	}
 
-	txCount := 1 // if txCount reaches 10 then we have to wait for another block
+	return
+}
 
-	for i, key := range depositKeys {
-		var currentBlock uint64
+func (dc depositController) sendDeposits(isGenesisDeposit bool, maxTxsPerBatch int) (err error) {
+	var (
+		txSentCount  = 0 // if txSentCount reaches 10 then we have to wait for another block
+		nonce        uint64
+		supplyAmount int
+		currentBatch = 0
+	)
 
-		currentBlock, err = eth.BlockNumber(c)
+	txsSent := make([]*types.Transaction, 0)
+
+	if isGenesisDeposit {
+		supplyAmount, err = chooseSupply()
 		if err != nil {
-			return err
+			return
 		}
+	}
 
-		if currentBlock != startingBlock {
-			startingBlock = currentBlock
-			txCount = 1
-		}
+	nonce, err = dc.eth.PendingNonceAt(dc.c, dc.senderAddr)
+	if err != nil {
+		return
+	}
 
-		if txCount > ctx.Int(maxTxsPerBlock) {
-			fmt.Printf("Reached %d tx per block - waiting for next block...", ctx.Int(maxTxsPerBlock))
-			startingBlock, err = waitForNextBlock(c, eth, currentBlock)
+	dc.txOpts.NoSend = false
+
+	for i, key := range dc.depositKeys {
+		if txSentCount == maxTxsPerBatch {
+			fmt.Printf("Reached %d txs sent - waiting for receipts...\n", maxTxsPerBatch)
+			failedBatchedTxIndex, err := dc.waitForReceipts(txsSent)
 			if err != nil {
+				failedDepositIndex := dc.startingIndex + currentBatch*maxTxsPerBatch + failedBatchedTxIndex
+				log.Errorf("Sent transaction has failed with error: %v - aborting...", err)
+				log.Errorf("To continue with your deposits please run a deposit command once again, "+
+					"but with --start-from-index flag to continue from failed transaction, example:\n"+
+					"lukso validator deposit --deposit-data-json *your deposit data file* --start-from-index %d",
+					failedDepositIndex,
+				)
+
 				return err
 			}
 
-			txCount = 1
+			txSentCount = 0
+			txsSent = make([]*types.Transaction, 0)
+			currentBatch++
 		}
 
-		fmt.Printf("Deposit %d/%d\n", i+1, keysNum)
+		fmt.Printf("Deposit %d/%d\n", i+1, dc.keysNum)
 		fmt.Println("Amount:", key.Amount.String())
 		fmt.Println("Public Key:", key.PubKey)
 		fmt.Println("Withdraw credentials:", key.WithdrawalCredentials)
@@ -224,10 +272,8 @@ func sendDeposit(ctx *cli.Context) error {
 		fmt.Println("Signature:", key.Signature)
 		fmt.Println("")
 
-		opts.Nonce = big.NewInt(int64(nonce))
-		opts.From = senderAddr
-		opts.NoSend = false
-		opts.Value = big.NewInt(0)
+		dc.txOpts.Nonce = big.NewInt(int64(nonce))
+		dc.txOpts.Value = big.NewInt(0)
 
 		var tx *types.Transaction
 		switch isGenesisDeposit {
@@ -239,15 +285,15 @@ func sendDeposit(ctx *cli.Context) error {
 				log.Error("Couldn't send transaction - deposit data provided is invalid  - skipping...")
 			}
 
-			tx, err = lyxMock.Send(
-				opts,
+			tx, err = dc.genesisDeposit.Send(
+				dc.txOpts,
 				common.HexToAddress(genesisDepositContractAddress),
 				big.NewInt(0).Mul(big.NewInt(32), big.NewInt(ether)),
 				depositData,
 			)
 
 		case false:
-			opts.Value = big.NewInt(0).Mul(big.NewInt(32), big.NewInt(ether))
+			dc.txOpts.Value = big.NewInt(0).Mul(big.NewInt(32), big.NewInt(ether))
 			var (
 				depositData     []byte
 				depositDataRoot [32]byte
@@ -263,8 +309,8 @@ func sendDeposit(ctx *cli.Context) error {
 				depositDataRoot[i] = depositData[startI+i]
 			}
 
-			tx, err = ethDeposit.Deposit(
-				opts,
+			tx, err = dc.deposit.Deposit(
+				dc.txOpts,
 				depositData[:48],
 				depositData[48:80],
 				depositData[80:176],
@@ -272,78 +318,54 @@ func sendDeposit(ctx *cli.Context) error {
 			)
 		}
 
-		if err != nil && strings.Contains(err.Error(), errUnderpriced) {
-			tx, err = bumpGasAndSend(eth, tx, opts)
-			if err != nil {
-				log.Fatalf("Couldn't bump transation gas: %v", err)
+		if err != nil {
+			failedDepositIndex := dc.startingIndex + currentBatch*maxTxsPerBatch + txSentCount
+			log.Errorf("Sent transaction has failed with error: %v - aborting...", err)
+			log.Errorf("To continue with your deposits please run a deposit command once again, "+
+				"but with --start-from-index flag to continue from failed transaction, example:\n"+
+				"lukso validator deposit --deposit-data-json *your deposit data file* --start-from-index %d",
+				failedDepositIndex,
+			)
 
-				return err
-			}
+			return err
 		}
 
-		fmt.Printf("Transaction %d/%d sent! Transaction hash: %v\n\n", i+1, keysNum, tx.Hash().String())
+		txsSent = append(txsSent, tx)
+
+		fmt.Printf("Transaction %d/%d sent! Transaction hash: %v\n\n", i+1, dc.keysNum, tx.Hash().String())
 
 		nonce = tx.Nonce() + 1 // we could do nonce += 1, but it's just to make sure we are +1 ahead of previous tx
-		txCount++
+		txSentCount++
 	}
 
 	return nil
 }
 
-func bumpGasAndSend(eth *ethclient.Client, tx *types.Transaction, signer *bind.TransactOpts) (*types.Transaction, error) {
-	log.Warn("Transaction failed with underpriced error - resending...")
-	gas := tx.Gas() + uint64(gasBump)
+func sendDeposit(ctx *cli.Context) (err error) {
+	depositPath := ctx.String(depositDataJson)
+	isGenesisDeposit := ctx.Bool(genesisDepositFlag)
 
-	log.Debugf("Bumping gas, had %d, added %d", tx.Gas(), gas)
-	gas += tx.Gas()
-
-	fee := tx.GasFeeCap()
-	feeFloat, ok := big.NewFloat(0).SetString(fee.String())
-	if ok {
-		feeFloat = feeFloat.Mul(feeFloat, big.NewFloat(1.15))
-		feeFloat.Int(fee)
-		log.Debugf("Bumping fee %s -> %s WEI", tx.GasFeeCap().String(), fee.String())
-	} else {
-		log.Warnf("Failed to bump base fee: not ok fir bigFloat construction")
+	depositKeys, err := parseDepositDataFile(depositPath)
+	if err != nil {
+		return err
 	}
 
-	timeout := time.Now().Add(time.Second * 10)
-	nonce := tx.Nonce()
-	for {
-		if time.Now().After(timeout) {
-			return nil, errors.New("failed to send transaction - timed out with handleable noncing errors")
-		}
-
-		signed, err := signer.Signer(signer.From, types.NewTx(&types.DynamicFeeTx{
-			ChainID:   tx.ChainId(),
-			Nonce:     nonce,
-			GasTipCap: tx.GasTipCap(),
-			GasFeeCap: fee,
-			Gas:       gas,
-			To:        tx.To(),
-			Value:     tx.Value(),
-			Data:      tx.Data(),
-		}))
-
-		if err != nil {
-			return nil, err
-		}
-
-		log.Debugf("Signed bumped gas tx, gas=%d hash=%s", signed.Gas(), signed.Hash().String())
-
-		err = eth.SendTransaction(context.Background(), signed)
-		if err != nil {
-			switch strings.Contains(err.Error(), errUnderpriced) {
-			case true: // ie. data race for nonce getter
-				nonce++
-				continue
-			default:
-				return nil, err
-			}
-		}
-
-		return signed, nil
+	dc, err := newDepositController(ctx.String(rpcFlag), depositKeys, ctx.Int(startFromIndexFlag))
+	if err != nil {
+		return err
 	}
+
+	accepted, err := dc.estimateGas(isGenesisDeposit)
+	if err != nil {
+		return
+	}
+	if !accepted {
+		return nil
+	}
+
+	err = dc.sendDeposits(isGenesisDeposit, ctx.Int(maxTxsPerBatchFlag))
+
+	return err
 }
 
 func initValidator(ctx *cli.Context) error {
@@ -425,16 +447,56 @@ func encodeGenesisDepositDataKey(key DepositDataKey, amount int) (depositData []
 	return
 }
 
-// waitForNextBlock fetches current block in 3 second intervals, and
-func waitForNextBlock(c context.Context, eth *ethclient.Client, currentBlock uint64) (blockNumber uint64, err error) {
+// waitForReceipts waits until sent transactions
+func (dc depositController) waitForReceipts(txs []*types.Transaction) (failedIndex int, err error) {
+	validatedTxs := make([]bool, len(txs))
 	for {
+		log.Infof("Waiting %d seconds before fetching receipts...", blockFetchInterval)
 		time.Sleep(time.Second * blockFetchInterval)
-		blockNumber, err = eth.BlockNumber(c)
-		if err != nil {
-			return
+		for i, tx := range txs {
+			var (
+				isPending = false
+				receipt   *types.Receipt
+			)
+
+			if validatedTxs[i] {
+				continue
+			}
+
+			_, isPending, err = dc.eth.TransactionByHash(dc.c, tx.Hash())
+			if err != nil {
+				return
+			}
+			if isPending {
+				log.Infof("tx with hash %s is still pending - continuing", tx.Hash().String())
+				continue
+			}
+
+			log.Infof("getting receipt for tx with hash %s", tx.Hash().String())
+			receipt, err = dc.eth.TransactionReceipt(dc.c, tx.Hash())
+			if err != nil {
+				return
+			}
+
+			log.Infof("Got receipt for tx with hash %s, status: %d", tx.Hash().String(), receipt.Status)
+			if receipt.Status == 0 {
+				err = errTransactionFailed
+				failedIndex = i
+
+				return
+			}
+
+			validatedTxs[i] = true
 		}
 
-		if currentBlock != blockNumber {
+		// check if all txs are validated
+		allValidated := true
+		for _, validated := range validatedTxs {
+			if !validated {
+				allValidated = false
+			}
+		}
+		if allValidated {
 			break
 		}
 	}
