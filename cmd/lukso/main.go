@@ -96,7 +96,7 @@ func main() {
 			Name: "init",
 			Usage: "Initializes your lukso working directory, it's structure and configurations for all of your clients. " +
 				"Make sure that you have your clients installed before initializing",
-			Action: selectNetworkFor(downloadConfigs),
+			Action: initializeDirectory,
 			Flags:  networkFlags,
 			Before: initializeFlags,
 		},
