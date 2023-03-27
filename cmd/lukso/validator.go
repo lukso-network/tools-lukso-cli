@@ -32,7 +32,7 @@ const (
 
 	errUnderpriced = "transaction underpriced" // catches both replacement and normal underpriced
 
-	blockFetchInterval = 10 // in seconds
+	blockFetchInterval = 12 // in seconds
 )
 
 type DepositDataKey struct {
@@ -50,10 +50,10 @@ type DepositDataKey struct {
 type depositController struct {
 	c context.Context
 
-	eth        *ethclient.Client
-	genDep     *bindings.LYXe
-	dep        *bindings.EthereumDeposit
-	senderAddr common.Address
+	eth            *ethclient.Client
+	genesisDeposit *bindings.LYXe
+	deposit        *bindings.EthereumDeposit
+	senderAddr     common.Address
 
 	depositKeys   []DepositDataKey
 	startingIndex int
@@ -161,7 +161,7 @@ func (dc depositController) estimateGas(isGenesisDeposit bool) (accepted bool, e
 			return
 		}
 
-		tx, err = dc.genDep.Send(
+		tx, err = dc.genesisDeposit.Send(
 			dc.txOpts,
 			common.HexToAddress(genesisDepositContractAddress),
 			big.NewInt(0).Mul(big.NewInt(32), big.NewInt(ether)),
@@ -189,7 +189,7 @@ func (dc depositController) estimateGas(isGenesisDeposit bool) (accepted bool, e
 			depositDataRoot[i] = depositData[startI+i]
 		}
 
-		tx, err = dc.dep.Deposit(
+		tx, err = dc.deposit.Deposit(
 			dc.txOpts,
 			depositData[:48],
 			depositData[48:80],
@@ -285,7 +285,7 @@ func (dc depositController) sendDeposits(isGenesisDeposit bool, maxTxsPerBatch i
 				log.Error("Couldn't send transaction - deposit data provided is invalid  - skipping...")
 			}
 
-			tx, err = dc.genDep.Send(
+			tx, err = dc.genesisDeposit.Send(
 				dc.txOpts,
 				common.HexToAddress(genesisDepositContractAddress),
 				big.NewInt(0).Mul(big.NewInt(32), big.NewInt(ether)),
@@ -309,7 +309,7 @@ func (dc depositController) sendDeposits(isGenesisDeposit bool, maxTxsPerBatch i
 				depositDataRoot[i] = depositData[startI+i]
 			}
 
-			tx, err = dc.dep.Deposit(
+			tx, err = dc.deposit.Deposit(
 				dc.txOpts,
 				depositData[:48],
 				depositData[48:80],
