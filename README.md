@@ -236,7 +236,7 @@ $ lukso validator deposit --genesis --deposit-data-json "./validator-deposit-dat
 
 All Genesis Validators will be prompted to vote for the initial token supply of LYX; determining how much the Foundation will receive. More details at: https://deposit.mainnet.lukso.network
 
-Genesis Validators need to have at least 320 LYXe per validator and a minimum balance of 1.6 ETH for gas expenses.
+Genesis Validators need to have at least 32 LYXe per validator and a minimum balance of 1.6 ETH for gas expenses.
 
 | Flag                             | Description                                                                      |
 | -------------------------------- | -------------------------------------------------------------------------------- |
