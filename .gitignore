@@ -16,6 +16,7 @@
 cmd/lukso/geth
 cmd/lukso/prysm
 cmd/lukso/deps
+cmd/lukso/lukso
 
 # Dist files
 dist

@@ -42,9 +42,15 @@ func (dependency *ClientDependency) Download(tagName, commitHash string, overrid
 		_ = response.Body.Close()
 	}()
 
+	if response.StatusCode == http.StatusNotFound {
+		log.Warnf("File under URL %s not found - aborting...", fileUrl)
+
+		return nil
+	}
+
 	if http.StatusOK != response.StatusCode {
 		return fmt.Errorf(
-			"invalid response when downloading on file url: %s. Response: %s",
+			"invalid response when downloading on file url: %s. Response code: %s",
 			fileUrl,
 			response.Status,
 		)
@@ -158,61 +164,10 @@ func downloadBinaries(ctx *cli.Context) (err error) {
 	return
 }
 
-func downloadConfigs(ctx *cli.Context) error {
-	err := createJwtSecret(jwtSelectedPath) // jwtSelectedPath var can be altered by network selector
-	if err != nil {
-		return err
-	}
-
-	err = downloadGenesis(ctx)
-	if nil != err {
-		return err
-	}
-
-	err = downloadGethConfig(ctx)
-	if nil != err {
-		return err
-	}
-
-	return downloadPrysmConfig(ctx)
-}
-
 func downloadGeth(ctx *cli.Context) (err error) {
 	log.WithField("dependencyTag", gethTag).Info("Downloading Geth")
 
 	err = clientDependencies[gethDependencyName].Download(gethTag, gethCommitHash, false, binaryPerms)
-
-	return
-}
-
-func downloadGenesis(ctx *cli.Context) (err error) {
-	log.Info("Downloading Execution Genesis")
-
-	err = clientDependencies[gethSelectedGenesis].Download("", "", false, configPerms)
-
-	if nil != err {
-		return
-	}
-
-	log.Info("Downloading Consensus Genesis")
-
-	err = clientDependencies[prysmSelectedGenesis].Download("", "", false, configPerms)
-
-	return
-}
-
-func downloadPrysmConfig(ctx *cli.Context) (err error) {
-	log.Info("Downloading Prysm Config")
-
-	err = clientDependencies[prysmSelectedConfig].Download("", "", false, configPerms)
-
-	return
-}
-
-func downloadGethConfig(ctx *cli.Context) (err error) {
-	log.Info("Downloading Geth Config")
-
-	err = clientDependencies[gethSelectedConfig].Download("", "", false, configPerms)
 
 	return
 }

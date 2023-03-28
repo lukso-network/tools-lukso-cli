@@ -12,28 +12,29 @@ const (
 	prysmDependencyName     = "prysm"
 	validatorDependencyName = "validator"
 
-	gethMainnetGenesisDependencyName  = "geth_mainnet_genesis"
-	gethMainnetConfigName             = "geth_mainnet_config"
-	prysmMainnetGenesisDependencyName = "prysm_mainnet_genesis_state"
-	prysmMainnetConfigDependencyName  = "prysm_mainnet_config"
+	gethMainnetGenesisDependencyName      = "geth_mainnet_genesis"
+	gethMainnetConfigName                 = "geth_mainnet_config"
+	prysmMainnetGenesisDependencyName     = "prysm_mainnet_genesis_state"
+	prysmMainnetChainConfigDependencyName = "prysm_mainnet_chain_config"
+	prysmMainnetConfigDependencyName      = "prysm_mainnet_config"
+	validatorMainnetConfigDependencyName  = "validator_mainnet_config"
 
-	gethTestnetGenesisDependencyName  = "geth_testnet_genesis"
-	gethTestnetConfigName             = "geth_testnet_config"
-	prysmTestnetGenesisDependencyName = "prysm_testnet_genesis_state"
-	prysmTestnetConfigDependencyName  = "prysm_testnet_config"
+	gethTestnetGenesisDependencyName      = "geth_testnet_genesis"
+	gethTestnetConfigName                 = "geth_testnet_config"
+	prysmTestnetGenesisDependencyName     = "prysm_testnet_genesis_state"
+	prysmTestnetChainConfigDependencyName = "prysm_testnet_chain_config"
+	prysmTestnetConfigDependencyName      = "prysm_testnet_config"
+	validatorTestnetConfigDependencyName  = "validator_testnet_config"
 
-	gethDevnetGenesisDependencyName  = "geth_devnet_genesis"
-	gethDevnetConfigName             = "geth_devnet_config"
-	prysmDevnetGenesisDependencyName = "prysm_devnet_genesis_state"
-	prysmDevnetConfigDependencyName  = "prysm_devnet_config"
+	gethDevnetGenesisDependencyName      = "geth_devnet_genesis"
+	gethDevnetConfigName                 = "geth_devnet_config"
+	prysmDevnetGenesisDependencyName     = "prysm_devnet_genesis_state"
+	prysmDevnetChainConfigDependencyName = "prysm_devnet_chain_config"
+	prysmDevnetConfigDependencyName      = "prysm_devnet_config"
+	validatorDevnetConfigDependencyName  = "validator_devnet_config"
 )
 
 var (
-	gethSelectedGenesis  = gethMainnetGenesisDependencyName
-	gethSelectedConfig   = gethMainnetConfigName
-	prysmSelectedGenesis = prysmMainnetGenesisDependencyName
-	prysmSelectedConfig  = prysmMainnetConfigDependencyName
-
 	clientDependencies = map[string]*ClientDependency{
 		// ----- BINARIES -----
 		gethDependencyName: {
@@ -69,10 +70,20 @@ var (
 			name:     prysmMainnetGenesisDependencyName,
 			filePath: "./config/mainnet/shared/genesis.ssz",
 		},
-		prysmMainnetConfigDependencyName: {
+		prysmMainnetChainConfigDependencyName: {
 			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/config.yaml",
-			name:     prysmMainnetConfigDependencyName,
+			name:     prysmMainnetChainConfigDependencyName,
 			filePath: "./config/mainnet/shared/config.yaml",
+		},
+		prysmMainnetConfigDependencyName: {
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/feature/blockchain-clients-configs/mainnet/prysm/prysm.yaml",
+			name:     prysmMainnetConfigDependencyName,
+			filePath: "./config/mainnet/prysm/prysm.yaml",
+		},
+		validatorMainnetConfigDependencyName: {
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/feature/blockchain-clients-configs/mainnet/prysm/validator.yaml",
+			name:     validatorMainnetConfigDependencyName,
+			filePath: "./config/mainnet/prysm/validator.yaml",
 		},
 		// ----- TESTNET -----
 		gethTestnetGenesisDependencyName: {
@@ -90,10 +101,20 @@ var (
 			name:     prysmTestnetGenesisDependencyName,
 			filePath: "./config/testnet/shared/genesis.ssz",
 		},
-		prysmTestnetConfigDependencyName: {
+		prysmTestnetChainConfigDependencyName: {
 			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/shared/config.yaml",
-			name:     prysmTestnetConfigDependencyName,
+			name:     prysmTestnetChainConfigDependencyName,
 			filePath: "./config/testnet/shared/config.yaml",
+		},
+		prysmTestnetConfigDependencyName: {
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/feature/blockchain-clients-configs/testnet/prysm/prysm.yaml",
+			name:     prysmTestnetConfigDependencyName,
+			filePath: "./config/testnet/prysm/prysm.yaml",
+		},
+		validatorTestnetConfigDependencyName: {
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/feature/blockchain-clients-configs/testnet/prysm/validator.yaml",
+			name:     validatorTestnetConfigDependencyName,
+			filePath: "./config/testnet/prysm/validator.yaml",
 		},
 		// ----- DEVNET -----
 		gethDevnetGenesisDependencyName: {
@@ -111,10 +132,20 @@ var (
 			name:     prysmDevnetGenesisDependencyName,
 			filePath: "./config/devnet/shared/genesis.ssz",
 		},
-		prysmDevnetConfigDependencyName: {
+		prysmDevnetChainConfigDependencyName: {
 			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/devnets/2022/prysm/config.yml",
-			name:     prysmDevnetConfigDependencyName,
+			name:     prysmDevnetChainConfigDependencyName,
 			filePath: "./config/devnet/shared/config.yaml",
+		},
+		prysmDevnetConfigDependencyName: {
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/feature/blockchain-clients-configs/devnets/3030/prysm/prysm.yaml",
+			name:     prysmDevnetConfigDependencyName,
+			filePath: "./config/devnet/prysm/prysm.yaml",
+		},
+		validatorDevnetConfigDependencyName: {
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/feature/blockchain-clients-configs/devnets/3030/prysm/validator.yaml",
+			name:     validatorDevnetConfigDependencyName,
+			filePath: "./config/devnet/prysm/validator.yaml",
 		},
 	}
 )
