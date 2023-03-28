@@ -18,7 +18,6 @@ const (
 	windows = "windows"
 
 	unixBinDir = "/usr/local/bin"
-	pidFileDir = "/var/run/lukso" // should be created when downloading and setting up privileges for lukso
 
 	// should be a user-created path, like C:\bin,
 	// but since it is not guaranteed that all users vahe it we can leave it as is

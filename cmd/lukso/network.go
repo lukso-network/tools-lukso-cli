@@ -8,16 +8,12 @@ import (
 
 // networkConfig serves as a collection of variables that need to be changed when different network is selected
 type networkConfig struct {
-	gethDatadirPath        string
-	prysmDatadirPath       string
-	validatorDatadirPath   string
-	gethGenesisDependency  string
-	gethConfigDependency   string
-	prysmGenesisDependency string
-	prysmConfigDependency  string
-	logPath                string
-	configPath             string
-	keysPath               string
+	gethDatadirPath      string
+	prysmDatadirPath     string
+	validatorDatadirPath string
+	logPath              string
+	configPath           string
+	keysPath             string
 }
 
 // selectNetwork accepts a CLI func as an argument, and adjusts all values that need to be changed depending on
@@ -49,16 +45,12 @@ func selectNetworkFor(f func(*cli.Context) error) func(*cli.Context) error {
 
 		if devnetEnabled {
 			cfg = networkConfig{
-				gethDatadirPath:        gethDevnetDatadir,
-				prysmDatadirPath:       prysmDevnetDatadir,
-				validatorDatadirPath:   validatorDevnetDatadir,
-				gethGenesisDependency:  gethDevnetGenesisDependencyName,
-				gethConfigDependency:   gethDevnetConfigName,
-				prysmGenesisDependency: prysmDevnetGenesisDependencyName,
-				prysmConfigDependency:  prysmDevnetConfigDependencyName,
-				logPath:                devnetLogs,
-				configPath:             devnetConfig,
-				keysPath:               devnetKeystore,
+				gethDatadirPath:      gethDevnetDatadir,
+				prysmDatadirPath:     prysmDevnetDatadir,
+				validatorDatadirPath: validatorDevnetDatadir,
+				logPath:              devnetLogs,
+				configPath:           devnetConfig,
+				keysPath:             devnetKeystore,
 			}
 		}
 
@@ -75,11 +67,13 @@ func selectNetworkFor(f func(*cli.Context) error) func(*cli.Context) error {
 func updateValues(ctx *cli.Context, config networkConfig) (err error) {
 	var (
 		//genesisJson  = config.configPath + "/" + genesisJsonPath
-		gethToml     = config.configPath + "/" + configTomlPath
-		gethGenesis  = config.configPath + "/" + genesisJsonPath
-		genesisState = config.configPath + "/" + genesisStateFilePath
-		configYaml   = config.configPath + "/" + configYamlPath
-		jwtSecret    = config.configPath + "/" + jwtSecretPath
+		gethToml      = config.configPath + "/" + configTomlPath
+		prysmYaml     = config.configPath + "/" + prysmConfigPath
+		validatorYaml = config.configPath + "/" + validatorConfigPath
+		gethGenesis   = config.configPath + "/" + genesisJsonPath
+		genesisState  = config.configPath + "/" + genesisStateFilePath
+		configYaml    = config.configPath + "/" + chainConfigYamlPath
+		jwtSecret     = config.configPath + "/" + jwtSecretPath
 	)
 
 	passedArgs := make([]string, 0)
@@ -91,10 +85,6 @@ func updateValues(ctx *cli.Context, config networkConfig) (err error) {
 	}
 
 	// selecting dependencies for init
-	gethSelectedGenesis = config.gethGenesisDependency
-	gethSelectedConfig = config.gethConfigDependency
-	prysmSelectedGenesis = config.prysmGenesisDependency
-	prysmSelectedConfig = config.prysmConfigDependency
 	jwtSelectedPath = jwtSecret
 
 	// varyingFlags represents list of all flags that can be affected by selecting network and values that may be replaced
@@ -106,6 +96,8 @@ func updateValues(ctx *cli.Context, config networkConfig) (err error) {
 		validatorKeysFlag:            config.keysPath,
 		jwtSecretFlag:                jwtSecret,
 		gethConfigFileFlag:           gethToml,
+		prysmConfigFileFlag:          prysmYaml,
+		validatorConfigFileFlag:      validatorYaml,
 		genesisJsonFlag:              gethGenesis,
 		prysmChainConfigFileFlag:     configYaml,
 		validatorChainConfigFileFlag: configYaml,

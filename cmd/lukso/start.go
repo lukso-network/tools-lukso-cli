@@ -63,7 +63,7 @@ func (dependency *ClientDependency) Start(
 }
 
 func (dependency *ClientDependency) Stop() error {
-	pidLocation := fmt.Sprintf("%s/%s.pid", pidFileDir, dependency.name)
+	pidLocation := fmt.Sprintf("%s/%s.pid", pid.FileDir, dependency.name)
 
 	pidVal, err := pid.Load(pidLocation)
 	if err != nil {

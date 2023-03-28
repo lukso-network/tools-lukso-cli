@@ -18,8 +18,9 @@ func initializeDirectory(ctx *cli.Context) error {
 			log.Errorf("There was error while downloading %s file: %v", dependency.name, err.Error())
 		}
 
-		log.Infof("Downloaded file %s into %s", dependency.name, dependency.filePath)
 	}
+
+	log.Info("Folder initialized! To start your node run lukso start command")
 
 	return nil
 }
