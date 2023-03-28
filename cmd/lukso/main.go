@@ -1,12 +1,16 @@
 package main
 
 import (
-	"github.com/sirupsen/logrus"
-	"github.com/urfave/cli/v2"
+	"fmt"
 	"os"
 	"runtime"
 	runtimeDebug "runtime/debug"
+
+	"github.com/sirupsen/logrus"
+	"github.com/urfave/cli/v2"
 )
+
+var Version = "develop"
 
 const (
 	ubuntu  = "linux"
@@ -127,34 +131,12 @@ func main() {
 			},
 		},
 		{
-			Name:   "start",
-			Usage:  "Start all lukso clients",
-			Action: selectNetworkFor(startClients),
-			Flags:  startFlags,
-			Before: initializeFlags,
-			Subcommands: []*cli.Command{
-				{
-					Name:   "geth",
-					Usage:  "Start Geth client",
-					Flags:  gethStartFlags,
-					Before: initializeFlags,
-					Action: selectNetworkFor(startGeth),
-				},
-				{
-					Name:   "prysm",
-					Usage:  "Start Prysm client",
-					Flags:  prysmStartFlags,
-					Before: initializeFlags,
-					Action: selectNetworkFor(startPrysm),
-				},
-				{
-					Name:   "validator",
-					Usage:  "Start Validator client",
-					Flags:  validatorStartFlags,
-					Before: initializeFlags,
-					Action: selectNetworkFor(startValidator),
-				},
-			},
+			Name:            "start",
+			Usage:           "Start all lukso clients",
+			Action:          selectNetworkFor(startClients),
+			SkipFlagParsing: true,
+			Flags:           startFlags,
+			Before:          initializeFlags,
 		},
 		{
 			Name:   "stop",
@@ -166,25 +148,24 @@ func main() {
 			Name:   "log",
 			Usage:  "Outputs log file of given client",
 			Action: logClients,
-			Flags:  logsFlags,
 			Subcommands: []*cli.Command{
 				{
 					Name:   "geth",
 					Usage:  "Outputs Geth client logs",
 					Flags:  gethLogsFlags,
-					Action: selectNetworkFor(logClient(gethDependencyName, gethLogDirFlag)),
+					Action: selectNetworkFor(logClient(gethDependencyName)),
 				},
 				{
 					Name:   "prysm",
 					Usage:  "Outputs Prysm client logs",
 					Flags:  prysmLogsFlags,
-					Action: selectNetworkFor(logClient(prysmDependencyName, prysmLogDirFlag)),
+					Action: selectNetworkFor(logClient(prysmDependencyName)),
 				},
 				{
 					Name:   "validator",
 					Usage:  "Outputs Validator client logs",
 					Flags:  validatorLogsFlags,
-					Action: selectNetworkFor(logClient(validatorDependencyName, validatorLogDirFlag)),
+					Action: selectNetworkFor(logClient(validatorDependencyName)),
 				},
 			},
 		},
@@ -217,10 +198,8 @@ func main() {
 			Action: selectNetworkFor(resetClients),
 		},
 		{
-			Name:   "validator",
-			Usage:  "Send deposits from your deposit file",
-			Flags:  validatorFlags,
-			Action: sendDeposit,
+			Name:  "validator",
+			Usage: "Manage your lukso validator",
 			Subcommands: []*cli.Command{
 				{
 					Name:   "init",
@@ -228,7 +207,18 @@ func main() {
 					Flags:  validatorInitFlags,
 					Action: selectNetworkFor(initValidator),
 				},
+				{
+					Name:   "deposit",
+					Usage:  "Sends deposits for your validator keys",
+					Flags:  validatorDepositFlags,
+					Action: sendDeposit,
+				},
 			},
+		},
+		{
+			Name:   "version",
+			Usage:  "Display version of the lukso command",
+			Action: displayVersion,
 		},
 	}
 
@@ -283,4 +273,9 @@ func initializeFlags(ctx *cli.Context) error {
 func fileExists(path string) bool {
 	_, err := os.Stat(path)
 	return !os.IsNotExist(err)
+}
+
+func displayVersion(ctx *cli.Context) error {
+	fmt.Println("Version:", Version)
+	return nil
 }

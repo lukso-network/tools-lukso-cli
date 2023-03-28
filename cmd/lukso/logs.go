@@ -54,9 +54,9 @@ func logClients(ctx *cli.Context) error {
 	return nil
 }
 
-func logClient(dependencyName string, logFileFlag string) func(*cli.Context) error {
+func logClient(dependencyName string) func(*cli.Context) error {
 	return func(ctx *cli.Context) error {
-		logFileDir := ctx.String(logFileFlag)
+		logFileDir := ctx.String(logFolderFlag)
 		if logFileDir == "" {
 			return errFlagMissing
 		}

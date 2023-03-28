@@ -29,8 +29,7 @@ func prepareTimestampedFile(logDir, logFileName string) (logFile string, err err
 	return
 }
 
-func prepareLogfileFlag(ctx *cli.Context, logDirFlag, dependencyName string) string {
-	logDir := ctx.String(logDirFlag)
+func prepareLogfileFlag(logDir, dependencyName string) string {
 	prysmFullLogPath, err := prepareTimestampedFile(logDir, dependencyName)
 	if err != nil {
 		log.Warnf("Couldn't prepare log folder for %s client. Warning: continuing without log files being saved", dependencyName)
@@ -157,4 +156,56 @@ func registerInputWithMessage(message string) (input string) {
 	scanner.Scan()
 
 	return scanner.Text()
+}
+
+// parseFlags takes care of parsing flags that are skipped if SkipFlagParsing is set to true
+func parseFlags(ctx *cli.Context) (err error) {
+	args := ctx.Args()
+	argsLen := args.Len()
+	for i := 0; i < argsLen; i++ {
+		arg := args.Get(i)
+
+		if strings.HasPrefix(arg, "--") {
+			if i+1 == argsLen {
+				arg = strings.TrimLeft(arg, "--")
+
+				err = ctx.Set(arg, "true")
+				if err != nil && strings.Contains(err.Error(), noSuchFlag) {
+					err = nil
+
+					return
+				}
+
+				return
+			}
+
+			// we found a flag for our client - now we need to check if it's a value or bool flag
+			nextArg := args.Get(i + 1)
+			if strings.HasPrefix(nextArg, "--") { // we found a next flag, so current one is a bool
+				arg = strings.TrimLeft(arg, "--")
+
+				err = ctx.Set(arg, "true")
+				if err == nil || (err != nil && strings.Contains(err.Error(), noSuchFlag)) {
+					err = nil
+
+					continue
+				}
+
+				return
+			} else {
+				arg = strings.TrimLeft(arg, "--")
+
+				err = ctx.Set(arg, nextArg)
+				if err == nil || (err != nil && strings.Contains(err.Error(), noSuchFlag)) {
+					err = nil
+
+					continue
+				}
+
+				return
+			}
+		}
+	}
+
+	return
 }

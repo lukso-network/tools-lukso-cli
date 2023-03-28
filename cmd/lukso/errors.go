@@ -13,4 +13,8 @@ var (
 	errTooManyDepositsProvided = errors.New("You can only provide 1 deposit data file ")
 	errAlreadyRunning          = errors.New("Process is already running ")
 	errProcessNotFound         = errors.New("Process not found ")
+	errIndexOutOfBounds        = errors.New("Starting index out of bounds ")
+	errTransactionFailed       = errors.New("Transaction failed ")
 )
+
+const noSuchFlag = "no such flag"

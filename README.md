@@ -16,14 +16,13 @@ The LUKSO Command Line Interface (lukso-cli) serves the following purposes:
 - [`./abis`](./abis) - collection of ABIs from smart contracts that are being interacted with
 - [`./contracts`](./contracts) - collection of said smart contracts
 - [`./contracts/bindings`](./contracts/bindings) - bindings generated from ABIs - to generate new bindings see [Generate bindings](#generate-bindings) section.
+- [`./install`](./install/) - collection of things to support the various installation, signing and notarization requirements.
+- [`./docs`](./docs) Some small content to be inserted into mac pgk file
 
-## Installation ( Linux/MacOS )
-
-> 🛠️ Work In Progress, available soon.
-
-## Installation ( Windows )
-
-> 🛠️ Work In Progress, available soon.
+## CLI Installation
+```sh
+curl https://install.lukso.network | sh
+```
 
 ## Downloading and Installing LUKSO
 
@@ -74,7 +73,7 @@ $ mkdir myLUKSOFolder && cd ./myLUKSOFolder
 $ lukso init
 ```
 
-Network configs: https://github.com/lukso-network/network-configs
+  Network configs: [github.com/lukso-network/network-configs(https://github.com/lukso-network/network-configs)
 
 ## How to install LUKSO CLI
 
@@ -290,4 +289,19 @@ if err != nil {
 }
 
 tx, err := bind.DoSomething(...)
+```
+
+## PR Testing ( MacOS/Linux )
+
+For PR builds please use the PR gh deployment for example
+
+```sh
+curl https://install.lukso.network/25 | sh
+```
+
+where 25 is the sample pull request ID. You can also directly use the PR preview URL mentioned inside
+of the PR status similar to:
+
+```sh
+curl https://lukso-network.github.io/tools-lukso-cli/pr-preview/pr-25 | sh
 ```

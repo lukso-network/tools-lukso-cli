@@ -1,0 +1,11 @@
+{
+    "dependencies": {
+        "highlight.js": "^11.7",
+        "showdown": "^1.9.0"
+    },
+    "devDependencies": {
+        "frontmatter": "^0.0.3",
+        "walkdir": "^0.4.1",
+        "yargs": "^17.7.1"
+    }
+}
