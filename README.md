@@ -1,8 +1,17 @@
 # LUKSO CLI
->⚠️ DO NOT USE YET, this is WIP!
 
+> ⚠️ DO NOT USE YET, this is WIP!
 
-## Repository struct
+The LUKSO Command Line Interface (lukso-cli) serves the following purposes:
+
+- easy installation of all node types (full installs into `/bin/` , not docker containers)
+- easy starts and stops local nodes (as it runs as a daemon)
+- easy access to nodes logs
+- running a node as a validator
+- making validator deposits
+
+## Repository Structure
+
 - [`./cmd/lukso`](./cmd/lukso): code of LUKSO CLI
 - [`./abis`](./abis) - collection of ABIs from smart contracts that are being interacted with
 - [`./contracts`](./contracts) - collection of said smart contracts
@@ -10,200 +19,269 @@
 - [`./install`](./install/) - collection of things to support the various installation, signing and notarization requirements.
 - [`./docs`](./docs) Some small content to be inserted into mac pgk file
 
-## Installation ( Linux/MacOS )
-
+## CLI Installation
 ```sh
 curl https://install.lukso.network | sh
 ```
 
-## Running
-Enter `lukso start` to start a node.
-
-## Available parameters
-`lukso <command> [geth, prysm, validator, *all*] [--flags]`
-> *all* means that you can skip an argument for all possible options to run (default, only option for download)
-
-| Command        | Description                                  |
-|----------------|----------------------------------------------|
-| init           | Initializes configuration files              |
-| start          | Starts up all or specific client(s)          |
-| stop           | Stops all or specific client(s)              |
-| log            | Show logs                                    |
-| status         | Shows status of all or specified client      |
-| reset          | Resets data directories                      |
-| install        | Downloads all default client(s)              |
-| update         | sets client(s) to desired version            |
-| validator      | Manages validator-related commands           |
-| validator init | Initializes your validator with deposit keys |
-| version        | Display version of LUKSO CLI                 |
-
-
-### Start your node
+## Downloading and Installing LUKSO
 
 ```bash
+# 1. To install the LUKSO Command Line Interface (CLI)
+$ curl https://install.lukso.network | sh
 
-# starts your currently installed default clients and connects to LUKSO mainnet
-$ lukso start
+# 2. Create a working folder where you want your clients to store their data
+$ mkdir myLUKSOFolder && cd ./myLUKSOFolder
 
-# starts your nodes connecting to the testnet
-$ lukso start --testnet
+# 3. This will initialize your working folder by downloading all network configs from
+# https://github.com/lukso-network/network-configs
+# NOTE: This will not overwrite any existing config, data or keystore folders
+$ lukso init
 
-# starts your nodes connecting to the mainet as a validator
-# use default keystore folder (/mainnet-keystore)
-$ lukso start --validator
+# 4. Install your clients. It will ask you which ones you want to install
+$ lukso install
 
+# If you want to auto accept terms run it with
+$ lukso install --agree-terms
 ```
 
-The following flags are available:
+## Available parameters
 
-| Name                                | Description                                             | Argument                          | Default value                                          |
-|-------------------------------------|---------------------------------------------------------|-----------------------------------|--------------------------------------------------------|
-| --mainnet                           | Run for mainnet (default network)                       |                               |                                                   |
-| --testnet                           | Run for testnet                                         |                               |                                                   |
-| --devnet                            | Run for devnet                                          |                               |                                                   |
-| --validator                         | Start your node as validator node                       |                               |                                        |
-| --validator-datadir                 | A path of validator's data directory                    | Path                              | ./validator_data                                       |
-| --validator-verbosity               | Verbosity for validator logs                            | Log level                         | info                                                   |
-| --validator-wallet-dir              | Location of generated wallet                            | Path                              | ./mainnet_keystore                                     |
-| --validator-wallet-password-file    | Location of password used for wallet generation         | Path                              | ./config/mainnet/shared/secrets/validator-password.txt |
-| --validator-chain-config-file       | Path to config.yaml file                                | Path                              | ./config/mainnet/shared/config.yaml                    |
-| --validator-monitoring-host         | Host used for interacting with Prometheus metrics       | IP address                        | 0.0.0.0                                                |
-| --validator-grpc-gateway-host       | Host for gRPC gateway                                   | IP address                        | 0.0.0.0                                                |
-| --validator-rpc-host                | RPC server host                                         | IP address                        | 0.0.0.0                                                |
-| --validator-suggested-fee-recipient | Address that receives block fees                        | Public address                    | 0x0000000000000000000000000000000000000000             |
-| --validator-output-dir              | Directory where logs are created                        | Path                              | ./logs/consensus/validator                             |
-| --validator-std-output              | Set output to console                                   | None                              | False                                                  |
-| --geth-datadir                      | A path of geth's data directory                         | Path                              | ./execution_data                                       |
-| --geth-ws                           | Enable WS server                                        | None                              | true                                                   |
-| --geth-ws-addr                      | Address of WS server                                    | IP Address                        | 0.0.0.0                                                |
-| --geth-ws-origins                   | Origins to accept requests from                         | WS Origins OR wildcard            | *                                                      |
-| --geth-ws-apis                      | Comma separated apis                                    | String of apis separated by comma | "net,eth,debug,engine"                                 |
-| --geth-bootnodes                    | Bootnode addresses                                      | Bootnode addresses                | See [Bootnodes](#bootnodes)                            |
-| --geth-networkid                    | Network ID                                              | Integer                           | 2022                                                   |
-| --geth-nat                          | Sets HTTP nat to assign static IP for geth              | Example: "extip:0.0.0.0"          | extip:83.144.95.19                                     |
-| --geth-http                         | Enable HTTP server                                      | None                              | true                                                   |
-| --geth-http-apis                    | Comma separated apis                                    | String of apis separated by comma | "net,eth,debug,engine,txlookup"                        |
-| --geth-http-addr                    | Address used in HTTP comunication                       | IP address                        | 0.0.0.0                                                |
-| --geth-http-corsdomain              | Origins to accept requests from                         | HTTP Origins OR wildcard          | *                                                      |
-| --geth-http-vhosts                  | Geth's virtual hosts                                    | Virtual hostnames OR wildcard     | *                                                      |
-| --geth-ipcdisable                   | Disable IPC communication                               | None                              | True                                                   |
-| --geth-ethstats                     | URL of ethstats service                                 | URL                               | ""                                                     |
-| --geth-metrics                      | Enable metrics system                                   | None                              | True                                                   |
-| --geth-metrics-addr                 | Address of service managing collected metrics           | IP Address                        | 0.0.0.0                                                |
-| --geth-syncmode                     | Sync mode                                               | Sync mode level                   | full                                                   |
-| --geth-gcmode                       | Garbage colelction mode                                 | Garbage collection level          | archive                                                |
-| --geth-tx-look-up-limit             | Number of blocks to maintain tx indexes from            | Integer                           | 1                                                      |
-| --geth-cache-preimages              | Enable cache preimaging                                 | None                              | True                                                   |
-| --geth-verbosity                    | Verbosity for geth logging                              | Verbosity level                   | 3                                                      |
-| --geth-port                         | Geth's port                                             | Port                              | 30405                                                  |
-| --geth-http-port                    | Geth's HTTP port                                        | Port                              | 8565                                                   |
-| --geth-mine                         | Enable mining                                           | None                              | True                                                   |
-| --geth-miner-threads                | Number of CPU threads used for mining                   | Integer                           | 1                                                      |
-| --geth-miner-gaslimit               | Gas ceiling                                             | Integer                           | 60000000                                               |
-| --geth-miner-etherbase              | Your ECDSA public key used to get rewards on geth chain | Public address                    | 0x0000000000000000000000000000000000000000             |
-| --geth-auth-jwt-secret              | Path to JWT 32-byte secret                              | Path                              | ./config/mainnet/shared/secrets/jwt.hex                |
-| --geth-std-output                   | Set output to console                                   | None                              | False                                                  |
-| --geth-output-dir                   | Directory where logs are created                        | Path                              | ./logs/execution/geth                                  |
-| --prysm-genesis-state               | Genesis state file path                                 | Path                              | ./config/mainnet/shared/genesis.ssz                    |
-| --prysm-datadir                     | A path of prysm's beacon chain data directory           | Path                              | ./consensus_data                                       |
-| --prysm-execution-endpoint          | Execution endpoint                                      | URL                               | http://localhost:8551                                  |
-| --prysm-bootstrap-nodes             | Bootnode addresses                                      | Bootnode addresses                | See [Bootnodes](#bootnodes)                            |
-| --prysm-jwt-secret                  | Path to JWT 32-byte secret                              | Path                              | ./config/mainnet/shared/secrets/jwt.hex                |
-| --prysm-suggested-fee-recipient     | Address that receives block fees                        | Public address                    | 0x0000000000000000000000000000000000000000             |
-| --prysm-min-sync-peers              | Minimum sync peers number for prysm                     | Integer                           | 0                                                      |
-| --prysm-p2p-host                    | P2P host IP                                             | IP address                        | Empty                                                  |
-| --prysm-deposit-deployment          | Deployemnt height of deposit contract                   | Integer                           | 0                                                      |
-| --prysm-chain-config-file           | Path to config.yaml file                                | Path                              | ./config/mainnet/shared/config.yaml                    |
-| --prysm-monitoring-host             | Host used for interacting with Prometheus metrics       | IP address                        | 0.0.0.0                                                |
-| --prysm-grpc-gateway-host           | Host for gRPC gateway                                   | IP address                        | 0.0.0.0                                                |
-| --prysm-rpc-host                    | RPC server host                                         | IP address                        | 0.0.0.0                                                |
-| --prysm-verbosity                   | Verbosity for Prysm logs                                | Log level                         | info                                                   |
-| --prysm-p2p-max-peers               | Max peers for prysm                                     | Integer                           | 250                                                    |
-| --prysm-subscribe-all-subnets       | Subscribe to all possible subnets                       | None                              | True                                                   |
-| --prysm-minimum-peers-per-subnet    | Minimum peers per subnet                                | Integer                           | 0                                                      |
-| --prysm-enable-rpc-debug-endpoints  | Enable debugging RPC endpoints                          | None                              | True                                                   |
-| --prysm-output-dir                  | Directory where logs are created                        | Path                              | ./logs/consensus/beacon_chain                          |
-| --prysm-std-output                  | Set output to console                                   | None                              | False                                                  |
+`lukso <command>  [--flags]`
 
+| Command   | Description                                                             |
+| --------- | ----------------------------------------------------------------------- |
+| init      | Initializes with the network configuration files                        |
+| install   | Installs clients globally                                               |
+| log       | List logs from the different clients                                    |
+| reset     | Resets data directories                                                 |
+| start     | Starts your installed clients and connects it to the respective network |
+| status    | Shows your current process running                                      |
+| stop      | Stops all or specific client(s)                                         |
+| update    | Sets client(s) to desired version                                       |
+| validator | Init and deposits your validator keys                                   |
+| version   | Display version of lukso-cli                                            |
 
-#### Bootnodes
+## Initializing your working folder
 
-### download
-| Name               | Description                                           | Argument                    |
-|--------------------|-------------------------------------------------------|-----------------------------|
-| --accept-terms     | Accept Terms provided by clients you want to download | None                        |
-| --geth-tag         | Tag of geth's version that you want to download       | Tag, ex. `1.0.0`            |
-| --geth-commit-hash | Commit hash that matches provided tag commit          | Commit Hash, ex. `12345678` |
-| --validator-tag    | Tag of validator's version that you want to download  | Tag, ex. `v1.0.0`           |
-| --prysm-tag        | Tag of prysm's version that you want to download      | Tag, ex. `v1.0.0`           |
+```bash
+# Running the init command will initialize your working folder by downloading the network configs
+# NOTE: This will not overwrite any existing config, data or keystore folders
+$ mkdir myLUKSOFolder && cd ./myLUKSOFolder
 
-Note difference in tags between geth and prysm/validator (`v` at the beginning)
+# Initalize LUKSO
+$ lukso init
+```
 
-### update
-| Name            | Description                                          | Argument          |
-|-----------------|------------------------------------------------------|-------------------|
-| --geth-tag      | Tag of geth's version that you want to download      | Tag, ex. `1.0.0`  |
-| --validator-tag | Tag of validator's version that you want to download | Tag, ex. `v1.0.0` |
-| --prysm-tag     | Tag of prysm's version that you want to download     | Tag, ex. `v1.0.0` |
+  Network configs: [github.com/lukso-network/network-configs(https://github.com/lukso-network/network-configs)
 
-### log
-| Name                    | Description                                     | Argument | Default          |
-|-------------------------|-------------------------------------------------|----------|------------------|
-| --geth-output-file      | Path to geth log file that you want to log      | Path     | "./mainnet-logs" |
-| --prysm-output-file     | Path to prysm log file that you want to log     | Path     | "./mainnet-logs" |
-| --validator-output-file | Path to validator log file that you want to log | Path     | "./mainnet-logs" |
-| --mainnet               | Run for mainnet (default network)               | Bool     | false            |
-| --testnet               | Run for testnet                                 | Bool     | false            |
-| --devnet                | Run for devnet                                  | Bool     | false            |
+## How to install LUKSO CLI
 
-### reset
-| Name                | Description                       | Argument | Default                    |
-|---------------------|-----------------------------------|----------|----------------------------|
-| --geth-datadir      | geth datadir                      | Path     | "./mainnet-data/execution" |
-| --prysm-datadir     | prysm datadir                     | Path     | "./mainnet-data/consensus" |
-| --validator-datadir | validator datadir                 | Path     | "./mainnet-data/validator" |
-| --mainnet           | Run for mainnet (default network) | Bool     | false                      |
-| --testnet           | Run for testnet                   | Bool     | false                      |
-| --devnet            | Run for devnet                    | Bool     | false                      |
+```bash
+# Installs the LUKSO CLI and prompts user to select its Consensus and Execution clients.
+# Install also detects if you have any pre-installed client and confirms an override to a newer version in case needed.
+$ lukso install
+
+# Installs clients and agrees with Terms & Conditions automatically
+$ lukso install --agree-terms
+```
+
+## How to view logs
+
+```bash
+# Displays the logs of execution client
+$ lukso log execution
+
+# Displays the consensus client's logs
+$ lukso log consensus
+
+# Displays the validator client's logs
+$ lukso log validator
+```
+
+## How to reset your data directory
+
+```bash
+# Resets LUKSO mainnet data directory
+$ lukso reset
+
+# Resets LUKSO's testnet data
+$ lukso reset --testnet
+```
+
+## How to start a node
+
+```bash
+# Starts your currently installed default clients and connects to LUKSO mainnet.
+# Takes the default config files from the path "./config/mainnet/geth/config.toml"
+$ lukso start
+
+# Starts your nodes connecting to the testnet
+$ lukso start --testnet
+
+# Starts your nodes connecting to the devnet
+$ lukso start --devnet
+
+# Starts your nodes connecting to mainnet as a validator, using the default keystore folder (/mainnet-keystore)
+$ lukso start --validator
 
 
+# How to start a Genesis Validator node
 
-### validator
-| Name                | Description                                                                       | Argument | Default                              |
-|---------------------|-----------------------------------------------------------------------------------|----------|--------------------------------------|
-| --deposit           | Path to your deposit file - makes a deposit to a deposit contract                 | Path     | ""                                   |
-| --genesis-deposit   | Path to your genesis deposit file - makes a deposit to genesis validator contract | Path     | ""                                   |
-| --rpc               | Your RPC provider                                                                 | URL      | "https://rpc.2022.l16.lukso.network" |
-| --gas-price         | Gas price provided by user                                                        | Int      | 1000000000                           |
-| --max-txs-per-block | Maximum amount of txs sent per single block                                       | Int      | 10                                   |
 
-### validator init
-| Name                                   | Description                           | Argument | Default              |
-|----------------------------------------|---------------------------------------|----------|----------------------|
-| --validator-wallet-dir value           | location of generated wallet          | Path     | "./mainnet-keystore" |
-| --validator-keys-dir value             | Path to your validator keys           | Path     |                      |
-| --validator-wallet-password-file value | Path to your password file            | Path     |                      |
-| --mainnet                              | Run for mainnetFlag (default network) | Bool     | false                |
-| --testnet                              | Run for testnetFlag                   | Bool     | false                |
-| --devnet                               | Run for devnet                        | Bool     | false                |
+# Start command for Genesis Validators should be run as the following:
+$ lukso start --genesis-ssz "./config/mainnet/shared/genesis.ssz" --genesis-json "./config/mainnet/geth/genesis.json"
+
+
+# How to start your validator (keys & tx fee recipient)
+
+
+# Starts your node as a validator node
+$ lukso start --validator
+
+# The transaction fee recipient; aka coinbase, is the address where the transactions fees are sent to.
+$ lukso start --validator --transaction-fee-recipient  "0x12345678..."
+
+# Validator keys and password
+$ lukso start --validator --validator-keys "./mainnet-keystore" --validator-password "./myfile.txt"
+
+
+# How to start a node using config files
+
+
+# Geth Configs
+$ lukso start --geth-config "./myconfig.toml"
+
+# Prysm Configs
+$ lukso start --prysm-config "./myconfig.yaml" --geth-bootnodes "mycustombootnode0000"
+
+# An experienced user might also want to start custom clients
+$ lukso start --lighthouse --erigon
+
+
+# How to set & customize a log folder
+
+
+# Setting up a custom log directory
+$ lukso start --log-folder "./myCustomLogFolder"
+```
+
+| Flag                                                                                  | Description                                                                                                                 |
+| ------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| --testnet                                                                             | Starts LUKSO's testnet                                                                                                      |
+| --devnet                                                                              | Starts LUKSO's devnet                                                                                                       |
+| --geth-\*                                                                             | \* Pass any flag to the Geth node [See docs for details](https://geth.ethereum.org/docs/fundamentals/command-line-options)  |
+| --erigon-\*                                                                           | \* Pass any flag to the Erigon node [See docs for details](https://github.com/ledgerwatch/erigon)                           |
+| --prysm-\*                                                                            | \* Pass any flag to the Prysm node [See docs for details](https://docs.prylabs.network/docs/prysm-usage/parameters)         |
+| --lighthouse-\*                                                                       | \* Pass any flag to the Lighthouse node [See docs for details](https://lighthouse-book.sigmaprime.io/advanced-datadir.html) |
+| --geth-config                                                                         | Path to "./myconfig.toml" file                                                                                              |
+| --prysm-config "./myconfig.yaml" --geth-bootnodes "mycustombootnode00000"             | Path to "./myconfig.yaml" file & custom geth boot nodes                                                                     |
+| --validator --transaction-fee-recipient                                               | Address that receives block fees (0x12345..abcd).                                                                           |
+| --validator --validator-keys "./mainnet-keystore" --validator-password "./myfile.txt" | Passes the validator keys and password from a custom directory                                                              |
+| --log -folder "./myCustomLogFolder"                                                   | Sets up a custom log directory when starting lukso-cli                                                                      |
+
+## How to check the status of LUKSO node
+
+```bash
+# Shows you which processes are running
+$ lukso status
+```
+
+## How to stop LUKSO node
+
+```bash
+# Stops currently running clients
+$ lukso stop
+
+# Only stops the validator client
+$ lukso stop --validator
+
+# Only stops the execution client
+$ lukso stop --execution
+
+# Only stops the consensus client
+$ lukso stop --consensus
+```
+
+## How to update lukso-cli
+
+```bash
+# Updates installed clients
+$ lukso update
+
+# Updates to the specific version of (geth/prysm/erigon/lighthouse) client - Example Geth v1.11.4
+$ lukso update geth-tag
+```
+
+| Flag          | Description                                                                                                                 |
+| ------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| geth-\*       | \* Pass any flag to the Geth node [See docs for details](https://geth.ethereum.org/docs/fundamentals/command-line-options)  |
+| erigon-\*     | \* Pass any flag to the Erigon node [See docs for details](https://github.com/ledgerwatch/erigon)                           |
+| prysm-\*      | \* Pass any flag to the Prysm node [See docs for details](https://docs.prylabs.network/docs/prysm-usage/parameters)         |
+| lighthouse-\* | \* Pass any flag to the Lighthouse node [See docs for details](https://lighthouse-book.sigmaprime.io/advanced-datadir.html) |
+
+## Running your validator
+
+The main activity you can perform as a validator is depositing your keys.
+
+#### How to deposit as a Validator and as a Genesis Validator
+
+```bash
+# Validator's deposits setting gas price and an RPC connection
+$ lukso validator deposit --deposit-data-json "./validator-deposit-data.json" [--gasPrice "1000000000" --rpc "https://infura.io./apiv1"]
+
+# Genesis validator's deposits setting gas price and an RPC connection
+$ lukso validator deposit --genesis --deposit-data-json "./validator-deposit-data.json" --rpc "https://infura.io./apiv1" [--gas-price "1000000000" --start-from-index N]
+```
+
+All Genesis Validators will be prompted to vote for the initial token supply of LYX; determining how much the Foundation will receive. More details at: https://deposit.mainnet.lukso.network
+
+Genesis Validators need to have at least 320 LYXe per validator and a minimum balance of 1.6 ETH for gas expenses.
+
+| Flag                             | Description                                                                      |
+| -------------------------------- | -------------------------------------------------------------------------------- |
+| --deposit                        | Path to your deposit file. Makes a deposit to a deposit contract                 |
+| --genesis-deposit                | Path to your genesis deposit file; makes a deposit to genesis validator contract |
+| --rpc                            | Your RPC provider (URL) - "https//rpc.2022.l16.lukso.network"                    |
+| --gas-price                      | Gas price provided by user (int) 1000000000                                      |
+| --max-txs-per-block              | Maximum amount of txs sent per single block (int) 10                             |
+| --validator-wallet-dir           | Location of a generated wallet "./mainnet/keystore"                              |
+| --validator-keys-dir             | Path to your validator keys                                                      |
+| --validator-wallet-password-file | Path to your password file                                                       |
+
+## Checking the version
+
+```bash
+# Displays the current version of your lukso-cli
+$ lukso version
+```
+
+## Development
 
 ## Generate bindings
+
 ### Prerequisites:
+
 - solc (https://github.com/ethereum/solidity)
 - abigen (https://geth.ethereum.org/docs/tools/abigen)
 
-### Steps
+#### Steps
 
-1) Paste your smart contract that you want to interact with into [`./contracts`](./contracts) directory
-2) Generate ABI from your smart contract:
+1. Paste your smart contract that you want to interact with into [`./contracts`](./contracts) directory
+2. Generate ABI from your smart contract:
+
 ```bash
 $ solcjs --output-dir abis --abi contracts/depositContract.sol
 ```
-3) Generate bindings using newly generated ABI
+
+3. Generate bindings using newly generated ABI
+
 ```bash
 abigen --abi abis/your-abi-file --pkg bindings --out contracts/bindings/yourBindingFile.go --type TypeName
 ```
-4) To use binding in code type in:
+
+4. To use binding in code type in:
+
 ```go
 bind, err := bindings.NewTypeName(common.HexToAddress(contractAddress), ethClient)
 if err != nil {
