@@ -8,7 +8,7 @@ import (
 // initializeDirectory initializes a working directory for lukso node, with all configurations for all networks
 func initializeDirectory(ctx *cli.Context) error {
 	for _, dependency := range clientDependencies {
-		// this logci may fail when folder structure changes, but this shouldn't be the case
+		// this logic may fail when folder structure changes, but this shouldn't be the case
 		if !strings.Contains(dependency.filePath, "./config") {
 			continue
 		}
