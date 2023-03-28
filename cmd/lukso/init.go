@@ -1,7 +1,9 @@
 package main
 
 import (
+	"github.com/m8b-dev/lukso-cli/pid"
 	"github.com/urfave/cli/v2"
+	"os"
 	"strings"
 )
 
@@ -18,6 +20,13 @@ func initializeDirectory(ctx *cli.Context) error {
 			log.Errorf("There was error while downloading %s file: %v", dependency.name, err.Error())
 		}
 
+	}
+
+	err := os.MkdirAll(pid.FileDir, configPerms)
+	if err != nil {
+		log.Errorf("There was an error while preparing PID directory: %v", err)
+
+		return err
 	}
 
 	log.Info("Folder initialized! To start your node run lukso start command")
