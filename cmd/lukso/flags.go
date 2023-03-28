@@ -433,7 +433,7 @@ func (dependency *ClientDependency) PassStartFlags(ctx *cli.Context) (startFlags
 
 		if strings.HasPrefix(arg, fmt.Sprintf("--%s", name)) {
 			if i+1 == argsLen {
-				startFlags = append(startFlags, fmt.Sprintf("--%s", strings.TrimLeft(arg, fmt.Sprintf("--%s-", name))))
+				startFlags = append(startFlags, removePrefix(arg, name))
 
 				return
 			}
@@ -441,19 +441,27 @@ func (dependency *ClientDependency) PassStartFlags(ctx *cli.Context) (startFlags
 			// we found a flag for our client - now we need to check if it's a value or bool flag
 			nextArg := args.Get(i + 1)
 			if strings.HasPrefix(nextArg, "--") { // we found a next flag, so current one is a bool
-				startFlags = append(startFlags, fmt.Sprintf("--%s", strings.TrimLeft(arg, fmt.Sprintf("--%s-", name))))
+				startFlags = append(startFlags, removePrefix(arg, name))
 
 				continue
 			}
 
 			startFlags = append(
 				startFlags,
-				fmt.Sprintf("--%s=%s", strings.TrimLeft(arg, fmt.Sprintf("--%s-", name)), nextArg),
+				fmt.Sprintf("%s=%s", removePrefix(arg, name), nextArg),
 			)
 		}
 	}
 
 	return
+}
+
+func removePrefix(arg, name string) string {
+	prefix := fmt.Sprintf("--%s-", name)
+	if strings.HasPrefix(arg, prefix) {
+		arg = arg[len(prefix):]
+	}
+	return fmt.Sprintf("--%s", strings.Trim(arg, "- "))
 }
 
 func prepareGethStartFlags(ctx *cli.Context) (startFlags []string) {
