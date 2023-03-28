@@ -475,6 +475,7 @@ func prepareGethStartFlags(ctx *cli.Context) (startFlags []string) {
 func prepareValidatorStartFlags(ctx *cli.Context) (startFlags []string) {
 	startFlags = clientDependencies[validatorDependencyName].PassStartFlags(ctx)
 
+	// terms of use already accepted during installation
 	startFlags = append(startFlags, "--accept-terms-of-use")
 	startFlags = append(startFlags, fmt.Sprintf("--config-file=%s", ctx.String(validatorConfigFileFlag)))
 	startFlags = append(startFlags, prepareLogfileFlag(ctx.String(logFolderFlag), validatorDependencyName))
@@ -494,6 +495,8 @@ func prepareValidatorStartFlags(ctx *cli.Context) (startFlags []string) {
 func preparePrysmStartFlags(ctx *cli.Context) (startFlags []string) {
 	startFlags = clientDependencies[prysmDependencyName].PassStartFlags(ctx)
 	startFlags = append(startFlags, prepareLogfileFlag(ctx.String(logFolderFlag), prysmDependencyName))
+
+	// terms of use already accepted during installation
 	startFlags = append(startFlags, "--accept-terms-of-use")
 	startFlags = append(startFlags, fmt.Sprintf("--config-file=%s", ctx.String(prysmConfigFileFlag)))
 
