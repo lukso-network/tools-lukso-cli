@@ -355,7 +355,7 @@ jobs:
       - name: Copy files
         run: |-
           gcloud auth login --brief --cred-file="${{ steps.gcpauth.outputs.credentials_file_path }}"
-          gsutil cp -rf ./bucket/* gs://lks-lz-binaries-euw4/${{ needs.release_please.outputs.folder }}
+          gsutil cp -r ./bucket/* gs://lks-lz-binaries-euw4/${{ needs.release_please.outputs.folder }}
 
       # OLD CODE TO DEPLOY TO GH_PAGES
       - name: Copy script
