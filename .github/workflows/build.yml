@@ -362,12 +362,10 @@ jobs:
         if: ${{ needs.release_please.outputs.release_created != 'true' }}
         run: |
           mkdir -p dist
-          rm -rf dist/artifacts
-          mkdir -p dist/artifacts
-          find artifacts -type f -exec cp {} dist/artifacts \;
+          # Remove artifacts inside of PR reviews and point to the ones inside of the google bucket.
+          # This fixes the repo size and prepares for the proxy switch early.
           sed \
-            -e 's#https://github.com/lukso-network/tools-lukso-cli/releases#https://lukso-network.github.io/tools-lukso-cli/pr-preview/pr-${{ github.event.number }}#g' \
-            -e 's#${BASE_URL}/latest/download#${BASE_URL}/artifacts#g' \
+            -e 's#https://storage.googleapis.com/lks-lz-binaries-euw4#https://storage.googleapis.com/lks-lz-binaries-euw4/${{ github.event.number }}#g' \
             -e 's#__VERSION__#${{ needs.release_please.outputs.version_name }}#g' \
             install/install.sh > dist/index.html
       - name: Deploy
