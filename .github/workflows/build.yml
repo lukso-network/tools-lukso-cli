@@ -10,7 +10,7 @@ on:
 permissions:
   id-token: write
   pull-requests: write
-  contents: read
+  contents: write
 
 env:
   CARGO_INCREMENTAL: 0
