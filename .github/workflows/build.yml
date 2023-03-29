@@ -338,7 +338,7 @@ jobs:
           sed \
             -e 's#https://storage.googleapis.com/lks-lz-binaries-euw4#https://storage.googleapis.com/lks-lz-binaries-euw4/${{ github.event.number }}#g' \
             -e 's#__VERSION__#${{ needs.release_please.outputs.version_name }}#g' \
-            install/install.sh > dist/index.html
+            install/install.sh > bucket/install.sh
 
       - name: Authenticate to Google Cloud
         id: gcpauth
