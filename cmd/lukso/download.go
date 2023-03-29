@@ -130,35 +130,70 @@ func (dependency *ClientDependency) createDir() error {
 	return err
 }
 
-func downloadBinaries(ctx *cli.Context) (err error) {
-	if !ctx.Bool(acceptTermsOfUseFlag) {
-		accepted := acceptTermsInteractive()
-		if !accepted {
-			return errors.New("You need to accept Terms to continue.")
-		}
-	}
-	if ctx.Bool(acceptTermsOfUseFlag) {
-		log.Info("You accepted Terms of Use provided by clients you want to download. You can read more here: https://github.com/prysmaticlabs/prysm/blob/develop/TERMS_OF_SERVICE.md")
-	}
-	// Get os, then download all binaries into datadir matching desired system
-	// After successful download run binary with desired arguments spin and connect them
+func installBinaries(ctx *cli.Context) (err error) {
+	var (
+		consensusInput    string
+		executionInput    string
+		selectedConsensus string
+		selectedExecution string
+	)
 
-	err = downloadGeth(ctx)
+	consensusMessage := "Which consensus client you want to install?\n" +
+		"1: prysm\n2: lighthouse\n> "
+	executionMessage := "Which execution client you want to install?\n" +
+		"1: geth\n2: erigon\n> "
 
-	if nil != err {
-		return
-	}
-
-	err = downloadValidator(ctx)
-
-	if nil != err {
-		return
+	consensusInput = registerInputWithMessage(consensusMessage)
+	for consensusInput != "1" && consensusInput != "2" {
+		consensusInput = registerInputWithMessage("Please provide a valid option\n> ")
 	}
 
-	err = downloadPrysm(ctx)
+	switch consensusInput {
+	case "1":
+		selectedConsensus = prysmDependencyName
+	case "2":
+		selectedConsensus = lighthouseDependencyName
+	}
 
-	if nil != err {
-		return
+	if selectedConsensus == lighthouseDependencyName {
+		log.Error("Please select different consensus client")
+
+		return nil
+	}
+
+	executionInput = registerInputWithMessage(executionMessage)
+	for executionInput != "1" && executionInput != "2" {
+		executionInput = registerInputWithMessage("Please provide a valid option\n> ")
+	}
+
+	switch executionInput {
+	case "1":
+		selectedExecution = gethDependencyName
+	case "2":
+		selectedExecution = erigonDependencyName
+	}
+
+	if selectedExecution == erigonDependencyName {
+		log.Error("Please select different execution client")
+
+		return nil
+	}
+
+	accepted := acceptTermsInteractive()
+	if !accepted {
+		log.Info("Terms of use not accepted - aborting...")
+
+		return nil
+	}
+
+	err = clientDependencies[selectedExecution].Download(ctx.String(gethTagFlag), ctx.String(gethCommitHashFlag), false, binaryPerms)
+	if err != nil {
+		return err
+	}
+
+	err = clientDependencies[selectedConsensus].Download(ctx.String(prysmTagFlag), "", false, binaryPerms)
+	if err != nil {
+		return err
 	}
 
 	return

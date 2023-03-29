@@ -87,7 +87,7 @@ func main() {
 		{
 			Name:   "install",
 			Usage:  "Downloads lukso binary dependencies - needs root privileges",
-			Action: downloadBinaries,
+			Action: installBinaries,
 			Flags:  downloadFlags,
 			Before: initializeFlags,
 		},
