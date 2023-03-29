@@ -81,19 +81,19 @@ func init() {
 func main() {
 	app := cli.App{}
 	app.Name = appName
-	app.Usage = "Spins all lukso ecosystem components"
+	app.Usage = "The LUKSO CLI is a command line tool to install, manage and set up validators of different types of nodes for the LUKSO network."
 	app.Flags = appFlags
 	app.Commands = []*cli.Command{
 		{
 			Name:   "install",
-			Usage:  "Downloads lukso binary dependencies - needs root privileges",
+			Usage:  "Downloads LUKSO binary dependencies - needs root privileges",
 			Action: downloadBinaries,
 			Flags:  downloadFlags,
 			Before: initializeFlags,
 		},
 		{
 			Name: "init",
-			Usage: "Initializes your lukso working directory, it's structure and configurations for all of your clients. " +
+			Usage: "Initializes your LUKSO working directory, it's structure and configurations for all of your clients. " +
 				"Make sure that you have your clients installed before initializing",
 			Action: initializeDirectory,
 			Flags:  networkFlags,
@@ -131,7 +131,7 @@ func main() {
 		},
 		{
 			Name:            "start",
-			Usage:           "Start all lukso clients",
+			Usage:           "Start all LUKSO clients",
 			Action:          selectNetworkFor(startClients),
 			SkipFlagParsing: true,
 			Flags:           startFlags,
@@ -139,7 +139,7 @@ func main() {
 		},
 		{
 			Name:   "stop",
-			Usage:  "Stops all lukso clients",
+			Usage:  "Stops all LUKSO clients",
 			Action: stopClients,
 			Flags:  stopFlags,
 		},
@@ -198,7 +198,7 @@ func main() {
 		},
 		{
 			Name:  "validator",
-			Usage: "Manage your lukso validator",
+			Usage: "Manage your LUKSO validator",
 			Subcommands: []*cli.Command{
 				{
 					Name:   "init",
@@ -216,7 +216,7 @@ func main() {
 		},
 		{
 			Name:   "version",
-			Usage:  "Display version of the lukso command",
+			Usage:  "Display the version of the LUKSO command line tool that is currently installed",
 			Action: displayVersion,
 		},
 	}
