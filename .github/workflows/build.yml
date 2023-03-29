@@ -8,7 +8,8 @@ on:
       - '*'
 
 permissions:
-  id-token: 'write'
+  id-token: write
+  pull-requests: write
 
 env:
   CARGO_INCREMENTAL: 0
