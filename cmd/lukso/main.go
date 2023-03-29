@@ -93,8 +93,8 @@ func main() {
 		},
 		{
 			Name: "init",
-			Usage: "Initializes your LUKSO working directory, it's structure and configurations for all of your clients. " +
-				"Make sure that you have your clients installed before initializing",
+			Usage: "Initializes your LUKSO working directory, its structure and configurations for all of your clients. " +
+				"Make sure that you have your clients installed before initializing.",
 			Action: initializeDirectory,
 			Flags:  networkFlags,
 			Before: initializeFlags,
