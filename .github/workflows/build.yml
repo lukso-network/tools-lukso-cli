@@ -29,7 +29,7 @@ jobs:
       release_created: ${{ steps.release.outputs.release_created }}
       tag_name: ${{ steps.release.outputs.tag_name }}
       version_name: ${{ steps.calc.outputs.version }}
-      folder: ${{ steps.calc.output.folder }}
+      folder: ${{ steps.calc.outputs.folder }}
     steps:
       - name: Validate | Checkout
         uses: actions/checkout@v3
@@ -43,12 +43,12 @@ jobs:
       - id: calc
         name: Detect final version name
         run: |
+          FOLDER=''
           if [ "${{ steps.release.outputs.release_created }}" != "true" ]
           then
             SHA="${{ github.sha }}"
             # For the extension we cannot use - but must use . for the PR number.
             VERSION="v$(node -pe 'require("./.release-please-manifest.json")["."]')+${SHA:0:7}"
-            FOLDER=''
             if [ -n "${{ github.event.number }}" ]
             then
               VERSION="${VERSION}+pr-${{ github.event.number }}"
@@ -341,7 +341,7 @@ jobs:
           mkdir -p bucket/artifacts
           find artifacts -type f -exec cp {} bucket/artifacts \;
           sed \
-            -e 's#https://storage.googleapis.com/lks-lz-binaries-euw4#https://storage.googleapis.com/lks-lz-binaries-euw4/${{ github.event.number }}#g' \
+            -e 's#https://storage.googleapis.com/lks-lz-binaries-euw4#https://storage.googleapis.com/lks-lz-binaries-euw4${{ needs.release_please.outputs.folder }}#g' \
             -e 's#__VERSION__#${{ needs.release_please.outputs.version_name }}#g' \
             install/install.sh > bucket/install.sh
 
@@ -356,7 +356,7 @@ jobs:
       - name: Copy files
         run: |-
           gcloud auth login --brief --cred-file="${{ steps.gcpauth.outputs.credentials_file_path }}"
-          echo "gsutil -m cp -r ./bucket/* gs://lks-lz-binaries-euw4/${{ needs.release_please.outputs.folder }}/"
+          echo "gsutil -m cp -r ./bucket/* gs://lks-lz-binaries-euw4${{ needs.release_please.outputs.folder }}/"
           gsutil -m cp -r ./bucket/* gs://lks-lz-binaries-euw4${{ needs.release_please.outputs.folder }}/
 
       # OLD CODE TO DEPLOY TO GH_PAGES
@@ -372,7 +372,7 @@ jobs:
           # Remove artifacts inside of PR reviews and point to the ones inside of the google bucket.
           # This fixes the repo size and prepares for the proxy switch early.
           sed \
-            -e 's#https://storage.googleapis.com/lks-lz-binaries-euw4#https://storage.googleapis.com/lks-lz-binaries-euw4/${{ github.event.number }}#g' \
+            -e 's#https://storage.googleapis.com/lks-lz-binaries-euw4#https://storage.googleapis.com/lks-lz-binaries-euw4${{ needs.release_please.outputs.folder }}#g' \
             -e 's#__VERSION__#${{ needs.release_please.outputs.version_name }}#g' \
             install/install.sh > dist/index.html
       - name: Deploy
