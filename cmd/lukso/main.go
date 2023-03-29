@@ -139,7 +139,7 @@ func main() {
 		},
 		{
 			Name:   "stop",
-			Usage:  "Stops all LUSKO clients",
+			Usage:  "Stops all LUKSO clients",
 			Action: stopClients,
 			Flags:  stopFlags,
 		},
