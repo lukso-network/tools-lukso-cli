@@ -1,0 +1,34 @@
+github.event.pull_request.merged == true
+
+name: Remove
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - closed
+
+jobs:
+  publish_docs:
+    name: Publish script
+    runs-on: ubuntu-latest
+    steps:
+      - name: Authenticate to Google Cloud
+        id: gcpauth
+        uses: google-github-actions/auth@v1
+        with:
+          create_credentials_file: "true"
+          workload_identity_provider: "projects/311968610280/locations/global/workloadIdentityPools/github/providers/github"
+          service_account: "artifact-deployer@lks-lz-management.iam.gserviceaccount.com"
+      - name: Copy files
+        run: |-
+          gcloud auth login --brief --cred-file="${{ steps.gcpauth.outputs.credentials_file_path }}"
+          gsutil rm -r -f ./bucket/${{ github.event.number }}/*
+      
+      # NEW CODE TO CLEANUP OLD GH_PAGES
+      - name: Create dir
+        run: mkdir -p ./dist
+      - name: Deploy PR
+        uses: rossjrw/pr-preview-action@v1
+        with:
+          source-dir: ./dist
