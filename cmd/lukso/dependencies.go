@@ -43,6 +43,7 @@ var (
 			baseUrl:  "https://gethstore.blob.core.windows.net/builds/geth-%s-amd64-%s-%s.tar.gz",
 			name:     gethDependencyName,
 			filePath: "", // binary dir selected during runtime
+			isBinary: true,
 		},
 		prysmDependencyName: {
 			baseUrl:  "https://github.com/prysmaticlabs/prysm/releases/download/%s/beacon-chain-%s-%s-amd64",
@@ -53,6 +54,7 @@ var (
 			baseUrl:  "https://github.com/prysmaticlabs/prysm/releases/download/%s/validator-%s-%s-amd64",
 			name:     validatorDependencyName,
 			filePath: "", // binary dir selected during runtime
+			isBinary: true,
 		},
 
 		// ----- CONFIGS -----
@@ -156,6 +158,7 @@ type ClientDependency struct {
 	baseUrl  string
 	name     string
 	filePath string
+	isBinary bool
 }
 
 func (dependency *ClientDependency) ParseUrl(tag, commitHash string) (url string) {

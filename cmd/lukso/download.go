@@ -19,7 +19,7 @@ const (
 	binaryPerms = int(os.ModePerm)
 )
 
-func (dependency *ClientDependency) Download(tagName, commitHash string, overrideFile bool, permissions int) (err error) {
+func (dependency *ClientDependency) Download(tag, commitHash string, isUpdate bool, permissions int) (err error) {
 	log.Infof("Downloading %s", dependency.name)
 
 	err = dependency.createDir()
@@ -27,10 +27,16 @@ func (dependency *ClientDependency) Download(tagName, commitHash string, overrid
 		return
 	}
 
-	fileUrl := dependency.ParseUrl(tagName, commitHash)
+	fileUrl := dependency.ParseUrl(tag, commitHash)
 
-	if fileExists(dependency.filePath) && !overrideFile {
-		log.Warningf("Downloading %s aborted, file %s already exists", fileUrl, dependency.filePath)
+	switch dependency.isBinary {
+	case true:
+		if isUpdate {
+			break
+		}
+
+	case false:
+		log.Infof("Downloading %s file aborted: already exists", dependency.filePath)
 
 		return
 	}
@@ -53,7 +59,7 @@ func (dependency *ClientDependency) Download(tagName, commitHash string, overrid
 
 	if http.StatusOK != response.StatusCode {
 		return fmt.Errorf(
-			"nvalid response when downloading on file url: %s. Response code: %s",
+			"invalid response when downloading on file url: %s. Response code: %s",
 			fileUrl,
 			response.Status,
 		)
