@@ -430,23 +430,48 @@ $ lukso update geth --tag "v1.0.0"
 $ lukso version
 ```
 
-## Running your validator
+## Running a Validator
 
-The main activity you can perform as a validator is depositing your keys.
+#### Genesis Amounts
 
-#### How to deposit as a Validator and as a Genesis Validator
+- All Genesis Validators will be prompted to vote for the initial token supply of LYX
+- The initial token supply will determie how much LYX the Foundation will receive
+- More details at: https://deposit.mainnet.lukso.network
 
-```bash
-# Validator's deposits setting gas price and an RPC connection
-$ lukso validator deposit --deposit-data-json "./validator-deposit-data.json" [--gasPrice "1000000000" --rpc "https://infura.io./apiv1"]
+#### Validator Stake
 
-# Genesis validator's deposits setting gas price and an RPC connection
-$ lukso validator deposit --genesis --deposit-data-json "./validator-deposit-data.json" --rpc "https://infura.io./apiv1" [--gas-price "1000000000" --start-from-index N]
+- Genesis Validators need to have at least 32 LYXe per validator
+- Validators in general also need some ETH to pay for gas expenses
+
+### Performing Deposits
+
+The following example snippets show how to perform deposits with your keys to be able to stake.
+
+#### How to deposit as a validator
+
+> WIP: Inconsistant Object Usage
+
+```sh
+# Executing deposit by setting gas price and RPC connection
+# Change [rpc_address] to the actual RPC URL
+$ lukso validator deposit \
+--deposit-data-json "./deposit_data.json" \
+[--gasPrice "1000000000" --rpc "[rpc_address]"]
 ```
 
-All Genesis Validators will be prompted to vote for the initial token supply of LYX; determining how much the Foundation will receive. More details at: https://deposit.mainnet.lukso.network
+#### How to deposit as a genesis validator
 
-Genesis Validators need to have at least 32 LYXe per validator and some ETH to pay for gas expenses.
+> WIP: Inconsistant Object Usage
+
+```sh
+# Genesis validator's deposits setting gas price and an RPC connection
+# Change [rpc_address] to the actual RPC URL
+# Change N to specific block index
+$ lukso validator deposit \
+--genesis \
+--deposit-data-json "./deposit-data.json" \
+--rpc "[rpc_address]" [--gas-price "1000000000" --start-from-index N]
+```
 
 ## Development
 
