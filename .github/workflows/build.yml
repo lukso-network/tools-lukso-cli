@@ -5,7 +5,7 @@ on:
       - main
   pull_request:
     branches:
-      - '*'
+      - "*"
 
 permissions:
   id-token: write
@@ -352,19 +352,19 @@ jobs:
           create_credentials_file: "true"
           workload_identity_provider: "projects/311968610280/locations/global/workloadIdentityPools/github/providers/github"
           service_account: "artifact-deployer@lks-lz-management.iam.gserviceaccount.com"
-      
+
       - name: Copy files
         run: |-
           gcloud auth login --brief --cred-file="${{ steps.gcpauth.outputs.credentials_file_path }}"
           echo "gsutil -m cp -r ./bucket/* gs://lks-lz-binaries-euw4${{ needs.release_please.outputs.folder }}/"
           gsutil -m cp -r ./bucket/* gs://lks-lz-binaries-euw4${{ needs.release_please.outputs.folder }}/
-      
+
       - name: Add PR status
         if: ${{ needs.release_please.outputs.release_created != 'true' }}
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           header: pr-install
-          message: :rocket: Deployed preview to `curl https://storage.googleapis.com/lks-lz-binaries-euw4${{ needs.release_please.outputs.folder }}/install.sh | sh`
+          message: ":rocket: Deployed preview to `curl https://storage.googleapis.com/lks-lz-binaries-euw4${{ needs.release_please.outputs.folder }}/install.sh | sh`"
 
       # OLD CODE TO DEPLOY TO GH_PAGES
       - name: Copy script
