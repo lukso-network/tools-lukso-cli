@@ -6,6 +6,10 @@ on:
     types:
       - closed
 
+permissions:
+  id-token: write
+  contents: write
+
 jobs:
   publish_docs:
     name: Publish script
@@ -22,7 +26,7 @@ jobs:
         run: |-
           gcloud auth login --brief --cred-file="${{ steps.gcpauth.outputs.credentials_file_path }}"
           gsutil -m rm -r -f ./bucket/${{ github.event.number }}/*
-      
+
       # NEW CODE TO CLEANUP OLD GH_PAGES
       - name: Create dir
         run: mkdir -p ./dist
