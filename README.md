@@ -242,6 +242,28 @@ Subcommands and tags can be added behind commands to specify a certain function 
 
 > When initializing the validator keys must have been generated using LUKSO's [key-gen-cli](https://github.com/lukso-network/tools-key-gen-cli) tool
 
+## Available Tags
+
+> Global Flags containting [string] are awaiting a string input in quotes.
+
+| Tag                     | Used in Commands | Description                                         |
+| ----------------------- | ---------------- | --------------------------------------------------- |
+| geth-tag                | install, update  | Installs or updates Geth client to latest version   |
+| prysm-tag               | install, update  | Installs or updates Prysm client to latest version  |
+| geth-tag [string]       | install, update  | Installs or updates Geth client to certain version  |
+| prysm-tag [string]      | install, update  | Installs or updates Prysm client to certain version |
+| erigon-tag              | update           | Updates Erigon client to latest version             |
+| lighthouse-tag          | update           | Updates Lighthouse client to latest version         |
+| erigon-tag [string]     | update           | Updates Erigon client to certain version            |
+| lighthouse-tag [string] | update           | Updates Lighthouse client to certain version        |
+
+For Client Tags, please visit their official documentations:
+
+- [Geth Client Specification](https://geth.ethereum.org/docs/fundamentals/command-line-options)
+- [Prysm Client Specification](https://docs.prylabs.network/docs/prysm-usage/parameters)
+- [Erigon Client Specification](https://github.com/ledgerwatch/erigon)
+- [Lighthouse Client Specification](https://lighthouse-book.sigmaprime.io/advanced-datadir.html)
+
 ## How to install LUKSO CLI
 
 ```bash
@@ -365,13 +387,6 @@ $ lukso update
 # Updates to the specific version of (geth/prysm/erigon/lighthouse) client - Example Geth v1.11.4
 $ lukso update geth-tag
 ```
-
-| Flag          | Description                                                                                                                 |
-| ------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| geth-\*       | \* Pass any flag to the Geth node [See docs for details](https://geth.ethereum.org/docs/fundamentals/command-line-options)  |
-| erigon-\*     | \* Pass any flag to the Erigon node [See docs for details](https://github.com/ledgerwatch/erigon)                           |
-| prysm-\*      | \* Pass any flag to the Prysm node [See docs for details](https://docs.prylabs.network/docs/prysm-usage/parameters)         |
-| lighthouse-\* | \* Pass any flag to the Lighthouse node [See docs for details](https://lighthouse-book.sigmaprime.io/advanced-datadir.html) |
 
 ## Running your validator
 
