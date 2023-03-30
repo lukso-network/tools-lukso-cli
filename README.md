@@ -35,10 +35,41 @@ tools-lukso-cli
 └───pid                   // Process ID Management
 ```
 
-## CLI Installation
+## CLI Installation Script
 
 ```sh
-curl https://install.lukso.network | sh
+https://install.lukso.network
+```
+
+**Running this script will install the full LUKSO CLI Tool on Mac and Linux.**
+**Installation directory: `usr/local/bin/lukso`**
+
+## Node Folder Structure
+
+> Initializing a LUKSO node will not overwrite existing config, data or keystore folders
+
+```
+lukso-node
+│
+└───configs               // Blockchain Configuration
+|   | config.yaml         // Network Configuration
+|   | genesis.json        // Genesis JSON Data
+|   | genesis.ssz         // Genesis Validator File
+│
+└───data                  // Blockchain Data Storage
+│   └───consensus_data    // Storage of Consensus Client
+│   └───execution_data    // Storage of Execution Client
+│   └───validator_data    // Storage of Validator Client
+│
+└───keystore              // Validator Secrets and Keys
+│   └───keys              // Encrypted Private Keys
+│   └───...               // Folders & Files for Signature Creation
+|   | pubkeys.json        // Validator Public Keys
+|
+└───transaction_wallet    // Validators Transaction Wallet
+|
+| deposit_data.json       // Deposit JSON for Validators
+| node_config.yaml        // Node Configuration File
 ```
 
 ## Downloading and Installing LUKSO
