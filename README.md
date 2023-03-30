@@ -1,25 +1,42 @@
 # LUKSO CLI
 
-> ⚠️ DO NOT USE YET, this is WIP!
+> ⚠️ DO NOT USE IN PRODUCTION, SCRIPTS ARE NOT DEPLOYED YET.
 
-The LUKSO Command Line Interface (lukso-cli) serves the following purposes:
+The LUKSO CLI is a command line tool to install, manage and set up validators of different types of nodes for the LUKSO network.
 
-- easy installation of all node types (full installs into `/bin/` , not docker containers)
-- easy starts and stops local nodes (as it runs as a daemon)
-- easy access to nodes logs
+## Features
+
+- Installation of Execution, Beacon, and Validator Node Clients
+- starting and stoping local nodes running as a daemon
+- accessing various node logs
 - running a node as a validator
 - making validator deposits
 
 ## Repository Structure
 
-- [`./cmd/lukso`](./cmd/lukso): code of LUKSO CLI
-- [`./abis`](./abis) - collection of ABIs from smart contracts that are being interacted with
-- [`./contracts`](./contracts) - collection of said smart contracts
-- [`./contracts/bindings`](./contracts/bindings) - bindings generated from ABIs - to generate new bindings see [Generate bindings](#generate-bindings) section.
-- [`./install`](./install/) - collection of things to support the various installation, signing and notarization requirements.
-- [`./docs`](./docs) Some small content to be inserted into mac pgk file
+```
+tools-lukso-cli
+│
+└───abis                  // Binary Interfaces of LUKSO Smart Contracts
+│
+└───cmd                   // Commands
+│   └───lukso             // LUKSO CLI
+│
+└───contracts             // Solidity Contracts
+│   └───bindings          // Bindings generated from ABIs
+|
+└───docs                  // Updates for Installation Progress
+|
+└───install               // Mandatory Installation Tools
+│   └───cf-wrangler       // Manager for Cloudflare Workers
+│   └───docs-processor    // Markdown to Page Converter
+│   └───macos_packages    // MacOS Codesigning Scripts
+|
+└───pid                   // Process ID Management
+```
 
 ## CLI Installation
+
 ```sh
 curl https://install.lukso.network | sh
 ```
@@ -73,7 +90,7 @@ $ mkdir myLUKSOFolder && cd ./myLUKSOFolder
 $ lukso init
 ```
 
-  Network configs: [github.com/lukso-network/network-configs(https://github.com/lukso-network/network-configs)
+Network configs: [github.com/lukso-network/network-configs(https://github.com/lukso-network/network-configs)
 
 ## How to install LUKSO CLI
 
