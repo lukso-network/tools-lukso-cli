@@ -89,25 +89,71 @@ They cover the full node functionality of an EVM PoS Blockchain.
 - Supported Beacon Node Clients: Prysm
 - Validator Client for Staking
 
-## Downloading and Installing LUKSO
+## Setting up the Node
 
-```bash
-# 1. To install the LUKSO Command Line Interface (CLI)
+Process of setting up the node using the LUSKO CLI Tool
+
+### Installing cURL
+
+Installing a tool to fetch the LUKSO CLI Installation Script from the server.
+
+#### MacOS
+
+```sh
+# Install the Homebrew package manager
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# Install cURL through Homebrew
+brew install curl
+
+# Check the cURL version
+curl --version
+```
+
+#### Linux
+
+```sh
+# Reload the debian package list
+sudo apt-get update -y
+
+# Install cURL through debian package manager
+sudo apt-get install curl -y
+
+# Check the cURL version
+curl --version
+```
+
+### Installing the LUKSO CLI Tool
+
+Download and execute the LUKSO CLI Installation Script
+
+```sh
+# Might need admin access by typing `sudo` in front of the command
 $ curl https://install.lukso.network | sh
+```
 
-# 2. Create a working folder where you want your clients to store their data
-$ mkdir myLUKSOFolder && cd ./myLUKSOFolder
+### Setting up the Clients
 
-# 3. This will initialize your working folder by downloading all network configs from
-# https://github.com/lukso-network/network-configs
-# NOTE: This will not overwrite any existing config, data or keystore folders
+1. Create and move into a working directory for your node client data
+
+```sh
+# Exchange [folder_name] with the folder name you want
+$ mkdir [folder_name] && cd ./[folder_name]
+```
+
+2. Initialize the working directory
+
+```sh
+# Downloads all network configs from
 $ lukso init
+```
 
-# 4. Install your clients. It will ask you which ones you want to install
+3. Install choosen LUKSO node clients into the working directory
+
+```sh
+# Installing Execution Chain, Beacon Chain, and Validator Client
+# Might need admin access by typing `sudo` in front of the command
 $ lukso install
-
-# If you want to auto accept terms run it with
-$ lukso install --agree-terms
 ```
 
 ## Available parameters
@@ -126,19 +172,6 @@ $ lukso install --agree-terms
 | update    | Sets client(s) to desired version                                       |
 | validator | Init and deposits your validator keys                                   |
 | version   | Display version of lukso-cli                                            |
-
-## Initializing your working folder
-
-```bash
-# Running the init command will initialize your working folder by downloading the network configs
-# NOTE: This will not overwrite any existing config, data or keystore folders
-$ mkdir myLUKSOFolder && cd ./myLUKSOFolder
-
-# Initalize LUKSO
-$ lukso init
-```
-
-Network configs: [github.com/lukso-network/network-configs(https://github.com/lukso-network/network-configs)
 
 ## How to install LUKSO CLI
 
