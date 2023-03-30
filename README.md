@@ -180,6 +180,15 @@ lukso [global options] [command] [command options] [arguments...] [global option
 | version   | Display the version of the LUKSO CLI Tool that is currently installed                            |
 | help, h   | Shows the full list of commands, global options, and their usage                                 |
 
+## Available Global Options
+
+Global options can be added behind a command to allow different modifications to its execution.
+
+| Global Option                    | Description                                        |
+| -------------------------------- | -------------------------------------------------- |
+| --accept-terms-of-use            | Automatically accept upcoming terms of use         |
+| --help, --h, -h, -help, help, h, | Show help page of the command provided in the call |
+
 ## How to install LUKSO CLI
 
 ```bash
