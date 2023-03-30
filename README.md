@@ -156,22 +156,29 @@ $ lukso init
 $ lukso install
 ```
 
-## Available parameters
+## LUKSO CLI Usage
 
-`lukso <command>  [--flags]`
+```sh
+lukso [global options] [command] [command options] [arguments...] [global options]
+```
 
-| Command   | Description                                                             |
-| --------- | ----------------------------------------------------------------------- |
-| init      | Initializes with the network configuration files                        |
-| install   | Installs clients globally                                               |
-| log       | List logs from the different clients                                    |
-| reset     | Resets data directories                                                 |
-| start     | Starts your installed clients and connects it to the respective network |
-| status    | Shows your current process running                                      |
-| stop      | Stops all or specific client(s)                                         |
-| update    | Sets client(s) to desired version                                       |
-| validator | Init and deposits your validator keys                                   |
-| version   | Display version of lukso-cli                                            |
+> Global Options can be placed at the beginning or end of the terminal entry
+
+## Available Commands
+
+| Command   | Description                                                                                      |
+| --------- | ------------------------------------------------------------------------------------------------ |
+| install   | Installs choosen LUKSO node clients (Execution, Beacon, Validator) and their binary dependencies |
+| init      | Initializes the node working directory, it's structure, and network configuration                |
+| update    | Updates all or specific LUKSO node clients in the working directory to the newest version        |
+| start     | Starts all or specific LUKSO node clients and connects to the specified network                  |
+| stop      | Stops all or specific LUKSO node clients that are currently running                              |
+| log       | Listens to all log events from a specific client in the current terminal window                  |
+| status    | Shows the LUKSO node client processes that are currently running                                 |
+| reset     | Resets all or specific client data directories and logs excluding the validator keys             |
+| validator | Manages the LUKSO validator keys including their initialization and deposits                     |
+| version   | Display the version of the LUKSO CLI Tool that is currently installed                            |
+| help, h   | Shows the full list of commands, global options, and their usage                                 |
 
 ## How to install LUKSO CLI
 
