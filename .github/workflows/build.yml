@@ -7,6 +7,11 @@ on:
     branches:
       - "*"
 
+permissions:
+  id-token: write
+  pull-requests: write
+  contents: write
+
 env:
   CARGO_INCREMENTAL: 0
   CARGO_NET_RETRY: 10
@@ -24,6 +29,7 @@ jobs:
       release_created: ${{ steps.release.outputs.release_created }}
       tag_name: ${{ steps.release.outputs.tag_name }}
       version_name: ${{ steps.calc.outputs.version }}
+      folder: ${{ steps.calc.outputs.folder }}
     steps:
       - name: Validate | Checkout
         uses: actions/checkout@v3
@@ -37,6 +43,7 @@ jobs:
       - id: calc
         name: Detect final version name
         run: |
+          FOLDER=''
           if [ "${{ steps.release.outputs.release_created }}" != "true" ]
           then
             SHA="${{ github.sha }}"
@@ -45,13 +52,16 @@ jobs:
             if [ -n "${{ github.event.number }}" ]
             then
               VERSION="${VERSION}+pr-${{ github.event.number }}"
+              FOLDER="/${{ github.event.number }}"
             else
               VERSION="${VERSION}+${{ github.ref }}"
+              FOLDER="/preview"
             fi
           else
             VERSION="${{ steps.release.outputs.tag_name }}"
           fi
           echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "folder=$FOLDER" >> $GITHUB_OUTPUT
 
   check_test:
     runs-on: ubuntu-latest
@@ -234,7 +244,7 @@ jobs:
           cd install/docs-processor
           yarn
           node ./convert.js --in ../../docs --out ../../public
-      
+
       - name: Update pkg docs
         run: |
           cp -r ./public/* ./install/macos_packages/pkg_resources/English.lproj/
@@ -306,41 +316,81 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
 
   publish_docs:
-    name: Publish script
+    name: Publish install script
     needs: [notarize_and_pkgbuild, release_please]
     runs-on: ubuntu-latest
     steps:
-      - name: Setup | Checkout
+      - name: Checkout repository
         uses: actions/checkout@v3
-      - name: Copy script
-        if: ${{ needs.release_please.outputs.release_created == 'true' }}
-        run: |
-          mkdir -p dist
-          sed -e "s#__VERSION__#${{ needs.release_please.outputs.version_name }}" install/install.sh > dist/index.html
-      - name: Notarize | Download artifacts
+      - name: Download build artifacts
         uses: actions/download-artifact@v3
         if: ${{ needs.release_please.outputs.release_created != 'true' }}
         with:
           path: artifacts
-      - name: Copy PR scripts
+
+      - name: Prepare install.sh with version=${{ needs.release_please.outputs.version_name }}
+        if: ${{ needs.release_please.outputs.release_created == 'true' }}
+        run: |
+          mkdir -p bucket
+          sed -e "s#__VERSION__#${{ needs.release_please.outputs.version_name }}" install/install.sh > bucket/install.sh
+
+      - name: Prepare install.sh and artifacts with version=${{ needs.release_please.outputs.version_name }} and URL=https://storage.googleapis.com/lks-lz-binaries-euw4${{ needs.release_please.outputs.folder }}
+        if: ${{ needs.release_please.outputs.release_created != 'true' }}
+        run: |
+          mkdir -p bucket
+          rm -rf bucket/artifacts && mkdir -p bucket/artifacts
+          find artifacts -type f -exec cp {} bucket/artifacts \;
+          sed \
+            -e 's#https://storage.googleapis.com/lks-lz-binaries-euw4#https://storage.googleapis.com/lks-lz-binaries-euw4${{ needs.release_please.outputs.folder }}#g' \
+            -e 's#__VERSION__#${{ needs.release_please.outputs.version_name }}#g' \
+            install/install.sh > bucket/install.sh
+
+      - name: Authenticate to Google Cloud
+        id: gcpauth
+        uses: google-github-actions/auth@v1
+        with:
+          create_credentials_file: "true"
+          workload_identity_provider: "projects/311968610280/locations/global/workloadIdentityPools/github/providers/github"
+          service_account: "artifact-deployer@lks-lz-management.iam.gserviceaccount.com"
+
+      - name: Copying script and artifacts to gs://lks-lz-binaries-euw4${{ needs.release_please.outputs.folder }}/
+        run: |-
+          gcloud auth login --brief --cred-file="${{ steps.gcpauth.outputs.credentials_file_path }}"
+          gsutil -m cp -r ./bucket/* gs://lks-lz-binaries-euw4${{ needs.release_please.outputs.folder }}/
+
+      - name: Add PR status for ${{ github.event.number }} (curl without proxy from https://storage.googleapis.com/lks-lz-binaries-euw4${{ needs.release_please.outputs.folder }}/install.sh)
+        if: ${{ needs.release_please.outputs.release_created != 'true' }}
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: pr-install
+          message: ":rocket: Deployed preview to `curl https://storage.googleapis.com/lks-lz-binaries-euw4${{ needs.release_please.outputs.folder }}/install.sh | sh`"
+
+      # OLD CODE TO DEPLOY TO GH_PAGES
+      - name: Processing script to add version ${{ needs.release_please.outputs.version_name }}
+        if: ${{ needs.release_please.outputs.release_created == 'true' }}
+        run: |
+          mkdir -p dist
+          sed -e "s#__VERSION__#${{ needs.release_please.outputs.version_name }}" install/install.sh > dist/index.html
+
+      - name: Processing script to add version ${{ needs.release_please.outputs.version_name }} and URL https://storage.googleapis.com/lks-lz-binaries-euw4${{ needs.release_please.outputs.folder }}
         if: ${{ needs.release_please.outputs.release_created != 'true' }}
         run: |
           mkdir -p dist
-          rm -rf dist/artifacts
-          mkdir -p dist/artifacts
-          find artifacts -type f -exec cp {} dist/artifacts \;
+          # Remove artifacts inside of PR reviews and point to the ones inside of the google bucket.
+          # This fixes the repo size and prepares for the proxy switch early.
           sed \
-            -e 's#https://github.com/lukso-network/tools-lukso-cli/releases#https://lukso-network.github.io/tools-lukso-cli/pr-preview/pr-${{ github.event.number }}#g' \
-            -e 's#${BASE_URL}/latest/download#${BASE_URL}/artifacts#g' \
+            -e 's#https://storage.googleapis.com/lks-lz-binaries-euw4#https://storage.googleapis.com/lks-lz-binaries-euw4${{ needs.release_please.outputs.folder }}#g' \
             -e 's#__VERSION__#${{ needs.release_please.outputs.version_name }}#g' \
             install/install.sh > dist/index.html
-      - name: Deploy
+
+      - name: Deploy to Github pages
         uses: JamesIves/github-pages-deploy-action@v4
         if: ${{ needs.release_please.outputs.release_created == 'true' }}
         with:
           folder: ./dist
           clean-exclude: pr-preview/
-      - name: Deploy PR
+
+      - name: Deploy PR to Github pages
         uses: rossjrw/pr-preview-action@v1
         with:
           source-dir: ./dist

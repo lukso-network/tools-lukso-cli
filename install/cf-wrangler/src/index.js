@@ -11,12 +11,7 @@ export default {
     const match = /^\/?(l?\d*)?\/?$/.exec(url.pathname);
     if (match) {
       const pr = match[1];
-      url.pathname = pr
-        ? `/tools-lukso-cli/pr-preview/pr-${pr}/index.html`
-        : `/tools-lukso-cli/index.html`;
-      url.hostname = "lukso-network.github.io";
-      const fetchUrl = url.toString();
-      const proxyRequest = await fetch(fetchUrl);
+      const proxyRequest = await fetch(`https://storage.googleapis.com/lks-lz-binaries-euw4${pr ? `/${pr}/install.sh` : '/install.sh'}`);
       if (proxyRequest.status !== 200) {
         return new Response(proxyRequest.statusTest, {
           status: proxyRequest.status,
