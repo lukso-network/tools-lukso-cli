@@ -511,31 +511,43 @@ cd cmd/lukso/
 ./lukso <command>
 ```
 
-## Generate bindings
+### Bindings
 
-### Prerequisites:
+#### Prerequisites:
 
-- solc (https://github.com/ethereum/solidity)
-- abigen (https://geth.ethereum.org/docs/tools/abigen)
+- Solidity Compiler [solc.js](https://github.com/ethereum/solidity)
+- ABI Generator [abigen](https://geth.ethereum.org/docs/tools/abigen)
 
-#### Steps
+#### Generate Bindings
 
-1. Paste your smart contract that you want to interact with into [`./contracts`](./contracts) directory
-2. Generate ABI from your smart contract:
+1. Paste the interacting smart contract into the [`contracts`](./contracts) directory
+2. Generate the ABIs from your smart contracts
 
-```bash
-$ solcjs --output-dir abis --abi contracts/depositContract.sol
+```sh
+# Generating ABI into abis directory
+# Change [contract_name] to the contract file name
+$ solcjs \
+--output-dir abis \
+--abi contracts/[contract_name].sol
 ```
 
-3. Generate bindings using newly generated ABI
+3. Generate bindings using the newly generated ABIs
 
-```bash
-abigen --abi abis/your-abi-file --pkg bindings --out contracts/bindings/yourBindingFile.go --type TypeName
+```sh
+# Generate Go Bindings for CLI
+# Change [abi_name] to the contract file name
+# Change [binding_name] to the wanted output file name
+abigen \
+--abi abis/[abi_name] \
+--pkg bindings \
+--out contracts/bindings/[binding_name].go \
+--type TypeName
 ```
 
-4. To use binding in code type in:
+4. Use generated bindings in code
 
 ```go
+# Sample Implementation
 bind, err := bindings.NewTypeName(common.HexToAddress(contractAddress), ethClient)
 if err != nil {
 	return
