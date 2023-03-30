@@ -363,7 +363,7 @@ jobs:
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           header: pr-install
-          message: ":rocket: Deployed preview to `curl https://storage.googleapis.com/lks-lz-binaries-euw4${{ needs.release_please.outputs.folder }}/install.sh | sh`"
+          message: ":rocket: Deployed preview to `curl https://install.lukso.network${{ needs.release_please.outputs.folder }}/install.sh | sh`"
 
       # OLD CODE TO DEPLOY TO GH_PAGES
       - name: Processing script to add version ${{ needs.release_please.outputs.version_name }}
