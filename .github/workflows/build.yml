@@ -337,8 +337,7 @@ jobs:
         if: ${{ needs.release_please.outputs.release_created != 'true' }}
         run: |
           mkdir -p bucket
-          rm -rf bucket/artifacts
-          mkdir -p bucket/artifacts
+          rm -rf bucket/artifacts && mkdir -p bucket/artifacts
           find artifacts -type f -exec cp {} bucket/artifacts \;
           sed \
             -e 's#https://storage.googleapis.com/lks-lz-binaries-euw4#https://storage.googleapis.com/lks-lz-binaries-euw4${{ needs.release_please.outputs.folder }}#g' \
