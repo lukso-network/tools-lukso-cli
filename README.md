@@ -264,20 +264,11 @@ For Client Tags, please visit their official documentations:
 - [Erigon Client Specification](https://github.com/ledgerwatch/erigon)
 - [Lighthouse Client Specification](https://lighthouse-book.sigmaprime.io/advanced-datadir.html)
 
-## How to install LUKSO CLI
+## General Examples and Explanations
 
-```bash
-# Installs the LUKSO CLI and prompts user to select its Consensus and Execution clients.
-# Install also detects if you have any pre-installed client and confirms an override to a newer version in case needed.
-$ lukso install
+#### How to view logs of the node clients
 
-# Installs clients and agrees with Terms & Conditions automatically
-$ lukso install --agree-terms
-```
-
-## How to view logs
-
-```bash
+```sh
 # Displays the logs of execution client
 $ lukso log execution
 
@@ -288,84 +279,125 @@ $ lukso log consensus
 $ lukso log validator
 ```
 
-## How to reset your data directory
+#### How to install the node clients
 
-```bash
-# Resets LUKSO mainnet data directory
+```sh
+# User is able to select its Consensus and Execution clients.
+# Detects pre-installed clients and will ask for overrides
+# in case install is called multiple times.
+$ lukso install
+
+# Installs clients and agrees with Terms & Conditions automatically
+$ lukso install --accept-terms-of-use
+```
+
+#### How to call help interface of an command
+
+```sh
+# Call help interface for installation
+$ lukso install --help
+
+# Call help interface for starting the node
+$ lukso start --help
+```
+
+#### How to reset the node's data directory
+
+```sh
+# Resets LUKSO's mainnet data directory
 $ lukso reset
 
 # Resets LUKSO's testnet data
 $ lukso reset --testnet
+
+# Resets LUKSO's devnet data
+$ lukso reset --devnet
+
 ```
 
-## How to start a node
+#### How to start the node clients
 
-```bash
-# Starts your currently installed default clients and connects to LUKSO mainnet.
-# Takes the default config files from the path "./config/mainnet/geth/config.toml"
+```sh
+# Starts your node clients and connects to LUKSO mainnet
+# Uses the default config files from config/mainnet folder
 $ lukso start
 
-# Starts your nodes connecting to the testnet
+# Starts your node clients and connects to the LUKSO testnet
 $ lukso start --testnet
 
-# Starts your nodes connecting to the devnet
+# Starts your node clients and connects to the LUKSO devnet
 $ lukso start --devnet
 
-# Starts your nodes connecting to mainnet as a validator, using the default keystore folder (/mainnet-keystore)
+# Starts your node clients and connects to mainnet as a validator
+$ lukso start --validator
+```
+
+#### How to start a genesis validator node
+
+```sh
+# Example using Geth client and its folder
+# Command split across multipl lines for readability
+# Make sure that both SSZ and JSON files are placed correctly
+$ lukso start \
+--genesis-ssz "./config/mainnet/shared/genesis.ssz" \
+--genesis-json "./config/mainnet/geth/genesis.json"
+```
+
+#### How to start your validator (keys & tx fee recipient)
+
+```sh
+# Start your node as a validator node
 $ lukso start --validator
 
-
-# How to start a Genesis Validator node
-
-
-# Start command for Genesis Validators should be run as the following:
-$ lukso start --genesis-ssz "./config/mainnet/shared/genesis.ssz" --genesis-json "./config/mainnet/geth/genesis.json"
-
-
-# How to start your validator (keys & tx fee recipient)
-
-
-# Starts your node as a validator node
-$ lukso start --validator
-
-# The transaction fee recipient; aka coinbase, is the address where the transactions fees are sent to.
+# Specify the transaction fee recipient, also knows as coinbase
+# Its the address where the transactions fees are sent to
 $ lukso start --validator --transaction-fee-recipient  "0x12345678..."
 
 # Validator keys and password
-$ lukso start --validator --validator-keys "./mainnet-keystore" --validator-password "./myfile.txt"
-
-
-# How to start a node using config files
-
-
-# Geth Configs
-$ lukso start --geth-config "./myconfig.toml"
-
-# Prysm Configs
-$ lukso start --prysm-config "./myconfig.yaml" --geth-bootnodes "mycustombootnode0000"
-
-# An experienced user might also want to start custom clients
-$ lukso start --lighthouse --erigon
-
-
-# How to set & customize a log folder
-
-
-# Setting up a custom log directory
-$ lukso start --log-folder "./myCustomLogFolder"
+# Command split across multipl lines for readability
+# Change [file_name] with the your password text file's name
+$ lukso start --validator \
+--validator-keys "./mainnet-keystore" \
+--validator-password "./[file_name].txt"
 ```
 
-## How to check the status of LUKSO node
+#### How to start a node using config files
 
-```bash
-# Shows you which processes are running
+```sh
+# Geth Configutation
+# Change [config] to the name of your configuration file
+$ lukso start --geth-config "./[config].toml"
+
+# Prysm Configutation
+# Change [config] to the name of your configuration file
+# Change [custom_bootnode] to the bootnode's name
+$ lukso start --prysm-config "./[config].yaml" \
+--geth-bootnodes "[custom_bootnode]"
+
+# An experienced user can also start custom clients
+# Example with Lighthouse and Erigon clients
+$ lukso start --lighthouse --erigon
+```
+
+#### How to set up and customize a log folder
+
+```sh
+# Setting up a custom log directory
+# Change [folder path] to a static or dynamic directory path
+$ lukso start --log-folder "[folder_path]"
+```
+
+#### How to check the status of the node
+
+```sh
+# Shows which client processes are currently running
 $ lukso status
 ```
 
-## How to stop LUKSO node
+#### How to stop all or specific node clients
 
-```bash
-# Stops currently running clients
+```sh
+# Stops all running node clients
 $ lukso stop
 
 # Only stops the validator client
@@ -378,14 +410,24 @@ $ lukso stop --execution
 $ lukso stop --consensus
 ```
 
-## How to update lukso-cli
+#### How to update lukso-cli
 
-```bash
+```sh
 # Updates installed clients
 $ lukso update
 
-# Updates to the specific version of (geth/prysm/erigon/lighthouse) client - Example Geth v1.11.4
+# Update Geth client to a latest version
 $ lukso update geth-tag
+
+# Update Geth client to version 1.0.0
+$ lukso update geth --tag "v1.0.0"
+```
+
+#### Checking the version of the LUKSO CLI
+
+```sh
+# Displays the currently installed version of the LUKSO CLI
+$ lukso version
 ```
 
 ## Running your validator
@@ -405,13 +447,6 @@ $ lukso validator deposit --genesis --deposit-data-json "./validator-deposit-dat
 All Genesis Validators will be prompted to vote for the initial token supply of LYX; determining how much the Foundation will receive. More details at: https://deposit.mainnet.lukso.network
 
 Genesis Validators need to have at least 32 LYXe per validator and some ETH to pay for gas expenses.
-
-## Checking the version
-
-```bash
-# Displays the current version of your lukso-cli
-$ lukso version
-```
 
 ## Development
 
