@@ -556,17 +556,30 @@ if err != nil {
 tx, err := bind.DoSomething(...)
 ```
 
-## PR Testing ( MacOS/Linux )
+### PR Testing
 
-For PR builds please use the PR gh deployment for example
+This repository has a CI/CD pipeline set up that will automatically build a script to install a new version of the LUKSO CLI globally.
+
+- Should only be used for testing
+- Will overwrite the LUKSO CLI that is currently installed
+
+> For PR builds please use the separate PR's GH deployment
+
+#### Using the LUKSO CLI URL
 
 ```sh
-curl https://install.lukso.network/25 | sh
+# Might need admin access by typing `sudo` in front of the command
+curl https://install.lukso.network/36 | sh
 ```
 
-where 25 is the sample pull request ID. You can also directly use the PR preview URL mentioned inside
-of the PR status similar to:
+> 36 is the sample pull request ID that can be changed
+
+#### Using PR Preview URL
 
 ```sh
-curl https://lukso-network.github.io/tools-lukso-cli/pr-preview/pr-25 | sh
+## Might need admin access by typing `sudo` in front of the command
+# Using the live environment
+curl https://lukso-network.github.io/tools-lukso-cli/pr-preview/pr-36 | sh
 ```
+
+> 36 is the sample pull request ID that can be changed
