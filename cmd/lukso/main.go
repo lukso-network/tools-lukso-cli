@@ -86,22 +86,21 @@ func main() {
 	app.Commands = []*cli.Command{
 		{
 			Name:   "install",
-			Usage:  "Downloads LUKSO binary dependencies - needs root privileges",
+			Usage:  "Installs choosen LUKSO node clients (Execution, Beacon, Validator) and their binary dependencies",
 			Action: downloadBinaries,
 			Flags:  downloadFlags,
 			Before: initializeFlags,
 		},
 		{
 			Name: "init",
-			Usage: "Initializes your LUKSO working directory, it's structure and configurations for all of your clients. " +
-				"Make sure that you have your clients installed before initializing",
+			Usage: "Initializes the node working directory, it's structure, and network configuration",
 			Action: initializeDirectory,
 			Flags:  networkFlags,
 			Before: initializeFlags,
 		},
 		{
 			Name:   "update",
-			Usage:  "Updates all clients to newest versions",
+			Usage:  "Updates all or specific LUKSO node clients in the working directory to the newest version",
 			Action: updateClients,
 			Before: initializeFlags,
 			Flags:  updateFlags,
@@ -131,7 +130,7 @@ func main() {
 		},
 		{
 			Name:            "start",
-			Usage:           "Start all LUKSO clients",
+			Usage:           "Starts all or specific LUKSO node clients and connects to the specified network",
 			Action:          selectNetworkFor(startClients),
 			SkipFlagParsing: true,
 			Flags:           startFlags,
@@ -139,13 +138,13 @@ func main() {
 		},
 		{
 			Name:   "stop",
-			Usage:  "Stops all LUKSO clients",
+			Usage:  "Stops all or specific LUKSO node clients that are currently running",
 			Action: stopClients,
 			Flags:  stopFlags,
 		},
 		{
 			Name:   "log",
-			Usage:  "Outputs log file of given client",
+			Usage:  "Listens to all log events from a specific client in the current terminal window",
 			Action: logClients,
 			Subcommands: []*cli.Command{
 				{
@@ -170,7 +169,7 @@ func main() {
 		},
 		{
 			Name:   "status",
-			Usage:  "Displays running status of clients",
+			Usage:  "Shows the LUKSO node client processes that are currently running",
 			Action: statClients,
 			Subcommands: []*cli.Command{
 				{
@@ -192,13 +191,13 @@ func main() {
 		},
 		{
 			Name:   "reset",
-			Usage:  "Reset data directories of all clients alongside with their log files",
+			Usage:  "Resets all or specific client data directories and logs excluding the validator keys",
 			Flags:  resetFlags,
 			Action: selectNetworkFor(resetClients),
 		},
 		{
 			Name:  "validator",
-			Usage: "Manage your LUKSO validator",
+			Usage: "Manages the LUKSO validator keys including their initialization and deposits",
 			Subcommands: []*cli.Command{
 				{
 					Name:   "init",
@@ -216,7 +215,7 @@ func main() {
 		},
 		{
 			Name:   "version",
-			Usage:  "Display the version of the LUKSO command line tool that is currently installed",
+			Usage:  "Display the version of the LUKSO CLI Tool that is currently installed",
 			Action: displayVersion,
 		},
 	}
