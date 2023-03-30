@@ -75,30 +75,6 @@ They cover the full node functionality of an EVM PoS Blockchain.
 
 Process of setting up the node using the LUSKO CLI Tool
 
-### Installing cURL
-
-Installing a tool to fetch the LUKSO CLI Installation Script from the server.
-
-#### MacOS
-
-```sh
-# Install the Homebrew package manager
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
-# Install cURL through Homebrew
-brew install curl
-```
-
-#### Linux
-
-```sh
-# Reload the debian package list
-sudo apt-get update -y
-
-# Install cURL through debian package manager
-sudo apt-get install curl -y
-```
-
 ### Installing the LUKSO CLI Tool
 
 Download and execute the LUKSO CLI Installation Script
