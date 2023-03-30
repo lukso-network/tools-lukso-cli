@@ -6,6 +6,7 @@ import (
 	"compress/gzip"
 	"errors"
 	"fmt"
+	"github.com/m8b-dev/lukso-cli/config"
 	"github.com/urfave/cli/v2"
 	"io"
 	"net/http"
@@ -19,6 +20,8 @@ const (
 )
 
 func (dependency *ClientDependency) Download(tagName, commitHash string, overrideFile bool, permissions int) (err error) {
+	log.Infof("Downloading %s", dependency.name)
+
 	err = dependency.createDir()
 	if err != nil {
 		return
@@ -50,7 +53,7 @@ func (dependency *ClientDependency) Download(tagName, commitHash string, overrid
 
 	if http.StatusOK != response.StatusCode {
 		return fmt.Errorf(
-			"invalid response when downloading on file url: %s. Response code: %s",
+			"nvalid response when downloading on file url: %s. Response code: %s",
 			fileUrl,
 			response.Status,
 		)
@@ -106,8 +109,11 @@ func (dependency *ClientDependency) Download(tagName, commitHash string, overrid
 
 	if err != nil {
 		log.Infof("I am in download section: error: %v", err)
+
 		return
 	}
+
+	log.Infof("Downloaded %s!", dependency.name)
 
 	return
 }
@@ -131,6 +137,14 @@ func (dependency *ClientDependency) createDir() error {
 }
 
 func installBinaries(ctx *cli.Context) (err error) {
+	isRoot, err := isRoot()
+	if err != nil {
+		return err
+	}
+	if !isRoot {
+		return errNeedRoot
+	}
+
 	var (
 		consensusInput    string
 		executionInput    string
@@ -179,11 +193,16 @@ func installBinaries(ctx *cli.Context) (err error) {
 		return nil
 	}
 
-	accepted := acceptTermsInteractive()
-	if !accepted {
-		log.Info("Terms of use not accepted - aborting...")
+	termsAgreed := ctx.Bool(agreeTermsFlag)
+	if !termsAgreed {
+		accepted := acceptTermsInteractive()
+		if !accepted {
+			log.Info("Terms of use not accepted - aborting...")
 
-		return nil
+			return nil
+		}
+	} else {
+		log.Info("You accepted terms of use of accepted clients - read more here: https://github.com/prysmaticlabs/prysm/blob/develop/TERMS_OF_SERVICE.md")
 	}
 
 	err = clientDependencies[selectedExecution].Download(ctx.String(gethTagFlag), ctx.String(gethCommitHashFlag), false, binaryPerms)
@@ -195,6 +214,14 @@ func installBinaries(ctx *cli.Context) (err error) {
 	if err != nil {
 		return err
 	}
+
+	cfg := config.NewConfig(config.Path)
+	err = cfg.Create(selectedExecution, selectedConsensus)
+	if err != nil {
+		return err
+	}
+
+	log.Info("Config created!")
 
 	return
 }

@@ -42,7 +42,7 @@ const (
 	consensusFlag = "consensus"
 	executionFlag = "execution"
 
-	acceptTermsOfUseFlag = "accept-terms-of-use"
+	agreeTermsFlag = "agree-terms"
 
 	// shared values
 	jwtSecretDefaultPath = "./config/mainnet/shared/secrets/jwt.hex"
@@ -179,9 +179,9 @@ var (
 		},
 	}
 
-	downloadFlags []cli.Flag
-	updateFlags   []cli.Flag
-	stopFlags     = []cli.Flag{
+	installFlags []cli.Flag
+	updateFlags  []cli.Flag
+	stopFlags    = []cli.Flag{
 		executionSelectedFlag,
 		consensusSelectedFlag,
 		validatorSelectedFlag,
@@ -217,7 +217,7 @@ var (
 	resetFlags []cli.Flag
 	appFlags   = []cli.Flag{
 		&cli.BoolFlag{
-			Name:  acceptTermsOfUseFlag,
+			Name:  agreeTermsFlag,
 			Usage: "Accept terms of use. Default: false",
 			Value: false,
 		},

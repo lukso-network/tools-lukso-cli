@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/m8b-dev/lukso-cli/config"
 	"github.com/m8b-dev/lukso-cli/pid"
 	"github.com/urfave/cli/v2"
 	"os"
@@ -81,6 +82,22 @@ func (dependency *ClientDependency) Stop() error {
 }
 
 func startClients(ctx *cli.Context) error {
+	log.Info("Looking for client configuration file...")
+	_, err := os.Stat(config.Path)
+	if err != nil {
+		log.Error("Client configuration file not found - please make sure that you downloaded your clients")
+
+		return nil
+	}
+
+	cfg := config.NewConfig(config.Path)
+	err = cfg.Read()
+	if err != nil {
+		log.Errorf("Couldn't read from config file: %v", err)
+
+		return err
+	}
+
 	log.Info("Starting all clients")
 
 	if ctx.Bool(validatorFlag) && ctx.String(transactionFeeRecipientFlag) == "" {
@@ -89,7 +106,7 @@ func startClients(ctx *cli.Context) error {
 		return errFlagMissing
 	}
 
-	err := startGeth(ctx)
+	err = startGeth(ctx)
 	if err != nil {
 		return err
 	}

@@ -31,17 +31,17 @@ var (
 	gethCommitHash string
 	validatorTag   string
 	prysmTag       string
-	log            = logrus.WithField("prefix", appName)
+	log            = logrus.StandardLogger()
 	systemOs       string
 )
 
 // do not confuse init func with init subcommand - for now we just pass init flags, there are more to come
 func init() {
-	downloadFlags = make([]cli.Flag, 0)
-	downloadFlags = append(downloadFlags, gethDownloadFlags...)
-	downloadFlags = append(downloadFlags, validatorDownloadFlags...)
-	downloadFlags = append(downloadFlags, prysmDownloadFlags...)
-	downloadFlags = append(downloadFlags, appFlags...)
+	installFlags = make([]cli.Flag, 0)
+	installFlags = append(installFlags, gethDownloadFlags...)
+	installFlags = append(installFlags, validatorDownloadFlags...)
+	installFlags = append(installFlags, prysmDownloadFlags...)
+	installFlags = append(installFlags, appFlags...)
 
 	updateFlags = append(updateFlags, gethUpdateFlags...)
 	updateFlags = append(updateFlags, prysmUpdateFlags...)
@@ -88,7 +88,7 @@ func main() {
 			Name:   "install",
 			Usage:  "Downloads lukso binary dependencies - needs root privileges",
 			Action: installBinaries,
-			Flags:  downloadFlags,
+			Flags:  installFlags,
 			Before: initializeFlags,
 		},
 		{
@@ -235,8 +235,6 @@ func main() {
 
 		// Prysm related parsing
 		prysmTag = ctx.String(prysmTagFlag)
-
-		log = log.WithField("os", systemOs)
 
 		return nil
 	}
