@@ -473,7 +473,43 @@ $ lukso validator deposit \
 --rpc "[rpc_address]" [--gas-price "1000000000" --start-from-index N]
 ```
 
-## Development
+## Development & Testing
+
+### Install CLI from Codebase
+
+#### Download the LUKSO CLI Repository
+
+```sh
+# Clone tools-lukso-cli repository
+git clone git@github.com:lukso-network/tools-lukso-cli.git
+```
+
+#### Install Go Language
+
+Head over to the [Official Go Installation Page](https://go.dev/doc/install) and follow along.
+
+After Installation, check if everything is set up correctly by querying the version.
+
+```sh
+# Check the installed Go version
+go version
+```
+
+#### Build the Executable
+
+```sh
+# Build the local project within the tools-lukso-cli repository
+cd cmd/lukso/ && go build -o lukso
+```
+
+#### Run the generated LUKSO CLI
+
+```sh
+# Within the tools-lukso-cli repository
+# Alternatively a static path can be used
+cd cmd/lukso/
+./lukso <command>
+```
 
 ## Generate bindings
 
