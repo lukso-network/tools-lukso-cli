@@ -2,8 +2,12 @@
 
 > ⚠️ DO NOT USE YET, this is WIP!
 
-The `lukso` CLI serves the following purposes:
+The `LUKSO CLI` is a command line tool to install, manage and set up validators of different types of nodes for the LUKSO network.
 
-- easy installation of all node types (full installs into `/bin/` , not docker containers)
-- easy starts and stops local nodes (as it runs as a daemon)
-- easy access to nodes logs
+## Features
+
+- Installation of Execution, Beacon, and Validator Node Clients
+- starting and stoping local nodes running as a daemon
+- accessing various node logs
+- running a node as a validator
+- making validator deposits
