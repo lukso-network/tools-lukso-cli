@@ -189,6 +189,45 @@ Global options can be added behind a command to allow different modifications to
 | --accept-terms-of-use            | Automatically accept upcoming terms of use         |
 | --help, --h, -h, -help, help, h, | Show help page of the command provided in the call |
 
+## Available Flags
+
+Flags can be added behind a command to allow further command specifications.
+
+> Global Flags containting [string] are awaiting a string input in quotes.
+> Global Flags containting [int] are awaiting a string input without quotes.
+
+| Flag                                 | Used in Commands   | Description                                         |
+| ------------------------------------ | ------------------ | --------------------------------------------------- |
+| --validator                          | start, stop        | Starts or stops the validator client                |
+| --execution                          | start, stop        | Starts or stops the execution client                |
+| --consensus                          | start, stop        | Starts or stops the consensus client                |
+| --geth                               | start              | Starts Geth client                                  |
+| --prysm                              | start              | Starts Prysm client                                 |
+| --lighthouse                         | start              | Starts Lighthouse client                            |
+| --erigon                             | start              | Starts Erigon client                                |
+| --mainnet                            | init, start, reset | Initializes, starts, or resets LUKSO's mainnet data |
+| --testnet                            | init, start, reset | Initializes, starts, or resets LUKSO's testnet data |
+| --devnet                             | init, start, reset | Initializes, starts, or resets LUKSO's devnet data  |
+| --geth-config                        | start              | Defines the path to TOML config file                |
+| --prysm-config [string]              | start              | Defines the path to the YAML config file            |
+| --geth-bootnodes [string]            | start              | Sets a custom Geth bootnode name                    |
+| --transaction-fee-recipient [string] | start              | Sets the address that receives block fees           |
+| --validator-keys [string]            | start              | Passes the validator keys from a custom directory   |
+| --validator-password [string]        | start              | Passes the assword from a custom directory          |
+| --log-folder [string]                | start              | Sets up a custom log directory                      |
+| --no-slasher                         | start              | Disables slasher                                    |
+| --genesis-json [string]              | start              | Defines the path to genesis JSON file               |
+| --genesis-ssz [string]               | start              | Defines the path to genesis SSZ file                |
+| --deposit-data-json [string]         | validator deposit  | Defines the path to the deposit JSON file           |
+| --gas-price [string]                 | validator deposit  | Defines the gas price in integers as string         |
+| --rpc [string]                       | validator deposit  | Defines the RPC URL on deposit                      |
+| --genesis                            | validator deposit  | Executes deposit to genesis validator contract      |
+| --start-from-index [int]             | validator deposit  | Start deposit from specific block index             |
+| --max-txs-per-block                  | validator          | Maximum amount of txs sent per single block         |
+| --validator-wallet-dir               | validator          | Location of a generated wallet                      |
+| --validator-keys-dir                 | validator          | Path to your validator keys                         |
+| --validator-wallet-password-file     | validator          | Path to your password file                          |
+
 ## How to install LUKSO CLI
 
 ```bash
@@ -280,20 +319,6 @@ $ lukso start --lighthouse --erigon
 $ lukso start --log-folder "./myCustomLogFolder"
 ```
 
-| Flag                                                                                  | Description                                                                                                                 |
-| ------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| --testnet                                                                             | Starts LUKSO's testnet                                                                                                      |
-| --devnet                                                                              | Starts LUKSO's devnet                                                                                                       |
-| --geth-\*                                                                             | \* Pass any flag to the Geth node [See docs for details](https://geth.ethereum.org/docs/fundamentals/command-line-options)  |
-| --erigon-\*                                                                           | \* Pass any flag to the Erigon node [See docs for details](https://github.com/ledgerwatch/erigon)                           |
-| --prysm-\*                                                                            | \* Pass any flag to the Prysm node [See docs for details](https://docs.prylabs.network/docs/prysm-usage/parameters)         |
-| --lighthouse-\*                                                                       | \* Pass any flag to the Lighthouse node [See docs for details](https://lighthouse-book.sigmaprime.io/advanced-datadir.html) |
-| --geth-config                                                                         | Path to "./myconfig.toml" file                                                                                              |
-| --prysm-config "./myconfig.yaml" --geth-bootnodes "mycustombootnode00000"             | Path to "./myconfig.yaml" file & custom geth boot nodes                                                                     |
-| --validator --transaction-fee-recipient                                               | Address that receives block fees (0x12345..abcd).                                                                           |
-| --validator --validator-keys "./mainnet-keystore" --validator-password "./myfile.txt" | Passes the validator keys and password from a custom directory                                                              |
-| --log -folder "./myCustomLogFolder"                                                   | Sets up a custom log directory when starting lukso-cli                                                                      |
-
 ## How to check the status of LUKSO node
 
 ```bash
@@ -351,17 +376,6 @@ $ lukso validator deposit --genesis --deposit-data-json "./validator-deposit-dat
 All Genesis Validators will be prompted to vote for the initial token supply of LYX; determining how much the Foundation will receive. More details at: https://deposit.mainnet.lukso.network
 
 Genesis Validators need to have at least 32 LYXe per validator and some ETH to pay for gas expenses.
-
-| Flag                             | Description                                                                      |
-| -------------------------------- | -------------------------------------------------------------------------------- |
-| --deposit                        | Path to your deposit file. Makes a deposit to a deposit contract                 |
-| --genesis-deposit                | Path to your genesis deposit file; makes a deposit to genesis validator contract |
-| --rpc                            | Your RPC provider (URL) - "https//rpc.2022.l16.lukso.network"                    |
-| --gas-price                      | Gas price provided by user (int) 1000000000                                      |
-| --max-txs-per-block              | Maximum amount of txs sent per single block (int) 10                             |
-| --validator-wallet-dir           | Location of a generated wallet "./mainnet/keystore"                              |
-| --validator-keys-dir             | Path to your validator keys                                                      |
-| --validator-wallet-password-file | Path to your password file                                                       |
 
 ## Checking the version
 
