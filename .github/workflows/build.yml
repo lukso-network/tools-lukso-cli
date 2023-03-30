@@ -382,15 +382,3 @@ jobs:
             -e 's#https://storage.googleapis.com/lks-lz-binaries-euw4#https://storage.googleapis.com/lks-lz-binaries-euw4${{ needs.release_please.outputs.folder }}#g' \
             -e 's#__VERSION__#${{ needs.release_please.outputs.version_name }}#g' \
             install/install.sh > dist/index.html
-
-      - name: Deploy to Github pages
-        uses: JamesIves/github-pages-deploy-action@v4
-        if: ${{ needs.release_please.outputs.release_created == 'true' }}
-        with:
-          folder: ./dist
-          clean-exclude: pr-preview/
-
-      - name: Deploy PR to Github pages
-        uses: rossjrw/pr-preview-action@v1
-        with:
-          source-dir: ./dist
