@@ -228,6 +228,20 @@ Flags can be added behind a command to allow further command specifications.
 | --validator-keys-dir                 | validator          | Path to your validator keys                         |
 | --validator-wallet-password-file     | validator          | Path to your password file                          |
 
+## Available Subcommands
+
+Subcommands and tags can be added behind commands to specify a certain function or dictate specific versioning.
+
+| Subcommands | Superordinate Commands | Description                                     |
+| ----------- | ---------------------- | ----------------------------------------------- |
+| geth        | update, log, status    | Updates your Geth client to newest version      |
+| prysm       | update, log, status    | Updates your Prysm client to newest version     |
+| validator   | update, log, status    | Updates your Validator client to newest version |
+| deposit     | validator              | Makes a deposit to the deposit bridge contract  |
+| init        | validator              | Initializes the validator with keys             |
+
+> When initializing the validator keys must have been generated using LUKSO's [key-gen-cli](https://github.com/lukso-network/tools-key-gen-cli) tool
+
 ## How to install LUKSO CLI
 
 ```bash
