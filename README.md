@@ -72,6 +72,23 @@ lukso-node
 | node_config.yaml        // Node Configuration File
 ```
 
+## External Sources
+
+- The network configuration is fetched from [lukso-network/network-configs](https://github.com/lukso-network/network-configs)
+
+- Deposit key can be generated using [lukso-network/tools-key-gen-cli](https://github.com/lukso-network/tools-key-gen-cli)
+
+## Client Clarification
+
+> WIP: More client setups will be added
+
+The LUKSO CLI is able to install multiple node clients.
+They cover the full node functionality of an EVM PoS Blockchain.
+
+- Supported Execution Node Clients: Geth
+- Supported Beacon Node Clients: Prysm
+- Validator Client for Staking
+
 ## Downloading and Installing LUKSO
 
 ```bash
