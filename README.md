@@ -42,41 +42,23 @@ https://install.lukso.network
 ```
 
 **Running this script will install the full LUKSO CLI Tool on Mac and Linux.**
-**Installation directory: `usr/local/bin/lukso`**
+**Installation directory: `/usr/local/bin/lukso`**
 
 ## Node Folder Structure
 
 > Initializing a LUKSO node will not overwrite existing config, data or keystore folders
 
 ```
-lukso-node
-│
-└───configs               // Blockchain Configuration
-|   | config.yaml         // Network Configuration
-|   | genesis.json        // Genesis JSON Data
-|   | genesis.ssz         // Genesis Validator File
-│
-└───data                  // Blockchain Data Storage
-│   └───consensus_data    // Storage of Consensus Client
-│   └───execution_data    // Storage of Execution Client
-│   └───validator_data    // Storage of Validator Client
-│
-└───keystore              // Validator Secrets and Keys
-│   └───keys              // Encrypted Private Keys
-│   └───...               // Folders & Files for Signature Creation
-|   | pubkeys.json        // Validator Public Keys
-|
-└───transaction_wallet    // Validators Transaction Wallet
-|
-| deposit_data.json       // Deposit JSON for Validators
-| node_config.yaml        // Node Configuration File
+WIP
 ```
 
 ## External Sources
 
 - The network configuration is fetched from [lukso-network/network-configs](https://github.com/lukso-network/network-configs)
 
-- Deposit key can be generated using [lukso-network/tools-key-gen-cli](https://github.com/lukso-network/tools-key-gen-cli)
+- Deposit keys can be generated using [lukso-network/tools-key-gen-cli](https://github.com/lukso-network/tools-key-gen-cli)
+
+- Tool for generating validator keys [wagyu-key-gen](https://github.com/lukso-network/tools-wagyu-key-gen)
 
 ## Client Clarification
 
@@ -105,9 +87,6 @@ Installing a tool to fetch the LUKSO CLI Installation Script from the server.
 
 # Install cURL through Homebrew
 brew install curl
-
-# Check the cURL version
-curl --version
 ```
 
 #### Linux
@@ -118,9 +97,6 @@ sudo apt-get update -y
 
 # Install cURL through debian package manager
 sudo apt-get install curl -y
-
-# Check the cURL version
-curl --version
 ```
 
 ### Installing the LUKSO CLI Tool
