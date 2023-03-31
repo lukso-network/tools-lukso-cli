@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/m8b-dev/lukso-cli/config"
 	"os"
 	"runtime"
 	runtimeDebug "runtime/debug"
@@ -218,6 +219,20 @@ func main() {
 			Name:   "version",
 			Usage:  "Display version of the lukso command",
 			Action: displayVersion,
+		},
+		{
+			Name: "config",
+			Action: func(c *cli.Context) error {
+				cfg := config.NewConfig("./cli-config.yml")
+				err := cfg.Create(gethDependencyName, prysmDependencyName)
+				if err != nil {
+					return err
+				}
+
+				err = cfg.WriteClientVersion(gethDependencyName, "1.11.4")
+
+				return err
+			},
 		},
 	}
 

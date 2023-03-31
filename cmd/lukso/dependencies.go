@@ -49,6 +49,7 @@ var (
 			baseUrl:  "https://github.com/prysmaticlabs/prysm/releases/download/%s/beacon-chain-%s-%s-amd64",
 			name:     prysmDependencyName,
 			filePath: "", // binary dir selected during runtime
+			isBinary: true,
 		},
 		validatorDependencyName: {
 			baseUrl:  "https://github.com/prysmaticlabs/prysm/releases/download/%s/validator-%s-%s-amd64",

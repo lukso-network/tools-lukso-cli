@@ -48,6 +48,7 @@ type Config struct {
 	consensusClient string `mapstructure:"consensusclient"`
 }
 
+// NewConfig creates and initializes viper config instance - it doesn't load config, to load use c.Read().
 func NewConfig(path string) *Config {
 	dir, file, extension := parsePath(path)
 	cfg := viper.New()
@@ -70,12 +71,18 @@ func (c *Config) Create(selectedExecution, selectedConsensus string) (err error)
 		return
 	}
 
-	c.viper.Set("executionclient", selectedExecution)
-	c.viper.Set("consensusclient", selectedConsensus)
+	c.viper.Set("selectedclients.executionclient", selectedExecution)
+	c.viper.Set("selectedclients.consensusclient", selectedConsensus)
 
 	err = c.viper.WriteConfigAs(c.path)
 
 	return
+}
+
+func (c *Config) Exists() bool {
+	_, err := os.Stat(c.path)
+
+	return err == nil
 }
 
 func (c *Config) WriteExecution(selectedExecution string) (err error) {
@@ -101,8 +108,8 @@ func (c *Config) Read() (err error) {
 		return
 	}
 
-	c.executionClient = c.viper.Get("executionclient").(string)
-	c.consensusClient = c.viper.Get("consensusclient").(string)
+	c.executionClient = c.viper.Get("selectedclients.executionclient").(string)
+	c.consensusClient = c.viper.Get("selectedclients.consensusclient").(string)
 
 	return
 }

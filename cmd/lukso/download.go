@@ -21,6 +21,7 @@ const (
 
 func (dependency *ClientDependency) Download(tag, commitHash string, isUpdate bool, permissions int) (err error) {
 	log.Infof("Downloading %s", dependency.name)
+	cfg := config.NewConfig(config.Path)
 
 	err = dependency.createDir()
 	if err != nil {
@@ -29,16 +30,31 @@ func (dependency *ClientDependency) Download(tag, commitHash string, isUpdate bo
 
 	fileUrl := dependency.ParseUrl(tag, commitHash)
 
-	switch dependency.isBinary {
-	case true:
-		if isUpdate {
-			break
+	if fileExists(dependency.filePath) {
+		switch dependency.isBinary {
+		case true:
+			if isUpdate {
+				break
+			}
+
+			version, err := dependency.Version()
+			if err != nil {
+				return err
+			}
+
+			message := fmt.Sprintf("You already have %s installed with version %s: do you want to override your installation?\n[Y/n]: ", dependency.name, version)
+			input := registerInputWithMessage(message)
+			if !strings.EqualFold(input, "Y") {
+				log.Info("Skipping installation...")
+
+				return nil
+			}
+
+		case false:
+			log.Infof("Downloading %s file aborted: already exists", dependency.filePath)
+
+			return
 		}
-
-	case false:
-		log.Infof("Downloading %s file aborted: already exists", dependency.filePath)
-
-		return
 	}
 
 	response, err := http.Get(fileUrl)
@@ -121,6 +137,10 @@ func (dependency *ClientDependency) Download(tag, commitHash string, isUpdate bo
 
 	log.Infof("Downloaded %s!", dependency.name)
 
+	return
+}
+
+func (dependency *ClientDependency) Version() (version string, err error) {
 	return
 }
 
@@ -211,12 +231,15 @@ func installBinaries(ctx *cli.Context) (err error) {
 		log.Info("You accepted terms of use of accepted clients - read more here: https://github.com/prysmaticlabs/prysm/blob/develop/TERMS_OF_SERVICE.md")
 	}
 
-	err = clientDependencies[selectedExecution].Download(ctx.String(gethTagFlag), ctx.String(gethCommitHashFlag), false, binaryPerms)
+	gethTag := ctx.String(gethTagFlag)
+	prysmTag := ctx.String(prysmTagFlag)
+
+	err = clientDependencies[selectedExecution].Download(gethTag, ctx.String(gethCommitHashFlag), false, binaryPerms)
 	if err != nil {
 		return err
 	}
 
-	err = clientDependencies[selectedConsensus].Download(ctx.String(prysmTagFlag), "", false, binaryPerms)
+	err = clientDependencies[selectedConsensus].Download(prysmTag, "", false, binaryPerms)
 	if err != nil {
 		return err
 	}
