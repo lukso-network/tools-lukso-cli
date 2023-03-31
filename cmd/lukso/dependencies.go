@@ -58,20 +58,20 @@ var (
 		gethMainnetGenesisDependencyName: {
 			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/genesis.json",
 			name:     gethMainnetGenesisDependencyName,
-			filePath: "./config/mainnet/shared/genesis.json",
+			filePath: "./configs/mainnet/shared/genesis.json",
 		},
 		gethMainnetConfigName: {
 			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/geth/geth.toml",
 			name:     gethMainnetConfigName,
-			filePath: "./config/mainnet/geth/geth.toml",
+			filePath: "./configs/mainnet/geth/geth.toml",
 		},
 		prysmMainnetGenesisDependencyName: {
 			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/genesis.ssz", // no genesis state file for mainnet yet
 			name:     prysmMainnetGenesisDependencyName,
-			filePath: "./config/mainnet/shared/genesis.ssz",
+			filePath: "./configs/mainnet/shared/genesis.ssz",
 		},
 		prysmMainnetChainConfigDependencyName: {
-			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/config.yaml",
+			baseUrl:  "https://raw.gi`thubusercontent.com/lukso-network/network-configs/main/mainnet/shared/config.yaml",
 			name:     prysmMainnetChainConfigDependencyName,
 			filePath: "./config/mainnet/shared/config.yaml",
 		},
