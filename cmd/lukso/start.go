@@ -168,6 +168,27 @@ func startValidator(ctx *cli.Context) error {
 }
 
 func stopClients(ctx *cli.Context) (err error) {
+	if !cfg.Exists() {
+		log.Error(folderNotInitialized)
+
+		return
+	}
+
+	err = cfg.Read()
+	if err != nil {
+		log.Errorf("Couldn't read from config: %v", err)
+
+		return nil
+	}
+
+	executionClient := cfg.Execution()
+	consensusClient := cfg.Consensus()
+	if executionClient == "" || consensusClient == "" {
+		log.Error("No selected client found in config. Please make sure that you have installed your clients.")
+
+		return nil
+	}
+
 	stopConsensus := ctx.Bool(consensusFlag)
 	stopExecution := ctx.Bool(executionFlag)
 	stopValidator := ctx.Bool(validatorFlag)
@@ -180,34 +201,36 @@ func stopClients(ctx *cli.Context) (err error) {
 	}
 
 	if stopExecution {
-		err = stopClient(clientDependencies[gethDependencyName])(ctx)
+		log.Infof("Stopping execution [%s]", executionClient)
+
+		err = stopClient(clientDependencies[gethDependencyName])
 		if err != nil {
 			return err
 		}
 	}
 
 	if stopConsensus {
-		err = stopClient(clientDependencies[prysmDependencyName])(ctx)
+		log.Infof("Stopping consensus [%s]", consensusClient)
+
+		err = stopClient(clientDependencies[prysmDependencyName])
 		if err != nil {
 			return err
 		}
 	}
 
 	if stopValidator {
-		err = stopClient(clientDependencies[validatorDependencyName])(ctx)
+		log.Info("Stopping validator")
+
+		err = stopClient(clientDependencies[validatorDependencyName])
 	}
 
 	return err
 }
 
-func stopClient(dependency *ClientDependency) func(ctx *cli.Context) error {
-	return func(ctx *cli.Context) error {
-		log.Infof("Stopping %s", dependency.name)
+func stopClient(dependency *ClientDependency) error {
+	err := dependency.Stop()
 
-		err := dependency.Stop()
-
-		return err
-	}
+	return err
 }
 
 func initGeth(ctx *cli.Context) (err error) {
