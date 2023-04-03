@@ -8,16 +8,15 @@ const cors = {
 export default {
   async fetch(request) {
     const url = new URL(request.url);
-    const match = /^\/?(l?\d*)?\/?$/.exec(url.pathname);
+    const match = /^\/?(\d*|preview|l16)?\/?$/.exec(url.pathname);
     if (match) {
       const pr = match[1];
-      url.pathname = pr
-        ? `/tools-lukso-cli/pr-preview/pr-${pr}/index.html`
-        : `/tools-lukso-cli/index.html`;
-      url.hostname = "lukso-network.github.io";
-      const fetchUrl = url.toString();
-      const proxyRequest = await fetch(fetchUrl);
+      const url = `https://storage.googleapis.com/lks-lz-binaries-euw4${
+        pr ? `/${pr}/install.sh` : "/install.sh"
+      }`;
+      const proxyRequest = await fetch(url);
       if (proxyRequest.status !== 200) {
+        console.error("error", proxyRequest, url);
         return new Response(proxyRequest.statusTest, {
           status: proxyRequest.status,
           headers: cors,

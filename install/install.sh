@@ -250,7 +250,7 @@ confirm() {
       exit 1
     fi
     if [ "$yn" != "y" ] && [ "$yn" != "yes" ]; then
-      error 'Aborting (please answer "yes" to continue)'
+      error 'Aborting installation'
       exit 1
     fi
   fi
@@ -329,7 +329,7 @@ if [ -z "${ARCH-}" ]; then
 fi
 
 if [ -z "${BASE_URL-}" ]; then
-  BASE_URL="https://github.com/lukso-network/tools-lukso-cli/releases"
+  BASE_URL="https://storage.googleapis.com/lks-lz-binaries-euw4"
 fi
 
 # Non-POSIX shells can break once executing code due to semantic differences
@@ -409,9 +409,9 @@ if WHERE=$(which lukso)
 then
   WHERE=$(dirname "${WHERE}")
   PREVIOUS=""
-  if ! PREVIOUS=$(lukso version)
+  if ! PREVIOUS=$(lukso version 2> /dev/null)
   then
-    if PREVIOUS=$(lukso -v)
+    if PREVIOUS=$(lukso -v 2> /dev/null)
     then
       PREVIOUS="${PREVIOUS} (deprecated)"
     else
@@ -421,6 +421,15 @@ then
   PREVIOUS=$(echo "${PREVIOUS}" | sed -n -e "s#.*\(v[0-9][0-9]*\..*\)\$#\1#p" -e "s#.*\(develop\)\$#\1#p")
   if [ -n "${PREVIOUS}" ]
   then
+    if [ "${PREVIOUS}" == "__VERSION__" ]
+    then
+      printf "  %s\n" "${UNDERLINE}${GREEN}You currently have the current version installed${NO_COLOR}"
+      info "${BOLD}Current bin${NO_COLOR}:      ${GREEN}${WHERE}${NO_COLOR}"
+      info "${BOLD}Current version${NO_COLOR}:  ${GREEN}${PREVIOUS}${NO_COLOR}"
+      info "${BOLD}Platform${NO_COLOR}:         ${GREEN}${PLATFORM}${NO_COLOR}"
+      info "${BOLD}Arch${NO_COLOR}:             ${GREEN}${ARCH}${NO_COLOR}"
+      exit
+    fi
     printf "  %s\n" "${UNDERLINE}You currently have a previous version installed${NO_COLOR}"
     info "${BOLD}Current bin${NO_COLOR}:      ${GREEN}${WHERE}${NO_COLOR}"
     info "${BOLD}Current version${NO_COLOR}:  ${GREEN}${PREVIOUS}${NO_COLOR}"
@@ -455,7 +464,7 @@ printf '\n'
 
 EXT=tar.gz
 
-URL="${BASE_URL}/latest/download/lukso-${TARGET}.${EXT}"
+URL="${BASE_URL}/artifacts/lukso-${TARGET}.${EXT}"
 info "Tarball URL: ${UNDERLINE}${BLUE}${URL}${NO_COLOR}"
 info ""
 info "You need to agree to the LUKSO CLI terms before continuing:"
