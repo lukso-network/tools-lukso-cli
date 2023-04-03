@@ -153,7 +153,7 @@ func (dependency *ClientDependency) createDir() error {
 
 func installBinaries(ctx *cli.Context) (err error) {
 	if !cfg.Exists() {
-		log.Error("Folder not initialized - please make sure that you are working in initialized directory")
+		log.Error("Folder not initialized - please make sure that you are working in initialized directory. You can initialize the directory with the init command.")
 
 		return
 	}
@@ -173,9 +173,9 @@ func installBinaries(ctx *cli.Context) (err error) {
 		selectedExecution string
 	)
 
-	consensusMessage := "Which consensus client you want to install?\n" +
+	consensusMessage := "Which consensus client do you want to install?\n" +
 		"1: prysm\n> "
-	executionMessage := "Which execution client you want to install?\n" +
+	executionMessage := "Which execution client do you want to install?\n" +
 		"1: geth\n> "
 
 	consensusInput = registerInputWithMessage(consensusMessage)
@@ -188,12 +188,6 @@ func installBinaries(ctx *cli.Context) (err error) {
 		selectedConsensus = prysmDependencyName
 	}
 
-	if selectedConsensus == lighthouseDependencyName {
-		log.Error("Please select different consensus client")
-
-		return nil
-	}
-
 	executionInput = registerInputWithMessage(executionMessage)
 	for executionInput != "1" {
 		executionInput = registerInputWithMessage("Please provide a valid option\n> ")
@@ -202,12 +196,6 @@ func installBinaries(ctx *cli.Context) (err error) {
 	switch executionInput {
 	case "1":
 		selectedExecution = gethDependencyName
-	}
-
-	if selectedExecution == erigonDependencyName {
-		log.Error("Please select different execution client")
-
-		return nil
 	}
 
 	termsAgreed := ctx.Bool(agreeTermsFlag)

@@ -67,9 +67,9 @@ func selectNetworkFor(f func(*cli.Context) error) func(*cli.Context) error {
 func updateValues(ctx *cli.Context, config networkConfig) (err error) {
 	var (
 		//genesisJson  = config.configPath + "/" + genesisJsonPath
-		gethToml      = config.configPath + "/" + configTomlPath
-		prysmYaml     = config.configPath + "/" + prysmConfigPath
-		validatorYaml = config.configPath + "/" + validatorConfigPath
+		gethToml      = config.configPath + "/" + gethTomlPath
+		prysmYaml     = config.configPath + "/" + prysmYamlPath
+		validatorYaml = config.configPath + "/" + validatorYamlPath
 		gethGenesis   = config.configPath + "/" + genesisJsonPath
 		genesisState  = config.configPath + "/" + genesisStateFilePath
 		configYaml    = config.configPath + "/" + chainConfigYamlPath

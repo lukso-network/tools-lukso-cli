@@ -71,8 +71,8 @@ func (c *Config) Create(selectedExecution, selectedConsensus string) (err error)
 		return
 	}
 
-	c.viper.Set("selectedclients.executionclient", selectedExecution)
-	c.viper.Set("selectedclients.consensusclient", selectedConsensus)
+	c.viper.Set("selectedclients.execution", selectedExecution)
+	c.viper.Set("selectedclients.consensus", selectedConsensus)
 
 	err = c.viper.WriteConfigAs(c.path)
 
@@ -86,7 +86,7 @@ func (c *Config) Exists() bool {
 }
 
 func (c *Config) WriteExecution(selectedExecution string) (err error) {
-	c.viper.Set("executionclient", selectedExecution)
+	c.viper.Set("selectedclients.execution", selectedExecution)
 
 	err = c.viper.WriteConfigAs(c.path)
 
@@ -94,7 +94,7 @@ func (c *Config) WriteExecution(selectedExecution string) (err error) {
 }
 
 func (c *Config) WriteConsensus(selectedConsensus string) (err error) {
-	c.viper.Set("consensusclient", selectedConsensus)
+	c.viper.Set("selectedclients.consensus", selectedConsensus)
 
 	err = c.viper.WriteConfigAs(c.path)
 
@@ -108,8 +108,8 @@ func (c *Config) Read() (err error) {
 		return
 	}
 
-	c.executionClient = c.viper.Get("selectedclients.executionclient").(string)
-	c.consensusClient = c.viper.Get("selectedclients.consensusclient").(string)
+	c.executionClient = c.viper.Get("selectedclients.execution").(string)
+	c.consensusClient = c.viper.Get("selectedclients.consensus").(string)
 
 	return
 }
