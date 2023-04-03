@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"github.com/m8b-dev/lukso-cli/config"
 	"os"
@@ -221,24 +220,6 @@ func main() {
 			Name:   "version",
 			Usage:  "Display version of the lukso command",
 			Action: displayVersion,
-		},
-		{
-			Name: "config",
-			Action: func(c *cli.Context) error {
-				if !cfg.Exists() {
-					return errors.New("folder not initialized")
-				}
-
-				err := cfg.Read()
-				if err != nil {
-					return err
-				}
-
-				fmt.Println(cfg.Execution())
-				fmt.Println(cfg.Consensus())
-
-				return nil
-			},
 		},
 	}
 
