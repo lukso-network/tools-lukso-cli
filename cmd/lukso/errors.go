@@ -17,4 +17,7 @@ var (
 	errTransactionFailed       = errors.New("Transaction failed ")
 )
 
-const noSuchFlag = "no such flag"
+const (
+	noSuchFlag           = "no such flag"
+	folderNotInitialized = "Folder not initialized - please make sure that you are working in initialized directory. You can initialize the directory with the init command."
+)
