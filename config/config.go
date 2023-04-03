@@ -21,8 +21,16 @@ func parsePath(path string) (dir, fileName, extension string) {
 		lastIndex = len(segments) - 1
 		fullFile := segments[lastIndex]
 
-		fileName = strings.Split(fullFile, ".")[0]
-		extension = strings.Split(fullFile, ".")[1]
+		splittedFile := strings.Split(fullFile, ".")
+		switch len(splittedFile) {
+		case 0:
+			break
+		case 1:
+			fileName = splittedFile[0]
+		case 2:
+			fileName = strings.Split(fullFile, ".")[0]
+			extension = strings.Split(fullFile, ".")[1]
+		}
 	}
 
 	switch len(segments) {
