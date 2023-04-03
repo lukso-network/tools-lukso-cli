@@ -174,20 +174,18 @@ func installBinaries(ctx *cli.Context) (err error) {
 	)
 
 	consensusMessage := "Which consensus client you want to install?\n" +
-		"1: prysm\n2: lighthouse\n> "
+		"1: prysm\n> "
 	executionMessage := "Which execution client you want to install?\n" +
-		"1: geth\n2: erigon\n> "
+		"1: geth\n> "
 
 	consensusInput = registerInputWithMessage(consensusMessage)
-	for consensusInput != "1" && consensusInput != "2" {
+	for consensusInput != "1" {
 		consensusInput = registerInputWithMessage("Please provide a valid option\n> ")
 	}
 
 	switch consensusInput {
 	case "1":
 		selectedConsensus = prysmDependencyName
-	case "2":
-		selectedConsensus = lighthouseDependencyName
 	}
 
 	if selectedConsensus == lighthouseDependencyName {
@@ -197,15 +195,13 @@ func installBinaries(ctx *cli.Context) (err error) {
 	}
 
 	executionInput = registerInputWithMessage(executionMessage)
-	for executionInput != "1" && executionInput != "2" {
+	for executionInput != "1" {
 		executionInput = registerInputWithMessage("Please provide a valid option\n> ")
 	}
 
 	switch executionInput {
 	case "1":
 		selectedExecution = gethDependencyName
-	case "2":
-		selectedExecution = erigonDependencyName
 	}
 
 	if selectedExecution == erigonDependencyName {
