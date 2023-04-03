@@ -6,7 +6,6 @@ import (
 	"compress/gzip"
 	"errors"
 	"fmt"
-	"github.com/m8b-dev/lukso-cli/config"
 	"github.com/urfave/cli/v2"
 	"io"
 	"net/http"
@@ -20,8 +19,7 @@ const (
 )
 
 func (dependency *ClientDependency) Download(tag, commitHash string, isUpdate bool, permissions int) (err error) {
-	log.Infof("Downloading %s", dependency.name)
-	cfg := config.NewConfig(config.Path)
+	log.Infof("Downloading %s...", dependency.name)
 
 	err = dependency.createDir()
 	if err != nil {
@@ -37,14 +35,9 @@ func (dependency *ClientDependency) Download(tag, commitHash string, isUpdate bo
 				break
 			}
 
-			version, err := dependency.Version()
-			if err != nil {
-				return err
-			}
-
-			message := fmt.Sprintf("You already have %s installed with version %s: do you want to override your installation?\n[Y/n]: ", dependency.name, version)
+			message := fmt.Sprintf("You already have %s installed: do you want to override your installation? [Y/n]:\n> ", dependency.name)
 			input := registerInputWithMessage(message)
-			if !strings.EqualFold(input, "Y") {
+			if !strings.EqualFold(input, "y") && input != "" {
 				log.Info("Skipping installation...")
 
 				return nil
@@ -140,10 +133,6 @@ func (dependency *ClientDependency) Download(tag, commitHash string, isUpdate bo
 	return
 }
 
-func (dependency *ClientDependency) Version() (version string, err error) {
-	return
-}
-
 // createDir creates directory structure for given dependency if it's not a binary file
 func (dependency *ClientDependency) createDir() error {
 	if strings.Contains(dependency.filePath, binDir) {
@@ -163,6 +152,12 @@ func (dependency *ClientDependency) createDir() error {
 }
 
 func installBinaries(ctx *cli.Context) (err error) {
+	if !cfg.Exists() {
+		log.Error("Folder not initialized - please make sure that you are working in initialized directory")
+
+		return
+	}
+
 	isRoot, err := isRoot()
 	if err != nil {
 		return err
@@ -244,7 +239,6 @@ func installBinaries(ctx *cli.Context) (err error) {
 		return err
 	}
 
-	cfg := config.NewConfig(config.Path)
 	err = cfg.Create(selectedExecution, selectedConsensus)
 	if err != nil {
 		return err
@@ -285,7 +279,7 @@ func acceptTermsInteractive() bool {
 		"Do you wish to continue? [Y/n]: "
 
 	input := registerInputWithMessage(message)
-	if !strings.EqualFold(input, "y") {
+	if !strings.EqualFold(input, "y") && input != "" {
 		log.Error("You need to type Y to continue.")
 		return false
 	}

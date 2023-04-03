@@ -113,7 +113,7 @@ $ lukso reset --testnet
 
 ```bash
 # Starts your currently installed default clients and connects to LUKSO mainnet.
-# Takes the default config files from the path "./config/mainnet/geth/config.toml"
+# Takes the default config files from the path "./configs/mainnet/geth/config.toml"
 $ lukso start
 
 # Starts your nodes connecting to the testnet
@@ -130,7 +130,7 @@ $ lukso start --validator
 
 
 # Start command for Genesis Validators should be run as the following:
-$ lukso start --genesis-ssz "./config/mainnet/shared/genesis.ssz" --genesis-json "./config/mainnet/geth/genesis.json"
+$ lukso start --genesis-ssz "./configs/mainnet/shared/genesis.ssz" --genesis-json "./configs/mainnet/geth/genesis.json"
 
 
 # How to start your validator (keys & tx fee recipient)

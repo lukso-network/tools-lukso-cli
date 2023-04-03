@@ -209,7 +209,7 @@ func (dc depositController) estimateGas(isGenesisDeposit bool) (accepted bool, e
 
 	accepted = true
 	input := registerInputWithMessage(message)
-	if !strings.EqualFold(input, "y") {
+	if !strings.EqualFold(input, "y") && input != "" {
 		log.Info("Aborting...")
 
 		accepted = false

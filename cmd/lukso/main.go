@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"github.com/m8b-dev/lukso-cli/config"
 	"os"
@@ -34,6 +35,7 @@ var (
 	prysmTag       string
 	log            = logrus.StandardLogger()
 	systemOs       string
+	cfg            *config.Config
 )
 
 // do not confuse init func with init subcommand - for now we just pass init flags, there are more to come
@@ -223,21 +225,26 @@ func main() {
 		{
 			Name: "config",
 			Action: func(c *cli.Context) error {
-				cfg := config.NewConfig("./cli-config.yml")
-				err := cfg.Create(gethDependencyName, prysmDependencyName)
+				if !cfg.Exists() {
+					return errors.New("folder not initialized")
+				}
+
+				err := cfg.Read()
 				if err != nil {
 					return err
 				}
 
-				err = cfg.WriteClientVersion(gethDependencyName, "1.11.4")
+				fmt.Println(cfg.Execution())
+				fmt.Println(cfg.Consensus())
 
-				return err
+				return nil
 			},
 		},
 	}
 
 	app.Before = func(ctx *cli.Context) error {
 		runtime.GOMAXPROCS(runtime.NumCPU())
+		cfg = config.NewConfig(config.Path)
 
 		setupOperatingSystem()
 

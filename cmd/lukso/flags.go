@@ -45,7 +45,7 @@ const (
 	agreeTermsFlag = "agree-terms"
 
 	// shared values
-	jwtSecretDefaultPath = "./config/mainnet/shared/secrets/jwt.hex"
+	jwtSecretDefaultPath = "./configs/mainnet/shared/secrets/jwt.hex"
 
 	// flag defaults used in different contexts
 	gethMainnetDatadir = "./mainnet-data/execution"
@@ -64,9 +64,9 @@ const (
 	testnetLogs = "./testnet-logs"
 	devnetLogs  = "./devnet-logs"
 
-	mainnetConfig = "./config/mainnet"
-	testnetConfig = "./config/testnet"
-	devnetConfig  = "./config/devnet"
+	mainnetConfig = "./configs/mainnet"
+	testnetConfig = "./configs/testnet"
+	devnetConfig  = "./configs/devnet"
 
 	mainnetKeystore = "./mainnet-keystore"
 	testnetKeystore = "./testnet-keystore"
@@ -256,12 +256,12 @@ var (
 		&cli.StringFlag{
 			Name:  gethConfigFileFlag,
 			Usage: "path to geth.toml config file",
-			Value: "./config/mainnet/geth/geth.toml",
+			Value: "./configs/mainnet/geth/geth.toml",
 		},
 		&cli.StringFlag{
 			Name:  genesisJsonFlag,
 			Usage: "path to genesis.json file",
-			Value: "./config/mainnet/shared/genesis.json",
+			Value: "./configs/mainnet/shared/genesis.json",
 		},
 	}
 	// LOGS
@@ -304,7 +304,7 @@ var (
 		&cli.StringFlag{
 			Name:  prysmGenesisStateFlag,
 			Usage: "genesis.ssz file path",
-			Value: "./config/mainnet/shared/genesis.ssz",
+			Value: "./configs/mainnet/shared/genesis.ssz",
 		},
 		&cli.StringFlag{
 			Name:   prysmDatadirFlag,
@@ -315,13 +315,13 @@ var (
 		&cli.StringFlag{
 			Name:   prysmChainConfigFileFlag,
 			Usage:  "path to chain config file",
-			Value:  "./config/mainnet/shared/config.yaml",
+			Value:  "./configs/mainnet/shared/config.yaml",
 			Hidden: true,
 		},
 		&cli.StringFlag{
 			Name:  prysmConfigFileFlag,
 			Usage: "path to prysm.yaml config file",
-			Value: "./config/mainnet/prysm/prysm.yaml",
+			Value: "./configs/mainnet/prysm/prysm.yaml",
 		},
 	}
 	// LOGS
@@ -380,12 +380,12 @@ var (
 		&cli.StringFlag{
 			Name:  validatorConfigFileFlag,
 			Usage: "path to prysm.yaml config file",
-			Value: "./config/mainnet/prysm/validator.yaml",
+			Value: "./configs/mainnet/prysm/validator.yaml",
 		},
 		&cli.StringFlag{
 			Name:   validatorChainConfigFileFlag,
 			Usage:  "prysm chain config file path",
-			Value:  "./config/mainnet/shared/config.yaml",
+			Value:  "./configs/mainnet/shared/config.yaml",
 			Hidden: true,
 		},
 	}

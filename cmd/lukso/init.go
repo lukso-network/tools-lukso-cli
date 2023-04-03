@@ -9,15 +9,25 @@ import (
 
 // initializeDirectory initializes a working directory for lukso node, with all configurations for all networks
 func initializeDirectory(ctx *cli.Context) error {
+	if cfg.Exists() {
+		message := "This folder has been already initialized. Do you want to re-initialize? Please note that configs in this folder will NOT be overwritten [Y/n]:\n> "
+		input := registerInputWithMessage(message)
+		if !strings.EqualFold(input, "y") && input != "" {
+			return nil
+		}
+	}
+
 	for _, dependency := range clientDependencies {
 		// this logic may fail when folder structure changes, but this shouldn't be the case
-		if !strings.Contains(dependency.filePath, "./config") {
+		if !strings.Contains(dependency.filePath, "./configs") {
 			continue
 		}
 
 		err := dependency.Download("", "", false, configPerms)
 		if err != nil {
 			log.Errorf("There was error while downloading %s file: %v", dependency.name, err.Error())
+
+			return nil
 		}
 
 	}
@@ -26,7 +36,16 @@ func initializeDirectory(ctx *cli.Context) error {
 	if err != nil {
 		log.Errorf("There was an error while preparing PID directory: %v", err)
 
-		return err
+		return nil
+	}
+
+	log.Info("Creating LUKSO configuration file...")
+
+	err = cfg.Create("", "")
+	if err != nil {
+		log.Errorf("There was an error while preparing LUKSO configuration: %v", err)
+
+		return nil
 	}
 
 	log.Info("Folder initialized! To start your node run lukso start command")

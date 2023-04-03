@@ -63,94 +63,94 @@ var (
 		gethMainnetGenesisDependencyName: {
 			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/genesis.json",
 			name:     gethMainnetGenesisDependencyName,
-			filePath: "./config/mainnet/shared/genesis.json",
+			filePath: "./configs/mainnet/shared/genesis.json",
 		},
 		gethMainnetConfigName: {
 			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/geth/geth.toml",
 			name:     gethMainnetConfigName,
-			filePath: "./config/mainnet/geth/geth.toml",
+			filePath: "./configs/mainnet/geth/geth.toml",
 		},
 		prysmMainnetGenesisDependencyName: {
 			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/genesis.ssz", // no genesis state file for mainnet yet
 			name:     prysmMainnetGenesisDependencyName,
-			filePath: "./config/mainnet/shared/genesis.ssz",
+			filePath: "./configs/mainnet/shared/genesis.ssz",
 		},
 		prysmMainnetChainConfigDependencyName: {
 			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/config.yaml",
 			name:     prysmMainnetChainConfigDependencyName,
-			filePath: "./config/mainnet/shared/config.yaml",
+			filePath: "./configs/mainnet/shared/config.yaml",
 		},
 		prysmMainnetConfigDependencyName: {
 			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/feature/blockchain-clients-configs/mainnet/prysm/prysm.yaml",
 			name:     prysmMainnetConfigDependencyName,
-			filePath: "./config/mainnet/prysm/prysm.yaml",
+			filePath: "./configs/mainnet/prysm/prysm.yaml",
 		},
 		validatorMainnetConfigDependencyName: {
 			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/feature/blockchain-clients-configs/mainnet/prysm/validator.yaml",
 			name:     validatorMainnetConfigDependencyName,
-			filePath: "./config/mainnet/prysm/validator.yaml",
+			filePath: "./configs/mainnet/prysm/validator.yaml",
 		},
 		// ----- TESTNET -----
 		gethTestnetGenesisDependencyName: {
 			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/shared/genesis.json",
 			name:     gethTestnetGenesisDependencyName,
-			filePath: "./config/testnet/shared/genesis.json",
+			filePath: "./configs/testnet/shared/genesis.json",
 		},
 		gethTestnetConfigName: {
 			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/geth/geth.toml",
 			name:     gethTestnetConfigName,
-			filePath: "./config/testnet/geth/geth.toml",
+			filePath: "./configs/testnet/geth/geth.toml",
 		},
 		prysmTestnetGenesisDependencyName: {
 			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/shared/genesis.ssz", // no genesis state file for testnet yet
 			name:     prysmTestnetGenesisDependencyName,
-			filePath: "./config/testnet/shared/genesis.ssz",
+			filePath: "./configs/testnet/shared/genesis.ssz",
 		},
 		prysmTestnetChainConfigDependencyName: {
 			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/shared/config.yaml",
 			name:     prysmTestnetChainConfigDependencyName,
-			filePath: "./config/testnet/shared/config.yaml",
+			filePath: "./configs/testnet/shared/config.yaml",
 		},
 		prysmTestnetConfigDependencyName: {
 			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/feature/blockchain-clients-configs/testnet/prysm/prysm.yaml",
 			name:     prysmTestnetConfigDependencyName,
-			filePath: "./config/testnet/prysm/prysm.yaml",
+			filePath: "./configs/testnet/prysm/prysm.yaml",
 		},
 		validatorTestnetConfigDependencyName: {
 			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/feature/blockchain-clients-configs/testnet/prysm/validator.yaml",
 			name:     validatorTestnetConfigDependencyName,
-			filePath: "./config/testnet/prysm/validator.yaml",
+			filePath: "./configs/testnet/prysm/validator.yaml",
 		},
 		// ----- DEVNET -----
 		gethDevnetGenesisDependencyName: {
 			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/devnets/2022/geth/genesis.json",
 			name:     gethDevnetGenesisDependencyName,
-			filePath: "./config/devnet/shared/genesis.json",
+			filePath: "./configs/devnet/shared/genesis.json",
 		},
 		gethDevnetConfigName: {
 			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/devnets/2022/geth/geth.toml",
 			name:     gethDevnetConfigName,
-			filePath: "./config/devnet/geth/geth.toml",
+			filePath: "./configs/devnet/geth/geth.toml",
 		},
 		prysmDevnetGenesisDependencyName: {
 			baseUrl:  "https://github.com/lukso-network/network-configs/raw/main/devnets/2022/prysm/genesis.ssz",
 			name:     prysmDevnetGenesisDependencyName,
-			filePath: "./config/devnet/shared/genesis.ssz",
+			filePath: "./configs/devnet/shared/genesis.ssz",
 		},
 		prysmDevnetChainConfigDependencyName: {
 			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/devnets/2022/prysm/config.yml",
 			name:     prysmDevnetChainConfigDependencyName,
-			filePath: "./config/devnet/shared/config.yaml",
+			filePath: "./configs/devnet/shared/config.yaml",
 		},
 		prysmDevnetConfigDependencyName: {
 			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/feature/blockchain-clients-configs/devnets/3030/prysm/prysm.yaml",
 			name:     prysmDevnetConfigDependencyName,
-			filePath: "./config/devnet/prysm/prysm.yaml",
+			filePath: "./configs/devnet/prysm/prysm.yaml",
 		},
 		validatorDevnetConfigDependencyName: {
 			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/feature/blockchain-clients-configs/devnets/3030/prysm/validator.yaml",
 			name:     validatorDevnetConfigDependencyName,
-			filePath: "./config/devnet/prysm/validator.yaml",
+			filePath: "./configs/devnet/prysm/validator.yaml",
 		},
 	}
 )
