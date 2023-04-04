@@ -43,6 +43,7 @@ const (
 	consensusFlag = "consensus"
 	executionFlag = "execution"
 
+	helpFlag       = "help"
 	agreeTermsFlag = "agree-terms"
 
 	// shared values

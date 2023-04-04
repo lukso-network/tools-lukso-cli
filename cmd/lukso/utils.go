@@ -165,12 +165,16 @@ func registerInputWithMessage(message string) (input string) {
 	return scanner.Text()
 }
 
-// parseFlags takes care of parsing flags that are skipped if SkipFlagParsing is set to true
+// parseFlags takes care of parsing flags that are skipped if SkipFlagParsing is set to true - if --help or -h is found we display help and stop execution
 func parseFlags(ctx *cli.Context) (err error) {
 	args := ctx.Args()
 	argsLen := args.Len()
 	for i := 0; i < argsLen; i++ {
 		arg := args.Get(i)
+
+		if arg == "--help" || arg == "-h" {
+			cli.ShowSubcommandHelpAndExit(ctx, 0)
+		}
 
 		if strings.HasPrefix(arg, "--") {
 			if i+1 == argsLen {
