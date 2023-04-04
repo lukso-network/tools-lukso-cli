@@ -49,7 +49,58 @@ https://install.lukso.network
 > Initializing a LUKSO node will not overwrite existing config, data or keystore folders
 
 ```
-WIP
+lukso-node
+│
+└───configs                 		// Blockchain Configuration
+│   └───mainnet 	        		// Mainnet Config
+│   |   └───shared
+|   |   |   | genesis.json  		// Genesis JSON Data
+|   |   |   | genesis.ssz   		// Genesis Validator File
+|   |	|	| config.yaml   		// Network Configuration
+│   |   └───geth	        		// Storage of Geth Client
+│   |   └───prysm	      		 	// Storage of Prysm Client
+│   |   └───erigon	        		// Storage of Erigon Client
+│   |   └───lighthouse	    		// Storage of Lighthouse Client
+|   |
+│   └───testnet			    		// Testnet Config
+│   |   └───...		    			// Similar to Mainnet Config
+|   |
+│   └───devnet    		    		// Devnets Config
+│       └───...		    			// Similar to Mainnet Config
+│
+└───mainnet-validator        		// Mainnet Validator Secrets and Keys
+|   └───mainnet-transaction-wallet  // Validators Transaction Wallet
+|   └───mainnet-keystore        	// Mainnet Validator Secrets and Keys
+│   |   └───keys               		// Encrypted Private Keys
+│   |   └───...                 	// Folders & Files for Signature Creation
+|   |   | pubkeys.json          	// Validator Public Keys
+|	| deposit_data.json         	// Deposit JSON for Validators
+| 	| node_config.yaml          	// Node Configuration File
+|
+└───mainnet-data            		// Mainnet Data Storage
+│   └───consensus_data      		// Storage of used Consensus Client
+│   └───execution_data      		// Storage of used Execution Client
+│   └───validator_data      		// Storage of Validator Client
+│
+└───mainnet-logs            		// Mainnet Log Data
+|
+└───testnet-validator        		// Testnet Validator Secrets and Keys
+|   └───...  						// Similar to Mainnet Validator
+|
+└───testnet-data            		// Testnet Data Storage
+|   └───...  						// Similar to Mainnet Data
+│
+└───testnet-logs            		// Testnet Log Data
+|
+└───devnet-validator        		// Devnet Validator Secrets and Keys
+|   └───...  						// Similar to Mainnet Validator
+|
+└───devnet-data            			// Devnet Data Storage
+|   └───...  						// Similar to Mainnet Data
+│
+└───devnet-logs            			// Devnet Log Data
+|
+| cli-config.yaml           		// LUKSO CLI Configuration
 ```
 
 ## External Sources
@@ -268,7 +319,6 @@ $ lukso reset --devnet
 ```
 
 #### How to start the node clients
-
 
 ```sh
 # Starts your node clients and connects to LUKSO mainnet
