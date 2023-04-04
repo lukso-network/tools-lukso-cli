@@ -17,13 +17,12 @@ The LUKSO CLI is a command line tool to install, manage and set up validators of
 ```
 tools-lukso-cli
 │
-└───abis                  // Binary Interfaces of LUKSO Smart Contracts
-│
 └───cmd                   // Commands
 │   └───lukso             // LUKSO CLI
 │
 └───contracts             // Solidity Contracts
 │   └───bindings          // Bindings generated from ABIs
+│   └───abis              // Binary Interfaces of LUKSO Smart Contracts
 |
 └───docs                  // Updates for Installation Progress
 |
