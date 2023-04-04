@@ -1,11 +1,12 @@
 package main
 
 import (
+	"os"
+	"strings"
+
 	"github.com/m8b-dev/lukso-cli/config"
 	"github.com/m8b-dev/lukso-cli/pid"
 	"github.com/urfave/cli/v2"
-	"os"
-	"strings"
 )
 
 // initializeDirectory initializes a working directory for lukso node, with all configurations for all networks

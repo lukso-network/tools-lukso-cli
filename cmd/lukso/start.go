@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"os/exec"
+
 	"github.com/m8b-dev/lukso-cli/config"
 	"github.com/m8b-dev/lukso-cli/pid"
 	"github.com/urfave/cli/v2"
-	"os"
-	"os/exec"
 )
 
 func (dependency *ClientDependency) Start(

@@ -1,9 +1,10 @@
 package main
 
 import (
-	"github.com/urfave/cli/v2"
 	"os"
 	"strings"
+
+	"github.com/urfave/cli/v2"
 )
 
 // networkConfig serves as a collection of variables that need to be changed when different network is selected
