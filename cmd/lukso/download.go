@@ -18,18 +18,36 @@ const (
 	binaryPerms = int(os.ModePerm)
 )
 
-func (dependency *ClientDependency) Download(tagName, commitHash string, overrideFile bool, permissions int) (err error) {
+func (dependency *ClientDependency) Download(tag, commitHash string, isUpdate bool, permissions int) (err error) {
+	log.Infof("Downloading %s...", dependency.name)
+
 	err = dependency.createDir()
 	if err != nil {
 		return
 	}
 
-	fileUrl := dependency.ParseUrl(tagName, commitHash)
+	fileUrl := dependency.ParseUrl(tag, commitHash)
 
-	if fileExists(dependency.filePath) && !overrideFile {
-		log.Warningf("Downloading %s aborted, file %s already exists", fileUrl, dependency.filePath)
+	if fileExists(dependency.filePath) {
+		switch dependency.isBinary {
+		case true:
+			if isUpdate {
+				break
+			}
 
-		return
+			message := fmt.Sprintf("You already have %s installed: do you want to override your installation? [Y/n]:\n> ", dependency.name)
+			input := registerInputWithMessage(message)
+			if !strings.EqualFold(input, "y") && input != "" {
+				log.Info("Skipping installation...")
+
+				return nil
+			}
+
+		case false:
+			log.Infof("Downloading %s file aborted: already exists", dependency.filePath)
+
+			return
+		}
 	}
 
 	response, err := http.Get(fileUrl)
@@ -106,8 +124,11 @@ func (dependency *ClientDependency) Download(tagName, commitHash string, overrid
 
 	if err != nil {
 		log.Infof("I am in download section: error: %v", err)
+
 		return
 	}
+
+	log.Infof("Downloaded %s!", dependency.name)
 
 	return
 }
@@ -130,36 +151,84 @@ func (dependency *ClientDependency) createDir() error {
 	return err
 }
 
-func downloadBinaries(ctx *cli.Context) (err error) {
-	if !ctx.Bool(acceptTermsOfUseFlag) {
+func installBinaries(ctx *cli.Context) (err error) {
+	if !cfg.Exists() {
+		log.Error("Folder not initialized - please make sure that you are working in initialized directory. You can initialize the directory with the init command.")
+
+		return
+	}
+
+	isRoot, err := isRoot()
+	if err != nil {
+		return err
+	}
+	if !isRoot {
+		return errNeedRoot
+	}
+
+	var (
+		consensusInput    string
+		executionInput    string
+		selectedConsensus string
+		selectedExecution string
+	)
+
+	consensusMessage := "Which consensus client do you want to install?\n" +
+		"1: prysm\n> "
+	executionMessage := "Which execution client do you want to install?\n" +
+		"1: geth\n> "
+
+	consensusInput = registerInputWithMessage(consensusMessage)
+	for consensusInput != "1" {
+		consensusInput = registerInputWithMessage("Please provide a valid option\n> ")
+	}
+
+	switch consensusInput {
+	case "1":
+		selectedConsensus = prysmDependencyName
+	}
+
+	executionInput = registerInputWithMessage(executionMessage)
+	for executionInput != "1" {
+		executionInput = registerInputWithMessage("Please provide a valid option\n> ")
+	}
+
+	switch executionInput {
+	case "1":
+		selectedExecution = gethDependencyName
+	}
+
+	termsAgreed := ctx.Bool(agreeTermsFlag)
+	if !termsAgreed {
 		accepted := acceptTermsInteractive()
 		if !accepted {
-			return errors.New("You need to accept Terms to continue.")
+			log.Info("Terms of use not accepted - aborting...")
+
+			return nil
 		}
-	}
-	if ctx.Bool(acceptTermsOfUseFlag) {
-		log.Info("You accepted Terms of Use provided by clients you want to download. You can read more here: https://github.com/prysmaticlabs/prysm/blob/develop/TERMS_OF_SERVICE.md")
-	}
-	// Get os, then download all binaries into datadir matching desired system
-	// After successful download run binary with desired arguments spin and connect them
-
-	err = downloadGeth(ctx)
-
-	if nil != err {
-		return
+	} else {
+		log.Info("You accepted terms of use of accepted clients - read more here: https://github.com/prysmaticlabs/prysm/blob/develop/TERMS_OF_SERVICE.md")
 	}
 
-	err = downloadValidator(ctx)
+	gethTag := ctx.String(gethTagFlag)
+	prysmTag := ctx.String(prysmTagFlag)
 
-	if nil != err {
-		return
+	err = clientDependencies[selectedExecution].Download(gethTag, ctx.String(gethCommitHashFlag), false, binaryPerms)
+	if err != nil {
+		return err
 	}
 
-	err = downloadPrysm(ctx)
-
-	if nil != err {
-		return
+	err = clientDependencies[selectedConsensus].Download(prysmTag, "", false, binaryPerms)
+	if err != nil {
+		return err
 	}
+
+	err = cfg.Create(selectedExecution, selectedConsensus)
+	if err != nil {
+		return err
+	}
+
+	log.Info("Config created!")
 
 	return
 }
@@ -194,7 +263,7 @@ func acceptTermsInteractive() bool {
 		"Do you wish to continue? [Y/n]: "
 
 	input := registerInputWithMessage(message)
-	if !strings.EqualFold(input, "y") {
+	if !strings.EqualFold(input, "y") && input != "" {
 		log.Error("You need to type Y to continue.")
 		return false
 	}

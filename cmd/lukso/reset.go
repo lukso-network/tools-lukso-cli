@@ -34,7 +34,7 @@ func resetClients(ctx *cli.Context) error {
 		"- %s\n- %s\n- %s\n[Y/n]: ", ctx.String(gethDatadirFlag), ctx.String(prysmDatadirFlag), ctx.String(validatorDatadirFlag))
 
 	input := registerInputWithMessage(message)
-	if !strings.EqualFold(input, "y") {
+	if !strings.EqualFold(input, "y") && input != "" {
 		log.Info("Aborting...")
 
 		return nil

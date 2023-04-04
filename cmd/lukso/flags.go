@@ -42,10 +42,10 @@ const (
 	consensusFlag = "consensus"
 	executionFlag = "execution"
 
-	acceptTermsOfUseFlag = "accept-terms-of-use"
+	agreeTermsFlag = "agree-terms"
 
 	// shared values
-	jwtSecretDefaultPath = "./config/mainnet/shared/secrets/jwt.hex"
+	jwtSecretDefaultPath = mainnetConfig + "/" + jwtSecretPath
 
 	// flag defaults used in different contexts
 	gethMainnetDatadir = "./mainnet-data/execution"
@@ -64,23 +64,23 @@ const (
 	testnetLogs = "./testnet-logs"
 	devnetLogs  = "./devnet-logs"
 
-	mainnetConfig = "./config/mainnet"
-	testnetConfig = "./config/testnet"
-	devnetConfig  = "./config/devnet"
+	mainnetConfig = "./configs/mainnet"
+	testnetConfig = "./configs/testnet"
+	devnetConfig  = "./configs/devnet"
 
 	mainnetKeystore = "./mainnet-keystore"
 	testnetKeystore = "./testnet-keystore"
 	devnetKeystore  = "./devnet-keystore"
 
-	// structure inside /config/selected-network directory.
+	// structure inside configs/selected-network directory.
 	// we will select directory based on provided flag, by concatenating config path + file path
 	genesisStateFilePath = "shared/genesis.ssz"
 	chainConfigYamlPath  = "shared/config.yaml"
 	jwtSecretPath        = "shared/secrets/jwt.hex"
-	configTomlPath       = "geth/geth.toml"
+	gethTomlPath         = "geth/geth.toml"
 	genesisJsonPath      = "shared/genesis.json"
-	prysmConfigPath      = "prysm/prysm.yaml"
-	validatorConfigPath  = "prysm/validator.yaml"
+	prysmYamlPath        = "prysm/prysm.yaml"
+	validatorYamlPath    = "prysm/validator.yaml"
 
 	// validator tool related flags
 	depositDataJson    = "deposit-data-json"
@@ -179,9 +179,9 @@ var (
 		},
 	}
 
-	downloadFlags []cli.Flag
-	updateFlags   []cli.Flag
-	stopFlags     = []cli.Flag{
+	installFlags []cli.Flag
+	updateFlags  []cli.Flag
+	stopFlags    = []cli.Flag{
 		executionSelectedFlag,
 		consensusSelectedFlag,
 		validatorSelectedFlag,
@@ -217,7 +217,7 @@ var (
 	resetFlags []cli.Flag
 	appFlags   = []cli.Flag{
 		&cli.BoolFlag{
-			Name:  acceptTermsOfUseFlag,
+			Name:  agreeTermsFlag,
 			Usage: "Accept terms of use. Default: false",
 			Value: false,
 		},
@@ -256,12 +256,12 @@ var (
 		&cli.StringFlag{
 			Name:  gethConfigFileFlag,
 			Usage: "path to geth.toml config file",
-			Value: "./config/mainnet/geth/geth.toml",
+			Value: mainnetConfig + "/" + gethTomlPath,
 		},
 		&cli.StringFlag{
 			Name:  genesisJsonFlag,
 			Usage: "path to genesis.json file",
-			Value: "./config/mainnet/shared/genesis.json",
+			Value: mainnetConfig + "/" + genesisJsonPath,
 		},
 	}
 	// LOGS
@@ -304,7 +304,7 @@ var (
 		&cli.StringFlag{
 			Name:  prysmGenesisStateFlag,
 			Usage: "genesis.ssz file path",
-			Value: "./config/mainnet/shared/genesis.ssz",
+			Value: mainnetConfig + "/" + genesisStateFilePath,
 		},
 		&cli.StringFlag{
 			Name:   prysmDatadirFlag,
@@ -315,13 +315,13 @@ var (
 		&cli.StringFlag{
 			Name:   prysmChainConfigFileFlag,
 			Usage:  "path to chain config file",
-			Value:  "./config/mainnet/shared/config.yaml",
+			Value:  mainnetConfig + "/" + chainConfigYamlPath,
 			Hidden: true,
 		},
 		&cli.StringFlag{
 			Name:  prysmConfigFileFlag,
 			Usage: "path to prysm.yaml config file",
-			Value: "./config/mainnet/prysm/prysm.yaml",
+			Value: mainnetConfig + "/" + prysmYamlPath,
 		},
 	}
 	// LOGS
@@ -380,12 +380,12 @@ var (
 		&cli.StringFlag{
 			Name:  validatorConfigFileFlag,
 			Usage: "path to prysm.yaml config file",
-			Value: "./config/mainnet/prysm/validator.yaml",
+			Value: mainnetConfig + "/" + validatorYamlPath,
 		},
 		&cli.StringFlag{
 			Name:   validatorChainConfigFileFlag,
 			Usage:  "prysm chain config file path",
-			Value:  "./config/mainnet/shared/config.yaml",
+			Value:  chainConfigYamlPath,
 			Hidden: true,
 		},
 	}

@@ -269,9 +269,10 @@ $ lukso reset --devnet
 
 #### How to start the node clients
 
+
 ```sh
 # Starts your node clients and connects to LUKSO mainnet
-# Uses the default config files from config/mainnet folder
+# Uses the default config files from configs/mainnet folder
 $ lukso start
 
 # Starts your node clients and connects to the LUKSO testnet

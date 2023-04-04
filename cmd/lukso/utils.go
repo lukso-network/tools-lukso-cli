@@ -9,6 +9,7 @@ import (
 	"github.com/urfave/cli/v2"
 	"os"
 	"os/exec"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -68,7 +69,7 @@ func createJwtSecret(dest string) error {
 func truncateFileFromDir(filePath string) string {
 	segments := strings.Split(filePath, "/")
 
-	return strings.TrimRight(filePath, segments[len(segments)-1])
+	return strings.Join(segments[:len(segments)-1], "/")
 }
 
 // getLastFile returns name of last file from given directory in alphabetical order.
@@ -127,7 +128,7 @@ func getLastFile(dir string, dependency string) (string, error) {
 		" Doing so can print lots of text on your screen [Y/n]: ", dir+"/"+lastFile, lastFile)
 
 	input := registerInputWithMessage(message)
-	if !strings.EqualFold(input, "y") {
+	if !strings.EqualFold(input, "y") && input != "" {
 		log.Info("Aborting...") // there is no error, just a possible change of mind - shouldn't return err
 
 		return "", nil
@@ -208,4 +209,24 @@ func parseFlags(ctx *cli.Context) (err error) {
 	}
 
 	return
+}
+
+func isRoot() (isRoot bool, err error) {
+	command := exec.Command("id", "-u")
+
+	output, err := command.Output()
+	if err != nil {
+		return
+	}
+
+	usr, err := strconv.Atoi(string(output[:len(output)-1]))
+	if err != nil {
+		return
+	}
+
+	if usr == 0 {
+		return true, nil
+	}
+
+	return false, nil
 }

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/m8b-dev/lukso-cli/config"
 	"os"
 	"runtime"
 	runtimeDebug "runtime/debug"
@@ -31,17 +32,18 @@ var (
 	gethCommitHash string
 	validatorTag   string
 	prysmTag       string
-	log            = logrus.WithField("prefix", appName)
+	log            = logrus.StandardLogger()
 	systemOs       string
+	cfg            *config.Config
 )
 
 // do not confuse init func with init subcommand - for now we just pass init flags, there are more to come
 func init() {
-	downloadFlags = make([]cli.Flag, 0)
-	downloadFlags = append(downloadFlags, gethDownloadFlags...)
-	downloadFlags = append(downloadFlags, validatorDownloadFlags...)
-	downloadFlags = append(downloadFlags, prysmDownloadFlags...)
-	downloadFlags = append(downloadFlags, appFlags...)
+	installFlags = make([]cli.Flag, 0)
+	installFlags = append(installFlags, gethDownloadFlags...)
+	installFlags = append(installFlags, validatorDownloadFlags...)
+	installFlags = append(installFlags, prysmDownloadFlags...)
+	installFlags = append(installFlags, appFlags...)
 
 	updateFlags = append(updateFlags, gethUpdateFlags...)
 	updateFlags = append(updateFlags, prysmUpdateFlags...)
@@ -86,9 +88,9 @@ func main() {
 	app.Commands = []*cli.Command{
 		{
 			Name:   "install",
+			Action: installBinaries,
+			Flags:  installFlags,
 			Usage:  "Installs choosen LUKSO node clients (Execution, Beacon, Validator) and their binary dependencies",
-			Action: downloadBinaries,
-			Flags:  downloadFlags,
 			Before: initializeFlags,
 		},
 		{
@@ -222,6 +224,7 @@ func main() {
 
 	app.Before = func(ctx *cli.Context) error {
 		runtime.GOMAXPROCS(runtime.NumCPU())
+		cfg = config.NewConfig(config.Path)
 
 		setupOperatingSystem()
 
@@ -234,8 +237,6 @@ func main() {
 
 		// Prysm related parsing
 		prysmTag = ctx.String(prysmTagFlag)
-
-		log = log.WithField("os", systemOs)
 
 		return nil
 	}
