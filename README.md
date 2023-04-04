@@ -17,13 +17,12 @@ The LUKSO CLI is a command line tool to install, manage and set up validators of
 ```
 tools-lukso-cli
 │
-└───abis                  // Binary Interfaces of LUKSO Smart Contracts
-│
 └───cmd                   // Commands
 │   └───lukso             // LUKSO CLI
 │
 └───contracts             // Solidity Contracts
 │   └───bindings          // Bindings generated from ABIs
+│   └───abis              // Binary Interfaces of LUKSO Smart Contracts
 |
 └───docs                  // Updates for Installation Progress
 |
@@ -530,7 +529,7 @@ cd cmd/lukso/
 # Generating ABI into abis directory
 # Change [contract_name] to the contract file name
 $ solcjs \
---output-dir abis \
+--output-dir contracts/abis \
 --abi contracts/[contract_name].sol
 ```
 
@@ -541,7 +540,7 @@ $ solcjs \
 # Change [abi_name] to the contract file name
 # Change [binding_name] to the wanted output file name
 abigen \
---abi abis/[abi_name] \
+--abi contracts/abis/[abi_name] \
 --pkg bindings \
 --out contracts/bindings/[binding_name].go \
 --type TypeName

@@ -30,7 +30,7 @@ const (
 	genesisDepositContractAddress = "0x9C2Ae5bC047Ca794d9388aB7A2Bf37778f9aBA73"
 	lyxeContractAddress           = "0x790c4379C82582F569899b3Ca71E78f19AeF82a5"
 
-	errUnderpriced = "transaction underpriced" // catches both replacement and normal underpriced
+	errUnderpriced = "transaction underpriced" //nolint:all // catches both replacement and normal underpriced
 
 	blockFetchInterval = 12 // in seconds
 )
@@ -455,7 +455,7 @@ func (dc depositController) waitForReceipts(txs []*types.Transaction) (failedInd
 		time.Sleep(time.Second * blockFetchInterval)
 		for i, tx := range txs {
 			var (
-				isPending = false
+				isPending = false //nolint:all
 				receipt   *types.Receipt
 			)
 

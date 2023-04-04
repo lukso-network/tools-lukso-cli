@@ -9,8 +9,8 @@ var (
 	errNotEnoughArguments      = errors.New("Not enough arguments provided ")
 	errNetworkNotSupported     = errors.New("Selected network is not supported ")
 	errDepositNotProvided      = errors.New("You need to provide a deposit data to send your deposit ")
-	errKeysNotProvided         = errors.New("You need to provide a path to your keys directory ")
-	errTooManyDepositsProvided = errors.New("You can only provide 1 deposit data file ")
+	errKeysNotProvided         = errors.New("You need to provide a path to your keys directory ") //nolint:all
+	errTooManyDepositsProvided = errors.New("You can only provide 1 deposit data file ")          //nolint:all
 	errAlreadyRunning          = errors.New("Process is already running ")
 	errProcessNotFound         = errors.New("Process not found ")
 	errIndexOutOfBounds        = errors.New("Starting index out of bounds ")
