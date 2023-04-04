@@ -96,6 +96,15 @@ func startClients(ctx *cli.Context) error {
 		return err
 	}
 
+	// TODO for now just check if installed - when multiple clients will be supported we can run it generically
+	executionClient := cfg.Execution()
+	consensusClient := cfg.Consensus()
+	if executionClient == "" || consensusClient == "" {
+		log.Error("No selected client found in config. Please make sure that you have installed your clients.")
+
+		return nil
+	}
+
 	log.Info("Starting all clients")
 
 	if ctx.Bool(validatorFlag) && ctx.String(transactionFeeRecipientFlag) == "" {
