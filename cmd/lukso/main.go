@@ -242,28 +242,6 @@ func main() {
 			Action:          displayVersion,
 			HideHelpCommand: true,
 		},
-		{
-			Name:            "skip",
-			SkipFlagParsing: true,
-			Flags: []cli.Flag{
-				&cli.StringFlag{
-					Name:  "something",
-					Usage: "Usage of something",
-					Value: "Asd",
-				},
-				&cli.BoolFlag{
-					Name:  "asd",
-					Usage: "Usage of something",
-					Value: true,
-				},
-			},
-			Action: func(c *cli.Context) error {
-				cli.ShowSubcommandHelpAndExit(c, 0)
-
-				return nil
-			},
-			HideHelpCommand: true,
-		},
 	}
 
 	app.Before = func(ctx *cli.Context) error {
