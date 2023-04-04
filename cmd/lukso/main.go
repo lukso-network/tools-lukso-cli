@@ -99,7 +99,6 @@ func main() {
 			Name:            "init",
 			Usage:           "Initializes the node working directory, its structure, and network configuration",
 			Action:          initializeDirectory,
-			Flags:           networkFlags,
 			Before:          initializeFlags,
 			HideHelpCommand: true,
 		},
