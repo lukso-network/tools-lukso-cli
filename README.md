@@ -239,7 +239,7 @@ $ lukso log validator
 $ lukso install
 
 # Installs clients and agrees with Terms & Conditions automatically
-$ lukso install --accept-terms-of-use
+$ lukso install --agree-terms
 ```
 
 #### How to call help interface of an command
@@ -361,7 +361,7 @@ $ lukso stop --execution
 $ lukso stop --consensus
 ```
 
-#### How to update lukso-cli
+#### How to update the node clients
 
 ```sh
 # Updates installed clients
@@ -374,7 +374,7 @@ $ lukso update geth-tag
 $ lukso update geth --tag "v1.0.0"
 ```
 
-#### Checking the version of the LUKSO CLI
+#### How to check the version of the LUKSO CLI
 
 ```sh
 # Displays the currently installed version of the LUKSO CLI
