@@ -153,6 +153,10 @@ func (dependency *ClientDependency) createDir() error {
 }
 
 func installBinaries(ctx *cli.Context) (err error) {
+	if isAnyRunning() {
+		return
+	}
+
 	if !cfg.Exists() {
 		log.Error(folderNotInitialized)
 
