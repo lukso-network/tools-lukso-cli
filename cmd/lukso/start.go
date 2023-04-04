@@ -13,10 +13,7 @@ func (dependency *ClientDependency) Start(
 	arguments []string,
 	ctx *cli.Context,
 ) (err error) {
-	pidLocation := fmt.Sprintf("%s/%s.pid", pid.FileDir, dependency.name)
-
-	exists := pid.Exists(pidLocation)
-	if exists {
+	if dependency.Stat() {
 		return errAlreadyRunning
 	}
 
@@ -58,6 +55,7 @@ func (dependency *ClientDependency) Start(
 		return
 	}
 
+	pidLocation := fmt.Sprintf("%s/%s.pid", pid.FileDir, dependency.name)
 	err = pid.Create(pidLocation, command.Process.Pid)
 
 	return
@@ -100,7 +98,7 @@ func startClients(ctx *cli.Context) error {
 	executionClient := cfg.Execution()
 	consensusClient := cfg.Consensus()
 	if executionClient == "" || consensusClient == "" {
-		log.Error("No selected client found in config. Please make sure that you have installed your clients.")
+		log.Error(selectedClientsNotFound)
 
 		return nil
 	}

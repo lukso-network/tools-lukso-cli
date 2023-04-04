@@ -97,7 +97,7 @@ func main() {
 		},
 		{
 			Name:            "init",
-			Usage:           "Initializes the node working directory, it's structure, and network configuration",
+			Usage:           "Initializes the node working directory, its structure, and network configuration",
 			Action:          initializeDirectory,
 			Flags:           networkFlags,
 			Before:          initializeFlags,
@@ -105,7 +105,7 @@ func main() {
 		},
 		{
 			Name:            "update",
-			Usage:           "Updates all or specific LUKSO node clients in the working directory to the newest version",
+			Usage:           "Updates all or specific LUKSO node clients in the working directory to the latest version",
 			Action:          updateClients,
 			Before:          initializeFlags,
 			Flags:           updateFlags,
@@ -113,7 +113,7 @@ func main() {
 			Subcommands: []*cli.Command{
 				{
 					Name:            "geth",
-					Usage:           "Updates your geth client to newest version",
+					Usage:           "Updates your geth client to latest version",
 					Action:          updateGethToSpec,
 					Flags:           gethUpdateFlags,
 					Before:          initializeFlags,
@@ -121,7 +121,7 @@ func main() {
 				},
 				{
 					Name:            "prysm",
-					Usage:           "Updates your prysm client to newest version",
+					Usage:           "Updates your prysm client to latest version",
 					Action:          updatePrysmToSpec,
 					Flags:           prysmUpdateFlags,
 					Before:          initializeFlags,
@@ -129,7 +129,7 @@ func main() {
 				},
 				{
 					Name:            "validator",
-					Usage:           "Updates your validator client to newest version",
+					Usage:           "Updates your validator client to latest version",
 					Action:          updateValidatorToSpec,
 					Flags:           validatorUpdateFlags,
 					Before:          initializeFlags,
