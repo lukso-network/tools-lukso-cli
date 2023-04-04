@@ -1,0 +1,14 @@
+run:
+  skip-dirs:
+    - abis
+  timeout: 10m
+  go: "1.19"
+
+linters:
+  enable:
+    - gofmt
+    - goimports
+
+output:
+  print-issued-lines: true
+  sort-results: true
