@@ -269,7 +269,6 @@ $ lukso reset --devnet
 
 #### How to start the node clients
 
-
 ```sh
 # Starts your node clients and connects to LUKSO mainnet
 # Uses the default config files from configs/mainnet folder
@@ -480,7 +479,7 @@ cd cmd/lukso/
 # Generating ABI into abis directory
 # Change [contract_name] to the contract file name
 $ solcjs \
---output-dir abis \
+--output-dir contracts/abis \
 --abi contracts/[contract_name].sol
 ```
 
@@ -491,7 +490,7 @@ $ solcjs \
 # Change [abi_name] to the contract file name
 # Change [binding_name] to the wanted output file name
 abigen \
---abi abis/[abi_name] \
+--abi contracts/abis/[abi_name] \
 --pkg bindings \
 --out contracts/bindings/[binding_name].go \
 --type TypeName
