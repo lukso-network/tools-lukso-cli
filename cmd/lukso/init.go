@@ -11,6 +11,10 @@ import (
 
 // initializeDirectory initializes a working directory for lukso node, with all configurations for all networks
 func initializeDirectory(ctx *cli.Context) error {
+	if isAnyRunning() {
+		return nil
+	}
+
 	if cfg.Exists() {
 		message := "This folder has already been initialized. Do you want to re-initialize it? Please note that configs in this folder will NOT be overwritten [Y/n]:\n> "
 		input := registerInputWithMessage(message)

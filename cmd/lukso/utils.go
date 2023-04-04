@@ -149,6 +149,31 @@ func isRunning(dependency string) bool {
 	return isRunning
 }
 
+func isAnyRunning() bool {
+	gethRunning := isRunning(gethDependencyName)
+	prysmRunning := isRunning(prysmDependencyName)
+	validatorRunning := isRunning(validatorDependencyName)
+
+	if gethRunning || prysmRunning || validatorRunning {
+		message := "Please stop the following clients before continuing: "
+		if gethRunning {
+			message += "geth "
+		}
+		if prysmRunning {
+			message += "prysm "
+		}
+		if validatorRunning {
+			message += "validator "
+		}
+
+		log.Warn(message)
+
+		return true
+	}
+
+	return false
+}
+
 func boolToInt(b bool) int {
 	if b {
 		return 1
