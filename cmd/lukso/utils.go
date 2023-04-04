@@ -6,12 +6,13 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"fmt"
-	"github.com/urfave/cli/v2"
 	"os"
 	"os/exec"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/urfave/cli/v2"
 )
 
 // prepareTimestampedFile concatenates directory of logs, prefix of file name and timestamp.

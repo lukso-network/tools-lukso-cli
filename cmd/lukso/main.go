@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/m8b-dev/lukso-cli/config"
 	"os"
 	"runtime"
 	runtimeDebug "runtime/debug"
+
+	"github.com/m8b-dev/lukso-cli/config"
 
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
@@ -94,8 +95,8 @@ func main() {
 			Before: initializeFlags,
 		},
 		{
-			Name: "init",
-			Usage: "Initializes the node working directory, it's structure, and network configuration",
+			Name:   "init",
+			Usage:  "Initializes the node working directory, it's structure, and network configuration",
 			Action: initializeDirectory,
 			Flags:  networkFlags,
 			Before: initializeFlags,

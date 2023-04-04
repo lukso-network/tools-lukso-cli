@@ -6,11 +6,12 @@ import (
 	"compress/gzip"
 	"errors"
 	"fmt"
-	"github.com/urfave/cli/v2"
 	"io"
 	"net/http"
 	"os"
 	"strings"
+
+	"github.com/urfave/cli/v2"
 )
 
 const (

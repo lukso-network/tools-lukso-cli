@@ -3,10 +3,11 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/urfave/cli/v2"
 	"io"
 	"net/http"
 	"strings"
+
+	"github.com/urfave/cli/v2"
 )
 
 const (

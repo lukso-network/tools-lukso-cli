@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/m8b-dev/lukso-cli/pid"
-	"github.com/urfave/cli/v2"
 	"os"
 	"os/exec"
+
+	"github.com/m8b-dev/lukso-cli/pid"
+	"github.com/urfave/cli/v2"
 )
 
 func (dependency *ClientDependency) Log(logFilePath string) (err error) {
