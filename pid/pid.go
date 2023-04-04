@@ -21,11 +21,8 @@ func Exists(path string) bool {
 	}
 
 	err = p.Signal(syscall.Signal(0))
-	if err != nil {
-		return false
-	}
 
-	return true
+	return err == nil
 }
 
 func Create(path string, pid int) error {

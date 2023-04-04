@@ -42,7 +42,9 @@ func prepareLogfileFlag(logDir, dependencyName string) string {
 	return fmt.Sprintf("--log-file=%s", prysmFullLogPath)
 }
 
-func createJwtSecret(dest string) error {
+// The lint says this function is unused
+// I'll ignore it for now as I'm missing context
+func createJwtSecret(dest string) error { //nolint:all
 	log.Info("Creating new JWT secret")
 	jwtDir := truncateFileFromDir(dest)
 
@@ -54,6 +56,9 @@ func createJwtSecret(dest string) error {
 	secretBytes := make([]byte, 32)
 
 	_, err = rand.Read(secretBytes)
+	if err != nil {
+		return err
+	}
 
 	err = os.WriteFile(dest, []byte(hex.EncodeToString(secretBytes)), configPerms)
 	if err != nil {
@@ -169,7 +174,7 @@ func parseFlags(ctx *cli.Context) (err error) {
 
 		if strings.HasPrefix(arg, "--") {
 			if i+1 == argsLen {
-				arg = strings.TrimLeft(arg, "--")
+				arg = strings.TrimPrefix(arg, "--")
 
 				err = ctx.Set(arg, "true")
 				if err != nil && strings.Contains(err.Error(), noSuchFlag) {
@@ -184,7 +189,7 @@ func parseFlags(ctx *cli.Context) (err error) {
 			// we found a flag for our client - now we need to check if it's a value or bool flag
 			nextArg := args.Get(i + 1)
 			if strings.HasPrefix(nextArg, "--") { // we found a next flag, so current one is a bool
-				arg = strings.TrimLeft(arg, "--")
+				arg = strings.TrimPrefix(arg, "--")
 
 				err = ctx.Set(arg, "true")
 				if err == nil || (err != nil && strings.Contains(err.Error(), noSuchFlag)) {
@@ -195,7 +200,7 @@ func parseFlags(ctx *cli.Context) (err error) {
 
 				return
 			} else {
-				arg = strings.TrimLeft(arg, "--")
+				arg = strings.TrimPrefix(arg, "--")
 
 				err = ctx.Set(arg, nextArg)
 				if err == nil || (err != nil && strings.Contains(err.Error(), noSuchFlag)) {

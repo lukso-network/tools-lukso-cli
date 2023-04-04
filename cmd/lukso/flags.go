@@ -94,7 +94,7 @@ const (
 )
 
 var (
-	jwtSelectedPath = jwtSecretDefaultPath
+	jwtSelectedPath = jwtSecretDefaultPath //nolint:all
 
 	mainnetEnabledFlag = &cli.BoolFlag{
 		Name:  mainnetFlag,
@@ -459,9 +459,9 @@ func (dependency *ClientDependency) PassStartFlags(ctx *cli.Context) (startFlags
 
 func removePrefix(arg, name string) string {
 	prefix := fmt.Sprintf("--%s-", name)
-	if strings.HasPrefix(arg, prefix) {
-		arg = arg[len(prefix):]
-	}
+
+	arg = strings.TrimPrefix(arg, prefix)
+
 	return fmt.Sprintf("--%s", strings.Trim(arg, "- "))
 }
 
