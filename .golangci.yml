@@ -1,6 +1,7 @@
 run:
   skip-dirs:
     - abis
+    - contracts/bindings
   timeout: 10m
   go: "1.19"
 

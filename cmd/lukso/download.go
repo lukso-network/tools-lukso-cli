@@ -234,29 +234,6 @@ func installBinaries(ctx *cli.Context) (err error) {
 	return
 }
 
-func downloadGeth(ctx *cli.Context) (err error) {
-	log.WithField("dependencyTag", gethTag).Info("Downloading Geth")
-
-	err = clientDependencies[gethDependencyName].Download(gethTag, gethCommitHash, false, binaryPerms)
-
-	return
-}
-
-func downloadPrysm(ctx *cli.Context) (err error) {
-	log.WithField("dependencyTag", prysmTag).Info("Downloading Prysm")
-
-	err = clientDependencies[prysmDependencyName].Download(prysmTag, "", false, binaryPerms)
-
-	return
-}
-
-func downloadValidator(ctx *cli.Context) (err error) {
-	log.WithField("dependencyTag", validatorTag).Info("Downloading Validator")
-	err = clientDependencies[validatorDependencyName].Download(prysmTag, "", false, binaryPerms)
-
-	return
-}
-
 func acceptTermsInteractive() bool {
 	message := "You are about to download clients necessary to run LUKSO CLI. " +
 		"By proceeding further you accept Terms of Use of provided clients, you can read more here: " +
