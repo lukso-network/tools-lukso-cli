@@ -153,8 +153,12 @@ func (dependency *ClientDependency) createDir() error {
 }
 
 func installBinaries(ctx *cli.Context) (err error) {
+	if isAnyRunning() {
+		return
+	}
+
 	if !cfg.Exists() {
-		log.Error("Folder not initialized - please make sure that you are working in initialized directory. You can initialize the directory with the init command.")
+		log.Error(folderNotInitialized)
 
 		return
 	}

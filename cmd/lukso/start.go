@@ -5,7 +5,6 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/m8b-dev/lukso-cli/config"
 	"github.com/m8b-dev/lukso-cli/pid"
 	"github.com/urfave/cli/v2"
 )
@@ -14,10 +13,7 @@ func (dependency *ClientDependency) Start(
 	arguments []string,
 	ctx *cli.Context,
 ) (err error) {
-	pidLocation := fmt.Sprintf("%s/%s.pid", pid.FileDir, dependency.name)
-
-	exists := pid.Exists(pidLocation)
-	if exists {
+	if dependency.Stat() {
 		return errAlreadyRunning
 	}
 
@@ -59,6 +55,7 @@ func (dependency *ClientDependency) Start(
 		return
 	}
 
+	pidLocation := fmt.Sprintf("%s/%s.pid", pid.FileDir, dependency.name)
 	err = pid.Create(pidLocation, command.Process.Pid)
 
 	return
@@ -84,19 +81,26 @@ func (dependency *ClientDependency) Stop() error {
 
 func startClients(ctx *cli.Context) error {
 	log.Info("Looking for client configuration file...")
-	_, err := os.Stat(config.Path)
-	if err != nil {
-		log.Error("Client configuration file not found - please make sure that you downloaded your clients")
+	if !cfg.Exists() {
+		log.Error(folderNotInitialized)
 
 		return nil
 	}
 
-	cfg := config.NewConfig(config.Path)
-	err = cfg.Read()
+	err := cfg.Read()
 	if err != nil {
 		log.Errorf("Couldn't read from config file: %v", err)
 
 		return err
+	}
+
+	// TODO for now just check if installed - when multiple clients will be supported we can run it generically
+	executionClient := cfg.Execution()
+	consensusClient := cfg.Consensus()
+	if executionClient == "" || consensusClient == "" {
+		log.Error(selectedClientsNotFound)
+
+		return nil
 	}
 
 	log.Info("Starting all clients")
@@ -168,6 +172,27 @@ func startValidator(ctx *cli.Context) error {
 }
 
 func stopClients(ctx *cli.Context) (err error) {
+	if !cfg.Exists() {
+		log.Error(folderNotInitialized)
+
+		return
+	}
+
+	err = cfg.Read()
+	if err != nil {
+		log.Errorf("Couldn't read from config: %v", err)
+
+		return nil
+	}
+
+	executionClient := cfg.Execution()
+	consensusClient := cfg.Consensus()
+	if executionClient == "" || consensusClient == "" {
+		log.Error("No selected client found in config. Please make sure that you have installed your clients.")
+
+		return nil
+	}
+
 	stopConsensus := ctx.Bool(consensusFlag)
 	stopExecution := ctx.Bool(executionFlag)
 	stopValidator := ctx.Bool(validatorFlag)
@@ -180,34 +205,36 @@ func stopClients(ctx *cli.Context) (err error) {
 	}
 
 	if stopExecution {
-		err = stopClient(clientDependencies[gethDependencyName])(ctx)
+		log.Infof("Stopping execution [%s]", executionClient)
+
+		err = stopClient(clientDependencies[gethDependencyName])
 		if err != nil {
 			return err
 		}
 	}
 
 	if stopConsensus {
-		err = stopClient(clientDependencies[prysmDependencyName])(ctx)
+		log.Infof("Stopping consensus [%s]", consensusClient)
+
+		err = stopClient(clientDependencies[prysmDependencyName])
 		if err != nil {
 			return err
 		}
 	}
 
 	if stopValidator {
-		err = stopClient(clientDependencies[validatorDependencyName])(ctx)
+		log.Info("Stopping validator")
+
+		err = stopClient(clientDependencies[validatorDependencyName])
 	}
 
 	return err
 }
 
-func stopClient(dependency *ClientDependency) func(ctx *cli.Context) error {
-	return func(ctx *cli.Context) error {
-		log.Infof("Stopping %s", dependency.name)
+func stopClient(dependency *ClientDependency) error {
+	err := dependency.Stop()
 
-		err := dependency.Stop()
-
-		return err
-	}
+	return err
 }
 
 func initGeth(ctx *cli.Context) (err error) {

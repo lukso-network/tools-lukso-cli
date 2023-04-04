@@ -149,6 +149,31 @@ func isRunning(dependency string) bool {
 	return isRunning
 }
 
+func isAnyRunning() bool {
+	gethRunning := isRunning(gethDependencyName)
+	prysmRunning := isRunning(prysmDependencyName)
+	validatorRunning := isRunning(validatorDependencyName)
+
+	if gethRunning || prysmRunning || validatorRunning {
+		message := "Please stop the following clients before continuing: "
+		if gethRunning {
+			message += "geth "
+		}
+		if prysmRunning {
+			message += "prysm "
+		}
+		if validatorRunning {
+			message += "validator "
+		}
+
+		log.Warn(message)
+
+		return true
+	}
+
+	return false
+}
+
 func boolToInt(b bool) int {
 	if b {
 		return 1
@@ -165,12 +190,16 @@ func registerInputWithMessage(message string) (input string) {
 	return scanner.Text()
 }
 
-// parseFlags takes care of parsing flags that are skipped if SkipFlagParsing is set to true
+// parseFlags takes care of parsing flags that are skipped if SkipFlagParsing is set to true - if --help or -h is found we display help and stop execution
 func parseFlags(ctx *cli.Context) (err error) {
 	args := ctx.Args()
 	argsLen := args.Len()
 	for i := 0; i < argsLen; i++ {
 		arg := args.Get(i)
+
+		if arg == "--help" || arg == "-h" {
+			cli.ShowSubcommandHelpAndExit(ctx, 0)
+		}
 
 		if strings.HasPrefix(arg, "--") {
 			if i+1 == argsLen {
