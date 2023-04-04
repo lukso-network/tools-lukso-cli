@@ -131,6 +131,102 @@ lukso [global options] [command] [command options] [arguments...] [global option
 | version   | Display the version of the LUKSO CLI Tool that is currently installed                            |
 | help, h   | Shows the full list of commands, global options, and their usage                                 |
 
+### `install`
+
+| Tag                | Used in Commands | Description                              |
+| ------------------ | ---------------- | ---------------------------------------- |
+| geth-tag           | install          | Installs Geth client to latest version   |
+| prysm-tag          | install          | Installs Prysm client to latest version  |
+| geth-tag [string]  | install          | Installs Geth client to certain version  |
+| prysm-tag [string] | install          | Installs Prysm client to certain version |
+
+### `init`
+
+### `update`
+
+| Tag                     | Description                                  |
+| ----------------------- | -------------------------------------------- |
+| geth-tag                | Updates Geth client to latest version        |
+| prysm-tag               | Updates Prysm client to latest version       |
+| geth-tag [string]       | Updates Geth client to certain version       |
+| prysm-tag [string]      | Updates Prysm client to certain version      |
+| erigon-tag              | Updates Erigon client to latest version      |
+| lighthouse-tag          | Updates Lighthouse client to latest version  |
+| erigon-tag [string]     | Updates Erigon client to certain version     |
+| lighthouse-tag [string] | Updates Lighthouse client to certain version |
+
+### `start`
+
+| Flag                                 | Description                                       |
+| ------------------------------------ | ------------------------------------------------- |
+| --validator                          | Starts the validator client                       |
+| --execution                          | Starts the execution client                       |
+| --consensus                          | Starts the consensus client                       |
+| --geth                               | Starts Geth client                                |
+| --prysm                              | Starts Prysm client                               |
+| --lighthouse                         | Starts Lighthouse client                          |
+| --erigon                             | Starts Erigon client                              |
+| --mainnet                            | Starts LUKSO's mainnet data                       |
+| --testnet                            | Starts LUKSO's testnet data                       |
+| --devnet                             | Starts LUKSO's devnet data                        |
+| --geth-config                        | Defines the path to TOML config file              |
+| --prysm-config [string]              | Defines the path to the YAML config file          |
+| --geth-bootnodes [string]            | Sets a custom Geth bootnode name                  |
+| --transaction-fee-recipient [string] | Sets the address that receives block fees         |
+| --validator-keys [string]            | Passes the validator keys from a custom directory |
+| --validator-password [string]        | Passes the assword from a custom directory        |
+| --log-folder [string]                | Sets up a custom log directory                    |
+| --no-slasher                         | Disables slasher                                  |
+| --genesis-json [string]              | Defines the path to genesis JSON file             |
+| --genesis-ssz [string]               | Defines the path to genesis SSZ file              |
+
+### `stop`
+
+| Flag        | Description                |
+| ----------- | -------------------------- |
+| --validator | Stops the validator client |
+| --execution | Stops the execution client |
+| --consensus | Stops the consensus client |
+
+### `log`
+
+### `status`
+
+### `reset`
+
+| Flag      | Description                 |
+| --------- | --------------------------- |
+| --mainnet | Resets LUKSO's mainnet data |
+| --testnet | Resets LUKSO's testnet data |
+| --devnet  | Resets LUKSO's devnet data  |
+
+### `validator init`
+
+Initializes the validator with keys.
+
+| Flag                             | Description                                 |
+| -------------------------------- | ------------------------------------------- |
+| --max-txs-per-block              | Maximum amount of txs sent per single block |
+| --validator-wallet-dir           | Location of a generated wallet              |
+| --validator-keys-dir             | Path to your validator keys                 |
+| --validator-wallet-password-file | Path to your password file                  |
+
+### `validator deposit`
+
+Makes a deposit to the deposit bridge contract.
+
+| Flag                             | Description                                    |
+| -------------------------------- | ---------------------------------------------- |
+| --deposit-data-json [string]     | Defines the path to the deposit JSON file      |
+| --gas-price [string]             | Defines the gas price in integers as string    |
+| --rpc [string]                   | Defines the RPC URL on deposit                 |
+| --genesis                        | Executes deposit to genesis validator contract |
+| --start-from-index [int]         | Start deposit from specific block index        |
+| --max-txs-per-block              | Maximum amount of txs sent per single block    |
+| --validator-wallet-dir           | Location of a generated wallet                 |
+| --validator-keys-dir             | Path to your validator keys                    |
+| --validator-wallet-password-file | Path to your password file                     |
+
 ## Available Global Options
 
 Global options can be added behind a command to allow different modifications to its execution.
@@ -147,66 +243,7 @@ Flags can be added behind a command to allow further command specifications.
 > Global Flags containting [string] are awaiting a string input in quotes.
 > Global Flags containting [int] are awaiting a string input without quotes.
 
-| Flag                                 | Used in Commands   | Description                                         |
-| ------------------------------------ | ------------------ | --------------------------------------------------- |
-| --validator                          | start, stop        | Starts or stops the validator client                |
-| --execution                          | start, stop        | Starts or stops the execution client                |
-| --consensus                          | start, stop        | Starts or stops the consensus client                |
-| --geth                               | start              | Starts Geth client                                  |
-| --prysm                              | start              | Starts Prysm client                                 |
-| --lighthouse                         | start              | Starts Lighthouse client                            |
-| --erigon                             | start              | Starts Erigon client                                |
-| --mainnet                            | init, start, reset | Initializes, starts, or resets LUKSO's mainnet data |
-| --testnet                            | init, start, reset | Initializes, starts, or resets LUKSO's testnet data |
-| --devnet                             | init, start, reset | Initializes, starts, or resets LUKSO's devnet data  |
-| --geth-config                        | start              | Defines the path to TOML config file                |
-| --prysm-config [string]              | start              | Defines the path to the YAML config file            |
-| --geth-bootnodes [string]            | start              | Sets a custom Geth bootnode name                    |
-| --transaction-fee-recipient [string] | start              | Sets the address that receives block fees           |
-| --validator-keys [string]            | start              | Passes the validator keys from a custom directory   |
-| --validator-password [string]        | start              | Passes the assword from a custom directory          |
-| --log-folder [string]                | start              | Sets up a custom log directory                      |
-| --no-slasher                         | start              | Disables slasher                                    |
-| --genesis-json [string]              | start              | Defines the path to genesis JSON file               |
-| --genesis-ssz [string]               | start              | Defines the path to genesis SSZ file                |
-| --deposit-data-json [string]         | validator deposit  | Defines the path to the deposit JSON file           |
-| --gas-price [string]                 | validator deposit  | Defines the gas price in integers as string         |
-| --rpc [string]                       | validator deposit  | Defines the RPC URL on deposit                      |
-| --genesis                            | validator deposit  | Executes deposit to genesis validator contract      |
-| --start-from-index [int]             | validator deposit  | Start deposit from specific block index             |
-| --max-txs-per-block                  | validator          | Maximum amount of txs sent per single block         |
-| --validator-wallet-dir               | validator          | Location of a generated wallet                      |
-| --validator-keys-dir                 | validator          | Path to your validator keys                         |
-| --validator-wallet-password-file     | validator          | Path to your password file                          |
-
-## Available Subcommands
-
-Subcommands and tags can be added behind commands to specify a certain function or dictate specific versioning.
-
-| Subcommands | Superordinate Commands | Description                                     |
-| ----------- | ---------------------- | ----------------------------------------------- |
-| geth        | update, log, status    | Updates your Geth client to newest version      |
-| prysm       | update, log, status    | Updates your Prysm client to newest version     |
-| validator   | update, log, status    | Updates your Validator client to newest version |
-| deposit     | validator              | Makes a deposit to the deposit bridge contract  |
-| init        | validator              | Initializes the validator with keys             |
-
 > When initializing the validator keys must have been generated using LUKSO's [key-gen-cli](https://github.com/lukso-network/tools-key-gen-cli) tool
-
-## Available Tags
-
-> Global Flags containting [string] are awaiting a string input in quotes.
-
-| Tag                     | Used in Commands | Description                                         |
-| ----------------------- | ---------------- | --------------------------------------------------- |
-| geth-tag                | install, update  | Installs or updates Geth client to latest version   |
-| prysm-tag               | install, update  | Installs or updates Prysm client to latest version  |
-| geth-tag [string]       | install, update  | Installs or updates Geth client to certain version  |
-| prysm-tag [string]      | install, update  | Installs or updates Prysm client to certain version |
-| erigon-tag              | update           | Updates Erigon client to latest version             |
-| lighthouse-tag          | update           | Updates Lighthouse client to latest version         |
-| erigon-tag [string]     | update           | Updates Erigon client to certain version            |
-| lighthouse-tag [string] | update           | Updates Lighthouse client to certain version        |
 
 For Client Tags, please visit their official documentations:
 
