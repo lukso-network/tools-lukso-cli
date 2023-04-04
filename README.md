@@ -135,10 +135,9 @@ lukso [global options] [command] [command options] [arguments...] [global option
 
 Global options can be added behind a command to allow different modifications to its execution.
 
-| Global Option                    | Description                                        |
-| -------------------------------- | -------------------------------------------------- |
-| --accept-terms-of-use            | Automatically accept upcoming terms of use         |
-| --help, --h, -h, -help, help, h, | Show help page of the command provided in the call |
+| Global Option | Description                                        |
+| ------------- | -------------------------------------------------- |
+| --help, -h    | Show help page of the command provided in the call |
 
 ## Available Flags
 
@@ -149,6 +148,7 @@ Flags can be added behind a command to allow further command specifications.
 
 | Flag                                 | Used in Commands   | Description                                         |
 | ------------------------------------ | ------------------ | --------------------------------------------------- |
+| --agree-terms                        | install            | Automatically accept terms of use                   |
 | --validator                          | start, stop        | Starts or stops the validator client                |
 | --execution                          | start, stop        | Starts or stops the execution client                |
 | --consensus                          | start, stop        | Starts or stops the consensus client                |
