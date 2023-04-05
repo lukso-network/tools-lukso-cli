@@ -19,51 +19,7 @@ The LUKSO CLI is able to install multiple clients for running the node.
 
 - Execution Node Clients: [Geth](https://geth.ethereum.org/)
 - Beacon Node Clients: [Prysm](https://github.com/prysmaticlabs/prysm)
-- Validator Client for Staking: [Prysm Validator](https://docs.prylabs.network/docs/how-prysm-works/prysm-validator-client)
-
-## Node Structure
-
-As the LUKSO CLI is able to manage multiple clients for multiple blockchain networks in one folder, the structure of the node is set up in a generic way.
-
-- When initializing the node, a global configuration folder is created, which holds shared and unique client information for each type of network.
-- When executing commands, directories for the associated network type will be created accordingly.
-
-Network Types: `mainnet`, `testnet`, `devnet`
-
-> Even if multiple networks are set up, only one can be active at the time
-
-```
-lukso-node
-│
-└───configs                                 // Configuration
-│ └───[network_type]                        // Network's Config Data
-│   └───shared
-|   |   | genesis.json                      // Genesis JSON Data
-|   |   | genesis.ssz                       // Genesis Validator File
-|   |   | config.yaml                       // Global Client Config
-│   └───geth                                // Config for Geth Client
-│   └───prysm                               // Config for Prysm Client
-│   └───erigon                              // Config for Erigon Client
-│   └───lighthouse                          // Config for Lighthouse Client
-│
-└───[network_type]-keystore                 // Network's Validator Data
-│   └───keys                                // Encrypted Private Keys
-│   └───...                                 // Files for Signature Creation
-|   | pubkeys.json                          // Validator Public Keys
-|   | deposit_data.json                     // Deposit JSON for Validators
-|   | node_config.yaml                      // Node Configuration File
-|
-└───[network_type]-wallet                   // Network's Transaction Data
-|
-└───[network_type]-data                     // Network's Blockchain Data
-│   └───consensus                           // Storage of used Consensus Client
-│   └───execution                           // Storage of used Execution Client
-│   └───validator                           // Storage of Validator Client
-│
-└───[network_type]-logs                     // Network's Logged Data
-|
-| cli-config.yaml                           // Global CLI Configuration
-```
+- Validator Client for Staking: [Prysm](https://docs.prylabs.network/docs/how-prysm-works/prysm-validator-client)
 
 ## Setting up the Node
 
@@ -80,7 +36,7 @@ Process of setting up the node using the LUSKO CLI.
 $ curl https://install.lukso.network | sh
 ```
 
-### Installing the Clients
+### Initialise the node folder
 
 1. Create and move into a working directory for your node client data
 
@@ -96,12 +52,62 @@ $ mkdir [folder_name] && cd ./[folder_name]
 $ lukso init
 ```
 
+### Installing the Clients
+
 3. Install choosen LUKSO node clients into the working directory
 
 ```sh
 # Installing Execution Chain, Beacon Chain, and Validator Client
 # Might need admin access by typing `sudo` in front of the command
 $ lukso install
+```
+
+### Starting the Clients
+
+Please refer to the `start` command below for more information.
+
+## Node folder structure
+
+As the LUKSO CLI is able to manage multiple clients for multiple blockchain networks in one folder, the structure of the node is set up in a generic way.
+
+- When initializing the node (with `lukso init`), a global configuration folder is created, which holds shared and unique client information for each type of network.
+- When executing commands, directories for the associated network type will be created accordingly.
+
+Network Types: `mainnet`, `testnet`, `devnet`
+
+> Even if multiple networks are set up, only one can be active at the time
+
+```
+lukso-node
+│
+├───configs                                 // Configuration
+│   └───[network_type]                      // Network's Config Data
+│       ├───shared
+|       |   ├───genesis.json                // Genesis JSON Data
+|       |   ├───genesis.ssz                 // Genesis Validator File
+|       |   └───config.yaml                 // Global Client Config
+│       ├───geth                            // Config for Geth Client
+│       ├───prysm                           // Config for Prysm Client
+│       ├───erigon                          // Config for Erigon Client
+│       └───lighthouse                      // Config for Lighthouse Client
+│
+├───[network_type]-keystore                 // Network's Validator Data
+│   ├───keys                                // Encrypted Private Keys
+│   ├───...                                 // Files for Signature Creation
+|   ├───pubkeys.json                        // Validator Public Keys
+|   ├───deposit_data.json                   // Deposit JSON for Validators
+|   └───node_config.yaml                    // Node Configuration File
+|
+├───[network_type]-wallet                   // Network's Transaction Data
+|
+├───[network_type]-data                     // Network's Blockchain Data
+│   ├───consensus                           // Storage of used Consensus Client
+│   ├───execution                           // Storage of used Execution Client
+│   └───validator                           // Storage of Validator Client
+│
+├───[network_type]-logs                     // Network's Logged Data
+|
+└───cli-config.yaml                         // Global CLI Configuration
 ```
 
 ## Available Commands
@@ -181,7 +187,7 @@ $ lukso update geth
 | --mainnet                            | Starts LUKSO's mainnet data                       |
 | --testnet                            | Starts LUKSO's testnet data                       |
 | --devnet                             | Starts LUKSO's devnet data                        |
-| --geth-config                        | Defines the path to TOML config file              |
+| --geth-config [string]               | Defines the path to TOML config file              |
 | --prysm-config [string]              | Defines the path to the YAML config file          |
 | --geth-bootnodes [string]            | Sets a custom Geth bootnode name                  |
 | --transaction-fee-recipient [string] | Sets the address that receives block fees         |
