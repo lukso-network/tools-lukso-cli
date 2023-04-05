@@ -71,14 +71,14 @@ Process of setting up the node using the LUSKO CLI.
 
 ### Installing the LUKSO CLI
 
-Download and execute the LUKSO CLI installation script
+- Download and execute the LUKSO CLI installation script
+- Running this script will install the full LUKSO CLI on Mac and Linux
+- Installation directory: `/usr/local/bin/lukso`
 
 ```sh
 # Might need admin access by typing `sudo` in front of the command
 $ curl https://install.lukso.network | sh
 ```
-
-**Running this script will install the full LUKSO CLI on Mac and Linux. Installation directory: `/usr/local/bin/lukso`**
 
 ### Setting up the Clients
 
@@ -252,7 +252,7 @@ $ lukso update geth
 # ...
 ```
 
-#### Checking the version of the LUKSO CLI
+#### How to check the version of the LUKSO CLI
 
 ```sh
 # Displays the currently installed version of the LUKSO CLI
@@ -323,7 +323,7 @@ $ lukso validator deposit \
 | `reset`             | Resets all or specific client data directories and logs excluding the validator keys             |
 | `validator init`    | Initializes the validator with keys                                                              |
 | `validator deposit` | Makes a deposit to the deposit bridge contract                                                   |
-| `version`           | Display the version of the LUKSO CLI Tool that is currently installed                            |
+| `version`           | Display the version of the LUKSO CLI that is currently installed                                 |
 | `help`, `h`         | Shows the full list of commands, global options, and their usage                                 |
 
 ### Options
