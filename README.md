@@ -25,6 +25,7 @@ The LUKSO CLI is able to install multiple clients for running the node.
 
 As the LUKSO CLI is able to manage multiple clients for multiple blockchain networks in one folder, the structure of the node is set up in a generic way.
 
+
 - When initializing the node, a global configuration folder is created, which holds shared and unique client information for each type of network.
 - When executing commands, directories for the associated network type will be created accordingly.
 
@@ -74,6 +75,7 @@ Process of setting up the node using the LUSKO CLI.
 - Download and execute the LUKSO CLI installation script
 - Running this script will install the full LUKSO CLI on Mac and Linux
 - Installation directory: `/usr/local/bin/lukso`
+
 
 ```sh
 # Might need admin access by typing `sudo` in front of the command
@@ -250,6 +252,19 @@ $ lukso start --log-folder "[folder_path]"
 | --execution | Stops the execution client |
 | --consensus | Stops the consensus client |
 
+#### How to view logs of the node clients
+
+```sh
+# Displays the logs of the execution client
+$ lukso log execution
+
+# Displays the logs of the consensus client
+$ lukso log consensus
+
+# Displays the logs of the validator
+$ lukso log validator
+```
+
 #### How to stop all or specific node clients
 
 ```sh
@@ -278,9 +293,6 @@ $ lukso log execution
 
 # Displays the logs of the consensus client
 $ lukso log consensus
-
-# Displays the logs of the validator
-$ lukso log validator
 ```
 
 ### `status`
