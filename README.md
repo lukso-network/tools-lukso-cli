@@ -333,7 +333,9 @@ $ lukso validator deposit \
 
 ### `install`
 
-> WIP
+| Option        | Description                               |
+| ------------- | ----------------------------------------- |
+| --agree-terms | Automatically accept Terms and Conditions |
 
 ### `update`
 
