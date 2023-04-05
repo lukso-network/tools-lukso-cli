@@ -11,16 +11,59 @@ The LUKSO CLI is a command line tool to install, manage and set up validators of
 - 📑 Accessing various node logs
 - 💰 Making validator deposits
 
-## Client Clarification
+## Supported EVM Clients
 
-> WIP: More client setups will be added
+> WIP: More clients will be added
 
-The LUKSO CLI is able to install multiple node clients.
-They cover the full node functionality of an EVM PoS Blockchain.
+The LUKSO CLI is able to install multiple clients for running the node.
 
-- Supported Execution Node Clients: [Geth](https://geth.ethereum.org/)
-- Supported Beacon Node Clients: [Prysm](https://github.com/prysmaticlabs/prysm)
+- Execution Node Clients: [Geth](https://geth.ethereum.org/)
+- Beacon Node Clients: [Prysm](https://github.com/prysmaticlabs/prysm)
 - Validator Client for Staking
+
+## Node Structure
+
+As the LUKSO CLI is able to manage multiple clients for multiple blockchain networks in one folder, the structure of the node is set up in a generic way.
+
+- When initializing the node, a global configuration folder is created, which holds shared and unique client information for each type of network.
+- When executing commands, directories for the associated network type will be created accordingly.
+
+Network Types: `mainnet`, `testnet`, `devnet`
+
+> Even if multiple networks are set up, only one can be active at the time
+
+```
+lukso-node
+│
+└───configs                                 // Configuration
+│ └───[network_type]                        // Network's Config Data
+│   └───shared
+|   |   | genesis.json                      // Genesis JSON Data
+|   |   | genesis.ssz                       // Genesis Validator File
+|   |   | config.yaml                       // Global Client Config
+│   └───geth                                // Config for Geth Client
+│   └───prysm                               // Config for Prysm Client
+│   └───erigon                              // Config for Erigon Client
+│   └───lighthouse                          // Config for Lighthouse Client
+│
+└───[network_type]-keystore                 // Network's Validator Data
+│   └───keys                                // Encrypted Private Keys
+│   └───...                                 // Files for Signature Creation
+|   | pubkeys.json                          // Validator Public Keys
+|   | deposit_data.json                     // Deposit JSON for Validators
+|   | node_config.yaml                      // Node Configuration File
+|
+└───[network_type]-wallet                   // Network's Transaction Data
+|
+└───[network_type]-data                     // Network's Blockchain Data
+│   └───consensus_data                      // Storage of used Consensus Client
+│   └───execution_data                      // Storage of used Execution Client
+│   └───validator_data                      // Storage of Validator Client
+│
+└───[network_type]-logs                     // Network's Logged Data
+|
+| cli-config.yaml                           // Global CLI Configuration
+```
 
 ## Setting up the Node
 
