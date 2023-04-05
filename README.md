@@ -19,7 +19,7 @@ The LUKSO CLI is able to install multiple clients for running the node.
 
 - Execution Node Clients: [Geth](https://geth.ethereum.org/)
 - Beacon Node Clients: [Prysm](https://github.com/prysmaticlabs/prysm)
-- Validator Client for Staking
+- Validator Client for Staking: [Prysm Validator](https://docs.prylabs.network/docs/how-prysm-works/prysm-validator-client)
 
 ## Node Structure
 
@@ -57,9 +57,9 @@ lukso-node
 └───[network_type]-wallet                   // Network's Transaction Data
 |
 └───[network_type]-data                     // Network's Blockchain Data
-│   └───consensus_data                      // Storage of used Consensus Client
-│   └───execution_data                      // Storage of used Execution Client
-│   └───validator_data                      // Storage of Validator Client
+│   └───consensus                           // Storage of used Consensus Client
+│   └───execution                           // Storage of used Execution Client
+│   └───validator                           // Storage of Validator Client
 │
 └───[network_type]-logs                     // Network's Logged Data
 |
