@@ -125,49 +125,51 @@ func startClients(ctx *cli.Context) error {
 		err = startValidator(ctx)
 	}
 
+	log.Info("🎉  Clients have been started. Your node is now running 🆙.")
+
 	return err
 }
 
 func startGeth(ctx *cli.Context) error {
-	log.Info("Running geth init first...")
+	log.Info("⚙️  Running geth init first...")
 
 	err := initGeth(ctx)
 	if err != nil {
 		log.Errorf("There was an error while initalizing geth. Error: %v", err)
 	}
 
-	log.Info("Starting Geth")
+	log.Info("🔄  Starting Geth")
 
 	err = clientDependencies[gethDependencyName].Start(prepareGethStartFlags(ctx), ctx)
 	if err != nil {
 		return err
 	}
 
-	log.Info("Geth started! Use lukso logs command to see logs")
+	log.Info("✅  Geth started! Use 'lukso log' to see logs.")
 	return nil
 }
 
 func startPrysm(ctx *cli.Context) error {
-	log.Info("Starting Prysm")
+	log.Info("🔄  Starting Prysm")
 
 	err := clientDependencies[prysmDependencyName].Start(preparePrysmStartFlags(ctx), ctx)
 	if err != nil {
 		return err
 	}
 
-	log.Info("Prysm started! Use lukso logs command to see logs")
+	log.Info("✅  Prysm started! Use 'lukso log' to see logs.")
 	return nil
 }
 
 func startValidator(ctx *cli.Context) error {
-	log.Info("Starting Validator")
+	log.Info("🔄  Starting Validator")
 
 	err := clientDependencies[validatorDependencyName].Start(prepareValidatorStartFlags(ctx), ctx)
 	if err != nil {
 		return err
 	}
 
-	log.Info("Validator started! Use lukso logs command to see logs")
+	log.Info("✅  Validator started! Use 'lukso log' to see logs.")
 	return nil
 }
 
