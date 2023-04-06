@@ -78,6 +78,12 @@ jobs:
 
       - name: Validate | Test
         run: go test -C cmd/lukso
+      
+      - name: 🔍 Golangci-lint
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: v1.52.2
+          args: --config=.golangci.yml
 
   # Build sources for every OS
   github_build:
