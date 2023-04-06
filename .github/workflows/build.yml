@@ -64,7 +64,7 @@ jobs:
           echo "folder=$FOLDER" >> $GITHUB_OUTPUT
 
   check_test:
-    name: "Validate Fmt, Validate Lint and Run Tests"
+    name: "Code Format, Lint and Tests"
     runs-on: ubuntu-latest
     steps:
       - name: Validate | Checkout
