@@ -45,13 +45,13 @@ const (
 	agreeTermsFlag = "agree-terms"
 
 	// flag defaults used in different contexts
-	gethMainnetDatadir = "./mainnet-data/execution"
-	gethTestnetDatadir = "./testnet-data/execution"
-	gethDevnetDatadir  = "./devnet-data/execution"
+	executionMainnetDatadir = "./mainnet-data/execution"
+	executionTestnetDatadir = "./testnet-data/execution"
+	executionDevnetDatadir  = "./devnet-data/execution"
 
-	prysmMainnetDatadir = "./mainnet-data/consensus"
-	prysmTestnetDatadir = "./testnet-data/consensus"
-	prysmDevnetDatadir  = "./devnet-data/consensus"
+	consensusMainnetDatadir = "./mainnet-data/consensus"
+	consensusTestnetDatadir = "./testnet-data/consensus"
+	consensusDevnetDatadir  = "./devnet-data/consensus"
 
 	validatorMainnetDatadir = "./mainnet-data/validator"
 	validatorTestnetDatadir = "./testnet-data/validator"
@@ -238,7 +238,7 @@ var (
 		&cli.StringFlag{
 			Name:   gethDatadirFlag,
 			Usage:  "a path you would like to store your data",
-			Value:  gethMainnetDatadir,
+			Value:  executionMainnetDatadir,
 			Hidden: true,
 		},
 		&cli.StringFlag{
@@ -265,7 +265,7 @@ var (
 		&cli.StringFlag{
 			Name:   gethDatadirFlag,
 			Usage:  "geth datadir",
-			Value:  gethMainnetDatadir,
+			Value:  executionMainnetDatadir,
 			Hidden: true,
 		},
 	}
@@ -297,7 +297,7 @@ var (
 		&cli.StringFlag{
 			Name:   prysmDatadirFlag,
 			Usage:  "prysm datadir",
-			Value:  prysmMainnetDatadir,
+			Value:  consensusMainnetDatadir,
 			Hidden: true,
 		},
 		&cli.StringFlag{
@@ -325,7 +325,7 @@ var (
 		&cli.StringFlag{
 			Name:   prysmDatadirFlag,
 			Usage:  "prysm datadir",
-			Value:  prysmMainnetDatadir,
+			Value:  consensusMainnetDatadir,
 			Hidden: true,
 		},
 	}

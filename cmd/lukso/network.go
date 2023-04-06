@@ -46,8 +46,8 @@ func selectNetworkFor(f func(*cli.Context) error) func(*cli.Context) error {
 
 		if devnetEnabled {
 			cfg = networkConfig{
-				gethDatadirPath:      gethDevnetDatadir,
-				prysmDatadirPath:     prysmDevnetDatadir,
+				gethDatadirPath:      executionDevnetDatadir,
+				prysmDatadirPath:     consensusDevnetDatadir,
 				validatorDatadirPath: validatorDevnetDatadir,
 				logPath:              devnetLogs,
 				configPath:           devnetConfig,

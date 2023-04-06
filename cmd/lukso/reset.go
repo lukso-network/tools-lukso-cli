@@ -12,34 +12,44 @@ func resetClients(ctx *cli.Context) error {
 	if isAnyRunning() {
 		return nil
 	}
+	if !cfg.Exists() {
+		log.Error(folderNotInitialized)
+
+		return nil
+	}
 
 	message := fmt.Sprintf("WARNING: THIS ACTION WILL REMOVE DATA DIRECTORIES FROM ALL OF RUNNING CLIENTS.\n"+
 		"Are you sure you want to continue?\nDirectories that will be deleted:\n"+
-		"- %s\n- %s\n- %s\n[Y/n]: ", ctx.String(gethDatadirFlag), ctx.String(prysmDatadirFlag), ctx.String(validatorDatadirFlag))
+		"- %s\n- %s\n- %s\n[y/N]: ", ctx.String(gethDatadirFlag), ctx.String(prysmDatadirFlag), ctx.String(validatorDatadirFlag))
 
 	input := registerInputWithMessage(message)
-	if !strings.EqualFold(input, "y") && input != "" {
+	if !strings.EqualFold(input, "y") {
 		log.Info("Aborting...")
 
 		return nil
 	}
 
-	err := resetGeth(ctx)
+	err := resetExecution(ctx)
 	if err != nil {
 		return err
 	}
 
-	err = resetPrysm(ctx)
+	err = resetConsensus(ctx)
 	if err != nil {
 		return err
 	}
 
 	err = resetValidator(ctx)
+	if err != nil {
+		return err
+	}
 
-	return err
+	log.Info("Data directories cleared!")
+
+	return nil
 }
 
-func resetGeth(ctx *cli.Context) error {
+func resetExecution(ctx *cli.Context) error {
 	dataDirPath := ctx.String(gethDatadirFlag)
 	if dataDirPath == "" {
 		return errFlagMissing
@@ -48,7 +58,7 @@ func resetGeth(ctx *cli.Context) error {
 	return os.RemoveAll(dataDirPath)
 }
 
-func resetPrysm(ctx *cli.Context) error {
+func resetConsensus(ctx *cli.Context) error {
 	dataDirPath := ctx.String(prysmDatadirFlag)
 	if dataDirPath == "" {
 		return errFlagMissing
