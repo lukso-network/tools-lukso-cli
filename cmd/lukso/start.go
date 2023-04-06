@@ -188,7 +188,7 @@ func stopClients(ctx *cli.Context) (err error) {
 	executionClient := cfg.Execution()
 	consensusClient := cfg.Consensus()
 	if executionClient == "" || consensusClient == "" {
-		log.Error("No selected client found in config. Please make sure that you have installed your clients.")
+		log.Error(selectedClientsNotFound)
 
 		return nil
 	}
