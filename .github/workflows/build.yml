@@ -64,6 +64,7 @@ jobs:
           echo "folder=$FOLDER" >> $GITHUB_OUTPUT
 
   check_test:
+    name: "Validate Fmt, Validate Lint and Run Tests"
     runs-on: ubuntu-latest
     steps:
       - name: Validate | Checkout
@@ -76,14 +77,14 @@ jobs:
       - name: Validate | Fmt
         run: gofmt -l cmd/lukso
 
-      - name: Validate | Test
-        run: go test -C cmd/lukso
-      
       - name: 🔍 Golangci-lint
         uses: golangci/golangci-lint-action@v3
         with:
           version: v1.52.2
           args: --config=.golangci.yml
+      
+      - name: Validate | Test
+        run: go test -C cmd/lukso
 
   # Build sources for every OS
   github_build:
