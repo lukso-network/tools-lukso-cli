@@ -20,7 +20,7 @@ const (
 )
 
 func (dependency *ClientDependency) Download(tag, commitHash string, isUpdate bool, permissions int) (err error) {
-	log.Infof("Downloading %s...", dependency.name)
+	log.Infof("⬇️  Downloading %s...", dependency.name)
 
 	err = dependency.createDir()
 	if err != nil {
@@ -36,10 +36,10 @@ func (dependency *ClientDependency) Download(tag, commitHash string, isUpdate bo
 				break
 			}
 
-			message := fmt.Sprintf("You already have %s installed: do you want to override your installation? [Y/n]:\n> ", dependency.name)
+			message := fmt.Sprintf("You already have %s installed: do you want to override your installation? [Y/n]: ", dependency.name)
 			input := registerInputWithMessage(message)
 			if !strings.EqualFold(input, "y") && input != "" {
-				log.Info("Skipping installation...")
+				log.Info("⏭️  Skipping installation...")
 
 				return nil
 			}
@@ -129,7 +129,7 @@ func (dependency *ClientDependency) Download(tag, commitHash string, isUpdate bo
 		return
 	}
 
-	log.Infof("Downloaded %s!", dependency.name)
+	log.Infof("✅  Downloaded %s!", dependency.name)
 
 	return
 }
@@ -233,7 +233,8 @@ func installBinaries(ctx *cli.Context) (err error) {
 		return err
 	}
 
-	log.Info("Config created!")
+	log.Info("✅  Configuration files created!")
+	log.Info("✅  Clients have been successfully installed, you can start them with the 'lukso start' command.")
 
 	return
 }

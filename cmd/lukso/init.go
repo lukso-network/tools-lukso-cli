@@ -16,9 +16,9 @@ func initializeDirectory(ctx *cli.Context) error {
 	}
 
 	if cfg.Exists() {
-		message := "This folder has already been initialized. Do you want to re-initialize it? Please note that configs in this folder will NOT be overwritten [Y/n]:\n> "
+		message := "This folder has already been initialized. Do you want to re-initialize it? Please note that configs in this folder will NOT be overwritten [y/N]:\n> "
 		input := registerInputWithMessage(message)
-		if !strings.EqualFold(input, "y") && input != "" {
+		if !strings.EqualFold(input, "y") && input == "" {
 			return nil
 		}
 	}
@@ -45,7 +45,7 @@ func initializeDirectory(ctx *cli.Context) error {
 		return nil
 	}
 
-	log.Info("Creating LUKSO configuration file...")
+	log.Info("⚙️  Creating LUKSO configuration file...")
 
 	err = cfg.Create("", "")
 	if err != nil {
@@ -54,8 +54,8 @@ func initializeDirectory(ctx *cli.Context) error {
 		return nil
 	}
 
-	log.Infof("LUKSO configuration created under %s", config.Path)
-	log.Info("Folder initialized! To start your node run lukso start command")
+	log.Infof("✅  LUKSO configuration created under %s", config.Path)
+	log.Info("✅  Folder initialized! \n1) ⚙️  Use 'lukso install' to install clients. \n2) ▶️  Use 'lukso start' to start your node.")
 
 	return nil
 }
