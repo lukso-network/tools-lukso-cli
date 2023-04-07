@@ -12,21 +12,25 @@ permissions:
   contents: write
 
 jobs:
-  simulate_success_job:
+  release_chore:
+    if: "startsWith(github.event.pull_request.title, 'chore(main): release')"
     runs-on: ubuntu-latest
     steps:
       - name: Post success status for release chore.
-        if: ${{ startsWith(github.event.pull_request.title, 'chore: release') }}
         uses: Sibz/github-status-action@v1
         with:
-          context: 'Lint Test / lint_test'
-          description: 'Passed'
-          state: 'success'
+          context: "Lint Test / lint_test"
+          description: "Passed"
+          state: "success"
           sha: ${{github.event.pull_request.head.sha || github.sha}}
+
+  previous_version:
+    runs-on: ubuntu-latest
+    steps:
       - name: Post success status for testing (old status)
         uses: Sibz/github-status-action@v1
         with:
-          context: 'lint_test'
-          description: 'Passed'
-          state: 'success'
+          context: "lint_test"
+          description: "Passed"
+          state: "success"
           sha: ${{github.event.pull_request.head.sha || github.sha}}
