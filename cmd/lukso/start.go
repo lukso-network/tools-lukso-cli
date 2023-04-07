@@ -66,7 +66,7 @@ func (dependency *ClientDependency) Stop() error {
 
 	pidVal, err := pid.Load(pidLocation)
 	if err != nil {
-		log.Warnf("%s is not running - skipping...", dependency.name)
+		log.Warnf("⏭️  %s is not running - skipping...", dependency.name)
 
 		return nil
 	}
@@ -75,6 +75,8 @@ func (dependency *ClientDependency) Stop() error {
 	if err != nil {
 		return errProcessNotFound
 	}
+
+	log.Infof("🛑  Stopped %s", dependency.name)
 
 	return nil
 }
