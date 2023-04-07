@@ -50,7 +50,7 @@ func (dependency *ClientDependency) Stat() (isRunning bool) {
 }
 
 func logClients(ctx *cli.Context) error {
-	log.Info("Please specify your client - run lukso logs help for more info")
+	log.Info("Please specify your client - run lukso log --help for more info")
 
 	return nil
 }

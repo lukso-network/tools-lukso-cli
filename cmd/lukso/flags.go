@@ -61,9 +61,11 @@ const (
 	testnetLogs = "./testnet-logs"
 	devnetLogs  = "./devnet-logs"
 
-	mainnetConfig = "./configs/mainnet"
-	testnetConfig = "./configs/testnet"
-	devnetConfig  = "./configs/devnet"
+	configsRootDir = "./configs"
+
+	mainnetConfig = configsRootDir + "/mainnet"
+	testnetConfig = configsRootDir + "/testnet"
+	devnetConfig  = configsRootDir + "/devnet"
 
 	mainnetKeystore = "./mainnet-keystore"
 	testnetKeystore = "./testnet-keystore"
@@ -188,17 +190,17 @@ var (
 		},
 		&cli.BoolFlag{
 			Name:  noSlasherFlag,
-			Usage: "disable slasher",
+			Usage: "Disables slasher",
 			Value: false, // default is true, we change it to false only when running validator
 		},
 		&cli.StringFlag{
 			Name:  transactionFeeRecipientFlag,
-			Usage: "address to receive fees from blocks",
+			Usage: "Address to receive fees from blocks",
 		},
 		&cli.StringFlag{
 			Name:  logFolderFlag,
 			Usage: "Directory to output logs into",
-			Value: "./mainnet-logs",
+			Value: mainnetLogs,
 		},
 	}
 	logsFlags  []cli.Flag
@@ -216,12 +218,12 @@ var (
 	gethDownloadFlags = []cli.Flag{
 		&cli.StringFlag{
 			Name:  gethTagFlag,
-			Usage: "a tag of geth you would like to run",
+			Usage: "A tag of geth you would like to run",
 			Value: "1.11.4",
 		},
 		&cli.StringFlag{
 			Name:  gethCommitHashFlag,
-			Usage: "a hash of commit that is bound to given release tag",
+			Usage: "A hash of commit that is bound to given release tag",
 			Value: "7e3b149b",
 		},
 	}
@@ -229,7 +231,7 @@ var (
 	gethUpdateFlags = []cli.Flag{
 		&cli.StringFlag{
 			Name:  gethTagFlag,
-			Usage: "a tag of geth you would like to run",
+			Usage: "A tag of geth you would like to run",
 			Value: "1.11.4",
 		},
 	}
@@ -237,18 +239,18 @@ var (
 	gethStartFlags = []cli.Flag{
 		&cli.StringFlag{
 			Name:   gethDatadirFlag,
-			Usage:  "a path you would like to store your data",
+			Usage:  "A path you would like to store your data",
 			Value:  executionMainnetDatadir,
 			Hidden: true,
 		},
 		&cli.StringFlag{
 			Name:  gethConfigFileFlag,
-			Usage: "path to geth.toml config file",
+			Usage: "Path to geth.toml config file",
 			Value: mainnetConfig + "/" + gethTomlPath,
 		},
 		&cli.StringFlag{
 			Name:  genesisJsonFlag,
-			Usage: "path to genesis.json file",
+			Usage: "Path to genesis.json file",
 			Value: mainnetConfig + "/" + genesisJsonPath,
 		},
 	}
@@ -296,19 +298,19 @@ var (
 		},
 		&cli.StringFlag{
 			Name:   prysmDatadirFlag,
-			Usage:  "prysm datadir",
+			Usage:  "Prysm datadir",
 			Value:  consensusMainnetDatadir,
 			Hidden: true,
 		},
 		&cli.StringFlag{
 			Name:   prysmChainConfigFileFlag,
-			Usage:  "path to chain config file",
+			Usage:  "Path to chain config file",
 			Value:  mainnetConfig + "/" + chainConfigYamlPath,
 			Hidden: true,
 		},
 		&cli.StringFlag{
 			Name:  prysmConfigFileFlag,
-			Usage: "path to prysm.yaml config file",
+			Usage: "Path to prysm.yaml config file",
 			Value: mainnetConfig + "/" + prysmYamlPath,
 		},
 	}
@@ -335,7 +337,7 @@ var (
 	validatorDownloadFlags = []cli.Flag{
 		&cli.StringFlag{
 			Name:  validatorTagFlag,
-			Usage: "tag for validator binary",
+			Usage: "Tag for validator binary",
 			Value: "v3.2.2",
 		},
 	}
@@ -343,7 +345,7 @@ var (
 	validatorUpdateFlags = []cli.Flag{
 		&cli.StringFlag{
 			Name:  validatorTagFlag,
-			Usage: "tag for validator binary",
+			Usage: "Tag for validator binary",
 			Value: "v3.2.2",
 		},
 	}
@@ -351,28 +353,28 @@ var (
 	validatorStartFlags = []cli.Flag{
 		&cli.StringFlag{
 			Name:   validatorDatadirFlag,
-			Usage:  "validator datadir",
+			Usage:  "Validator datadir",
 			Value:  validatorMainnetDatadir,
 			Hidden: true,
 		},
 		&cli.StringFlag{
 			Name:  validatorKeysFlag,
-			Usage: "location of generated wallet",
+			Usage: "Location of generated wallet",
 			Value: mainnetKeystore,
 		},
 		&cli.StringFlag{
 			Name:  validatorWalletPasswordFileFlag,
-			Usage: "location of file password that you used for generation keys from deposit-cli",
+			Usage: "Location of file password that you used for generation keys from deposit-cli",
 			Value: "",
 		},
 		&cli.StringFlag{
 			Name:  validatorConfigFileFlag,
-			Usage: "path to prysm.yaml config file",
+			Usage: "Path to prysm.yaml config file",
 			Value: mainnetConfig + "/" + validatorYamlPath,
 		},
 		&cli.StringFlag{
 			Name:   validatorChainConfigFileFlag,
-			Usage:  "prysm chain config file path",
+			Usage:  "Prysm chain config file path",
 			Value:  chainConfigYamlPath,
 			Hidden: true,
 		},
@@ -382,14 +384,14 @@ var (
 		&cli.StringFlag{
 			Name:  logFolderFlag,
 			Usage: "Directory to output logs into",
-			Value: "./mainnet-logs",
+			Value: mainnetLogs,
 		},
 	}
 	// RESET
 	validatorResetFlags = []cli.Flag{
 		&cli.StringFlag{
 			Name:   validatorDatadirFlag,
-			Usage:  "validator datadir",
+			Usage:  "Validator datadir",
 			Value:  validatorMainnetDatadir,
 			Hidden: true,
 		},
