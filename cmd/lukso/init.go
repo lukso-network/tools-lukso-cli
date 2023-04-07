@@ -9,7 +9,7 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-const jwtSecretPath = "./configs/shared/secrets/jwt.hex"
+const jwtSecretPath = configsRootDir + "/shared/secrets/jwt.hex"
 
 // initializeDirectory initializes a working directory for lukso node, with all configurations for all networks
 func initializeDirectory(ctx *cli.Context) error {
