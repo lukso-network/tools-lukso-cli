@@ -84,7 +84,7 @@ func statClients(ctx *cli.Context) (err error) {
 
 	err = cfg.Read()
 	if err != nil {
-		log.Error("There was an error while reading configuration file: %v", err)
+		log.Errorf("There was an error while reading configuration file: %v", err)
 
 		return nil
 	}
