@@ -170,7 +170,7 @@ var (
 	validatorInitFlags = []cli.Flag{
 		&cli.StringFlag{
 			Name:     validatorKeysFlag,
-			Usage:    "Path to your validator keys and generated wallet",
+			Usage:    "Path to your validator keys and generated wallet directory (usually generated with key-gen-cli or wagyu-key-gen)",
 			Required: true,
 		},
 		&cli.StringFlag{
