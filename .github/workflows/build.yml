@@ -7,6 +7,10 @@ on:
     branches:
       - "*"
 
+concurrency:
+  group: compile-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   id-token: write
   pull-requests: write
