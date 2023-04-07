@@ -166,6 +166,8 @@ func isAnyRunning() bool {
 			message += "validator "
 		}
 
+		message += "\nYou can use 'lukso stop' to stop clients."
+
 		log.Warn(message)
 
 		return true
