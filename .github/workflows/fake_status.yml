@@ -19,7 +19,7 @@ jobs:
       - name: Post success status for release chore.
         uses: Sibz/github-status-action@v1
         with:
-          authToken: ${{ secrets.GITHUB_TOKEN }}
+          authToken: ${{ secrets.GH_DEVOPS_ACCOUNT_TOKEN }}
           context: "Lint Test / lint_test"
           description: "Passed"
           state: "success"
@@ -31,7 +31,7 @@ jobs:
       - name: Post success status for testing (old status)
         uses: Sibz/github-status-action@v1
         with:
-          authToken: ${{ secrets.GITHUB_TOKEN }}
+          authToken: ${{ secrets.GH_DEVOPS_ACCOUNT_TOKEN }}
           context: "lint_test"
           description: "Passed"
           state: "success"
