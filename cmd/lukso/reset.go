@@ -18,9 +18,9 @@ func resetClients(ctx *cli.Context) error {
 		return nil
 	}
 
-	message := fmt.Sprintf("WARNING: THIS ACTION WILL REMOVE DATA DIRECTORIES FROM ALL OF RUNNING CLIENTS.\n"+
-		"Are you sure you want to continue?\nDirectories that will be deleted:\n"+
-		"- %s\n- %s\n- %s\n[y/N]: ", ctx.String(gethDatadirFlag), ctx.String(prysmDatadirFlag), ctx.String(validatorDatadirFlag))
+	message := fmt.Sprintf("⚠️  WARNING: THIS ACTION WILL DELETE CLIENTS DATA DIRECTORIES ⚠️\n"+
+		"\nDirectories that will be deleted:\n"+
+		"- %s\n- %s\n- %s\n\nAre you sure you want to continue? [y/N]: ", ctx.String(gethDatadirFlag), ctx.String(prysmDatadirFlag), ctx.String(validatorDatadirFlag))
 
 	input := registerInputWithMessage(message)
 	if !strings.EqualFold(input, "y") {
@@ -44,7 +44,7 @@ func resetClients(ctx *cli.Context) error {
 		return err
 	}
 
-	log.Info("Data directories cleared!")
+	log.Info("🗑️  Data directories deleted.")
 
 	return nil
 }
