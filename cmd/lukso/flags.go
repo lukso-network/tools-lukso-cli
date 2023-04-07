@@ -407,6 +407,7 @@ func (dependency *ClientDependency) PassStartFlags(ctx *cli.Context) (startFlags
 		gethConfigFileFlag,
 		prysmConfigFileFlag,
 		validatorConfigFileFlag,
+		validatorWalletPasswordFileFlag,
 	}
 
 	for i := 0; i < argsLen; i++ {
@@ -454,14 +455,33 @@ func removePrefix(arg, name string) string {
 	return fmt.Sprintf("--%s", strings.Trim(arg, "- "))
 }
 
-func prepareGethStartFlags(ctx *cli.Context) (startFlags []string) {
+func prepareGethStartFlags(ctx *cli.Context) (startFlags []string, isCorrect bool) {
+	isCorrect = true
+	if !flagFileExists(ctx, gethConfigFileFlag) {
+		isCorrect = false
+
+		return
+	}
+
 	startFlags = clientDependencies[gethDependencyName].PassStartFlags(ctx)
 	startFlags = append(startFlags, fmt.Sprintf("--config=%s", ctx.String(gethConfigFileFlag)))
 
 	return
 }
 
-func prepareValidatorStartFlags(ctx *cli.Context) (startFlags []string) {
+func prepareValidatorStartFlags(ctx *cli.Context) (startFlags []string, isCorrect bool) {
+	isCorrect = true
+
+	validatorConfigExists := flagFileExists(ctx, validatorConfigFileFlag)
+	chainConfigExists := flagFileExists(ctx, prysmChainConfigFileFlag)
+	validatorWalletPasswordExists := flagFileExists(ctx, validatorWalletPasswordFileFlag)
+	validatorKeysExists := flagFileExists(ctx, validatorKeysFlag)
+	if !validatorConfigExists || !chainConfigExists || validatorWalletPasswordExists || validatorKeysExists {
+		isCorrect = false
+
+		return
+	}
+
 	startFlags = clientDependencies[validatorDependencyName].PassStartFlags(ctx)
 
 	// terms of use already accepted during installation
@@ -481,7 +501,18 @@ func prepareValidatorStartFlags(ctx *cli.Context) (startFlags []string) {
 	return
 }
 
-func preparePrysmStartFlags(ctx *cli.Context) (startFlags []string) {
+func preparePrysmStartFlags(ctx *cli.Context) (startFlags []string, isCorrect bool) {
+	isCorrect = true
+
+	genesisExists := flagFileExists(ctx, prysmGenesisStateFlag)
+	prysmConfigExists := flagFileExists(ctx, prysmConfigFileFlag)
+	chainConfigExists := flagFileExists(ctx, prysmChainConfigFileFlag)
+	if !genesisExists || !prysmConfigExists || !chainConfigExists {
+		isCorrect = false
+
+		return
+	}
+
 	startFlags = clientDependencies[prysmDependencyName].PassStartFlags(ctx)
 	startFlags = append(startFlags, prepareLogfileFlag(ctx.String(logFolderFlag), prysmDependencyName))
 

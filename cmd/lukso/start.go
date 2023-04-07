@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"os/exec"
@@ -13,8 +14,10 @@ func (dependency *ClientDependency) Start(
 	arguments []string,
 	ctx *cli.Context,
 ) (err error) {
-	if dependency.Stat() {
-		return errAlreadyRunning
+	if isRunning(dependency.name) {
+		log.Infof("%s is already running - skipping...", dependency.name)
+
+		return nil
 	}
 
 	command := exec.Command(dependency.name, arguments...)
@@ -115,21 +118,31 @@ func startClients(ctx *cli.Context) error {
 
 	err = startGeth(ctx)
 	if err != nil {
-		return err
+		log.Errorf("There was an error while starting geth: %v", err)
+
+		return nil
 	}
 
 	err = startPrysm(ctx)
 	if err != nil {
-		return err
+		log.Errorf("There was an error while starting prysm: %v", err)
+
+		return nil
 	}
 
 	if ctx.Bool(validatorFlag) {
 		err = startValidator(ctx)
 	}
 
+	if err != nil {
+		log.Errorf("There was an error while starting validator: %v", err)
+
+		return nil
+	}
+
 	log.Info("🎉  Clients have been started. Your node is now running 🆙.")
 
-	return err
+	return nil
 }
 
 func startGeth(ctx *cli.Context) error {
@@ -138,40 +151,57 @@ func startGeth(ctx *cli.Context) error {
 	err := initGeth(ctx)
 	if err != nil {
 		log.Errorf("There was an error while initalizing geth. Error: %v", err)
+
+		return err
 	}
 
 	log.Info("🔄  Starting Geth")
+	gethFlags, ok := prepareGethStartFlags(ctx)
+	if !ok {
+		return errFlagPathInvalid
+	}
 
-	err = clientDependencies[gethDependencyName].Start(prepareGethStartFlags(ctx), ctx)
+	err = clientDependencies[gethDependencyName].Start(gethFlags, ctx)
 	if err != nil {
 		return err
 	}
 
 	log.Info("✅  Geth started! Use 'lukso log' to see logs.")
+
 	return nil
 }
 
 func startPrysm(ctx *cli.Context) error {
 	log.Info("🔄  Starting Prysm")
+	prysmFlags, ok := preparePrysmStartFlags(ctx)
+	if !ok {
+		return errFlagPathInvalid
+	}
 
-	err := clientDependencies[prysmDependencyName].Start(preparePrysmStartFlags(ctx), ctx)
+	err := clientDependencies[prysmDependencyName].Start(prysmFlags, ctx)
 	if err != nil {
 		return err
 	}
 
 	log.Info("✅  Prysm started! Use 'lukso log' to see logs.")
+
 	return nil
 }
 
 func startValidator(ctx *cli.Context) error {
 	log.Info("🔄  Starting Validator")
+	validatorFlags, ok := prepareValidatorStartFlags(ctx)
+	if !ok {
+		return errFlagPathInvalid
+	}
 
-	err := clientDependencies[validatorDependencyName].Start(prepareValidatorStartFlags(ctx), ctx)
+	err := clientDependencies[validatorDependencyName].Start(validatorFlags, ctx)
 	if err != nil {
 		return err
 	}
 
 	log.Info("✅  Validator started! Use 'lukso log' to see logs.")
+
 	return nil
 }
 
@@ -242,6 +272,14 @@ func stopClient(dependency *ClientDependency) error {
 }
 
 func initGeth(ctx *cli.Context) (err error) {
+	if isRunning(gethDependencyName) {
+		return errAlreadyRunning
+	}
+
+	if !flagFileExists(ctx, genesisJsonFlag) {
+		return errors.New("genesis JSON not found")
+	}
+
 	dataDir := fmt.Sprintf("--datadir=%s", ctx.String(gethDatadirFlag))
 	command := exec.Command("geth", "init", dataDir, ctx.String(genesisJsonFlag))
 	command.Stdout = os.Stdout

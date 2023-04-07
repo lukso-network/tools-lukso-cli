@@ -265,3 +265,15 @@ func isRoot() (isRoot bool, err error) {
 
 	return false, nil
 }
+
+// flagFileExists check whether a path under given flag exists
+func flagFileExists(ctx *cli.Context, flag string) bool {
+	flagPath := ctx.String(flag)
+	if !fileExists(flagPath) {
+		log.Errorf("Path in --%s flag doesn't exist - please make sure that you provided a valid file path", flag)
+
+		return false
+	}
+
+	return true
+}
