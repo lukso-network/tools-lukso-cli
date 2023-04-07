@@ -351,7 +351,7 @@ $ lukso -h start
 
 Deposit keys can be generated using:
 
-- CLI: [lukso-network/tools-key-gen-cli](https://github.com/lukso-network/tools-key-gen-cli)
+- CLI: [tools-key-gen-cli](https://github.com/lukso-network/tools-key-gen-cli)
 - GUI: [wagyu-key-gen](https://github.com/lukso-network/tools-wagyu-key-gen)
 
 #### Genesis Amounts
@@ -367,12 +367,15 @@ Deposit keys can be generated using:
 
 ### `validator init`
 
-| Option                           | Description                                 |
-| -------------------------------- | ------------------------------------------- |
-| --max-txs-per-block              | Maximum amount of txs sent per single block |
-| --validator-wallet-dir           | Location of a generated wallet              |
-| --validator-keys-dir             | Path to your validator keys                 |
-| --validator-wallet-password-file | Path to your password file                  |
+| Option               | Description                           |
+| -------------------- | ------------------------------------- |
+| --validator-keys     | Path to your validator keys directory |
+| --validator-password | Path to your password file            |
+
+The validator keys directory is generated with one of these tools:
+
+- CLI: [tools-key-gen-cli](https://github.com/lukso-network/tools-key-gen-cli)
+- GUI: [wagyu-key-gen](https://github.com/lukso-network/tools-wagyu-key-gen)
 
 ### `validator deposit`
 
