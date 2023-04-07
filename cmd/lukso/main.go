@@ -186,26 +186,6 @@ func main() {
 			Usage:           "Shows the LUKSO node client processes that are currently running",
 			Action:          statClients,
 			HideHelpCommand: true,
-			Subcommands: []*cli.Command{
-				{
-					Name:            "geth",
-					Usage:           "Displays Geth's running status",
-					Action:          statClient(gethDependencyName),
-					HideHelpCommand: true,
-				},
-				{
-					Name:            "prysm",
-					Usage:           "Displays Prysm's running status",
-					Action:          statClient(prysmDependencyName),
-					HideHelpCommand: true,
-				},
-				{
-					Name:            "validator",
-					Usage:           "Displays Validator's running status",
-					Action:          statClient(validatorDependencyName),
-					HideHelpCommand: true,
-				},
-			},
 		},
 		{
 			Name:            "reset",

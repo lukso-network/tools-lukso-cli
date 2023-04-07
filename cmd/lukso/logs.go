@@ -76,17 +76,33 @@ func logClient(dependencyName string) func(*cli.Context) error {
 }
 
 func statClients(ctx *cli.Context) (err error) {
-	err = statClient(gethDependencyName)(ctx)
+	if !cfg.Exists() {
+		log.Error(folderNotInitialized)
+
+		return nil
+	}
+
+	err = cfg.Read()
+	if err != nil {
+		log.Errorf("There was an error while reading configuration file: %v", err)
+
+		return nil
+	}
+
+	selectedExecution := cfg.Execution()
+	selectedConsensus := cfg.Consensus()
+
+	err = statClient(selectedExecution, "Execution")(ctx)
 	if err != nil {
 		return
 	}
 
-	err = statClient(prysmDependencyName)(ctx)
+	err = statClient(selectedConsensus, "Consensus")(ctx)
 	if err != nil {
 		return
 	}
 
-	err = statClient(validatorDependencyName)(ctx)
+	err = statClient(validatorDependencyName, "Validator")(ctx)
 	if err != nil {
 		return
 	}
@@ -94,9 +110,12 @@ func statClients(ctx *cli.Context) (err error) {
 	return
 }
 
-func statClient(dependencyName string) func(*cli.Context) error {
+func statClient(dependencyName, layer string) func(*cli.Context) error {
 	return func(ctx *cli.Context) error {
-		isRunning := clientDependencies[dependencyName].Stat()
+		isRunning := false
+		if dependencyName != "" {
+			isRunning = clientDependencies[dependencyName].Stat()
+		}
 
 		if isRunning {
 			pidLocation := fmt.Sprintf("%s/%s.pid", pid.FileDir, dependencyName)
@@ -107,12 +126,16 @@ func statClient(dependencyName string) func(*cli.Context) error {
 				return errProcessNotFound
 			}
 
-			log.Infof("%s: Running - PID: %d", dependencyName, pidVal)
+			log.Infof("PID %d - %s (%s): Running ✅", pidVal, layer, dependencyName)
 
 			return nil
 		}
 
-		log.Warnf("%s: Stopped", dependencyName)
+		if dependencyName == "" {
+			dependencyName = "none"
+		}
+
+		log.Warnf("PID None - %s (%s): Stopped ❌", layer, dependencyName)
 
 		return nil
 	}

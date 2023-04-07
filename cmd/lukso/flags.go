@@ -33,7 +33,6 @@ const (
 	// shared flags
 	transactionFeeRecipientFlag = "transaction-fee-recipient"
 	logFolderFlag               = "log-folder"
-	jwtSecretFlag               = "jwt-secret"
 
 	// non-specific flags
 	mainnetFlag   = "mainnet"
@@ -45,17 +44,14 @@ const (
 
 	agreeTermsFlag = "agree-terms"
 
-	// shared values
-	jwtSecretDefaultPath = mainnetConfig + "/" + jwtSecretPath
-
 	// flag defaults used in different contexts
-	gethMainnetDatadir = "./mainnet-data/execution"
-	gethTestnetDatadir = "./testnet-data/execution"
-	gethDevnetDatadir  = "./devnet-data/execution"
+	executionMainnetDatadir = "./mainnet-data/execution"
+	executionTestnetDatadir = "./testnet-data/execution"
+	executionDevnetDatadir  = "./devnet-data/execution"
 
-	prysmMainnetDatadir = "./mainnet-data/consensus"
-	prysmTestnetDatadir = "./testnet-data/consensus"
-	prysmDevnetDatadir  = "./devnet-data/consensus"
+	consensusMainnetDatadir = "./mainnet-data/consensus"
+	consensusTestnetDatadir = "./testnet-data/consensus"
+	consensusDevnetDatadir  = "./devnet-data/consensus"
 
 	validatorMainnetDatadir = "./mainnet-data/validator"
 	validatorTestnetDatadir = "./testnet-data/validator"
@@ -77,7 +73,6 @@ const (
 	// we will select directory based on provided flag, by concatenating config path + file path
 	genesisStateFilePath = "shared/genesis.ssz"
 	chainConfigYamlPath  = "shared/config.yaml"
-	jwtSecretPath        = "shared/secrets/jwt.hex"
 	gethTomlPath         = "geth/geth.toml"
 	genesisJsonPath      = "shared/genesis.json"
 	prysmYamlPath        = "prysm/prysm.yaml"
@@ -94,8 +89,6 @@ const (
 )
 
 var (
-	jwtSelectedPath = jwtSecretDefaultPath //nolint:all
-
 	mainnetEnabledFlag = &cli.BoolFlag{
 		Name:  mainnetFlag,
 		Usage: "Run for mainnet (default)",
@@ -207,12 +200,6 @@ var (
 			Usage: "Directory to output logs into",
 			Value: "./mainnet-logs",
 		},
-		&cli.StringFlag{
-			Name:   jwtSecretFlag,
-			Usage:  "Path to jwt secret used for clients communication",
-			Value:  jwtSecretDefaultPath,
-			Hidden: true,
-		},
 	}
 	logsFlags  []cli.Flag
 	resetFlags []cli.Flag
@@ -251,7 +238,7 @@ var (
 		&cli.StringFlag{
 			Name:   gethDatadirFlag,
 			Usage:  "a path you would like to store your data",
-			Value:  gethMainnetDatadir,
+			Value:  executionMainnetDatadir,
 			Hidden: true,
 		},
 		&cli.StringFlag{
@@ -278,7 +265,7 @@ var (
 		&cli.StringFlag{
 			Name:   gethDatadirFlag,
 			Usage:  "geth datadir",
-			Value:  gethMainnetDatadir,
+			Value:  executionMainnetDatadir,
 			Hidden: true,
 		},
 	}
@@ -310,7 +297,7 @@ var (
 		&cli.StringFlag{
 			Name:   prysmDatadirFlag,
 			Usage:  "prysm datadir",
-			Value:  prysmMainnetDatadir,
+			Value:  consensusMainnetDatadir,
 			Hidden: true,
 		},
 		&cli.StringFlag{
@@ -338,7 +325,7 @@ var (
 		&cli.StringFlag{
 			Name:   prysmDatadirFlag,
 			Usage:  "prysm datadir",
-			Value:  prysmMainnetDatadir,
+			Value:  consensusMainnetDatadir,
 			Hidden: true,
 		},
 	}
@@ -468,7 +455,6 @@ func removePrefix(arg, name string) string {
 func prepareGethStartFlags(ctx *cli.Context) (startFlags []string) {
 	startFlags = clientDependencies[gethDependencyName].PassStartFlags(ctx)
 	startFlags = append(startFlags, fmt.Sprintf("--config=%s", ctx.String(gethConfigFileFlag)))
-	startFlags = append(startFlags, fmt.Sprintf("--authrpc.jwtsecret=%s", ctx.String(jwtSecretFlag)))
 
 	return
 }
@@ -501,7 +487,6 @@ func preparePrysmStartFlags(ctx *cli.Context) (startFlags []string) {
 	startFlags = append(startFlags, "--accept-terms-of-use")
 	startFlags = append(startFlags, fmt.Sprintf("--config-file=%s", ctx.String(prysmConfigFileFlag)))
 
-	startFlags = append(startFlags, fmt.Sprintf("--jwt-secret=%s", ctx.String(jwtSecretFlag)))
 	if ctx.String(transactionFeeRecipientFlag) != "" {
 		startFlags = append(startFlags, fmt.Sprintf("--suggested-fee-recipient=%s", ctx.String(transactionFeeRecipientFlag)))
 	}

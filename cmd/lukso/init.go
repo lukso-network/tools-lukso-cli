@@ -9,6 +9,8 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
+const jwtSecretPath = "./configs/shared/secrets/jwt.hex"
+
 // initializeDirectory initializes a working directory for lukso node, with all configurations for all networks
 func initializeDirectory(ctx *cli.Context) error {
 	if isAnyRunning() {
@@ -38,7 +40,14 @@ func initializeDirectory(ctx *cli.Context) error {
 
 	}
 
-	err := os.MkdirAll(pid.FileDir, configPerms)
+	err := createJwtSecret(jwtSecretPath)
+	if err != nil {
+		log.Errorf("There was an error while creating JWT secret file: %v", err)
+
+		return nil
+	}
+
+	err = os.MkdirAll(pid.FileDir, configPerms)
 	if err != nil {
 		log.Errorf("There was an error while preparing PID directory: %v", err)
 

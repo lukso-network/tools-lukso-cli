@@ -123,32 +123,32 @@ var (
 		},
 		// ----- DEVNET -----
 		gethDevnetGenesisDependencyName: {
-			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/devnets/2022/geth/genesis.json",
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/devnets/3030/shared/genesis.json",
 			name:     gethDevnetGenesisDependencyName,
 			filePath: devnetConfig + "/" + genesisJsonPath,
 		},
 		gethDevnetConfigName: {
-			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/devnets/2022/geth/geth.toml",
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/devnets/3030/geth/geth.toml",
 			name:     gethDevnetConfigName,
 			filePath: devnetConfig + "/" + gethTomlPath,
 		},
 		prysmDevnetGenesisDependencyName: {
-			baseUrl:  "https://github.com/lukso-network/network-configs/raw/main/devnets/2022/prysm/genesis.ssz",
+			baseUrl:  "https://github.com/lukso-network/network-configs/raw/main/devnets/3030/shared/genesis.ssz",
 			name:     prysmDevnetGenesisDependencyName,
 			filePath: devnetConfig + "/" + genesisStateFilePath,
 		},
 		prysmDevnetChainConfigDependencyName: {
-			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/devnets/2022/prysm/config.yml",
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/devnets/3030/shared/config.yaml",
 			name:     prysmDevnetChainConfigDependencyName,
 			filePath: devnetConfig + "/" + chainConfigYamlPath,
 		},
 		prysmDevnetConfigDependencyName: {
-			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/feature/blockchain-clients-configs/devnets/3030/prysm/prysm.yaml",
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/devnets/3030/prysm/prysm.yaml",
 			name:     prysmDevnetConfigDependencyName,
 			filePath: devnetConfig + "/" + prysmYamlPath,
 		},
 		validatorDevnetConfigDependencyName: {
-			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/feature/blockchain-clients-configs/devnets/3030/prysm/validator.yaml",
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/devnets/3030/prysm/validator.yaml",
 			name:     validatorDevnetConfigDependencyName,
 			filePath: devnetConfig + "/" + validatorYamlPath,
 		},

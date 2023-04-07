@@ -207,7 +207,7 @@ func stopClients(ctx *cli.Context) (err error) {
 	}
 
 	if stopExecution {
-		log.Infof("Stopping execution [%s]", executionClient)
+		log.Infof("⚙️  Stopping execution [%s]", executionClient)
 
 		err = stopClient(clientDependencies[gethDependencyName])
 		if err != nil {
@@ -216,7 +216,7 @@ func stopClients(ctx *cli.Context) (err error) {
 	}
 
 	if stopConsensus {
-		log.Infof("Stopping consensus [%s]", consensusClient)
+		log.Infof("⚙️  Stopping consensus [%s]", consensusClient)
 
 		err = stopClient(clientDependencies[prysmDependencyName])
 		if err != nil {
@@ -225,7 +225,7 @@ func stopClients(ctx *cli.Context) (err error) {
 	}
 
 	if stopValidator {
-		log.Info("Stopping validator")
+		log.Info("⚙️  Stopping validator")
 
 		err = stopClient(clientDependencies[validatorDependencyName])
 	}

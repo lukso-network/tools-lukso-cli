@@ -46,8 +46,8 @@ func selectNetworkFor(f func(*cli.Context) error) func(*cli.Context) error {
 
 		if devnetEnabled {
 			cfg = networkConfig{
-				gethDatadirPath:      gethDevnetDatadir,
-				prysmDatadirPath:     prysmDevnetDatadir,
+				gethDatadirPath:      executionDevnetDatadir,
+				prysmDatadirPath:     consensusDevnetDatadir,
 				validatorDatadirPath: validatorDevnetDatadir,
 				logPath:              devnetLogs,
 				configPath:           devnetConfig,
@@ -74,7 +74,6 @@ func updateValues(ctx *cli.Context, config networkConfig) (err error) {
 		gethGenesis   = config.configPath + "/" + genesisJsonPath
 		genesisState  = config.configPath + "/" + genesisStateFilePath
 		configYaml    = config.configPath + "/" + chainConfigYamlPath
-		jwtSecret     = config.configPath + "/" + jwtSecretPath
 	)
 
 	passedArgs := make([]string, 0)
@@ -85,9 +84,6 @@ func updateValues(ctx *cli.Context, config networkConfig) (err error) {
 		}
 	}
 
-	// selecting dependencies for init
-	jwtSelectedPath = jwtSecret
-
 	// varyingFlags represents list of all flags that can be affected by selecting network and values that may be replaced
 	varyingFlags := map[string]string{
 		gethDatadirFlag:              config.gethDatadirPath,
@@ -95,7 +91,6 @@ func updateValues(ctx *cli.Context, config networkConfig) (err error) {
 		validatorDatadirFlag:         config.validatorDatadirPath,
 		logFolderFlag:                config.logPath,
 		validatorKeysFlag:            config.keysPath,
-		jwtSecretFlag:                jwtSecret,
 		gethConfigFileFlag:           gethToml,
 		prysmConfigFileFlag:          prysmYaml,
 		validatorConfigFileFlag:      validatorYaml,
