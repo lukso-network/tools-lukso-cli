@@ -18,6 +18,6 @@ var (
 
 const (
 	noSuchFlag              = "no such flag"
-	folderNotInitialized    = "Folder not initialized - please make sure that you are working in an initialized directory. You can initialize the directory with the init command."
+	folderNotInitialized    = "Folder not initialized - please make sure that you are working in an initialized directory. You can initialize the directory with the 'lukso init' command."
 	selectedClientsNotFound = "No selected client found in LUKSO configuration file. Please make sure that you have installed your clients. You can use the install command to install clients."
 )
