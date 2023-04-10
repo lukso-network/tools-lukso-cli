@@ -277,7 +277,7 @@ var (
 	prysmDownloadFlags = []cli.Flag{
 		&cli.StringFlag{
 			Name:  prysmTagFlag,
-			Usage: "tag for prysm",
+			Usage: "Tag for prysm",
 			Value: "v3.2.2",
 		},
 	}
@@ -285,7 +285,7 @@ var (
 	prysmUpdateFlags = []cli.Flag{
 		&cli.StringFlag{
 			Name:  prysmTagFlag,
-			Usage: "tag for prysm",
+			Usage: "Tag for prysm",
 			Value: "v3.2.2",
 		},
 	}
@@ -293,7 +293,7 @@ var (
 	prysmStartFlags = []cli.Flag{
 		&cli.StringFlag{
 			Name:  prysmGenesisStateFlag,
-			Usage: "genesis.ssz file path",
+			Usage: "Path to genesis.ssz file",
 			Value: mainnetConfig + "/" + genesisStateFilePath,
 		},
 		&cli.StringFlag{
@@ -364,7 +364,7 @@ var (
 		},
 		&cli.StringFlag{
 			Name:  validatorWalletPasswordFileFlag,
-			Usage: "Location of file password that you used for generation keys from deposit-cli",
+			Usage: "Location of the password file that you used to generate keys from deposit-cli",
 			Value: "",
 		},
 		&cli.StringFlag{
