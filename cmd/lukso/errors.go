@@ -12,7 +12,7 @@ var (
 	errProcessNotFound      = errors.New("Process not found ")
 	errIndexOutOfBounds     = errors.New("Starting index out of bounds ")
 	errTransactionFailed    = errors.New("Transaction failed ")
-	errFlagPathInvalid      = errors.New("Flag path invalid ")
+	errFlagPathInvalid      = errors.New("Invalid flag path ")
 	errAlreadyRunning       = errors.New("Process is already running ")
 )
 

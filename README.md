@@ -175,28 +175,24 @@ $ lukso update geth
 
 ### `start`
 
-| Option                               | Description                                       |
-| ------------------------------------ | ------------------------------------------------- |
-| --validator                          | Starts the validator client                       |
-| --execution                          | Starts the execution client                       |
-| --consensus                          | Starts the consensus client                       |
-| --geth                               | Starts Geth client                                |
-| --prysm                              | Starts Prysm client                               |
-| --lighthouse                         | Starts Lighthouse client                          |
-| --erigon                             | Starts Erigon client                              |
-| --mainnet                            | Starts LUKSO's mainnet data                       |
-| --testnet                            | Starts LUKSO's testnet data                       |
-| --devnet                             | Starts LUKSO's devnet data                        |
-| --geth-config [string]               | Defines the path to TOML config file              |
-| --prysm-config [string]              | Defines the path to the YAML config file          |
-| --geth-bootnodes [string]            | Sets a custom Geth bootnode name                  |
-| --transaction-fee-recipient [string] | Sets the address that receives block fees         |
-| --validator-keys [string]            | Passes the validator keys from a custom directory |
-| --validator-password [string]        | Passes the assword from a custom directory        |
-| --log-folder [string]                | Sets up a custom log directory                    |
-| --no-slasher                         | Disables slasher                                  |
-| --genesis-json [string]              | Defines the path to genesis JSON file             |
-| --genesis-ssz [string]               | Defines the path to genesis SSZ file              |
+| Option                               | Description                                                                  |
+| ------------------------------------ | ---------------------------------------------------------------------------- |
+| --geth-config [string]               | Defines the path to geth TOML config file                                    |
+| --prysm-config [string]              | Defines the path to pryms YAML config file                                   |
+| --genesis-json [string]              | Defines the path to genesis JSON file                                        |
+| --genesis-ssz [string]               | Defines the path to genesis SSZ file                                         |
+| --log-folder [string]                | Sets up a custom log directory (default: "./\[network_type\]-logs")          |
+| --no-slasher                         | Disables slasher                                                             |
+| **VALIDATOR**                        |                                                                              |
+| --validator                          | Starts the validator client                                                  |
+| --transaction-fee-recipient [string] | Sets the address that receives block fees                                    |
+| --validator-keys [string]            | Directory of the validator keys (default: "./\[network_type\]-keystore")     |
+| --validator-password [string]        | Location of password file that you used for generation keys from deposit-cli |
+| --validator-config [string]          | Path to prysm.yaml config file                                               |
+| **NETWORK**                          |                                                                              |
+| --mainnet                            | Starts the LUKSO node with mainnet data (default) (./configs/mainnet)        |
+| --testnet                            | Starts the LUKSO node with testnet data (./configs/tesnet)                   |
+| --devnet                             | Starts the LUKSO node with devnet data (./configs/devnet)                    |
 
 For specific client options, please visit their official documentations:
 
