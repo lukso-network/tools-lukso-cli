@@ -69,8 +69,12 @@ cd cmd/lukso/
 
 #### Generate Bindings
 
+The contract can be found in: [lukso-network/network-genesis-deposit-contract](https://github.com/lukso-network/network-genesis-deposit-contract).
+
 1. Paste the interacting smart contract into the [`contracts`](./contracts) directory
 2. Generate the ABIs from your smart contracts
+
+Note: the files under: `contracts/*.sol` are ignored from the git repo.
 
 ```sh
 # Generating ABI into abis directory
