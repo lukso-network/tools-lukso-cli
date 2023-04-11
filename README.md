@@ -122,7 +122,7 @@ lukso-node
 | `log`               | Listens to all log events from a specific client in the current terminal window                  |
 | `status`            | Shows the LUKSO node client processes that are currently running                                 |
 | `reset`             | Resets all or specific client data directories and logs excluding the validator keys             |
-| `validator init`    | Initializes the validator with keys                                                              |
+| `validator import`  | Import the validator keys in the wallet                                                          |
 | `validator deposit` | Makes a deposit to the deposit bridge contract                                                   |
 | `version`           | Display the version of the LUKSO CLI that is currently installed                                 |
 | `help`, `h`         | Shows the full list of commands, global options, and their usage                                 |
@@ -361,12 +361,16 @@ Deposit keys can be generated using:
 - Genesis Validators need to have at least 32 LYXe per validator
 - Validators in general also need some ETH to pay for gas expenses
 
-### `validator init`
+### `validator import`
 
-| Option               | Description                           |
-| -------------------- | ------------------------------------- |
-| --validator-keys     | Path to your validator keys directory |
-| --validator-password | Path to your password file            |
+| Option               | Description                                                                |
+| -------------------- | -------------------------------------------------------------------------- |
+| --validator-keys     | Path to your validator keys directory [required]                           |
+| --validator-password | Path to your password file                                                 |
+| **NETWORK**          |                                                                            |
+| --mainnet            | Will import the keys for mainnet [default] (default: "./mainnet-keystore") |
+| --testnet            | Will import the keys for testnet (default: "./testnet-keystore")           |
+| --devnet             | Will import the keys for devnet (default: "./devnet-keystore")             |
 
 The validator keys directory is generated with one of these tools:
 
@@ -375,17 +379,13 @@ The validator keys directory is generated with one of these tools:
 
 ### `validator deposit`
 
-| Option                           | Description                                    |
-| -------------------------------- | ---------------------------------------------- |
-| --deposit-data-json [string]     | Defines the path to the deposit JSON file      |
-| --gas-price [string]             | Defines the gas price in integers as string    |
-| --rpc [string]                   | Defines the RPC URL on deposit                 |
-| --genesis                        | Executes deposit to genesis validator contract |
-| --start-from-index [int]         | Start deposit from specific block index        |
-| --max-txs-per-block              | Maximum amount of txs sent per single block    |
-| --validator-wallet-dir           | Location of a generated wallet                 |
-| --validator-keys-dir             | Path to your validator keys                    |
-| --validator-wallet-password-file | Path to your password file                     |
+| Option                       | Description                                                                                                                 |
+| ---------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| --deposit-data-json [string] | Defines the path to the deposit JSON file                                                                                   |
+| --gas-price [string]         | Defines the gas price in integers as string                                                                                 |
+| --rpc [string]               | Defines the RPC URL used to send deposit transactions. If `--genesis` is used, it should be an RPC URL for ethereum mainnet |
+| --genesis                    | Executes deposit to genesis validator contract                                                                              |
+| --start-from-index [int]     | Start deposit from specific block index                                                                                     |
 
 ### Performing Deposits
 
