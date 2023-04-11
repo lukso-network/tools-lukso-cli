@@ -208,10 +208,10 @@ REPO: https://github.com/lukso-network/tools-lukso-cli
 			HideHelpCommand: true,
 			Subcommands: []*cli.Command{
 				{
-					Name:            "init",
-					Usage:           "Initializes your validator with keys generated using keygen tools",
+					Name:            "import",
+					Usage:           "Import your validator keys in the client wallet",
 					Flags:           validatorInitFlags,
-					Action:          selectNetworkFor(initValidator),
+					Action:          selectNetworkFor(importValidator),
 					HideHelpCommand: true,
 				},
 				{

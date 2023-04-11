@@ -32,7 +32,8 @@ const (
 
 	errUnderpriced = "transaction underpriced" //nolint:all // catches both replacement and normal underpriced
 
-	blockFetchInterval = 12 // in seconds
+	blockFetchInterval      = 12 // in seconds
+	amountOfLyxPerValidator = 32 // LYXe for Genesis, LYX for non genesis
 )
 
 type DepositDataKey struct {
@@ -102,7 +103,9 @@ func newDepositController(rpc string, depositKeys []DepositDataKey, startingInde
 	depositKeys = depositKeys[startingIndex:]
 
 	message := "Please enter your private key: \n> "
-	input := registerInputWithMessage(message)
+
+	// TODO: input should be password input
+	input := strings.TrimPrefix(registerInputWithMessage(message), "0x")
 
 	privKey, err := crypto.HexToECDSA(input)
 	if err != nil {
@@ -164,7 +167,7 @@ func (dc depositController) estimateGas(isGenesisDeposit bool) (accepted bool, e
 		tx, err = dc.genesisDeposit.Send(
 			dc.txOpts,
 			common.HexToAddress(genesisDepositContractAddress),
-			big.NewInt(0).Mul(big.NewInt(32), big.NewInt(ether)),
+			big.NewInt(0).Mul(big.NewInt(amountOfLyxPerValidator), big.NewInt(ether)),
 			depositData,
 		)
 
@@ -172,10 +175,10 @@ func (dc depositController) estimateGas(isGenesisDeposit bool) (accepted bool, e
 
 		message = fmt.Sprintf("Before proceeding make sure that your private key has sufficient balance:\n"+
 			"- %v ETH\n"+
-			"- %v LYXe\nDo you wish to continue? [Y/n]: ", gasReadable, dc.keysNum*32)
+			"- %v LYXe (%v * %v validator[s])\nDo you wish to continue? [Y/n]: ", gasReadable, dc.keysNum*amountOfLyxPerValidator, amountOfLyxPerValidator, dc.keysNum)
 
 	case false:
-		dc.txOpts.Value = big.NewInt(0).Mul(big.NewInt(32), big.NewInt(ether))
+		dc.txOpts.Value = big.NewInt(0).Mul(big.NewInt(amountOfLyxPerValidator), big.NewInt(ether))
 
 		var depositDataRoot [32]byte
 
@@ -203,7 +206,7 @@ func (dc depositController) estimateGas(isGenesisDeposit bool) (accepted bool, e
 		gasReadable := estimateGas(tx, int64(dc.keysNum))
 
 		message = fmt.Sprintf("Before proceeding make sure that your private key has sufficient balance:\n"+
-			"- %v LYX\nDo you wish to continue? [Y/n]: ", float64(dc.keysNum*32)+gasReadable)
+			"- %v LYX\nDo you wish to continue? [Y/n]: ", float64(dc.keysNum*amountOfLyxPerValidator)+gasReadable)
 
 	}
 
@@ -368,7 +371,7 @@ func sendDeposit(ctx *cli.Context) (err error) {
 	return err
 }
 
-func initValidator(ctx *cli.Context) error {
+func importValidator(ctx *cli.Context) error {
 	args := []string{
 		"accounts",
 		"import",
@@ -505,7 +508,9 @@ func (dc depositController) waitForReceipts(txs []*types.Transaction) (failedInd
 }
 
 func chooseSupply() (amount int, err error) {
-	message := `As a Genesis Validator you can provide an indicative voting for the preferred initial token supply of LYX, which will determine how much the Foundation will receive. See the https://deposit.mainnet.lukso.network website for details.
+	message := `As a Genesis Validator you can provide an indicative voting for the preferred initial token supply of LYX,
+which will determine how much the Foundation will receive.
+See the https://deposit.mainnet.lukso.network website for details.
 You can choose between:
 1: 35M LYX
 2: 42M LYX (This option is the preferred one by the Foundation)
