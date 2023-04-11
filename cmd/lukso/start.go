@@ -15,7 +15,7 @@ func (dependency *ClientDependency) Start(
 	ctx *cli.Context,
 ) (err error) {
 	if isRunning(dependency.name) {
-		log.Infof("%s is already running - skipping...", dependency.name)
+		log.Infof("⏭️  %s is already running - skipping...", dependency.name)
 
 		return nil
 	}
@@ -85,7 +85,7 @@ func (dependency *ClientDependency) Stop() error {
 }
 
 func startClients(ctx *cli.Context) error {
-	log.Info("Looking for client configuration file...")
+	log.Info("🔎  Looking for client configuration file...")
 	if !cfg.Exists() {
 		log.Error(folderNotInitialized)
 
@@ -94,7 +94,7 @@ func startClients(ctx *cli.Context) error {
 
 	err := cfg.Read()
 	if err != nil {
-		log.Errorf("Couldn't read from config file: %v", err)
+		log.Errorf("❌  Couldn't read from config file: %v", err)
 
 		return err
 	}
@@ -108,24 +108,24 @@ func startClients(ctx *cli.Context) error {
 		return nil
 	}
 
-	log.Info("Starting all clients")
+	log.Info("🔄  Starting all clients")
 
 	if ctx.Bool(validatorFlag) && ctx.String(transactionFeeRecipientFlag) == "" {
-		log.Errorf("%s flag is required but wasn't provided", transactionFeeRecipientFlag)
+		log.Errorf("❌  %s flag is required but wasn't provided", transactionFeeRecipientFlag)
 
 		return errFlagMissing
 	}
 
 	err = startGeth(ctx)
 	if err != nil {
-		log.Errorf("There was an error while starting geth: %v", err)
+		log.Errorf("❌  There was an error while starting geth: %v", err)
 
 		return nil
 	}
 
 	err = startPrysm(ctx)
 	if err != nil {
-		log.Errorf("There was an error while starting prysm: %v", err)
+		log.Errorf("❌  There was an error while starting prysm: %v", err)
 
 		return nil
 	}
@@ -135,7 +135,7 @@ func startClients(ctx *cli.Context) error {
 	}
 
 	if err != nil {
-		log.Errorf("There was an error while starting validator: %v", err)
+		log.Errorf("❌  There was an error while starting validator: %v", err)
 
 		return nil
 	}
@@ -150,7 +150,7 @@ func startGeth(ctx *cli.Context) error {
 
 	err := initGeth(ctx)
 	if err != nil {
-		log.Errorf("There was an error while initalizing geth. Error: %v", err)
+		log.Errorf("❌  There was an error while initalizing geth. Error: %v", err)
 
 		return err
 	}
@@ -214,7 +214,7 @@ func stopClients(ctx *cli.Context) (err error) {
 
 	err = cfg.Read()
 	if err != nil {
-		log.Errorf("Couldn't read from config: %v", err)
+		log.Errorf("❌  Couldn't read from config: %v", err)
 
 		return nil
 	}
@@ -277,7 +277,7 @@ func initGeth(ctx *cli.Context) (err error) {
 	}
 
 	if !flagFileExists(ctx, genesisJsonFlag) {
-		return errors.New("genesis JSON not found")
+		return errors.New("❌  Genesis JSON not found")
 	}
 
 	dataDir := fmt.Sprintf("--datadir=%s", ctx.String(gethDatadirFlag))

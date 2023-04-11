@@ -45,7 +45,7 @@ func (dependency *ClientDependency) Download(tag, commitHash string, isUpdate bo
 			}
 
 		case false:
-			log.Infof("Downloading %s file aborted: already exists", dependency.filePath)
+			log.Infof("❌  Downloading %s file aborted: already exists", dependency.filePath)
 
 			return
 		}
@@ -62,14 +62,14 @@ func (dependency *ClientDependency) Download(tag, commitHash string, isUpdate bo
 	}()
 
 	if response.StatusCode == http.StatusNotFound {
-		log.Warnf("File under URL %s not found - aborting...", fileUrl)
+		log.Warnf("❌  File under URL %s not found - aborting...", fileUrl)
 
 		return nil
 	}
 
 	if http.StatusOK != response.StatusCode {
 		return fmt.Errorf(
-			"invalid response when downloading on file url: %s. Response code: %s",
+			"❌  Invalid response when downloading on file url: %s. Response code: %s",
 			fileUrl,
 			response.Status,
 		)
@@ -119,17 +119,17 @@ func (dependency *ClientDependency) Download(tag, commitHash string, isUpdate bo
 
 	err = os.WriteFile(dependency.filePath, buf.Bytes(), os.FileMode(permissions))
 
-	if err != nil && strings.Contains(err.Error(), "permission denied") {
+	if err != nil && strings.Contains(err.Error(), "Permission denied") {
 		return errNeedRoot
 	}
 
 	if err != nil {
-		log.Infof("I am in download section: error: %v", err)
+		log.Infof("❌  Download section error: %v", err)
 
 		return
 	}
 
-	log.Infof("✅  Downloaded %s!", dependency.name)
+	log.Infof("✅  Downloaded %s!\n\n", dependency.name)
 
 	return
 }
@@ -207,12 +207,12 @@ func installBinaries(ctx *cli.Context) (err error) {
 	if !termsAgreed {
 		accepted := acceptTermsInteractive()
 		if !accepted {
-			log.Info("Terms of use not accepted - aborting...")
+			log.Info("❌  Terms of use not accepted - aborting...")
 
 			return nil
 		}
 	} else {
-		log.Info("You accepted terms of use of accepted clients - read more here: https://github.com/prysmaticlabs/prysm/blob/develop/TERMS_OF_SERVICE.md")
+		log.Info("✅  You accepted Prysm's Terms of Use: https://github.com/prysmaticlabs/prysm/blob/develop/TERMS_OF_SERVICE.md")
 	}
 
 	gethTag := ctx.String(gethTagFlag)
@@ -234,7 +234,8 @@ func installBinaries(ctx *cli.Context) (err error) {
 	}
 
 	log.Info("✅  Configuration files created!")
-	log.Info("✅  Clients have been successfully installed, you can start them with the 'lukso start' command.")
+	log.Info("✅  Clients have been successfully installed.")
+	log.Info("➡️  Start your node using 'lukso start'")
 
 	return
 }
