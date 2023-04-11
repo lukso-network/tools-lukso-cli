@@ -205,6 +205,7 @@ func installBinaries(ctx *cli.Context) (err error) {
 
 	termsAgreed := ctx.Bool(agreeTermsFlag)
 	if !termsAgreed {
+		fmt.Println("")
 		accepted := acceptTermsInteractive()
 		if !accepted {
 			log.Info("❌  Terms of use not accepted - aborting...")
@@ -241,10 +242,10 @@ func installBinaries(ctx *cli.Context) (err error) {
 }
 
 func acceptTermsInteractive() bool {
-	message := "\nYou are about to download clients necessary to run LUKSO CLI.\n" +
-		"By proceeding further you accept Terms of Use of the Prysm Consensus Client:\n" +
+	message := "You are about to download the clients that are necessary to run the LUKSO Blockchain.\n" +
+		"To install Prysm you are required to accept the terms of use:\n" +
 		"https://github.com/prysmaticlabs/prysm/blob/develop/TERMS_OF_SERVICE.md\n\n" +
-		"Do you wish to continue? [Y/n]: "
+		"Do you agree? [Y/n]: "
 
 	input := registerInputWithMessage(message)
 	if !strings.EqualFold(input, "y") && input != "" {
