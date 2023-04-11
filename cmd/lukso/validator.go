@@ -379,15 +379,40 @@ func sendDeposit(ctx *cli.Context) (err error) {
 }
 
 func importValidator(ctx *cli.Context) error {
+	if len(os.Args) < 3 {
+		return errNotEnoughArguments
+	}
+
 	args := []string{
 		"accounts",
 		"import",
-		"--keys-dir", ctx.String(validatorKeysFlag),
-		"--wallet-dir", ctx.String(validatorWalletDirFlag),
 	}
 
-	if ctx.String(validatorWalletPasswordFileFlag) != "" {
-		args = append(args, "--wallet-password-file", ctx.String(validatorWalletPasswordFileFlag))
+	// we don't want to pass those flags
+	mainnet := fmt.Sprintf("--%s", mainnetFlag)
+	testnet := fmt.Sprintf("--%s", testnetFlag)
+	devnet := fmt.Sprintf("--%s", devnetFlag)
+	walletDir := fmt.Sprintf("--wallet-dir")
+
+	for _, osArg := range os.Args[3:] {
+		if osArg == mainnet || osArg == testnet || osArg == devnet {
+			continue
+		}
+
+		args = append(args, osArg)
+	}
+
+	isWalletProvided := false
+	walletDefault := ctx.String(validatorWalletDirFlag)
+
+	for _, arg := range args {
+		if arg == walletDir {
+			isWalletProvided = true
+		}
+	}
+
+	if !isWalletProvided {
+		args = append(args, walletDir, walletDefault)
 	}
 
 	initCommand := exec.Command("validator", args...)

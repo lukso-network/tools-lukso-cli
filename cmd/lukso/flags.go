@@ -26,7 +26,7 @@ const (
 	// Validator related flag names
 	validatorTagFlag                = "validator-tag"
 	validatorDatadirFlag            = "validator-datadir"
-	validatorWalletPasswordFileFlag = "validator-password"
+	validatorWalletPasswordFileFlag = "validator-wallet-password"
 	validatorWalletDirFlag          = "validator-wallet-dir"
 	validatorConfigFileFlag         = "validator-config"
 	validatorChainConfigFileFlag    = "validator-chain-config"
@@ -94,8 +94,8 @@ const (
 var (
 	mainnetEnabledFlag = &cli.BoolFlag{
 		Name:  mainnetFlag,
-		Usage: "Run for mainnet (default)",
-		Value: false,
+		Usage: "Run for mainnet",
+		Value: true,
 	}
 	testnetEnabledFlag = &cli.BoolFlag{
 		Name:  testnetFlag,
@@ -164,19 +164,9 @@ var (
 
 	validatorImportFlags = []cli.Flag{
 		&cli.StringFlag{
-			Name:     validatorKeysFlag,
-			Usage:    "Path to your validator keys and generated wallet directory (usually generated with key-gen-cli or wagyu-key-gen)",
-			Required: true,
-		},
-		&cli.StringFlag{
-			Name:  validatorWalletPasswordFileFlag,
-			Usage: "Path to your password file",
-			Value: "",
-		},
-		&cli.StringFlag{
-			Name:  validatorWalletDirFlag,
-			Usage: "Path to generated wallet directory",
-			Value: mainnetKeystore,
+			Name:   validatorWalletDirFlag,
+			Usage:  "Selected wallet",
+			Hidden: true,
 		},
 	}
 

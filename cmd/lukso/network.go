@@ -30,16 +30,15 @@ func selectNetworkFor(f func(*cli.Context) error) func(*cli.Context) error {
 			}
 		}
 
-		mainnetEnabled := ctx.Bool(mainnetFlag)
 		testnetEnabled := ctx.Bool(testnetFlag)
 		devnetEnabled := ctx.Bool(devnetFlag)
 
-		enabledCount := boolToInt(mainnetEnabled) + boolToInt(testnetEnabled) + boolToInt(devnetEnabled)
+		enabledCount := boolToInt(testnetEnabled) + boolToInt(devnetEnabled)
 		if enabledCount > 1 {
 			return errMoreNetworksSelected
 		}
 
-		if enabledCount == 0 || testnetEnabled || mainnetEnabled {
+		if enabledCount == 0 || testnetEnabled {
 			return errNetworkNotSupported // when any other network is supported we can simply pass in the config there
 		}
 
