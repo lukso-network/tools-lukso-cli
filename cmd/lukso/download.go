@@ -178,9 +178,9 @@ func installBinaries(ctx *cli.Context) (err error) {
 		selectedExecution string
 	)
 
-	consensusMessage := "Which consensus client do you want to install?\n" +
+	consensusMessage := "\nWhich consensus client do you want to install?\n" +
 		"1: prysm\n> "
-	executionMessage := "Which execution client do you want to install?\n" +
+	executionMessage := "\nWhich execution client do you want to install?\n" +
 		"1: geth\n> "
 
 	consensusInput = registerInputWithMessage(consensusMessage)
@@ -240,7 +240,7 @@ func installBinaries(ctx *cli.Context) (err error) {
 }
 
 func acceptTermsInteractive() bool {
-	message := "You are about to download clients necessary to run LUKSO CLI.\n" +
+	message := "\nYou are about to download clients necessary to run LUKSO CLI.\n" +
 		"By proceeding further you accept Terms of Use of provided clients, you can read more here:\n" +
 		"https://github.com/prysmaticlabs/prysm/blob/develop/TERMS_OF_SERVICE.md\n\n" +
 		"Do you wish to continue? [Y/n]: "
