@@ -7,6 +7,10 @@ on:
     branches:
       - "*"
 
+concurrency:
+  group: compile-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   id-token: write
   pull-requests: write
@@ -64,20 +68,9 @@ jobs:
           echo "folder=$FOLDER" >> $GITHUB_OUTPUT
 
   check_test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Validate | Checkout
-        uses: actions/checkout@v3
-
-      - uses: actions/setup-go@v3
-        with:
-          go-version: "^1.19" # The Go version to download (if necessary) and use.
-
-      - name: Validate | Fmt
-        run: gofmt -l cmd/lukso
-
-      - name: Validate | Test
-        run: go test -C cmd/lukso
+    name: Lint Test
+    uses: ./.github/workflows/test-lint.yml
+    secrets: inherit
 
   # Build sources for every OS
   github_build:
