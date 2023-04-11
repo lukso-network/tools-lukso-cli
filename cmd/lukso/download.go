@@ -240,9 +240,9 @@ func installBinaries(ctx *cli.Context) (err error) {
 }
 
 func acceptTermsInteractive() bool {
-	message := "You are about to download clients necessary to run LUKSO CLI. " +
-		"By proceeding further you accept Terms of Use of provided clients, you can read more here: " +
-		"https://github.com/prysmaticlabs/prysm/blob/develop/TERMS_OF_SERVICE.md\n" +
+	message := "You are about to download clients necessary to run LUKSO CLI.\n" +
+		"By proceeding further you accept Terms of Use of provided clients, you can read more here:\n" +
+		"https://github.com/prysmaticlabs/prysm/blob/develop/TERMS_OF_SERVICE.md\n\n" +
 		"Do you wish to continue? [Y/n]: "
 
 	input := registerInputWithMessage(message)

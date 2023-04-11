@@ -219,12 +219,12 @@ var (
 		&cli.StringFlag{
 			Name:  gethTagFlag,
 			Usage: "A tag of geth you would like to run",
-			Value: "1.11.4",
+			Value: "1.11.5",
 		},
 		&cli.StringFlag{
 			Name:  gethCommitHashFlag,
 			Usage: "A hash of commit that is bound to given release tag",
-			Value: "7e3b149b",
+			Value: "a38f4108",
 		},
 	}
 	// UPDATE
@@ -232,7 +232,7 @@ var (
 		&cli.StringFlag{
 			Name:  gethTagFlag,
 			Usage: "A tag of geth you would like to run",
-			Value: "1.11.4",
+			Value: "1.11.5",
 		},
 	}
 	// START
@@ -278,7 +278,7 @@ var (
 		&cli.StringFlag{
 			Name:  prysmTagFlag,
 			Usage: "Tag for prysm",
-			Value: "v3.2.2",
+			Value: "v4.0.1",
 		},
 	}
 	// UPDATE
@@ -286,7 +286,7 @@ var (
 		&cli.StringFlag{
 			Name:  prysmTagFlag,
 			Usage: "Tag for prysm",
-			Value: "v3.2.2",
+			Value: "v4.0.1",
 		},
 	}
 	// START
@@ -338,7 +338,7 @@ var (
 		&cli.StringFlag{
 			Name:  validatorTagFlag,
 			Usage: "Tag for validator binary",
-			Value: "v3.2.2",
+			Value: "v4.0.1",
 		},
 	}
 	// UPDATE
@@ -346,7 +346,7 @@ var (
 		&cli.StringFlag{
 			Name:  validatorTagFlag,
 			Usage: "Tag for validator binary",
-			Value: "v3.2.2",
+			Value: "v4.0.1",
 		},
 	}
 	// START
