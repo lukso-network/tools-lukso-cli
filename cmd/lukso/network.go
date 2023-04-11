@@ -15,6 +15,7 @@ type networkConfig struct {
 	logPath              string
 	configPath           string
 	keysPath             string
+	walletPath           string
 }
 
 // selectNetwork accepts a CLI func as an argument, and adjusts all values that need to be changed depending on
@@ -52,6 +53,7 @@ func selectNetworkFor(f func(*cli.Context) error) func(*cli.Context) error {
 				logPath:              devnetLogs,
 				configPath:           devnetConfig,
 				keysPath:             devnetKeystore,
+				walletPath:           devnetKeystore,
 			}
 		}
 
@@ -98,6 +100,7 @@ func updateValues(ctx *cli.Context, config networkConfig) (err error) {
 		prysmChainConfigFileFlag:     configYaml,
 		validatorChainConfigFileFlag: configYaml,
 		prysmGenesisStateFlag:        genesisState,
+		validatorWalletDirFlag:       config.walletPath,
 	}
 
 	if len(os.Args) < 2 {

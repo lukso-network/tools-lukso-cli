@@ -27,6 +27,7 @@ const (
 	validatorTagFlag                = "validator-tag"
 	validatorDatadirFlag            = "validator-datadir"
 	validatorWalletPasswordFileFlag = "validator-password"
+	validatorWalletDirFlag          = "validator-wallet-dir"
 	validatorConfigFileFlag         = "validator-config"
 	validatorChainConfigFileFlag    = "validator-chain-config"
 
@@ -143,7 +144,6 @@ var (
 		&cli.StringFlag{
 			Name:  rpcFlag,
 			Usage: "Your RPC provider",
-			Value: "https://rpc.2022.l16.lukso.network",
 		},
 		&cli.IntFlag{
 			Name:  gasPriceFlag,
@@ -162,7 +162,7 @@ var (
 		},
 	}
 
-	validatorInitFlags = []cli.Flag{
+	validatorImportFlags = []cli.Flag{
 		&cli.StringFlag{
 			Name:     validatorKeysFlag,
 			Usage:    "Path to your validator keys and generated wallet directory (usually generated with key-gen-cli or wagyu-key-gen)",
@@ -172,6 +172,11 @@ var (
 			Name:  validatorWalletPasswordFileFlag,
 			Usage: "Path to your password file",
 			Value: "",
+		},
+		&cli.StringFlag{
+			Name:  validatorWalletDirFlag,
+			Usage: "Path to generated wallet directory",
+			Value: mainnetKeystore,
 		},
 	}
 
