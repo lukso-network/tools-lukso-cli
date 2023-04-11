@@ -284,9 +284,9 @@ check_bin_dir() {
 
 print_install() {
   echo "To get started do the following:"
-  echo "${BOLD}1.${NO_COLOR} 📁  Create a node folder using \"${BOLD}mkdir luksoNode && cd ./luksoNode${NO_COLOR}\""
-  echo "${BOLD}2.${NO_COLOR} 🚀  Initialize the folder using \"${BOLD}lukso init${NO_COLOR}\""
-  echo "${BOLD}3.${NO_COLOR} 🛠️  Install your desired clients using \"${BOLD}lukso install${NO_COLOR}\""
+  echo "${BOLD}1.${NO_COLOR} 📁  Create a node folder using ${BOLD}'mkdir luksoNode && cd ./luksoNode${NO_COLOR}'"
+  echo "${BOLD}2.${NO_COLOR} 🚀  Initialize the folder using ${BOLD}'lukso init${NO_COLOR}'"
+  echo "${BOLD}3.${NO_COLOR} 🛠️  Install your desired clients using ${BOLD}'lukso install${NO_COLOR}'"
 }
 
 is_build_available() {
