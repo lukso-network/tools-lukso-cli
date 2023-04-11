@@ -344,9 +344,17 @@ func (dc depositController) sendDeposits(isGenesisDeposit bool, maxTxsPerBatch i
 	return nil
 }
 
+// sendDeposit sends deposit tx to the deposit contracts
+// It can work for the genesis and non genesis deposits
+// The deposit contract repo is: https://github.com/lukso-network/network-genesis-deposit-contract
 func sendDeposit(ctx *cli.Context) (err error) {
 	depositPath := ctx.String(depositDataJson)
 	isGenesisDeposit := ctx.Bool(genesisDepositFlag)
+
+	if !isGenesisDeposit {
+		log.Error("Command not available yet. Please use --genesis flag.")
+		return nil
+	}
 
 	depositKeys, err := parseDepositDataFile(depositPath)
 	if err != nil {
