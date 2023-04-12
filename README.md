@@ -456,17 +456,17 @@ It can be removed at any time. All node data is directly located within the node
 $ lukso stop
 
 # Uninstall the LUKSO CLI
-$ rmdir -rf /usr/local/bin/lukso
+$ rm -rf /usr/local/bin/lukso
 
 # Uninstall Geth Execution Client
-$ rmdir -rf /usr/local/bin/geth
+$ rm -rf /usr/local/bin/geth
 
 # Uninstall Prysm Consensus Client
-$ rmdir -rf /usr/local/bin/prysm
+$ rm -rf /usr/local/bin/prysm
 
 # Remove the node data
 # Make sure to backup your keys first
-$ rmdir -rf ~/myNodeFolder
+$ rm -rf ~/myNodeFolder
 ```
 
 ## Contributing
