@@ -5,7 +5,6 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"golang.org/x/crypto/ssh/terminal"
 	"math/big"
 	"os"
 	"os/exec"
@@ -104,17 +103,12 @@ func newDepositController(rpc string, depositKeys []DepositDataKey, startingInde
 
 	depositKeys = depositKeys[startingIndex:]
 
-	fmt.Printf("Please enter your private key: \n> ")
-	key, err := terminal.ReadPassword(0)
-	if err != nil {
-		log.Errorf("Couldn't read private key: %v", err)
+	message := "Please enter your private key: \n> "
 
-		return
-	}
+	// TODO: input should be password input
+	input := strings.TrimPrefix(registerInputWithMessage(message), "0x")
 
-	stringKey := strings.TrimPrefix(string(key), "0x")
-
-	privKey, err := crypto.HexToECDSA(stringKey)
+	privKey, err := crypto.HexToECDSA(input)
 	if err != nil {
 		return
 	}
