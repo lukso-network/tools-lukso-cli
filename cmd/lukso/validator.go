@@ -29,7 +29,7 @@ const (
 	depositContractAddress        = "0x000000000000000000000000000000000000cafe"
 	genesisDepositContractAddress = "0x9C2Ae5bC047Ca794d9388aB7A2Bf37778f9aBA73"
 	lyxeContractAddress           = "0x790c4379C82582F569899b3Ca71E78f19AeF82a5"
-	defaultRpc                    = "https://rpc.2022.l16.lukso.network"
+	defaultRpc                    = "https://rpc.execution.3030.devnet.lukso.dev/"
 
 	errUnderpriced = "transaction underpriced" //nolint:all // catches both replacement and normal underpriced
 
@@ -72,7 +72,10 @@ func newDepositController(rpc string, depositKeys []DepositDataKey, startingInde
 		return
 	}
 
-	log.Info("Dialing up blockchain for gas info...")
+	if rpc == "" {
+		log.Infof("RPC not provided - falling back to default RPC: %s", defaultRpc)
+	}
+	log.Info("Dialing up blockchain...")
 	eth, err := ethclient.Dial(rpc)
 	if err != nil {
 		return
