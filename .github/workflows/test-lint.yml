@@ -1,8 +1,7 @@
 name: Lint Test
+
 on:
-  pull_request:
-    branches:
-      - "*"
+  workflow_call:
 
 jobs:
   lint_test:
@@ -23,7 +22,7 @@ jobs:
           args: --config=.golangci.yml
 
       - name: 🎯 Test
-        run: go test -C cmd/lukso
+        run: cd cmd/lukso && go test
 
       - name: 📦 Build
         run: go build -C cmd/lukso

@@ -50,7 +50,7 @@ func (dependency *ClientDependency) Stat() (isRunning bool) {
 }
 
 func logClients(ctx *cli.Context) error {
-	log.Info("Please specify your client - run 'lukso log --help' for more info")
+	log.Info("⚠️  Please specify your client - run 'lukso log --help' for more info")
 
 	return nil
 }
@@ -84,7 +84,7 @@ func statClients(ctx *cli.Context) (err error) {
 
 	err = cfg.Read()
 	if err != nil {
-		log.Errorf("There was an error while reading configuration file: %v", err)
+		log.Errorf("❌  There was an error while reading configuration file: %v", err)
 
 		return nil
 	}
@@ -135,7 +135,7 @@ func statClient(dependencyName, layer string) func(*cli.Context) error {
 			dependencyName = "none"
 		}
 
-		log.Warnf("PID None - %s (%s): Stopped ❌", layer, dependencyName)
+		log.Warnf("PID None - %s (%s): Stopped 🛑", layer, dependencyName)
 
 		return nil
 	}

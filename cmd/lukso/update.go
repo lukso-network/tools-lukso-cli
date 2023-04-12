@@ -89,14 +89,14 @@ func updateClients(ctx *cli.Context) error {
 }
 
 func updateGeth(ctx *cli.Context) error {
-	log.Info("Fetching latest release for Geth")
+	log.Info("⬇️  Fetching latest release for Geth")
 
 	latestGethTag, latestGethCommitHash, err := fetchTagAndCommitHash(gethGithubLocation)
 	if err != nil {
 		return err
 	}
 
-	log.Infof("Fetched latest release: %s", latestGethTag)
+	log.Infof("✅  Fetched latest release: %s", latestGethTag)
 
 	// since geth needs standard x.y.z semantic version to download (without "v" at the beginning) we need to strip it
 	strippedTag := strings.TrimPrefix(latestGethTag, "v")
@@ -110,14 +110,14 @@ func updateGeth(ctx *cli.Context) error {
 }
 
 func updatePrysm(ctx *cli.Context) error {
-	log.Info("Fetching latest release for Prysm")
+	log.Info("⬇️  Fetching latest release for Prysm")
 
 	latestPrysmTag, err := fetchTag(prysmaticLabsGithubLocation)
 	if err != nil {
 		return err
 	}
 
-	log.Infof("Fetched latest release: %s", latestPrysmTag)
+	log.Infof("✅  Fetched latest release: %s", latestPrysmTag)
 
 	log.WithField("dependencyTag", latestPrysmTag).Info("Updating Prysm")
 
@@ -125,34 +125,34 @@ func updatePrysm(ctx *cli.Context) error {
 }
 
 func updateValidator(ctx *cli.Context) error {
-	log.Info("Fetching latest release for Validator")
+	log.Info("⬇️  Fetching latest release for Validator")
 
 	latestValidatorFlag, err := fetchTag(prysmaticLabsGithubLocation)
 	if err != nil {
 		return err
 	}
 
-	log.Infof("Fetched latest release: %s", latestValidatorFlag)
+	log.Infof("✅  Fetched latest release: %s", latestValidatorFlag)
 
-	log.WithField("dependencyTag", latestValidatorFlag).Info("Updating Validator")
+	log.WithField("dependencyTag", latestValidatorFlag).Info("🔄  Updating Validator")
 
 	return clientDependencies[validatorDependencyName].Download(latestValidatorFlag, "", true, binaryPerms)
 }
 
 func updateGethToSpec(ctx *cli.Context) error {
-	log.WithField("dependencyTag", gethTag).Info("Updating Geth")
+	log.WithField("dependencyTag", gethTag).Info("🔄  Updating Geth")
 
 	return clientDependencies[gethDependencyName].Download(gethTag, gethCommitHash, true, binaryPerms)
 }
 
 func updatePrysmToSpec(ctx *cli.Context) error {
-	log.WithField("dependencyTag", prysmTag).Info("Updating Prysm")
+	log.WithField("dependencyTag", prysmTag).Info("🔄  Updating Prysm")
 
 	return clientDependencies[prysmDependencyName].Download(prysmTag, "", true, binaryPerms)
 }
 
 func updateValidatorToSpec(ctx *cli.Context) error {
-	log.WithField("dependencyTag", validatorTag).Info("Updating Validator")
+	log.WithField("dependencyTag", validatorTag).Info("🔄  Updating Validator")
 
 	return clientDependencies[validatorDependencyName].Download(validatorTag, "", true, binaryPerms)
 }
