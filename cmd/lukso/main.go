@@ -78,7 +78,7 @@ func init() {
 	validatorLogsFlags = append(validatorLogsFlags, networkFlags...)
 	validatorResetFlags = append(validatorResetFlags, networkFlags...)
 
-	validatorInitFlags = append(validatorInitFlags, networkFlags...)
+	validatorImportFlags = append(validatorImportFlags, networkFlags...)
 }
 
 func main() {
@@ -210,8 +210,9 @@ REPO: https://github.com/lukso-network/tools-lukso-cli
 				{
 					Name:            "import",
 					Usage:           "Import your validator keys in the client wallet",
-					Flags:           validatorInitFlags,
+					Flags:           validatorImportFlags,
 					Action:          selectNetworkFor(importValidator),
+					SkipFlagParsing: true,
 					HideHelpCommand: true,
 				},
 				{

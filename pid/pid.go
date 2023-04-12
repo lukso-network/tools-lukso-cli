@@ -7,7 +7,7 @@ import (
 	"syscall"
 )
 
-var FileDir = "/tmp/lukso"
+var FileDir = "/tmp" // until a script for /tmp/lukso or other dir is provided
 
 func Exists(path string) bool {
 	pidVal, err := Load(path)

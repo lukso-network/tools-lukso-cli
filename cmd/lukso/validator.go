@@ -17,18 +17,19 @@ import (
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethclient"
-	"github.com/urfave/cli/v2"
-
 	"github.com/m8b-dev/lukso-cli/contracts/bindings"
+	"github.com/urfave/cli/v2"
 )
 
 const (
 	ether                         = 1_000_000_000_000_000_000
+	gwei                          = 1_000_000_000
 	gasMargin                     = 500_000
 	gasBump                       = 50_000
 	depositContractAddress        = "0x000000000000000000000000000000000000cafe"
 	genesisDepositContractAddress = "0x9C2Ae5bC047Ca794d9388aB7A2Bf37778f9aBA73"
 	lyxeContractAddress           = "0x790c4379C82582F569899b3Ca71E78f19AeF82a5"
+	defaultRpc                    = "https://rpc.execution.3030.devnet.lukso.dev/"
 
 	errUnderpriced = "transaction underpriced" //nolint:all // catches both replacement and normal underpriced
 
@@ -71,7 +72,12 @@ func newDepositController(rpc string, depositKeys []DepositDataKey, startingInde
 		return
 	}
 
-	log.Info("Dialing up blockchain for gas info...")
+	if rpc == "" {
+		log.Infof("RPC not provided - falling back to default RPC: %s", defaultRpc)
+
+		rpc = defaultRpc
+	}
+	log.Info("Dialing up blockchain...")
 	eth, err := ethclient.Dial(rpc)
 	if err != nil {
 		return
@@ -355,7 +361,7 @@ func sendDeposit(ctx *cli.Context) (err error) {
 
 	dc, err := newDepositController(ctx.String(rpcFlag), depositKeys, ctx.Int(startFromIndexFlag))
 	if err != nil {
-		return err
+		return nil // to avoid duplicating error messages
 	}
 
 	accepted, err := dc.estimateGas(isGenesisDeposit)
@@ -372,15 +378,40 @@ func sendDeposit(ctx *cli.Context) (err error) {
 }
 
 func importValidator(ctx *cli.Context) error {
+	if len(os.Args) < 3 {
+		return errNotEnoughArguments
+	}
+
 	args := []string{
 		"accounts",
 		"import",
-		"--keys-dir", ctx.String(validatorKeysFlag),
-		"--wallet-dir", ctx.String(validatorKeysFlag),
 	}
 
-	if ctx.String(validatorWalletPasswordFileFlag) != "" {
-		args = append(args, "--wallet-password-file", ctx.String(validatorWalletPasswordFileFlag))
+	// we don't want to pass those flags
+	mainnet := fmt.Sprintf("--%s", mainnetFlag)
+	testnet := fmt.Sprintf("--%s", testnetFlag)
+	devnet := fmt.Sprintf("--%s", devnetFlag)
+	walletDir := "--wallet-dir"
+
+	for _, osArg := range os.Args[3:] {
+		if osArg == mainnet || osArg == testnet || osArg == devnet {
+			continue
+		}
+
+		args = append(args, osArg)
+	}
+
+	isWalletProvided := false
+	walletDefault := ctx.String(validatorWalletDirFlag)
+
+	for _, arg := range args {
+		if arg == walletDir {
+			isWalletProvided = true
+		}
+	}
+
+	if !isWalletProvided {
+		args = append(args, walletDir, walletDefault)
 	}
 
 	initCommand := exec.Command("validator", args...)

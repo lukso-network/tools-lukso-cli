@@ -15,6 +15,7 @@ type networkConfig struct {
 	logPath              string
 	configPath           string
 	keysPath             string
+	walletPath           string
 }
 
 // selectNetwork accepts a CLI func as an argument, and adjusts all values that need to be changed depending on
@@ -29,16 +30,15 @@ func selectNetworkFor(f func(*cli.Context) error) func(*cli.Context) error {
 			}
 		}
 
-		mainnetEnabled := ctx.Bool(mainnetFlag)
 		testnetEnabled := ctx.Bool(testnetFlag)
 		devnetEnabled := ctx.Bool(devnetFlag)
 
-		enabledCount := boolToInt(mainnetEnabled) + boolToInt(testnetEnabled) + boolToInt(devnetEnabled)
+		enabledCount := boolToInt(testnetEnabled) + boolToInt(devnetEnabled)
 		if enabledCount > 1 {
 			return errMoreNetworksSelected
 		}
 
-		if enabledCount == 0 || testnetEnabled || mainnetEnabled {
+		if enabledCount == 0 || testnetEnabled {
 			return errNetworkNotSupported // when any other network is supported we can simply pass in the config there
 		}
 
@@ -52,6 +52,7 @@ func selectNetworkFor(f func(*cli.Context) error) func(*cli.Context) error {
 				logPath:              devnetLogs,
 				configPath:           devnetConfig,
 				keysPath:             devnetKeystore,
+				walletPath:           devnetKeystore,
 			}
 		}
 
@@ -98,6 +99,7 @@ func updateValues(ctx *cli.Context, config networkConfig) (err error) {
 		prysmChainConfigFileFlag:     configYaml,
 		validatorChainConfigFileFlag: configYaml,
 		prysmGenesisStateFlag:        genesisState,
+		validatorWalletDirFlag:       config.walletPath,
 	}
 
 	if len(os.Args) < 2 {
