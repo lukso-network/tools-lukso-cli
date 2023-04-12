@@ -215,13 +215,6 @@ REPO: https://github.com/lukso-network/tools-lukso-cli
 					SkipFlagParsing: true,
 					HideHelpCommand: true,
 				},
-				{
-					Name:            "deposit",
-					Usage:           "Sends deposits for your validator keys",
-					Flags:           validatorDepositFlags,
-					Action:          sendDeposit,
-					HideHelpCommand: true,
-				},
 			},
 		},
 		{
