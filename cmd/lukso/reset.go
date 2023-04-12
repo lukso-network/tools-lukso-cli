@@ -24,7 +24,7 @@ func resetClients(ctx *cli.Context) error {
 
 	input := registerInputWithMessage(message)
 	if !strings.EqualFold(input, "y") {
-		log.Info("Aborting...")
+		log.Info("❌  Aborting...")
 
 		return nil
 	}

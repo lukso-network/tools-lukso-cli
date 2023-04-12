@@ -88,13 +88,13 @@ func newDepositController(rpc string, depositKeys []DepositDataKey, startingInde
 	}
 
 	if startingIndex < 0 {
-		log.Error("Couldn't send deposits: starting index is smaller than 0")
+		log.Error("❌  Couldn't send deposits: Your starting index is smaller than 0")
 		err = errIndexOutOfBounds
 
 		return
 	}
 	if startingIndex >= keysLen {
-		log.Error("Couldn't send deposits: starting index is greater than number of deposits")
+		log.Error("❌  Couldn't send deposits: Your starting index is greater than number of deposits")
 		err = errIndexOutOfBounds
 
 		return
@@ -213,7 +213,7 @@ func (dc depositController) estimateGas(isGenesisDeposit bool) (accepted bool, e
 	accepted = true
 	input := registerInputWithMessage(message)
 	if !strings.EqualFold(input, "y") && input != "" {
-		log.Info("Aborting...")
+		log.Info("❌  Aborting...")
 
 		accepted = false
 	}
@@ -251,10 +251,10 @@ func (dc depositController) sendDeposits(isGenesisDeposit bool, maxTxsPerBatch i
 			failedBatchedTxIndex, err := dc.waitForReceipts(txsSent)
 			if err != nil {
 				failedDepositIndex := dc.startingIndex + currentBatch*maxTxsPerBatch + failedBatchedTxIndex
-				log.Errorf("Sent transaction has failed with error: %v - aborting...", err)
-				log.Errorf("To continue with your deposits please run a deposit command once again, "+
-					"but with --start-from-index flag to continue from failed transaction, example:\n"+
-					"lukso validator deposit --deposit-data-json *your deposit data file* --start-from-index %d",
+				log.Errorf("❌  Sent transaction has failed with error: %v - aborting...", err)
+				log.Errorf("To continue with your deposits please run the 'lukso deposit' command again, \n"+
+					"Use the '--start-from-index' flag to continue from failed transaction like this:\n"+
+					"'lukso validator deposit --deposit-data-json *your deposit data file* --start-from-index' %d",
 					failedDepositIndex,
 				)
 
@@ -285,7 +285,7 @@ func (dc depositController) sendDeposits(isGenesisDeposit bool, maxTxsPerBatch i
 
 			depositData, err = encodeGenesisDepositDataKey(key, supplyAmount)
 			if err != nil {
-				log.Error("Couldn't send transaction - deposit data provided is invalid  - skipping...")
+				log.Error("❌  Couldn't send transaction - deposit data provided is invalid  - skipping...")
 			}
 
 			tx, err = dc.genesisDeposit.Send(
@@ -323,10 +323,10 @@ func (dc depositController) sendDeposits(isGenesisDeposit bool, maxTxsPerBatch i
 
 		if err != nil {
 			failedDepositIndex := dc.startingIndex + currentBatch*maxTxsPerBatch + txSentCount
-			log.Errorf("Sent transaction has failed with error: %v - aborting...", err)
-			log.Errorf("To continue with your deposits please run a deposit command once again, "+
-				"but with --start-from-index flag to continue from failed transaction, example:\n"+
-				"lukso validator deposit --deposit-data-json *your deposit data file* --start-from-index %d",
+			log.Errorf("❌  Sent transaction has failed with error: %v - aborting...", err)
+			log.Errorf("To continue with your deposits please run the 'lukso deposit' command again, \n"+
+				"Use the '--start-from-index' flag to continue from failed transaction like this:\n"+
+				"'lukso validator deposit --deposit-data-json *your deposit data file* --start-from-index' %d",
 				failedDepositIndex,
 			)
 
@@ -335,7 +335,7 @@ func (dc depositController) sendDeposits(isGenesisDeposit bool, maxTxsPerBatch i
 
 		txsSent = append(txsSent, tx)
 
-		fmt.Printf("Transaction %d/%d sent! Transaction hash: %v\n\n", i+1, dc.keysNum, tx.Hash().String())
+		fmt.Printf("✅  Transaction %d/%d sent! Transaction hash: %v\n\n", i+1, dc.keysNum, tx.Hash().String())
 
 		nonce = tx.Nonce() + 1 // we could do nonce += 1, but it's just to make sure we are +1 ahead of previous tx
 		txSentCount++
@@ -454,7 +454,7 @@ func encodeGenesisDepositDataKey(key DepositDataKey, amount int) (depositData []
 func (dc depositController) waitForReceipts(txs []*types.Transaction) (failedIndex int, err error) {
 	validatedTxs := make([]bool, len(txs))
 	for {
-		log.Infof("Waiting %d seconds before fetching receipts...", blockFetchInterval)
+		log.Infof("🕐  Waiting %d seconds before fetching receipts...", blockFetchInterval)
 		time.Sleep(time.Second * blockFetchInterval)
 		for i, tx := range txs {
 			var (
@@ -471,17 +471,17 @@ func (dc depositController) waitForReceipts(txs []*types.Transaction) (failedInd
 				return
 			}
 			if isPending {
-				log.Infof("tx with hash %s is still pending - continuing", tx.Hash().String())
+				log.Infof("🕐  Transaction with hash %s is still pending - continuing", tx.Hash().String())
 				continue
 			}
 
-			log.Infof("getting receipt for tx with hash %s", tx.Hash().String())
+			log.Infof("🔄  Getting receipt for tx with hash %s", tx.Hash().String())
 			receipt, err = dc.eth.TransactionReceipt(dc.c, tx.Hash())
 			if err != nil {
 				return
 			}
 
-			log.Infof("Got receipt for tx with hash %s, status: %d", tx.Hash().String(), receipt.Status)
+			log.Infof("✅  Got receipt for tx with hash %s, status: %d", tx.Hash().String(), receipt.Status)
 			if receipt.Status == 0 {
 				err = errTransactionFailed
 				failedIndex = i
@@ -508,14 +508,16 @@ func (dc depositController) waitForReceipts(txs []*types.Transaction) (failedInd
 }
 
 func chooseSupply() (amount int, err error) {
-	message := `As a Genesis Validator you can provide an indicative voting for the preferred initial token supply of LYX,
-which will determine how much the Foundation will receive.
+	message := `As a Genesis Validator you can provide an indicative voting for the preferred initial 
+token supply of LYX, which will determine how much the Foundation will receive.
 See the https://deposit.mainnet.lukso.network website for details.
 You can choose between:
+
 1: 35M LYX
 2: 42M LYX (This option is the preferred one by the Foundation)
 3: 100M LYX
 4: No vote
+
 Please enter your choice (1-4):
 > `
 	var option int
@@ -523,12 +525,12 @@ Please enter your choice (1-4):
 		input := registerInputWithMessage(message)
 		option, err = strconv.Atoi(input)
 		if err != nil {
-			log.Warn("Please provide a valid option")
+			log.Warn("❗️  Please provide a valid option")
 
 			continue
 		}
 		if option < 1 || option > 4 {
-			log.Warn("Please provide an option between 1-4")
+			log.Warn("❗️  Please provide an option between 1-4")
 		}
 	}
 

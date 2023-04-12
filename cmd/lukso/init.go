@@ -18,7 +18,7 @@ func initializeDirectory(ctx *cli.Context) error {
 	}
 
 	if cfg.Exists() {
-		message := "This folder has already been initialized. Do you want to re-initialize it? Please note that configs in this folder will NOT be overwritten [y/N]:\n> "
+		message := "⚠️  This folder has already been initialized. Do you want to re-initialize it? Please note that configs in this folder will NOT be overwritten [y/N]:\n> "
 		input := registerInputWithMessage(message)
 		if !strings.EqualFold(input, "y") && input == "" {
 			return nil
@@ -33,7 +33,7 @@ func initializeDirectory(ctx *cli.Context) error {
 
 		err := dependency.Download("", "", false, configPerms)
 		if err != nil {
-			log.Errorf("There was error while downloading %s file: %v", dependency.name, err.Error())
+			log.Errorf("❌  There was error while downloading %s file: %v", dependency.name, err.Error())
 
 			return nil
 		}
@@ -42,14 +42,14 @@ func initializeDirectory(ctx *cli.Context) error {
 
 	err := createJwtSecret(jwtSecretPath)
 	if err != nil {
-		log.Errorf("There was an error while creating JWT secret file: %v", err)
+		log.Errorf("❌  There was an error while creating JWT secret file: %v", err)
 
 		return nil
 	}
 
 	err = os.MkdirAll(pid.FileDir, configPerms)
 	if err != nil {
-		log.Errorf("There was an error while preparing PID directory: %v", err)
+		log.Errorf("❌  There was an error while preparing PID directory: %v", err)
 
 		return nil
 	}
@@ -58,7 +58,7 @@ func initializeDirectory(ctx *cli.Context) error {
 
 	err = cfg.Create("", "")
 	if err != nil {
-		log.Errorf("There was an error while preparing LUKSO configuration: %v", err)
+		log.Errorf("❌  There was an error while preparing LUKSO configuration: %v", err)
 
 		return nil
 	}
