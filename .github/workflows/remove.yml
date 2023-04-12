@@ -7,14 +7,16 @@ on:
       - closed
 
 permissions:
-  id-token: write
-  contents: write
+  id-token: read
+  contents: read
 
 jobs:
   publish_docs:
     name: Publish script
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
       - name: Authenticate to Google Cloud
         id: gcpauth
         uses: google-github-actions/auth@v1

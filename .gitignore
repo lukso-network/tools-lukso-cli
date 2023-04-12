@@ -46,3 +46,6 @@ crash-*
 
 # deepsource cli
 bin
+
+# contracts used to generate ABIs
+contracts/**/*.sol
