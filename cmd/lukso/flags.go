@@ -143,7 +143,7 @@ var (
 		&cli.StringFlag{
 			Name:  rpcFlag,
 			Usage: "Your RPC provider",
-			Value: "https://rpc.2022.l16.lukso.network",
+			Value: "https://rpc.execution.3030.devnet.lukso.dev", // TODO: for prod use eth.nownodes.io
 		},
 		&cli.IntFlag{
 			Name:  gasPriceFlag,
