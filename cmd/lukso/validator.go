@@ -391,7 +391,7 @@ func importValidator(ctx *cli.Context) error {
 	mainnet := fmt.Sprintf("--%s", mainnetFlag)
 	testnet := fmt.Sprintf("--%s", testnetFlag)
 	devnet := fmt.Sprintf("--%s", devnetFlag)
-	walletDir := fmt.Sprintf("--wallet-dir")
+	walletDir := "--wallet-dir"
 
 	for _, osArg := range os.Args[3:] {
 		if osArg == mainnet || osArg == testnet || osArg == devnet {
