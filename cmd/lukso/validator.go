@@ -102,10 +102,13 @@ func newDepositController(rpc string, depositKeys []DepositDataKey, startingInde
 
 	depositKeys = depositKeys[startingIndex:]
 
+	// TODO: add warning messages!
 	message := "Please enter your private key: \n> "
+	// TODO: add warning messages!
 
-	// TODO: input should be password input
-	input := strings.TrimPrefix(registerInputWithMessage(message), "0x")
+	input := strings.TrimPrefix(registerSensitiveInputWithMessage(message), "0x")
+
+	fmt.Println()
 
 	privKey, err := crypto.HexToECDSA(input)
 	if err != nil {
@@ -113,6 +116,7 @@ func newDepositController(rpc string, depositKeys []DepositDataKey, startingInde
 	}
 
 	senderAddr := crypto.PubkeyToAddress(privKey.PublicKey)
+	fmt.Println("Your address is:", senderAddr)
 	chainId, err := eth.ChainID(c)
 	if err != nil {
 		return
@@ -360,6 +364,9 @@ func sendDeposit(ctx *cli.Context) (err error) {
 	if err != nil {
 		return err
 	}
+
+	// TODO: check chain -> --genesis should use eth mainnet
+	// non genesis should be lukso mainnet
 
 	dc, err := newDepositController(ctx.String(rpcFlag), depositKeys, ctx.Int(startFromIndexFlag))
 	if err != nil {

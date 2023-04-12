@@ -10,9 +10,12 @@ import (
 	"os/exec"
 	"strconv"
 	"strings"
+	"syscall"
 	"time"
 
 	"github.com/urfave/cli/v2"
+
+	"golang.org/x/term"
 )
 
 // prepareTimestampedFile concatenates directory of logs, prefix of file name and timestamp.
@@ -190,6 +193,18 @@ func registerInputWithMessage(message string) (input string) {
 	scanner.Scan()
 
 	return scanner.Text()
+}
+
+func registerSensitiveInputWithMessage(message string) (input string) {
+	fmt.Print(message)
+
+	byteSensitiveInput, err := term.ReadPassword(syscall.Stdin)
+	if err != nil {
+		log.Error("There was an error reading your input")
+		return
+	}
+
+	return string(byteSensitiveInput)
 }
 
 // parseFlags takes care of parsing flags that are skipped if SkipFlagParsing is set to true - if --help or -h is found we display help and stop execution
