@@ -37,7 +37,7 @@ func prepareTimestampedFile(logDir, logFileName string) (logFile string, err err
 func prepareLogfileFlag(logDir, dependencyName string) string {
 	prysmFullLogPath, err := prepareTimestampedFile(logDir, dependencyName)
 	if err != nil {
-		log.Warnf("Couldn't prepare log folder for %s client. Warning: continuing without log files being saved", dependencyName)
+		log.Warnf("⚠️  Couldn't prepare log folder for %s client. Continuing without log files being saved", dependencyName)
 
 		return ""
 	}
@@ -48,7 +48,7 @@ func prepareLogfileFlag(logDir, dependencyName string) string {
 // The lint says this function is unused
 // I'll ignore it for now as I'm missing context
 func createJwtSecret(dest string) error { //nolint:all
-	log.Info("Creating new JWT secret")
+	log.Info("🔄  Creating new JWT secret")
 	jwtDir := truncateFileFromDir(dest)
 
 	err := os.MkdirAll(jwtDir, 0750)
@@ -68,7 +68,7 @@ func createJwtSecret(dest string) error { //nolint:all
 		return err
 	}
 
-	log.Infof("New JWT secret created in %s", dest)
+	log.Infof("✅  New JWT secret created in %s", dest)
 
 	return nil
 }
@@ -109,14 +109,14 @@ func getLastFile(dir string, dependency string) (string, error) {
 
 	err := command.Run()
 	if err != nil {
-		log.Errorf("There was an error while executing command: %s. Error: %v", commandName, err)
+		log.Errorf("❌  There was an error while executing command: %s. Error: %v", commandName, err)
 
 		return "", err
 	}
 
 	err = grepCommand.Run()
 	if err != nil {
-		log.Errorf("There was an error while executing command: %s. Error: %v", commandName, err)
+		log.Errorf("❌  There was an error while executing command: %s. Error: %v", commandName, err)
 
 		return "", err
 	}
@@ -126,7 +126,7 @@ func getLastFile(dir string, dependency string) (string, error) {
 		files = append(files, scan.Text())
 	}
 	if len(files) < 1 {
-		log.Infof("No log files found in %s", dir)
+		log.Infof("❗️  No log files found in %s", dir)
 
 		return "", nil
 	}
@@ -138,7 +138,7 @@ func getLastFile(dir string, dependency string) (string, error) {
 
 	input := registerInputWithMessage(message)
 	if !strings.EqualFold(input, "y") && input != "" {
-		log.Info("Aborting...") // there is no error, just a possible change of mind - shouldn't return err
+		log.Info("❌  Aborting...") // there is no error, just a possible change of mind - shouldn't return err
 
 		return "", nil
 	}
@@ -158,7 +158,7 @@ func isAnyRunning() bool {
 	validatorRunning := isRunning(validatorDependencyName)
 
 	if gethRunning || prysmRunning || validatorRunning {
-		message := "Please stop the following clients before continuing: "
+		message := "⚠️  Please stop the following clients before continuing: "
 		if gethRunning {
 			message += "geth "
 		}
@@ -169,7 +169,7 @@ func isAnyRunning() bool {
 			message += "validator "
 		}
 
-		message += "\nYou can use 'lukso stop' to stop clients."
+		message += "\n➡️  You can use 'lukso stop' to stop clients."
 
 		log.Warn(message)
 
@@ -287,7 +287,7 @@ func isRoot() (isRoot bool, err error) {
 func flagFileExists(ctx *cli.Context, flag string) bool {
 	flagPath := ctx.String(flag)
 	if !fileExists(flagPath) {
-		log.Errorf("Path in --%s flag doesn't exist - please make sure that you provided a valid file path", flag)
+		log.Errorf("⚠️  Path in --%s flag doesn't exist - please provide a valid file path", flag)
 
 		return false
 	}
