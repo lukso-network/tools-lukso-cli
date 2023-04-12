@@ -446,6 +446,29 @@ $ lukso start --validator \
 --validator-password "./[file_name].txt"
 ```
 
+## Uninstalling
+
+The LUKSO CLI and downloaded clients are located within the binary folder of the user's system directory.
+It can be removed at any time. All node data is directly located within the node folder.
+
+```sh
+# Make sure to stop the node
+$ lukso stop
+
+# Uninstall the LUKSO CLI
+$ rmdir -rf /usr/local/bin/lukso
+
+# Uninstall Geth Execution Client
+$ rmdir -rf /usr/local/bin/geth
+
+# Uninstall Prysm Consensus Client
+$ rmdir -rf /usr/local/bin/prysm
+
+# Remove the node data
+# Make sure to backup your keys first
+$ rmdir -rf ~/myNodeFolder
+```
+
 ## Contributing
 
 If you want to contribute to this repository, please check [`CONTRIBUTING.md`](./CONTRIBUTING.md).
