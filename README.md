@@ -192,10 +192,11 @@ $ lukso update geth
 | --testnet                            | Starts the LUKSO node with testnet data (./configs/tesnet)               |
 | --devnet                             | Starts the LUKSO node with devnet data (./configs/devnet)                |
 
-For specific client options, please visit their official documentations:
+For specific client options, please visit their official documentations. All flags and their parameters will be passed to the underlying clients.
 
 - [Geth Client Specification](https://geth.ethereum.org/docs/fundamentals/command-line-options)
 - [Prysm Client Specification](https://docs.prylabs.network/docs/prysm-usage/parameters)
+- [Prysm Validator Specification](https://docs.prylabs.network/docs/prysm-usage/parameters#validator-flags)
 - [Erigon Client Specification](https://github.com/ledgerwatch/erigon)
 - [Lighthouse Client Specification](https://lighthouse-book.sigmaprime.io/advanced-datadir.html)
 
@@ -373,6 +374,8 @@ After generating the validator keys, they can be imported into the LUKSO CLI. To
 | --mainnet            | Will import the keys for mainnet [default] (default: "./mainnet-keystore") |
 | --testnet            | Will import the keys for testnet (default: "./testnet-keystore")           |
 | --devnet             | Will import the keys for devnet (default: "./devnet-keystore")             |
+
+For specific validator options, please visit the [Prysm Validator Specification](https://docs.prylabs.network/docs/prysm-usage/parameters#validator-flags). All flags and their parameters will be passed to the client. This can be useful to configure additional features like the validator's graffiti, extended logging, or connectivity options.
 
 #### How to start a genesis validator node
 
