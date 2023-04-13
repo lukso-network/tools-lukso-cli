@@ -180,7 +180,7 @@ var (
 	startFlags = []cli.Flag{
 		&cli.BoolFlag{
 			Name:  validatorFlag,
-			Usage: "Run lukso node with validator",
+			Usage: "Run LUKSO node with validator",
 			Value: false,
 		},
 		&cli.BoolFlag{

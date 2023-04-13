@@ -2,13 +2,13 @@
 
 > ⚠️ DO NOT USE IN PRODUCTION, SCRIPTS ARE NOT DEPLOYED YET.
 
-The LUKSO CLI is a command line tool to install, manage and set up validators of different types of nodes for the LUKSO network. For more information and tutorial, please check the [LUKSO Tech docs](https://docs.lukso.tech/).
+The LUKSO CLI is a command line tool to install, manage and set up validators of different clients for the LUKSO Blockchain. For more information and tutorial, please check the [LUKSO Tech Docs](https://docs.lukso.tech/).
 
 ## Features
 
-- 🧰 Installation of Execution, Beacon and Validator Node Clients
+- 🧰 Installation of Execution, Consensus, and Validator Clients
 - 📀 Running a node as a validator
-- 📑 Accessing various node logs
+- 📑 Accessing various client logs
 - 💰 Making validator deposits
 
 ## Supported EVM Clients
@@ -17,8 +17,8 @@ The LUKSO CLI is a command line tool to install, manage and set up validators of
 
 The LUKSO CLI is able to install multiple clients for running the node.
 
-- Execution Node Clients: [Geth](https://geth.ethereum.org/)
-- Beacon Node Clients: [Prysm](https://github.com/prysmaticlabs/prysm)
+- Execution Clients: [Geth](https://geth.ethereum.org/)
+- Consensus Clients: [Prysm](https://github.com/prysmaticlabs/prysm)
 - Validator Client for Staking: [Prysm](https://docs.prylabs.network/docs/how-prysm-works/prysm-validator-client)
 
 ## Setting up the Node
@@ -36,9 +36,9 @@ Process of setting up the node using the LUSKO CLI.
 $ curl https://install.lukso.network | sh
 ```
 
-### Initialise the working directory
+### Initialise the Working Directory
 
-1. Create and move into a working directory for your node client data
+1. Create and move into a working directory for your node's data
 
 ```sh
 # Exchange [folder_name] with the folder name you want
@@ -54,10 +54,10 @@ $ lukso init
 
 ### Installing the Clients
 
-3. Install choosen LUKSO node clients into the working directory
+3. Install choosen LUKSO clients into the working directory
 
 ```sh
-# Installing Execution Chain, Beacon Chain, and Validator Client
+# Installing Execution, Consensus, and Validator Client
 # Might need admin access by typing `sudo` in front of the command
 $ lukso install
 ```
@@ -66,7 +66,7 @@ $ lukso install
 
 Please refer to the `start` command below for more information.
 
-## Node folder structure
+## Working Directories's Structure
 
 As the LUKSO CLI is able to manage multiple clients for multiple blockchain networks in one folder, the structure of the node is set up in a generic way.
 
@@ -112,20 +112,20 @@ lukso-node
 
 ## Available Commands
 
-| Command             | Description                                                                                      |
-| ------------------- | ------------------------------------------------------------------------------------------------ |
-| `install`           | Installs choosen LUKSO node clients (Execution, Beacon, Validator) and their binary dependencies |
-| `init`              | Initializes the node working directory, it's structure, and network configuration                |
-| `update`            | Updates all or specific LUKSO node clients in the working directory to the newest version        |
-| `start`             | Starts all or specific LUKSO node clients and connects to the specified network                  |
-| `stop`              | Stops all or specific LUKSO node clients that are currently running                              |
-| `log`               | Listens to all log events from a specific client in the current terminal window                  |
-| `status`            | Shows the LUKSO node client processes that are currently running                                 |
-| `reset`             | Resets all or specific client data directories and logs excluding the validator keys             |
-| `validator import`  | Import the validator keys in the wallet                                                          |
-| `validator deposit` | Makes a deposit to the deposit bridge contract                                                   |
-| `version`           | Display the version of the LUKSO CLI that is currently installed                                 |
-| `help`, `h`         | Shows the full list of commands, global options, and their usage                                 |
+| Command             | Description                                                                              |
+| ------------------- | ---------------------------------------------------------------------------------------- |
+| `install`           | Installs choosen clients (Execution, Consensus, Validator) and their binary dependencies |
+| `init`              | Initializes the working directory, it's structure, and network configuration             |
+| `update`            | Updates all or specific clients in the working directory to the newest version           |
+| `start`             | Starts all or specific clients and connects to the specified network                     |
+| `stop`              | Stops all or specific clients that are currently running                                 |
+| `log`               | Listens to all log events from a specific client in the current terminal window          |
+| `status`            | Shows the client processes that are currently running                                    |
+| `reset`             | Resets all or specific client data directories and logs excluding the validator keys     |
+| `validator import`  | Import the validator keys in the wallet                                                  |
+| `validator deposit` | Makes a deposit to the deposit bridge contract                                           |
+| `version`           | Display the version of the LUKSO CLI that is currently installed                         |
+| `help`, `h`         | Shows the full list of commands, global options, and their usage                         |
 
 ## Global Help Flag
 
@@ -148,7 +148,7 @@ Below, you can find examples and options tables for all available commands.
 | ------------- | ----------------------------------------- |
 | --agree-terms | Automatically accept Terms and Conditions |
 
-#### How to install the node clients
+#### How to install the clients
 
 ```sh
 # User is able to select its Consensus and Execution clients.
@@ -201,20 +201,20 @@ For specific client options, please visit their official documentations:
 - [Erigon Client Specification](https://github.com/ledgerwatch/erigon)
 - [Lighthouse Client Specification](https://lighthouse-book.sigmaprime.io/advanced-datadir.html)
 
-#### How to start the node clients
+#### How to start the clients
 
 ```sh
-# Starts your node clients and connects to LUKSO mainnet
+# Starts your node and connects to LUKSO mainnet
 # Uses the default config files from configs/mainnet folder
 $ lukso start
 
-# Starts your node clients and connects to the LUKSO testnet
+# Starts your node and connects to the LUKSO testnet
 $ lukso start --testnet
 
-# Starts your node clients and connects to the LUKSO devnet
+# Starts your node and connects to the LUKSO devnet
 $ lukso start --devnet
 
-# Starts your node clients and connects to mainnet as a validator
+# Starts your node and connects to mainnet as a validator
 $ lukso start --validator
 ```
 
@@ -252,7 +252,7 @@ $ lukso start --log-folder "[folder_path]"
 | --execution | Stops the execution client |
 | --consensus | Stops the consensus client |
 
-#### How to stop all or specific node clients
+#### How to stop all or specific clients
 
 ```sh
 # Stops all running node clients
@@ -272,7 +272,7 @@ $ lukso stop --consensus
 
 > Options WIP
 
-#### How to view logs of the node clients
+#### How to view logs of the clients
 
 ```sh
 # Displays the logs of the execution client
@@ -449,7 +449,7 @@ $ lukso start --validator \
 ## Uninstalling
 
 The LUKSO CLI and downloaded clients are located within the binary folder of the user's system directory.
-It can be removed at any time. All node data is directly located within the node folder.
+It can be removed at any time. All node data is directly located within the working directory.
 
 ```sh
 # Make sure to stop the node

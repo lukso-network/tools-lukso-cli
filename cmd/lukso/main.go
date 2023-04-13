@@ -92,27 +92,27 @@ REPO: https://github.com/lukso-network/tools-lukso-cli
 
 `, cli.AppHelpTemplate)
 
-	app.Usage = "The LUKSO CLI is a command line tool to install, manage and set up validators of different types of nodes for the LUKSO network."
+	app.Usage = "The LUKSO CLI is a command line tool to install, manage and set up validators of different clients for the LUKSO Blockchain."
 	app.Flags = appFlags
 	app.Commands = []*cli.Command{
 		{
 			Name:            "install",
 			Action:          installBinaries,
 			Flags:           installFlags,
-			Usage:           "Installs chosen LUKSO node clients (Execution, Beacon, Validator) and their binary dependencies",
+			Usage:           "Installs chosen LUKSO clients (Execution, Consensus, Validator) and their binary dependencies",
 			Before:          initializeFlags,
 			HideHelpCommand: true,
 		},
 		{
 			Name:            "init",
-			Usage:           "Initializes the node working directory, its structure, and network configuration",
+			Usage:           "Initializes the working directory, its structure, and network configuration",
 			Action:          initializeDirectory,
 			Before:          initializeFlags,
 			HideHelpCommand: true,
 		},
 		{
 			Name:            "update",
-			Usage:           "Updates all or specific LUKSO node clients in the working directory to the latest version",
+			Usage:           "Updates all or specific clients in the working directory to the latest version",
 			Action:          updateClients,
 			Before:          initializeFlags,
 			Flags:           updateFlags,
@@ -146,7 +146,7 @@ REPO: https://github.com/lukso-network/tools-lukso-cli
 		},
 		{
 			Name:            "start",
-			Usage:           "Starts all or specific LUKSO node clients and connects to the specified network",
+			Usage:           "Starts all or specific clients and connects to the specified network",
 			Action:          selectNetworkFor(startClients),
 			SkipFlagParsing: true,
 			Flags:           startFlags,
@@ -155,7 +155,7 @@ REPO: https://github.com/lukso-network/tools-lukso-cli
 		},
 		{
 			Name:            "stop",
-			Usage:           "Stops all or specific LUKSO node clients that are currently running",
+			Usage:           "Stops all or specific clients that are currently running",
 			Action:          stopClients,
 			Flags:           stopFlags,
 			HideHelpCommand: true,
@@ -191,7 +191,7 @@ REPO: https://github.com/lukso-network/tools-lukso-cli
 		},
 		{
 			Name:            "status",
-			Usage:           "Shows the LUKSO node client processes that are currently running",
+			Usage:           "Shows the client processes that are currently running",
 			Action:          statClients,
 			HideHelpCommand: true,
 		},
@@ -226,7 +226,7 @@ REPO: https://github.com/lukso-network/tools-lukso-cli
 		},
 		{
 			Name:            "version",
-			Usage:           "Display the version of the LUKSO CLI Tool that is currently installed",
+			Usage:           "Display the version of the LUKSO CLI that is currently installed",
 			Action:          displayVersion,
 			HideHelpCommand: true,
 		},
