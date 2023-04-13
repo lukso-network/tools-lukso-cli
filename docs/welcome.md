@@ -9,4 +9,3 @@ The LUKSO CLI is a command line tool to install, manage and set up validators of
 - 🧰 Installation of Execution, Consensus, and Validator Clients
 - 📀 Running a node as a validator
 - 📑 Accessing various client logs
-- 💰 Making validator deposits

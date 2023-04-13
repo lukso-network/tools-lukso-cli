@@ -321,7 +321,7 @@ var (
 		},
 		&cli.StringFlag{
 			Name:  validatorWalletPasswordFileFlag,
-			Usage: "Location of the password file that you used to generate keys from deposit-cli",
+			Usage: "Location of the password file that you used to generate keys",
 			Value: "",
 		},
 		&cli.StringFlag{
