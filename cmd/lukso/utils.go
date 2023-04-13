@@ -42,9 +42,7 @@ func prepareLogfileFlag(logDir, dependencyName string) string {
 	return fmt.Sprintf("--log-file=%s", prysmFullLogPath)
 }
 
-// The lint says this function is unused
-// I'll ignore it for now as I'm missing context
-func createJwtSecret(dest string) error { //nolint:all
+func createJwtSecret(dest string) error {
 	log.Info("🔄  Creating new JWT secret")
 	jwtDir := truncateFileFromDir(dest)
 

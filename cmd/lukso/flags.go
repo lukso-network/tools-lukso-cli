@@ -82,13 +82,7 @@ const (
 	validatorYamlPath    = "prysm/validator.yaml"
 
 	// validator tool related flags
-	depositDataJson    = "deposit-data-json"
-	genesisDepositFlag = "genesis"
-	validatorKeysFlag  = "validator-keys"
-	gasPriceFlag       = "gas-price"
-	rpcFlag            = "rpc"
-	maxTxsPerBatchFlag = "max-txs-per-batch"
-	startFromIndexFlag = "start-from-index"
+	validatorKeysFlag = "validator-keys"
 )
 
 var (
@@ -128,38 +122,6 @@ var (
 		mainnetEnabledFlag,
 		testnetEnabledFlag,
 		devnetEnabledFlag,
-	}
-
-	validatorDepositFlags = []cli.Flag{
-		&cli.StringFlag{
-			Name:     depositDataJson,
-			Usage:    "Path to your deposit file",
-			Required: true,
-		},
-		&cli.BoolFlag{
-			Name:  genesisDepositFlag,
-			Usage: "Specify if deposit is made for genesis",
-			Value: false,
-		},
-		&cli.StringFlag{
-			Name:  rpcFlag,
-			Usage: "Your RPC provider",
-		},
-		&cli.IntFlag{
-			Name:  gasPriceFlag,
-			Usage: "Gas price provided by user",
-			Value: 1000000000,
-		},
-		&cli.IntFlag{
-			Name:  maxTxsPerBatchFlag,
-			Usage: "Maximum amount of txs sent per single block",
-			Value: 10,
-		},
-		&cli.IntFlag{
-			Name:  startFromIndexFlag,
-			Usage: "Maximum amount of txs sent per single block",
-			Value: 0, // start from beginning by default
-		},
 	}
 
 	validatorImportFlags = []cli.Flag{

@@ -57,56 +57,12 @@ cd cmd/lukso/ && go build -o lukso
 # Within the tools-lukso-cli repository
 # Alternatively a static path can be used
 cd cmd/lukso/
+
+# build
+go build -o lukso
+
+# run
 ./lukso <command>
-```
-
-### Smart Contracts Bindings
-
-#### Prerequisites:
-
-- Solidity Compiler [solc.js](https://github.com/ethereum/solidity)
-- ABI Generator [abigen](https://geth.ethereum.org/docs/tools/abigen)
-
-#### Generate Bindings
-
-The contract can be found in: [lukso-network/network-genesis-deposit-contract](https://github.com/lukso-network/network-genesis-deposit-contract).
-
-1. Paste the interacting smart contract into the [`contracts`](./contracts) directory
-2. Generate the ABIs from your smart contracts
-
-Note: the files under: `contracts/*.sol` are ignored from the git repo.
-
-```sh
-# Generating ABI into abis directory
-# Change [contract_name] to the contract file name
-$ solcjs \
---output-dir contracts/abis \
---abi contracts/[contract_name].sol
-```
-
-3. Generate bindings using the newly generated ABIs
-
-```sh
-# Generate Go Bindings for CLI
-# Change [abi_name] to the contract file name
-# Change [binding_name] to the wanted output file name
-abigen \
---abi contracts/abis/[abi_name] \
---pkg bindings \
---out contracts/bindings/[binding_name].go \
---type TypeName
-```
-
-4. Use generated bindings in code
-
-```go
-# Sample Implementation
-bind, err := bindings.NewTypeName(common.HexToAddress(contractAddress), ethClient)
-if err != nil {
-	return
-}
-
-tx, err := bind.DoSomething(...)
 ```
 
 ### PR Testing
