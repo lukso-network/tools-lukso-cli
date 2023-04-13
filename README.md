@@ -9,7 +9,6 @@ The LUKSO CLI is a command line tool to install, manage and set up validators of
 - 🧰 Installation of Execution, Consensus, and Validator Clients
 - 📀 Running a node as a validator
 - 📑 Accessing various client logs
-- 💰 Making validator deposits
 
 ## Supported EVM Clients
 
@@ -112,20 +111,19 @@ lukso-node
 
 ## Available Commands
 
-| Command             | Description                                                                              |
-| ------------------- | ---------------------------------------------------------------------------------------- |
-| `install`           | Installs choosen clients (Execution, Consensus, Validator) and their binary dependencies |
-| `init`              | Initializes the working directory, it's structure, and network configuration             |
-| `update`            | Updates all or specific clients in the working directory to the newest version           |
-| `start`             | Starts all or specific clients and connects to the specified network                     |
-| `stop`              | Stops all or specific clients that are currently running                                 |
-| `log`               | Listens to all log events from a specific client in the current terminal window          |
-| `status`            | Shows the client processes that are currently running                                    |
-| `reset`             | Resets all or specific client data directories and logs excluding the validator keys     |
-| `validator import`  | Import the validator keys in the wallet                                                  |
-| `validator deposit` | Makes a deposit to the deposit bridge contract                                           |
-| `version`           | Display the version of the LUKSO CLI that is currently installed                         |
-| `help`, `h`         | Shows the full list of commands, global options, and their usage                         |
+| Command            | Description                                                                              |
+| ------------------ | ---------------------------------------------------------------------------------------- |
+| `install`          | Installs choosen clients (Execution, Consensus, Validator) and their binary dependencies |
+| `init`             | Initializes the working directory, it's structure, and network configuration             |
+| `update`           | Updates all or specific clients in the working directory to the newest version           |
+| `start`            | Starts all or specific clients and connects to the specified network                     |
+| `stop`             | Stops all or specific clients that are currently running                                 |
+| `log`              | Listens to all log events from a specific client in the current terminal window          |
+| `status`           | Shows the client processes that are currently running                                    |
+| `reset`            | Resets all or specific client data directories and logs excluding the validator keys     |
+| `validator import` | Import the validator keys in the wallet                                                  |
+| `version`          | Display the version of the LUKSO CLI that is currently installed                         |
+| `help`, `h`        | Shows the full list of commands, global options, and their usage                         |
 
 ## Global Help Flag
 
@@ -175,24 +173,24 @@ $ lukso update geth
 
 ### `start`
 
-| Option                               | Description                                                                  |
-| ------------------------------------ | ---------------------------------------------------------------------------- |
-| --geth-config [string]               | Defines the path to geth TOML config file                                    |
-| --prysm-config [string]              | Defines the path to pryms YAML config file                                   |
-| --genesis-json [string]              | Defines the path to genesis JSON file                                        |
-| --genesis-ssz [string]               | Defines the path to genesis SSZ file                                         |
-| --log-folder [string]                | Sets up a custom log directory (default: "./\[network_type\]-logs")          |
-| --no-slasher                         | Disables slasher                                                             |
-| **VALIDATOR**                        |                                                                              |
-| --validator                          | Starts the validator client                                                  |
-| --transaction-fee-recipient [string] | Sets the address that receives block fees                                    |
-| --validator-keys [string]            | Directory of the validator keys (default: "./\[network_type\]-keystore")     |
-| --validator-password [string]        | Location of password file that you used for generation keys from deposit-cli |
-| --validator-config [string]          | Path to prysm.yaml config file                                               |
-| **NETWORK**                          |                                                                              |
-| --mainnet                            | Starts the LUKSO node with mainnet data (default) (./configs/mainnet)        |
-| --testnet                            | Starts the LUKSO node with testnet data (./configs/tesnet)                   |
-| --devnet                             | Starts the LUKSO node with devnet data (./configs/devnet)                    |
+| Option                               | Description                                                              |
+| ------------------------------------ | ------------------------------------------------------------------------ |
+| --geth-config [string]               | Defines the path to geth TOML config file                                |
+| --prysm-config [string]              | Defines the path to pryms YAML config file                               |
+| --genesis-json [string]              | Defines the path to genesis JSON file                                    |
+| --genesis-ssz [string]               | Defines the path to genesis SSZ file                                     |
+| --log-folder [string]                | Sets up a custom log directory (default: "./\[network_type\]-logs")      |
+| --no-slasher                         | Disables slasher                                                         |
+| **VALIDATOR**                        |                                                                          |
+| --validator                          | Starts the validator client                                              |
+| --transaction-fee-recipient [string] | Sets the address that receives block fees                                |
+| --keys-dir [string]                  | Directory of the validator keys (default: "./\[network_type\]-keystore") |
+| --validator-password [string]        | Location of password file that you used for generated validator keys     |
+| --validator-config [string]          | Path to prysm.yaml config file                                           |
+| **NETWORK**                          |                                                                          |
+| --mainnet                            | Starts the LUKSO node with mainnet data (default) (./configs/mainnet)    |
+| --testnet                            | Starts the LUKSO node with testnet data (./configs/tesnet)               |
+| --devnet                             | Starts the LUKSO node with devnet data (./configs/devnet)                |
 
 For specific client options, please visit their official documentations:
 
@@ -345,10 +343,14 @@ $ lukso -h start
 
 ## Running a Validator
 
-Deposit keys can be generated using:
+Validator keys can be generated using:
 
 - CLI: [tools-key-gen-cli](https://github.com/lukso-network/tools-key-gen-cli)
 - GUI: [wagyu-key-gen](https://github.com/lukso-network/tools-wagyu-key-gen)
+
+> Both of them will generate the validator keys directory.
+
+After generating the validator keys, they can be imported into the LUKSO CLI. To fill the validator keys with funds to participate on the LUKSO Blockchain, you must use the [LUKSO Launchpad](https://deposit.mainnet.lukso.network) to send LYXe from your wallet to the generated keys.
 
 #### Genesis Amounts
 
@@ -359,63 +361,18 @@ Deposit keys can be generated using:
 #### Validator Stake
 
 - Genesis Validators need to have at least 32 LYXe per validator
-- Validators in general also need some ETH to pay for gas expenses
+- Validators also need some ETH on their wallet to pay for gas expenses
 
 ### `validator import`
 
 | Option               | Description                                                                |
 | -------------------- | -------------------------------------------------------------------------- |
-| --validator-keys     | Path to your validator keys directory [required]                           |
+| --keys-dir           | Path to your validator keys directory [required]                           |
 | --validator-password | Path to your password file                                                 |
 | **NETWORK**          |                                                                            |
 | --mainnet            | Will import the keys for mainnet [default] (default: "./mainnet-keystore") |
 | --testnet            | Will import the keys for testnet (default: "./testnet-keystore")           |
 | --devnet             | Will import the keys for devnet (default: "./devnet-keystore")             |
-
-The validator keys directory is generated with one of these tools:
-
-- CLI: [tools-key-gen-cli](https://github.com/lukso-network/tools-key-gen-cli)
-- GUI: [wagyu-key-gen](https://github.com/lukso-network/tools-wagyu-key-gen)
-
-### `validator deposit`
-
-| Option                       | Description                                                                                                                 |
-| ---------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| --deposit-data-json [string] | Defines the path to the deposit JSON file                                                                                   |
-| --gas-price [string]         | Defines the gas price in integers as string                                                                                 |
-| --rpc [string]               | Defines the RPC URL used to send deposit transactions. If `--genesis` is used, it should be an RPC URL for ethereum mainnet |
-| --genesis                    | Executes deposit to genesis validator contract                                                                              |
-| --start-from-index [int]     | Start deposit from specific block index                                                                                     |
-
-### Performing Deposits
-
-The following example snippets show how to perform deposits with your keys to be able to stake.
-
-#### How to deposit as a validator
-
-> WIP: Inconsistant Object Usage
-
-```sh
-# Executing deposit by setting gas price and RPC connection
-# Change [rpc_address] to the actual RPC URL
-$ lukso validator deposit \
---deposit-data-json "./deposit_data.json" \
-[--gasPrice "1000000000" --rpc "[rpc_address]"]
-```
-
-#### How to deposit as a genesis validator
-
-> WIP: Inconsistant Object Usage
-
-```sh
-# Genesis validator's deposits setting gas price and an RPC connection
-# Change [rpc_address] to the actual RPC URL
-# Change N to specific block index
-$ lukso validator deposit \
---genesis \
---deposit-data-json "./deposit-data.json" \
---rpc "[rpc_address]" [--gas-price "1000000000" --start-from-index N]
-```
 
 #### How to start a genesis validator node
 
@@ -442,7 +399,7 @@ $ lukso start --validator --transaction-fee-recipient  "0x12345678..."
 # Command split across multipl lines for readability
 # Change [file_name] with the your password text file's name
 $ lukso start --validator \
---validator-keys "./mainnet-keystore" \
+--keys-dir "./mainnet-keystore" \
 --validator-password "./[file_name].txt"
 ```
 

@@ -204,7 +204,7 @@ REPO: https://github.com/lukso-network/tools-lukso-cli
 		},
 		{
 			Name:            "validator",
-			Usage:           "Manages the LUKSO validator keys including their initialization and deposits",
+			Usage:           "Manages the LUKSO validator keys including their initialization",
 			HideHelpCommand: true,
 			Subcommands: []*cli.Command{
 				{
