@@ -229,6 +229,13 @@ func installBinaries(ctx *cli.Context) (err error) {
 		return err
 	}
 
+	// for now, we also need to download a validator client
+	// when other validator clients will be implemented we will download the one bound to consensus clients
+	err = clientDependencies[validatorDependencyName].Download(prysmTag, "", false, binaryPerms)
+	if err != nil {
+		return err
+	}
+
 	err = cfg.Create(selectedExecution, selectedConsensus)
 	if err != nil {
 		return err

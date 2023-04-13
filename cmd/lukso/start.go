@@ -149,7 +149,7 @@ func startGeth(ctx *cli.Context) error {
 	log.Info("⚙️  Running geth init first...")
 
 	err := initGeth(ctx)
-	if err != nil {
+	if err != nil && !errors.Is(err, errAlreadyRunning) { // if it is already running it will be caught during start
 		log.Errorf("❌  There was an error while initalizing geth. Error: %v", err)
 
 		return err
@@ -193,6 +193,11 @@ func startValidator(ctx *cli.Context) error {
 	validatorFlags, ok := prepareValidatorStartFlags(ctx)
 	if !ok {
 		return errFlagPathInvalid
+	}
+	if !fileExists(fmt.Sprintf("%s/direct/accounts/all-accounts.keystore.json", ctx.String(validatorKeysFlag))) { // path to imported keys
+		log.Error("⚠️  Validator is not initialized. Run lukso validator import to initialize your validator.")
+
+		return nil
 	}
 
 	err := clientDependencies[validatorDependencyName].Start(validatorFlags, ctx)

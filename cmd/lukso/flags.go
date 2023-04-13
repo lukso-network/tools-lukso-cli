@@ -433,7 +433,7 @@ func prepareValidatorStartFlags(ctx *cli.Context) (startFlags []string, isCorrec
 	chainConfigExists := flagFileExists(ctx, prysmChainConfigFileFlag)
 	validatorWalletPasswordExists := flagFileExists(ctx, validatorWalletPasswordFileFlag)
 	validatorKeysExists := flagFileExists(ctx, validatorKeysFlag)
-	if !validatorConfigExists || !chainConfigExists || validatorWalletPasswordExists || validatorKeysExists {
+	if !validatorConfigExists || !chainConfigExists || !validatorWalletPasswordExists || !validatorKeysExists {
 		isCorrect = false
 
 		return
