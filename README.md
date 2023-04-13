@@ -36,7 +36,7 @@ Process of setting up the node using the LUSKO CLI.
 $ curl https://install.lukso.network | sh
 ```
 
-### Initialise the node folder
+### Initialise the working directory
 
 1. Create and move into a working directory for your node client data
 
