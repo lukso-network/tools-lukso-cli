@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/urfave/cli/v2"
-	"golang.org/x/crypto/ssh/terminal"
+	"golang.org/x/term"
 )
 
 const (
@@ -447,7 +447,7 @@ func prepareValidatorStartFlags(ctx *cli.Context) (startFlags []string, err erro
 	if validatorPasswordPath == "" {
 		var password []byte
 		fmt.Print("\nWallet password flag not found: Please enter your wallet password: ")
-		password, err = terminal.ReadPassword(0)
+		password, err = term.ReadPassword(0)
 		fmt.Println("")
 
 		if err != nil {
