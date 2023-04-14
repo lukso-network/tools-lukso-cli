@@ -432,8 +432,13 @@ func prepareValidatorStartFlags(ctx *cli.Context) (startFlags []string, err erro
 	validatorConfigExists := flagFileExists(ctx, validatorConfigFileFlag)
 	chainConfigExists := flagFileExists(ctx, prysmChainConfigFileFlag)
 	validatorKeysExists := flagFileExists(ctx, validatorKeysFlag)
-	if !validatorConfigExists || !chainConfigExists || !validatorKeysExists {
+	if !validatorConfigExists || !chainConfigExists {
 		err = errFlagPathInvalid
+
+		return
+	}
+	if !validatorKeysExists {
+		err = errValidatorNotImported
 
 		return
 	}
