@@ -53,6 +53,7 @@ func (dependency *ClientDependency) Start(
 		command.Stderr = logFile
 	}
 
+	fmt.Println(arguments)
 	err = command.Start()
 	if err != nil {
 		return
@@ -110,7 +111,7 @@ func startClients(ctx *cli.Context) error {
 
 	log.Info("🔄  Starting all clients")
 
-	if ctx.Bool(validatorFlag) && ctx.String(transactionFeeRecipientFlag) == "" {
+	if ctx.Bool(validatorFlag) && ctx.String(transactionFeeRecipientFlag) == "" || ctx.Bool(transactionFeeRecipientFlag) { // this means that we provided flag without value
 		log.Errorf("❌  %s flag is required but wasn't provided", transactionFeeRecipientFlag)
 
 		return errFlagMissing
@@ -190,9 +191,9 @@ func startPrysm(ctx *cli.Context) error {
 
 func startValidator(ctx *cli.Context) error {
 	log.Info("🔄  Starting Validator")
-	validatorFlags, ok := prepareValidatorStartFlags(ctx)
-	if !ok {
-		return errFlagPathInvalid
+	validatorFlags, err := prepareValidatorStartFlags(ctx)
+	if err != nil {
+		return err
 	}
 	if !fileExists(fmt.Sprintf("%s/direct/accounts/all-accounts.keystore.json", ctx.String(validatorKeysFlag))) { // path to imported keys
 		log.Error("⚠️  Validator is not initialized. Run lukso validator import to initialize your validator.")
@@ -200,7 +201,7 @@ func startValidator(ctx *cli.Context) error {
 		return nil
 	}
 
-	err := clientDependencies[validatorDependencyName].Start(validatorFlags, ctx)
+	err = clientDependencies[validatorDependencyName].Start(validatorFlags, ctx)
 	if err != nil {
 		return err
 	}
