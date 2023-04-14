@@ -377,6 +377,20 @@ After generating the validator keys, they can be imported into the LUKSO CLI. To
 
 For specific validator options, please visit the [Prysm Validator Specification](https://docs.prylabs.network/docs/prysm-usage/parameters#validator-flags). All flags and their parameters will be passed to the client. This can be useful to configure additional features like the validator's graffiti, extended logging, or connectivity options.
 
+#### How to import validator keys
+
+```sh
+# Regular import process
+# You will be asked for password and key directory
+lukso import
+
+# Import skipping generated questions
+# Backslashes added for readability
+lukso import \
+--keys-dir "./myDir" \
+--validator-password "myNodePassword"
+```
+
 #### How to start a genesis validator node
 
 ```sh
