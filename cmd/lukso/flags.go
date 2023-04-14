@@ -2,9 +2,11 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/urfave/cli/v2"
+	"golang.org/x/term"
 )
 
 const (
@@ -426,17 +428,47 @@ func prepareGethStartFlags(ctx *cli.Context) (startFlags []string, isCorrect boo
 	return
 }
 
-func prepareValidatorStartFlags(ctx *cli.Context) (startFlags []string, isCorrect bool) {
-	isCorrect = true
-
+func prepareValidatorStartFlags(ctx *cli.Context) (startFlags []string, err error) {
 	validatorConfigExists := flagFileExists(ctx, validatorConfigFileFlag)
 	chainConfigExists := flagFileExists(ctx, prysmChainConfigFileFlag)
-	validatorWalletPasswordExists := flagFileExists(ctx, validatorWalletPasswordFileFlag)
 	validatorKeysExists := flagFileExists(ctx, validatorKeysFlag)
-	if !validatorConfigExists || !chainConfigExists || validatorWalletPasswordExists || validatorKeysExists {
-		isCorrect = false
+	if !validatorConfigExists || !chainConfigExists {
+		err = errFlagPathInvalid
 
 		return
+	}
+	if !validatorKeysExists {
+		err = errValidatorNotImported
+
+		return
+	}
+
+	validatorPasswordPath := ctx.String(validatorWalletPasswordFileFlag)
+	if validatorPasswordPath == "" {
+		var password []byte
+		fmt.Print("\nWallet password flag not found: Please enter your wallet password: ")
+		password, err = term.ReadPassword(0)
+		fmt.Println("")
+
+		if err != nil {
+			log.Errorf("Couldn't read password: %v", err)
+
+			return
+		}
+
+		passwordPath := ctx.String(validatorKeysFlag) + "/pass.txt"
+		err = os.WriteFile(passwordPath, password, configPerms)
+		if err != nil {
+			log.Errorf("Couldn't create password file: %v", err)
+
+			return
+		}
+
+		log.Infof("Password file created in %s", passwordPath)
+		err = ctx.Set(validatorWalletPasswordFileFlag, passwordPath)
+		if err != nil {
+			return
+		}
 	}
 
 	startFlags = clientDependencies[validatorDependencyName].PassStartFlags(ctx)

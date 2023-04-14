@@ -270,7 +270,7 @@ func isRoot() (isRoot bool, err error) {
 func flagFileExists(ctx *cli.Context, flag string) bool {
 	flagPath := ctx.String(flag)
 	if !fileExists(flagPath) {
-		log.Errorf("⚠️  Path in --%s flag doesn't exist - please provide a valid file path", flag)
+		log.Errorf("⚠️  Path '%s' in --%s flag doesn't exist - please provide a valid file path", flagPath, flag)
 
 		return false
 	}

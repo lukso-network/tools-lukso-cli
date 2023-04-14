@@ -11,6 +11,7 @@ var (
 	errProcessNotFound      = errors.New("⚠️  Process not found ")
 	errFlagPathInvalid      = errors.New("⚠️  Invalid flag path ")
 	errAlreadyRunning       = errors.New("⚠️  Process is already running ")
+	errValidatorNotImported = errors.New("Validator has not been initialized - use 'lukso validator import' to initialize your validator ")
 )
 
 const (
