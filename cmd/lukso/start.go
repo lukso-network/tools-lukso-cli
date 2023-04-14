@@ -53,7 +53,6 @@ func (dependency *ClientDependency) Start(
 		command.Stderr = logFile
 	}
 
-	fmt.Println(arguments)
 	err = command.Start()
 	if err != nil {
 		return
