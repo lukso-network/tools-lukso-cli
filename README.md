@@ -142,10 +142,6 @@ Below, you can find examples and options tables for all available commands.
 
 ### `install`
 
-| Option        | Description                               |
-| ------------- | ----------------------------------------- |
-| --agree-terms | Automatically accept Terms and Conditions |
-
 #### How to install the clients
 
 ```sh
@@ -157,9 +153,11 @@ $ lukso install
 $ lukso install --agree-terms
 ```
 
-### `update`
+| Option        | Description                               |
+| ------------- | ----------------------------------------- |
+| --agree-terms | Automatically accept Terms and Conditions |
 
-> Options WIP
+### `update`
 
 #### How to update clients
 
@@ -172,33 +170,6 @@ $ lukso update geth
 ```
 
 ### `start`
-
-| Option                               | Description                                                              |
-| ------------------------------------ | ------------------------------------------------------------------------ |
-| --geth-config [string]               | Defines the path to geth TOML config file                                |
-| --prysm-config [string]              | Defines the path to pryms YAML config file                               |
-| --genesis-json [string]              | Defines the path to genesis JSON file                                    |
-| --genesis-ssz [string]               | Defines the path to genesis SSZ file                                     |
-| --log-folder [string]                | Sets up a custom log directory (default: "./\[network_type\]-logs")      |
-| --no-slasher                         | Disables slasher                                                         |
-| **VALIDATOR**                        |                                                                          |
-| --validator                          | Starts the validator client                                              |
-| --transaction-fee-recipient [string] | Sets the address that receives block fees                                |
-| --keys-dir [string]                  | Directory of the validator keys (default: "./\[network_type\]-keystore") |
-| --validator-password [string]        | Location of password file that you used for generated validator keys     |
-| --validator-config [string]          | Path to prysm.yaml config file                                           |
-| **NETWORK**                          |                                                                          |
-| --mainnet                            | Starts the LUKSO node with mainnet data (default) (./configs/mainnet)    |
-| --testnet                            | Starts the LUKSO node with testnet data (./configs/tesnet)               |
-| --devnet                             | Starts the LUKSO node with devnet data (./configs/devnet)                |
-
-For specific client options, please visit their official documentations. All flags and their parameters will be passed to the underlying clients.
-
-- [Geth Client Specification](https://geth.ethereum.org/docs/fundamentals/command-line-options)
-- [Prysm Client Specification](https://docs.prylabs.network/docs/prysm-usage/parameters)
-- [Prysm Validator Specification](https://docs.prylabs.network/docs/prysm-usage/parameters#validator-flags)
-- [Erigon Client Specification](https://github.com/ledgerwatch/erigon)
-- [Lighthouse Client Specification](https://lighthouse-book.sigmaprime.io/advanced-datadir.html)
 
 #### How to start the clients
 
@@ -235,16 +206,6 @@ $ lukso start --prysm-config "./[config].yaml" \
 $ lukso start --lighthouse --erigon
 ```
 
-#### How to start a genesis node
-
-```sh
-# Command split across multiple lines for readability
-# Make sure that both SSZ and JSON files are placed correctly
-$ lukso start \
---genesis-ssz "./config/mainnet/shared/genesis.ssz" \
---genesis-json "./config/mainnet/shared/genesis.json"
-```
-
 #### How to set up and customize a log folder
 
 ```sh
@@ -253,13 +214,34 @@ $ lukso start \
 $ lukso start --log-folder "[folder_path]"
 ```
 
-### `stop`
+| Option                               | Description                                                              |
+| ------------------------------------ | ------------------------------------------------------------------------ |
+| --geth-config [string]               | Defines the path to geth TOML config file                                |
+| --prysm-config [string]              | Defines the path to pryms YAML config file                               |
+| --genesis-json [string]              | Defines the path to genesis JSON file                                    |
+| --genesis-ssz [string]               | Defines the path to genesis SSZ file                                     |
+| --log-folder [string]                | Sets up a custom log directory (default: "./\[network_type\]-logs")      |
+| --no-slasher                         | Disables slasher                                                         |
+| **VALIDATOR**                        |                                                                          |
+| --validator                          | Starts the validator client                                              |
+| --transaction-fee-recipient [string] | Sets the address that receives block fees                                |
+| --keys-dir [string]                  | Directory of the validator keys (default: "./\[network_type\]-keystore") |
+| --validator-password [string]        | Location of password file that you used for generated validator keys     |
+| --validator-config [string]          | Path to prysm.yaml config file                                           |
+| **NETWORK**                          |                                                                          |
+| --mainnet                            | Starts the LUKSO node with mainnet data (default) (./configs/mainnet)    |
+| --testnet                            | Starts the LUKSO node with testnet data (./configs/tesnet)               |
+| --devnet                             | Starts the LUKSO node with devnet data (./configs/devnet)                |
 
-| Option      | Description                |
-| ----------- | -------------------------- |
-| --validator | Stops the validator client |
-| --execution | Stops the execution client |
-| --consensus | Stops the consensus client |
+For specific client options, please visit their official documentations. All flags and their parameters will be passed to the underlying clients.
+
+- [Geth Client Specification](https://geth.ethereum.org/docs/fundamentals/command-line-options)
+- [Prysm Client Specification](https://docs.prylabs.network/docs/prysm-usage/parameters)
+- [Prysm Validator Specification](https://docs.prylabs.network/docs/prysm-usage/parameters#validator-flags)
+- [Erigon Client Specification](https://github.com/ledgerwatch/erigon)
+- [Lighthouse Client Specification](https://lighthouse-book.sigmaprime.io/advanced-datadir.html)
+
+### `stop`
 
 #### How to stop all or specific clients
 
@@ -277,9 +259,13 @@ $ lukso stop --execution
 $ lukso stop --consensus
 ```
 
-### `log`
+| Option      | Description                |
+| ----------- | -------------------------- |
+| --validator | Stops the validator client |
+| --execution | Stops the execution client |
+| --consensus | Stops the consensus client |
 
-> Options WIP
+### `log`
 
 #### How to view logs of the clients
 
@@ -296,8 +282,6 @@ $ lukso log validator
 
 ### `status`
 
-> Options WIP
-
 #### How to check the status of the node
 
 ```sh
@@ -306,12 +290,6 @@ $ lukso status
 ```
 
 ### `reset`
-
-| Option              | Description                 |
-| ------------------- | --------------------------- |
-| --mainnet [default] | Resets LUKSO's mainnet data |
-| --testnet           | Resets LUKSO's testnet data |
-| --devnet            | Resets LUKSO's devnet data  |
 
 #### How to reset the node's data directory
 
@@ -325,6 +303,12 @@ $ lukso reset --testnet
 # Resets LUKSO's devnet data directory
 $ lukso reset --devnet
 ```
+
+| Option              | Description                 |
+| ------------------- | --------------------------- |
+| --mainnet [default] | Resets LUKSO's mainnet data |
+| --testnet           | Resets LUKSO's testnet data |
+| --devnet            | Resets LUKSO's devnet data  |
 
 ### `version`
 
@@ -378,25 +362,28 @@ After generating the validator keys, they can be imported into the LUKSO CLI. To
 
 Import existing EIP-2335 keystore files (such as those generated by the [Wagyu Keygen](https://github.com/lukso-network/tools-wagyu-key-gen)) into Prysm.
 
-| Option      | Description                                                                |
-| ----------- | -------------------------------------------------------------------------- |
-| **NETWORK** |                                                                            |
-| --mainnet   | Will import the keys for mainnet [default] (default: "./mainnet-keystore") |
-| --testnet   | Will import the keys for testnet (default: "./testnet-keystore")           |
-| --devnet    | Will import the keys for devnet (default: "./devnet-keystore")             |
-
-For specific validator options, please visit the [Prysm Validator Specification](https://docs.prylabs.network/docs/wallet/nondeterministic). All flags and their parameters will be passed to the client. This can be useful to configure additional features like the validator's graffiti, extended logging, or connectivity options.
-
 #### How to import validator keys
 
 ```sh
 # Regular import process
 # You will be asked for password and key directory
-lukso import
+lukso validator import
 
 # Import skipping generated questions
-lukso import --keys-dir "./myDir"
+lukso validator import --keys-dir "./myDir"
 ```
+
+| Option              | Description                                                                |
+| ------------------- | -------------------------------------------------------------------------- |
+| --keys-dir [string] | Directory of the validator keys (default: "./\[network_type\]-keystore")   |
+| **NETWORK**         |                                                                            |
+| --mainnet           | Will import the keys for mainnet [default] (default: "./mainnet-keystore") |
+| --testnet           | Will import the keys for testnet (default: "./testnet-keystore")           |
+| --devnet            | Will import the keys for devnet (default: "./devnet-keystore")             |
+
+For specific validator options, please visit the [Prysm Validator Specification](https://docs.prylabs.network/docs/wallet/nondeterministic). All flags and their parameters will be passed to the client. This can be useful to configure additional features like the validator's graffiti, extended logging, or connectivity options.
+
+### Starting the Validator
 
 #### How to start your validator (keys & tx fee recipient)
 
@@ -411,6 +398,16 @@ $ lukso start --validator --transaction-fee-recipient "0x12345678..."
 $ lukso start --validator \
 --keys-dir "./mainnet-keystore" \
 --validator-password "./[file_name].txt"
+```
+
+#### How to start a genesis node
+
+```sh
+# Command split across multiple lines for readability
+# Make sure that both SSZ and JSON files are placed correctly
+$ lukso start \
+--genesis-ssz "./config/mainnet/shared/genesis.ssz" \
+--genesis-json "./config/mainnet/shared/genesis.json"
 ```
 
 ## Uninstalling
