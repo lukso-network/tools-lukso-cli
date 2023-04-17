@@ -59,7 +59,7 @@ func logClient(dependencyName string) func(*cli.Context) error {
 	return func(ctx *cli.Context) error {
 		logFileDir := ctx.String(logFolderFlag)
 		if logFileDir == "" {
-			return errFlagMissing
+			return cli.Exit(fmt.Sprintf("%v- %s", errFlagMissing, logFolderFlag), 1)
 		}
 
 		latestFile, err := getLastFile(logFileDir, dependencyName)
@@ -77,9 +77,7 @@ func logClient(dependencyName string) func(*cli.Context) error {
 
 func statClients(ctx *cli.Context) (err error) {
 	if !cfg.Exists() {
-		log.Error(folderNotInitialized)
-
-		return nil
+		return cli.Exit(folderNotInitialized, 1)
 	}
 
 	err = cfg.Read()

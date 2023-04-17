@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"strings"
 
@@ -21,6 +22,8 @@ func initializeDirectory(ctx *cli.Context) error {
 		message := "⚠️  This folder has already been initialized. Do you want to re-initialize it? Please note that configs in this folder will NOT be overwritten [y/N]:\n> "
 		input := registerInputWithMessage(message)
 		if !strings.EqualFold(input, "y") && input == "" {
+			log.Info("Aborting...")
+
 			return nil
 		}
 	}
@@ -33,34 +36,26 @@ func initializeDirectory(ctx *cli.Context) error {
 
 		err := dependency.Download("", "", false, configPerms)
 		if err != nil {
-			log.Errorf("❌  There was error while downloading %s file: %v", dependency.name, err.Error())
-
-			return nil
+			return cli.Exit(fmt.Sprintf("❌  There was error while downloading %s file: %v", dependency.name, err), 1)
 		}
 
 	}
 
 	err := createJwtSecret(jwtSecretPath)
 	if err != nil {
-		log.Errorf("❌  There was an error while creating JWT secret file: %v", err)
-
-		return nil
+		return cli.Exit(fmt.Sprintf("❌  There was an error while creating JWT secret file: %v", err), 1)
 	}
 
 	err = os.MkdirAll(pid.FileDir, configPerms)
 	if err != nil {
-		log.Errorf("❌  There was an error while preparing PID directory: %v", err)
-
-		return nil
+		return cli.Exit(fmt.Sprintf("❌  There was an error while preparing PID directory: %v", err), 1)
 	}
 
 	log.Info("⚙️  Creating LUKSO configuration file...")
 
 	err = cfg.Create("", "")
 	if err != nil {
-		log.Errorf("❌  There was an error while preparing LUKSO configuration: %v", err)
-
-		return nil
+		return cli.Exit(fmt.Sprintf("❌  There was an error while preparing LUKSO configuration: %v", err), 1)
 	}
 
 	log.Infof("✅  LUKSO configuration created under %s", config.Path)
