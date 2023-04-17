@@ -209,7 +209,7 @@ func stopClients(ctx *cli.Context) (err error) {
 	executionClient := cfg.Execution()
 	consensusClient := cfg.Consensus()
 	if executionClient == "" || consensusClient == "" {
-		return cli.Exit(fmt.Sprintf(selectedClientsNotFound), 1)
+		return cli.Exit(selectedClientsNotFound, 1)
 	}
 
 	stopConsensus := ctx.Bool(consensusFlag)
