@@ -82,7 +82,7 @@ func logLayer(layer string) func(*cli.Context) error {
 		case validatorLayer:
 			dependencyName = validatorDependencyName
 		default:
-			return cli.Exit(fmt.Sprintf("❌  Unexpected error: unknown layer logged"), 1)
+			return cli.Exit("❌  Unexpected error: unknown layer logged", 1)
 		}
 
 		latestFile, err := getLastFile(logFileDir, dependencyName)
