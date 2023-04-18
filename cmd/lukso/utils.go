@@ -128,16 +128,6 @@ func getLastFile(dir string, dependency string) (string, error) {
 
 	lastFile := files[len(files)-1]
 
-	message := fmt.Sprintf("(NOTE: PATH TO FILE: %s)\nDo you want to show log file %s?"+
-		" Doing so can print lots of text on your screen [Y/n]: ", dir+"/"+lastFile, lastFile)
-
-	input := registerInputWithMessage(message)
-	if !strings.EqualFold(input, "y") && input != "" {
-		log.Info("❌  Aborting...") // there is no error, just a possible change of mind - shouldn't return err
-
-		return "", nil
-	}
-
 	return lastFile, nil
 }
 

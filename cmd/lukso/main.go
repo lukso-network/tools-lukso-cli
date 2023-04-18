@@ -167,24 +167,24 @@ REPO: https://github.com/lukso-network/tools-lukso-cli
 			HideHelpCommand: true,
 			Subcommands: []*cli.Command{
 				{
-					Name:            "geth",
-					Usage:           "Outputs Geth client logs",
+					Name:            "execution",
+					Usage:           "Outputs selected execution client's logs",
 					Flags:           gethLogsFlags,
-					Action:          selectNetworkFor(logClient(gethDependencyName)),
+					Action:          selectNetworkFor(logLayer(executionLayer)),
 					HideHelpCommand: true,
 				},
 				{
-					Name:            "prysm",
-					Usage:           "Outputs Prysm client logs",
+					Name:            "consensus",
+					Usage:           "Outputs selected consensus client's logs",
 					Flags:           prysmLogsFlags,
-					Action:          selectNetworkFor(logClient(prysmDependencyName)),
+					Action:          selectNetworkFor(logLayer(consensusLayer)),
 					HideHelpCommand: true,
 				},
 				{
 					Name:            "validator",
-					Usage:           "Outputs Validator client logs",
+					Usage:           "Outputs selected validator client's logs",
 					Flags:           validatorLogsFlags,
-					Action:          selectNetworkFor(logClient(validatorDependencyName)),
+					Action:          selectNetworkFor(logLayer(validatorLayer)), // named as a layer for sake of
 					HideHelpCommand: true,
 				},
 			},
