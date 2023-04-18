@@ -17,6 +17,9 @@ const (
 	gethConfigFileFlag = "geth-config"
 	genesisJsonFlag    = "genesis-json"
 
+	// erigon related flag names
+	erigonTagFlag = "erigon-tag"
+
 	// Prysm related flag names
 	prysmTagFlag             = "prysm-tag"
 	prysmGenesisStateFlag    = "genesis-ssz"
@@ -233,6 +236,16 @@ var (
 			Usage:  "geth datadir",
 			Value:  executionMainnetDatadir,
 			Hidden: true,
+		},
+	}
+
+	// ERIGON
+	// DOWNLOAD
+	erigonDownloadFlags = []cli.Flag{
+		&cli.StringFlag{
+			Name:  erigonTagFlag,
+			Usage: "Tag for erigon",
+			Value: "2.42.0",
 		},
 	}
 

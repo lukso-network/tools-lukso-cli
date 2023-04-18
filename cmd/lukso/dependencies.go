@@ -45,6 +45,12 @@ var (
 			filePath: "", // binary dir selected during runtime
 			isBinary: true,
 		},
+		erigonDependencyName: {
+			baseUrl:  "https://github.com/ledgerwatch/erigon/releases/download/v%s/erigon_%s_%s_amd64.tar.gz",
+			name:     erigonDependencyName,
+			filePath: "",
+			isBinary: true,
+		},
 		prysmDependencyName: {
 			baseUrl:  "https://github.com/prysmaticlabs/prysm/releases/download/%s/beacon-chain-%s-%s-amd64",
 			name:     prysmDependencyName,
@@ -211,6 +217,7 @@ func setupOperatingSystem() {
 
 	// setting PATH for binaries
 	clientDependencies[gethDependencyName].filePath = binDir + "/geth"
+	clientDependencies[erigonDependencyName].filePath = binDir + "/erigon"
 	clientDependencies[prysmDependencyName].filePath = binDir + "/prysm"
 	clientDependencies[validatorDependencyName].filePath = binDir + "/validator"
 }
