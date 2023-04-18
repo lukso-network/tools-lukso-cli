@@ -74,6 +74,11 @@ const (
 	testnetKeystore = "./testnet-keystore"
 	devnetKeystore  = "./devnet-keystore"
 
+	// layers
+	executionLayer = "execution"
+	consensusLayer = "consensus"
+	validatorLayer = "validator"
+
 	// structure inside configs/selected-network directory.
 	// we will select directory based on provided flag, by concatenating config path + file path
 	genesisStateFilePath = "shared/genesis.ssz"

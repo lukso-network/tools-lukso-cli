@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strings"
 
 	"github.com/m8b-dev/lukso-cli/pid"
 	"github.com/urfave/cli/v2"
@@ -55,20 +56,54 @@ func logClients(ctx *cli.Context) error {
 	return nil
 }
 
-func logClient(dependencyName string) func(*cli.Context) error {
+func logLayer(layer string) func(*cli.Context) error {
 	return func(ctx *cli.Context) error {
 		logFileDir := ctx.String(logFolderFlag)
 		if logFileDir == "" {
 			return cli.Exit(fmt.Sprintf("%v- %s", errFlagMissing, logFolderFlag), 1)
 		}
 
+		if !cfg.Exists() {
+			return cli.Exit(folderNotInitialized, 1)
+		}
+
+		err := cfg.Read()
+		if err != nil {
+			return cli.Exit(fmt.Sprintf("❌  There was an error while reading configuration file: %v", err), 1)
+		}
+
+		var dependencyName string
+
+		switch layer {
+		case executionLayer:
+			dependencyName = cfg.Execution()
+		case consensusLayer:
+			dependencyName = cfg.Consensus()
+		case validatorLayer:
+			dependencyName = validatorDependencyName
+		default:
+			return cli.Exit("❌  Unexpected error: unknown layer logged", 1)
+		}
+
 		latestFile, err := getLastFile(logFileDir, dependencyName)
 		if latestFile == "" && err == nil {
 			return nil
 		}
-
 		if err != nil {
-			return err
+			return cli.Exit(fmt.Sprintf("There was an error while getting latest log file: %v", err), 1)
+		}
+
+		log.Infof("Selected layer: %s", layer)
+		log.Infof("Selected client: %s", dependencyName)
+
+		message := fmt.Sprintf("(NOTE: PATH TO FILE: %s)\nDo you want to show log file %s?"+
+			" Doing so can print lots of text on your screen [Y/n]: ", logFileDir+"/"+latestFile, latestFile)
+
+		input := registerInputWithMessage(message)
+		if !strings.EqualFold(input, "y") && input != "" {
+			log.Info("❌  Aborting...") // there is no error, just a possible change of mind - shouldn't return err
+
+			return nil
 		}
 
 		return clientDependencies[dependencyName].Log(logFileDir + "/" + latestFile)
