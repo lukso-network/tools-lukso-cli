@@ -124,7 +124,7 @@ func (dependency *ClientDependency) Download(tag, commitHash string, isUpdate bo
 	}
 
 	if err != nil {
-		log.Infof("❌  Download section error: %v", err)
+		log.Infof("❌  Couldn't save file: %v", err)
 
 		return
 	}
@@ -158,17 +158,15 @@ func installBinaries(ctx *cli.Context) (err error) {
 	}
 
 	if !cfg.Exists() {
-		log.Error(folderNotInitialized)
-
-		return
+		return cli.Exit(folderNotInitialized, 1)
 	}
 
 	isRoot, err := isRoot()
 	if err != nil {
-		return err
+		return cli.Exit(fmt.Sprintf("There was an error while checking user privileges: %v", err), 1)
 	}
 	if !isRoot {
-		return errNeedRoot
+		return cli.Exit(errNeedRoot, 1)
 	}
 
 	var (
@@ -208,9 +206,7 @@ func installBinaries(ctx *cli.Context) (err error) {
 		fmt.Println("")
 		accepted := acceptTermsInteractive()
 		if !accepted {
-			log.Info("❌  Terms of use not accepted - aborting...")
-
-			return nil
+			return cli.Exit("❌  Terms of use not accepted - aborting...", 1)
 		}
 	} else {
 		log.Info("✅  You accepted Prysm's Terms of Use: https://github.com/prysmaticlabs/prysm/blob/develop/TERMS_OF_SERVICE.md")
@@ -221,24 +217,24 @@ func installBinaries(ctx *cli.Context) (err error) {
 
 	err = clientDependencies[selectedExecution].Download(gethTag, ctx.String(gethCommitHashFlag), false, binaryPerms)
 	if err != nil {
-		return err
+		return cli.Exit(fmt.Sprintf("❌  There was an error while downloading %s: %v", selectedExecution, err), 1)
 	}
 
 	err = clientDependencies[selectedConsensus].Download(prysmTag, "", false, binaryPerms)
 	if err != nil {
-		return err
+		return cli.Exit(fmt.Sprintf("❌  There was an error while downloading %s: %v", selectedConsensus, err), 1)
 	}
 
 	// for now, we also need to download a validator client
 	// when other validator clients will be implemented we will download the one bound to consensus clients
 	err = clientDependencies[validatorDependencyName].Download(prysmTag, "", false, binaryPerms)
 	if err != nil {
-		return err
+		return cli.Exit(fmt.Sprintf("❌  There was an error while downloading validator: %v", err), 1)
 	}
 
 	err = cfg.Create(selectedExecution, selectedConsensus)
 	if err != nil {
-		return err
+		return cli.Exit(fmt.Sprintf("❌  There was an error while creating configration file: %v", err), 1)
 	}
 
 	log.Info("✅  Configuration files created!")

@@ -53,7 +53,7 @@ func importValidator(ctx *cli.Context) error {
 
 	err := initCommand.Run()
 	if err != nil {
-		return err
+		return cli.Exit(fmt.Sprintf("❌  There was an error while importing validator accounts: %v", err), 1)
 	}
 
 	return nil

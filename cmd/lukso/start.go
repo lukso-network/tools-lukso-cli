@@ -31,7 +31,7 @@ func (dependency *ClientDependency) Start(
 
 		gethLogDir := ctx.String(logFolderFlag)
 		if gethLogDir == "" {
-			return errFlagMissing
+			return cli.Exit(fmt.Sprintf("%v- %s", errFlagMissing, logFolderFlag), 1)
 		}
 
 		fullPath, err = prepareTimestampedFile(gethLogDir, gethDependencyName)
@@ -87,47 +87,35 @@ func (dependency *ClientDependency) Stop() error {
 func startClients(ctx *cli.Context) error {
 	log.Info("🔎  Looking for client configuration file...")
 	if !cfg.Exists() {
-		log.Error(folderNotInitialized)
-
-		return nil
+		return cli.Exit(folderNotInitialized, 1)
 	}
 
 	err := cfg.Read()
 	if err != nil {
-		log.Errorf("❌  Couldn't read from config file: %v", err)
-
-		return err
+		return cli.Exit(fmt.Sprintf("❌  Couldn't read from config file: %v", err), 1)
 	}
 
 	// TODO for now just check if installed - when multiple clients will be supported we can run it generically
 	executionClient := cfg.Execution()
 	consensusClient := cfg.Consensus()
 	if executionClient == "" || consensusClient == "" {
-		log.Error(selectedClientsNotFound)
-
-		return nil
+		return cli.Exit(selectedClientsNotFound, 1)
 	}
 
 	log.Info("🔄  Starting all clients")
 
 	if ctx.Bool(validatorFlag) && ctx.String(transactionFeeRecipientFlag) == "" || ctx.Bool(transactionFeeRecipientFlag) { // this means that we provided flag without value
-		log.Errorf("❌  %s flag is required but wasn't provided", transactionFeeRecipientFlag)
-
-		return errFlagMissing
+		return cli.Exit(fmt.Sprintf("❌  %s flag is required but wasn't provided", transactionFeeRecipientFlag), 1)
 	}
 
 	err = startGeth(ctx)
 	if err != nil {
-		log.Errorf("❌  There was an error while starting geth: %v", err)
-
-		return nil
+		return cli.Exit(fmt.Sprintf("❌  There was an error while starting geth: %v", err), 1)
 	}
 
 	err = startPrysm(ctx)
 	if err != nil {
-		log.Errorf("❌  There was an error while starting prysm: %v", err)
-
-		return nil
+		return cli.Exit(fmt.Sprintf("❌  There was an error while starting prysm: %v", err), 1)
 	}
 
 	if ctx.Bool(validatorFlag) {
@@ -135,9 +123,7 @@ func startClients(ctx *cli.Context) error {
 	}
 
 	if err != nil {
-		log.Errorf("❌  There was an error while starting validator: %v", err)
-
-		return nil
+		return cli.Exit(fmt.Sprintf("❌  There was an error while starting validator: %v", err), 1)
 	}
 
 	log.Info("🎉  Clients have been started. Your node is now running 🆙.")
@@ -212,24 +198,18 @@ func startValidator(ctx *cli.Context) error {
 
 func stopClients(ctx *cli.Context) (err error) {
 	if !cfg.Exists() {
-		log.Error(folderNotInitialized)
-
-		return
+		return cli.Exit(folderNotInitialized, 1)
 	}
 
 	err = cfg.Read()
 	if err != nil {
-		log.Errorf("❌  Couldn't read from config: %v", err)
-
-		return nil
+		return cli.Exit(fmt.Sprintf("❌  Couldn't read from config file: %v", err), 1)
 	}
 
 	executionClient := cfg.Execution()
 	consensusClient := cfg.Consensus()
 	if executionClient == "" || consensusClient == "" {
-		log.Error(selectedClientsNotFound)
-
-		return nil
+		return cli.Exit(selectedClientsNotFound, 1)
 	}
 
 	stopConsensus := ctx.Bool(consensusFlag)
@@ -248,7 +228,7 @@ func stopClients(ctx *cli.Context) (err error) {
 
 		err = stopClient(clientDependencies[gethDependencyName])
 		if err != nil {
-			return err
+			return cli.Exit(fmt.Sprintf("❌  There was an error while stopping geth: %v", err), 1)
 		}
 	}
 
@@ -257,7 +237,7 @@ func stopClients(ctx *cli.Context) (err error) {
 
 		err = stopClient(clientDependencies[prysmDependencyName])
 		if err != nil {
-			return err
+			return cli.Exit(fmt.Sprintf("❌  There was an error while stopping prysm: %v", err), 1)
 		}
 	}
 
@@ -265,9 +245,12 @@ func stopClients(ctx *cli.Context) (err error) {
 		log.Info("⚙️  Stopping validator")
 
 		err = stopClient(clientDependencies[validatorDependencyName])
+		if err != nil {
+			return cli.Exit(fmt.Sprintf("❌  There was an error while stopping validator: %v", err), 1)
+		}
 	}
 
-	return err
+	return nil
 }
 
 func stopClient(dependency *ClientDependency) error {

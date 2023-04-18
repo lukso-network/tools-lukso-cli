@@ -13,9 +13,7 @@ func resetClients(ctx *cli.Context) error {
 		return nil
 	}
 	if !cfg.Exists() {
-		log.Error(folderNotInitialized)
-
-		return nil
+		return cli.Exit(folderNotInitialized, 1)
 	}
 
 	message := fmt.Sprintf("⚠️  WARNING: THIS ACTION WILL DELETE CLIENTS DATA DIRECTORIES ⚠️\n"+
@@ -52,7 +50,7 @@ func resetClients(ctx *cli.Context) error {
 func resetExecution(ctx *cli.Context) error {
 	dataDirPath := ctx.String(gethDatadirFlag)
 	if dataDirPath == "" {
-		return errFlagMissing
+		return cli.Exit(fmt.Sprintf("%v- %s", errFlagMissing, gethDatadirFlag), 1)
 	}
 
 	return os.RemoveAll(dataDirPath)
@@ -61,7 +59,7 @@ func resetExecution(ctx *cli.Context) error {
 func resetConsensus(ctx *cli.Context) error {
 	dataDirPath := ctx.String(prysmDatadirFlag)
 	if dataDirPath == "" {
-		return errFlagMissing
+		return cli.Exit(fmt.Sprintf("%v- %s", errFlagMissing, prysmDatadirFlag), 1)
 	}
 
 	return os.RemoveAll(dataDirPath)
@@ -70,7 +68,7 @@ func resetConsensus(ctx *cli.Context) error {
 func resetValidator(ctx *cli.Context) error {
 	dataDirPath := ctx.String(validatorDatadirFlag)
 	if dataDirPath == "" {
-		return errFlagMissing
+		return cli.Exit(fmt.Sprintf("%v- %s", errFlagMissing, validatorDatadirFlag), 1)
 	}
 
 	return os.RemoveAll(dataDirPath)

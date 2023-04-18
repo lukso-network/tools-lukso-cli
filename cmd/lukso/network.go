@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"strings"
 
@@ -26,7 +27,7 @@ func selectNetworkFor(f func(*cli.Context) error) func(*cli.Context) error {
 			log.Debug("Skipping flag parsing on - parsing flags manually...")
 			err := parseFlags(ctx)
 			if err != nil {
-				return err
+				return cli.Exit(fmt.Sprintf("❌  There was an error while parsing flags: %v", err), 1)
 			}
 		}
 
@@ -103,13 +104,13 @@ func updateValues(ctx *cli.Context, config networkConfig) (err error) {
 	}
 
 	if len(os.Args) < 2 {
-		return errNotEnoughArguments
+		return cli.Exit(errNotEnoughArguments, 1)
 	}
 
 	for _, flag := range ctx.Command.Flags {
 		names := flag.Names()
 		if len(names) < 1 {
-			return errNotEnoughArguments
+			return cli.Exit(errNotEnoughArguments, 1)
 		}
 
 		targetName := names[0]

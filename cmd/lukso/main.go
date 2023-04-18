@@ -7,7 +7,6 @@ import (
 	runtimeDebug "runtime/debug"
 
 	"github.com/m8b-dev/lukso-cli/config"
-
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 )
@@ -84,6 +83,7 @@ func init() {
 func main() {
 	app := cli.App{}
 	app.Name = appName
+	app.ExitErrHandler = func(c *cli.Context, err error) {} // this (somehow) produces error logs instead of standard output
 
 	cli.AppHelpTemplate = fmt.Sprintf(`%s
 
