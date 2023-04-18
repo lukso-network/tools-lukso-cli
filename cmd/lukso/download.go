@@ -62,7 +62,7 @@ func (dependency *ClientDependency) Download(tag, commitHash string, isUpdate bo
 	}()
 
 	if response.StatusCode == http.StatusNotFound {
-		log.Warnf("❌  File under URL %s not found - aborting...", fileUrl)
+		log.Warnf("⚠️  File under URL %s not found - skipping...", fileUrl)
 
 		return nil
 	}
