@@ -224,9 +224,9 @@ $ lukso start --log-folder "[folder_path]"
 | --no-slasher                         | Disables slasher                                                         |
 | **VALIDATOR**                        |                                                                          |
 | --validator                          | Starts the validator client                                              |
-| --transaction-fee-recipient [string] | Sets the address that receives block fees                                |
-| --keys-dir [string]                  | Directory of the validator keys (default: "./\[network_type\]-keystore") |
-| --validator-password [string]        | Location of password file that you used for generated validator keys     |
+| --transaction-fee-recipient [string] | The address that receives block fees [required when --validator is set]  |
+| --validator-keys [string]            | Directory of the validator keys (default: "./\[network_type\]-keystore") |
+| --validator-wallet-password [string] | Location of password file that you used for generated validator keys     |
 | --validator-config [string]          | Path to prysm.yaml config file                                           |
 | **NETWORK**                          |                                                                          |
 | --mainnet                            | Starts the LUKSO node with mainnet data (default) (./configs/mainnet)    |
@@ -387,17 +387,23 @@ For specific validator options, please visit the [Prysm Validator Specification]
 
 #### How to start your validator (keys & tx fee recipient)
 
-```sh
-# Specify the transaction fee recipient, also knows as coinbase
-# Its the address where the transactions fees are sent to
-$ lukso start --validator --transaction-fee-recipient "0x12345678..."
+When you use `--validator`, the `--transaction-fee-recipient` flag is required.
 
-# Validator keys and password
+```sh
+# Specify the transaction fee recipient, also known as coinbase
+# It is the address where the transactions fees are sent to
+$ lukso start --validator --transaction-fee-recipient "0x12345678..."
+```
+
+If no `--validator-keys` is defined (example above), the CLI will look in the default directory: `./[network_type]-keystore`. If you want to provide a specific keystore directory, you can use `--validator-keys`:
+
+```sh
+# Validator keys
 # Command split across multiple lines for readability
 # Change [file_name] with the your password text file's name
 $ lukso start --validator \
---keys-dir "./mainnet-keystore" \
---validator-password "./[file_name].txt"
+--transaction-fee-recipient "0x12345678..." \
+--validator-keys "./custom-keystore-dir-path"
 ```
 
 #### How to start a genesis node
