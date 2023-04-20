@@ -79,7 +79,7 @@ func (dependency *ClientDependency) Stop() error {
 		return errProcessNotFound
 	}
 
-	log.Infof("🛑 Stopped %s", dependency.name)
+	log.Infof("🛑  Stopped %s", dependency.name)
 
 	return nil
 }
