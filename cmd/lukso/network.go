@@ -10,8 +10,8 @@ import (
 
 // networkConfig serves as a collection of variables that need to be changed when different network is selected
 type networkConfig struct {
-	gethDatadirPath      string
-	prysmDatadirPath     string
+	executionDatadirPath string
+	consensusDatadirPath string
 	validatorDatadirPath string
 	logPath              string
 	configPath           string
@@ -47,8 +47,8 @@ func selectNetworkFor(f func(*cli.Context) error) func(*cli.Context) error {
 
 		if devnetEnabled {
 			cfg = networkConfig{
-				gethDatadirPath:      executionDevnetDatadir,
-				prysmDatadirPath:     consensusDevnetDatadir,
+				executionDatadirPath: executionDevnetDatadir,
+				consensusDatadirPath: consensusDevnetDatadir,
 				validatorDatadirPath: validatorDevnetDatadir,
 				logPath:              devnetLogs,
 				configPath:           devnetConfig,
@@ -83,6 +83,7 @@ func updateValues(ctx *cli.Context, config networkConfig) (err error) {
 	var (
 		//genesisJson  = config.configPath + "/" + genesisJsonPath
 		gethToml      = config.configPath + "/" + gethTomlPath
+		erigonToml    = config.configPath + "/" + erigonTomlPath
 		prysmYaml     = config.configPath + "/" + prysmYamlPath
 		validatorYaml = config.configPath + "/" + validatorYamlPath
 		gethGenesis   = config.configPath + "/" + genesisJsonPath
@@ -100,12 +101,14 @@ func updateValues(ctx *cli.Context, config networkConfig) (err error) {
 
 	// varyingFlags represents list of all flags that can be affected by selecting network and values that may be replaced
 	varyingFlags := map[string]string{
-		gethDatadirFlag:              config.gethDatadirPath,
-		prysmDatadirFlag:             config.prysmDatadirPath,
+		gethDatadirFlag:              config.executionDatadirPath,
+		erigonDatadirFlag:            config.executionDatadirPath,
+		prysmDatadirFlag:             config.consensusDatadirPath,
 		validatorDatadirFlag:         config.validatorDatadirPath,
 		logFolderFlag:                config.logPath,
 		validatorKeysFlag:            config.keysPath,
 		gethConfigFileFlag:           gethToml,
+		erigonConfigFileFlag:         erigonToml,
 		prysmConfigFileFlag:          prysmYaml,
 		validatorConfigFileFlag:      validatorYaml,
 		genesisJsonFlag:              gethGenesis,

@@ -19,7 +19,9 @@ const (
 	genesisJsonFlag    = "genesis-json"
 
 	// erigon related flag names
-	erigonTagFlag = "erigon-tag"
+	erigonTagFlag        = "erigon-tag"
+	erigonConfigFileFlag = "erigon-config"
+	erigonDatadirFlag    = "erigon-datadir"
 
 	// Prysm related flag names
 	prysmTagFlag             = "prysm-tag"
@@ -97,6 +99,7 @@ const (
 	genesisStateFilePath = "shared/genesis.ssz"
 	chainConfigYamlPath  = "shared/config.yaml"
 	gethTomlPath         = "geth/geth.toml"
+	erigonTomlPath       = "erigon/erigon.toml"
 	genesisJsonPath      = "shared/genesis.json"
 	prysmYamlPath        = "prysm/prysm.yaml"
 	validatorYamlPath    = "prysm/validator.yaml"
@@ -241,7 +244,7 @@ var (
 	gethStartFlags = []cli.Flag{
 		&cli.StringFlag{
 			Name:   gethDatadirFlag,
-			Usage:  "A path you would like to store your data",
+			Usage:  "Geth datadir",
 			Value:  executionMainnetDatadir,
 			Hidden: true,
 		},
@@ -281,6 +284,19 @@ var (
 			Name:  erigonTagFlag,
 			Usage: "Tag for erigon",
 			Value: "2.42.0",
+		},
+	}
+	// START
+	erigonStartFlags = []cli.Flag{
+		&cli.StringFlag{
+			Name:  erigonConfigFileFlag,
+			Usage: "Path to erigon.toml config file",
+			Value: mainnetConfig + "/" + erigonTomlPath,
+		},
+		&cli.StringFlag{
+			Name:  erigonDatadirFlag,
+			Usage: "Erigon datadir",
+			Value: executionMainnetDatadir,
 		},
 	}
 
@@ -493,14 +509,14 @@ func prepareGethStartFlags(ctx *cli.Context) (startFlags []string, isCorrect boo
 
 func prepareErigonStartFlags(ctx *cli.Context) (startFlags []string, isCorrect bool) {
 	isCorrect = true
-	if !flagFileExists(ctx, gethConfigFileFlag) {
+	if !flagFileExists(ctx, erigonConfigFileFlag) {
 		isCorrect = false
 
 		return
 	}
 
 	startFlags = clientDependencies[gethDependencyName].PassStartFlags(ctx)
-	startFlags = append(startFlags, fmt.Sprintf("--config=%s", ctx.String(gethConfigFileFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--config=%s", ctx.String(erigonConfigFileFlag)))
 
 	return
 }
