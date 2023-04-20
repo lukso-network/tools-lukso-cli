@@ -87,8 +87,6 @@ lukso-node
 |       |   └───config.yaml                 // Global Client Config
 │       ├───geth                            // Config for Geth Client
 │       ├───prysm                           // Config for Prysm Client
-│       ├───erigon                          // Config for Erigon Client
-│       └───lighthouse                      // Config for Lighthouse Client
 │
 ├───[network_type]-keystore                 // Network's Validator Data
 │   ├───keys                                // Encrypted Private Keys
@@ -118,7 +116,7 @@ lukso-node
 | `update`           | Updates all or specific clients in the working directory to the newest version           |
 | `start`            | Starts all or specific clients and connects to the specified network                     |
 | `stop`             | Stops all or specific clients that are currently running                                 |
-| `log`              | Listens to all log events from a specific client in the current terminal window          |
+| `log`              | Listens and saves all log events from a specific client in the current terminal window   |
 | `status`           | Shows the client processes that are currently running                                    |
 | `reset`            | Resets all or specific client data directories and logs excluding the validator keys     |
 | `validator import` | Import the validator keys in the wallet                                                  |
@@ -201,9 +199,6 @@ $ lukso start --geth-config "./[config].toml"
 $ lukso start --prysm-config "./[config].yaml" \
 --geth-bootnodes "[custom_bootnode]"
 
-# An experienced user can also start custom clients
-# Example with Lighthouse and Erigon clients
-$ lukso start --lighthouse --erigon
 ```
 
 #### How to set up and customize a log folder
@@ -224,9 +219,9 @@ $ lukso start --log-folder "[folder_path]"
 | --no-slasher                         | Disables slasher                                                         |
 | **VALIDATOR**                        |                                                                          |
 | --validator                          | Starts the validator client                                              |
-| --transaction-fee-recipient [string] | Sets the address that receives block fees                                |
-| --keys-dir [string]                  | Directory of the validator keys (default: "./\[network_type\]-keystore") |
-| --validator-password [string]        | Location of password file that you used for generated validator keys     |
+| --transaction-fee-recipient [string] | The address that receives block fees [required when --validator is set]  |
+| --validator-keys [string]            | Directory of the validator keys (default: "./\[network_type\]-keystore") |
+| --validator-wallet-password [string] | Location of password file that you used for generated validator keys     |
 | --validator-config [string]          | Path to prysm.yaml config file                                           |
 | **NETWORK**                          |                                                                          |
 | --mainnet                            | Starts the LUKSO node with mainnet data (default) (./configs/mainnet)    |
@@ -238,8 +233,6 @@ For specific client options, please visit their official documentations. All fla
 - [Geth Client Specification](https://geth.ethereum.org/docs/fundamentals/command-line-options)
 - [Prysm Client Specification](https://docs.prylabs.network/docs/prysm-usage/parameters)
 - [Prysm Validator Specification](https://docs.prylabs.network/docs/prysm-usage/parameters#validator-flags)
-- [Erigon Client Specification](https://github.com/ledgerwatch/erigon)
-- [Lighthouse Client Specification](https://lighthouse-book.sigmaprime.io/advanced-datadir.html)
 
 ### `stop`
 
@@ -270,15 +263,21 @@ $ lukso stop --consensus
 #### How to view logs of the clients
 
 ```sh
-# Displays the logs of the execution client
-$ lukso log execution
-
-# Displays the logs of the consensus client
+# Displays and saves the logs of the mainnet's consensus client
 $ lukso log consensus
 
-# Displays the logs of the validator
-$ lukso log validator
+# Displays and saves the logs of the devnet's execution client
+$ lukso log execution --devnet
+
+# Displays and saves the logs of the testnet's validator
+$ lukso log validator --testnet
 ```
+
+| Option    | Description                                                       |
+| --------- | ----------------------------------------------------------------- |
+| --mainnet | Logs the mainnet client (default) (./mainnet-logs/[client_type]/) |
+| --testnet | Logs the testnet client (./testnet-logs/[client_type]/)           |
+| --devnet  | Logs the devnet client (./devnet-logs/[client_type]/)             |
 
 ### `status`
 
@@ -350,7 +349,7 @@ After generating the validator keys, they can be imported into the LUKSO CLI. To
 #### Genesis Amounts
 
 - All genesis validators will be prompted to vote for the initial token supply of LYX
-- The initial token supply will determie how much LYX the Foundation will receive
+- The initial token supply will determine how much LYX the Foundation will receive
 - More details at: https://deposit.mainnet.lukso.network
 
 #### Validator Stake
@@ -387,17 +386,23 @@ For specific validator options, please visit the [Prysm Validator Specification]
 
 #### How to start your validator (keys & tx fee recipient)
 
-```sh
-# Specify the transaction fee recipient, also knows as coinbase
-# Its the address where the transactions fees are sent to
-$ lukso start --validator --transaction-fee-recipient "0x12345678..."
+When you use `--validator`, the `--transaction-fee-recipient` flag is required.
 
-# Validator keys and password
+```sh
+# Specify the transaction fee recipient, also known as coinbase
+# It is the address where the transactions fees are sent to
+$ lukso start --validator --transaction-fee-recipient "0x12345678..."
+```
+
+If no `--validator-keys` is defined (example above), the CLI will look in the default directory: `./[network_type]-keystore`. If you want to provide a specific keystore directory, you can use `--validator-keys`:
+
+```sh
+# Validator keys
 # Command split across multiple lines for readability
 # Change [file_name] with the your password text file's name
 $ lukso start --validator \
---keys-dir "./mainnet-keystore" \
---validator-password "./[file_name].txt"
+--transaction-fee-recipient "0x12345678..." \
+--validator-keys "./custom-keystore-dir-path"
 ```
 
 #### How to start a genesis node
