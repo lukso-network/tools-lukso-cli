@@ -77,8 +77,9 @@ func (dependency *ClientDependency) Download(tag, commitHash string, isUpdate bo
 
 	var responseReader io.Reader = response.Body
 
-	// this means that we are fetching tared geth or erigon
-	if dependency.name == gethDependencyName || dependency.name == erigonDependencyName {
+	// this means that we are fetching tared client
+	switch dependency.name {
+	case gethDependencyName, erigonDependencyName, lighthouseDependencyName:
 		g, err := gzip.NewReader(response.Body)
 		if err != nil {
 			return err
@@ -107,9 +108,10 @@ func (dependency *ClientDependency) Download(tag, commitHash string, isUpdate bo
 			switch dependency.name {
 			case gethDependencyName:
 				targetHeader = "/" + gethDependencyName
-			case erigonDependencyName:
-				targetHeader = erigonDependencyName
+			case erigonDependencyName, lighthouseDependencyName:
+				targetHeader = dependency.name
 			}
+
 			if header.Typeflag == tar.TypeReg && strings.Contains(header.Name, targetHeader) {
 				responseReader = t
 
@@ -187,12 +189,12 @@ func installBinaries(ctx *cli.Context) (err error) {
 	)
 
 	consensusMessage := "\nWhich consensus client do you want to install?\n" +
-		"1: prysm\n> "
+		"1: prysm\n2: lighthouse\n> "
 	executionMessage := "\nWhich execution client do you want to install?\n" +
 		"1: geth\n2: erigon\n> "
 
 	consensusInput = registerInputWithMessage(consensusMessage)
-	for consensusInput != "1" {
+	for consensusInput != "1" && consensusInput != "2" {
 		consensusInput = registerInputWithMessage("Please provide a valid option\n> ")
 	}
 
@@ -200,6 +202,9 @@ func installBinaries(ctx *cli.Context) (err error) {
 	case "1":
 		selectedConsensus = prysmDependencyName
 		consensusTag = ctx.String(prysmTagFlag)
+	case "2":
+		selectedConsensus = lighthouseDependencyName
+		consensusTag = ctx.String(lighthouseTagFlag)
 	}
 
 	executionInput = registerInputWithMessage(executionMessage)

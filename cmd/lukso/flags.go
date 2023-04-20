@@ -28,6 +28,9 @@ const (
 	prysmDatadirFlag         = "prysm-datadir"
 	noSlasherFlag            = "no-slasher"
 
+	// lighthouse related flag names
+	lighthouseTagFlag = "lighthouse-tag"
+
 	// Validator related flag names
 	validatorTagFlag                = "validator-tag"
 	validatorDatadirFlag            = "validator-datadir"
@@ -306,6 +309,16 @@ var (
 			Usage:  "prysm datadir",
 			Value:  consensusMainnetDatadir,
 			Hidden: true,
+		},
+	}
+
+	// LIGHTHOUSE
+	// DOWNLOAD
+	lighthouseDownloadFlags = []cli.Flag{
+		&cli.StringFlag{
+			Name:  lighthouseTagFlag,
+			Usage: "Tag for lighthouse",
+			Value: "v4.1.0",
 		},
 	}
 

@@ -44,6 +44,7 @@ func init() {
 	installFlags = append(installFlags, validatorDownloadFlags...)
 	installFlags = append(installFlags, prysmDownloadFlags...)
 	installFlags = append(installFlags, erigonDownloadFlags...)
+	installFlags = append(installFlags, lighthouseDownloadFlags...)
 	installFlags = append(installFlags, appFlags...)
 
 	updateFlags = append(updateFlags, gethUpdateFlags...)

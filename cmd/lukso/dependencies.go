@@ -57,6 +57,12 @@ var (
 			filePath: "", // binary dir selected during runtime
 			isBinary: true,
 		},
+		lighthouseDependencyName: {
+			baseUrl:  "https://github.com/sigp/lighthouse/releases/download/%s/lighthouse-%s-x86_64-%s-%s.tar.gz",
+			name:     lighthouseDependencyName,
+			filePath: "", // binary dir selected during runtime
+			isBinary: true,
+		},
 		validatorDependencyName: {
 			baseUrl:  "https://github.com/prysmaticlabs/prysm/releases/download/%s/validator-%s-%s-amd64",
 			name:     validatorDependencyName,
@@ -170,9 +176,24 @@ type ClientDependency struct {
 
 func (dependency *ClientDependency) ParseUrl(tag, commitHash string) (url string) {
 	// do not parse when no occurrences
-	sprintOccurrences := strings.Count(dependency.baseUrl, "%s")
+	var (
+		baseUrl           = dependency.baseUrl
+		sprintOccurrences = strings.Count(dependency.baseUrl, "%s")
+		systemName        string
+		urlSystem         = systemOs
+	)
 
-	baseUrl := dependency.baseUrl
+	// for lighthouse
+	switch systemOs {
+	case ubuntu:
+		systemName = "unknown"
+		urlSystem += "-gnu"
+	case macos:
+		systemName = "apple"
+	default:
+		systemName = "unknown"
+		urlSystem += "-gnu"
+	}
 
 	switch sprintOccurrences {
 	case 3:
@@ -180,6 +201,8 @@ func (dependency *ClientDependency) ParseUrl(tag, commitHash string) (url string
 			return fmt.Sprintf(baseUrl, systemOs, tag, commitHash)
 		}
 		return fmt.Sprintf(baseUrl, tag, tag, systemOs)
+	case 4:
+		return fmt.Sprintf(baseUrl, tag, tag, systemName, urlSystem)
 	default:
 		return baseUrl
 	}
@@ -219,5 +242,6 @@ func setupOperatingSystem() {
 	clientDependencies[gethDependencyName].filePath = binDir + "/geth"
 	clientDependencies[erigonDependencyName].filePath = binDir + "/erigon"
 	clientDependencies[prysmDependencyName].filePath = binDir + "/prysm"
+	clientDependencies[lighthouseDependencyName].filePath = binDir + "/lighthouse"
 	clientDependencies[validatorDependencyName].filePath = binDir + "/validator"
 }
