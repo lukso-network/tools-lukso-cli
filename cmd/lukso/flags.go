@@ -17,6 +17,9 @@ const (
 	gethConfigFileFlag = "geth-config"
 	genesisJsonFlag    = "genesis-json"
 
+	// erigon related flag names
+	erigonTagFlag = "erigon-tag"
+
 	// Prysm related flag names
 	prysmTagFlag             = "prysm-tag"
 	prysmGenesisStateFlag    = "genesis-ssz"
@@ -24,6 +27,9 @@ const (
 	prysmConfigFileFlag      = "prysm-config"
 	prysmDatadirFlag         = "prysm-datadir"
 	noSlasherFlag            = "no-slasher"
+
+	// lighthouse related flag names
+	lighthouseTagFlag = "lighthouse-tag"
 
 	// Validator related flag names
 	validatorTagFlag                = "validator-tag"
@@ -236,6 +242,16 @@ var (
 		},
 	}
 
+	// ERIGON
+	// DOWNLOAD
+	erigonDownloadFlags = []cli.Flag{
+		&cli.StringFlag{
+			Name:  erigonTagFlag,
+			Usage: "Tag for erigon",
+			Value: "2.42.0",
+		},
+	}
+
 	// PRYSM FLAGS
 	// DOWNLOAD
 	prysmDownloadFlags = []cli.Flag{
@@ -293,6 +309,16 @@ var (
 			Usage:  "prysm datadir",
 			Value:  consensusMainnetDatadir,
 			Hidden: true,
+		},
+	}
+
+	// LIGHTHOUSE
+	// DOWNLOAD
+	lighthouseDownloadFlags = []cli.Flag{
+		&cli.StringFlag{
+			Name:  lighthouseTagFlag,
+			Usage: "Tag for lighthouse",
+			Value: "v4.1.0",
 		},
 	}
 

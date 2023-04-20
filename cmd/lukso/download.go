@@ -77,8 +77,9 @@ func (dependency *ClientDependency) Download(tag, commitHash string, isUpdate bo
 
 	var responseReader io.Reader = response.Body
 
-	// this means that we are fetching tared geth
-	if commitHash != "" {
+	// this means that we are fetching tared client
+	switch dependency.name {
+	case gethDependencyName, erigonDependencyName, lighthouseDependencyName:
 		g, err := gzip.NewReader(response.Body)
 		if err != nil {
 			return err
@@ -103,7 +104,15 @@ func (dependency *ClientDependency) Download(tag, commitHash string, isUpdate bo
 
 			}
 
-			if header.Typeflag == tar.TypeReg && strings.Contains(header.Name, "/geth") {
+			var targetHeader string
+			switch dependency.name {
+			case gethDependencyName:
+				targetHeader = "/" + gethDependencyName
+			case erigonDependencyName, lighthouseDependencyName:
+				targetHeader = dependency.name
+			}
+
+			if header.Typeflag == tar.TypeReg && strings.Contains(header.Name, targetHeader) {
 				responseReader = t
 
 				break
@@ -174,31 +183,43 @@ func installBinaries(ctx *cli.Context) (err error) {
 		executionInput    string
 		selectedConsensus string
 		selectedExecution string
+		consensusTag      string
+		executionTag      string
+		commitHash        string
 	)
 
 	consensusMessage := "\nWhich consensus client do you want to install?\n" +
-		"1: prysm\n> "
+		"1: prysm\n2: lighthouse\n> "
 	executionMessage := "\nWhich execution client do you want to install?\n" +
-		"1: geth\n> "
+		"1: geth\n2: erigon\n> "
 
 	consensusInput = registerInputWithMessage(consensusMessage)
-	for consensusInput != "1" {
+	for consensusInput != "1" && consensusInput != "2" {
 		consensusInput = registerInputWithMessage("Please provide a valid option\n> ")
 	}
 
 	switch consensusInput {
 	case "1":
 		selectedConsensus = prysmDependencyName
+		consensusTag = ctx.String(prysmTagFlag)
+	case "2":
+		selectedConsensus = lighthouseDependencyName
+		consensusTag = ctx.String(lighthouseTagFlag)
 	}
 
 	executionInput = registerInputWithMessage(executionMessage)
-	for executionInput != "1" {
+	for executionInput != "1" && executionInput != "2" {
 		executionInput = registerInputWithMessage("Please provide a valid option\n> ")
 	}
 
 	switch executionInput {
 	case "1":
 		selectedExecution = gethDependencyName
+		executionTag = ctx.String(gethTagFlag)
+		commitHash = ctx.String(gethCommitHashFlag)
+	case "2":
+		selectedExecution = erigonDependencyName
+		executionTag = ctx.String(erigonTagFlag)
 	}
 
 	termsAgreed := ctx.Bool(agreeTermsFlag)
@@ -212,15 +233,12 @@ func installBinaries(ctx *cli.Context) (err error) {
 		log.Info("✅  You accepted Prysm's Terms of Use: https://github.com/prysmaticlabs/prysm/blob/develop/TERMS_OF_SERVICE.md")
 	}
 
-	gethTag := ctx.String(gethTagFlag)
-	prysmTag := ctx.String(prysmTagFlag)
-
-	err = clientDependencies[selectedExecution].Download(gethTag, ctx.String(gethCommitHashFlag), false, binaryPerms)
+	err = clientDependencies[selectedExecution].Download(executionTag, commitHash, false, binaryPerms)
 	if err != nil {
 		return cli.Exit(fmt.Sprintf("❌  There was an error while downloading %s: %v", selectedExecution, err), 1)
 	}
 
-	err = clientDependencies[selectedConsensus].Download(prysmTag, "", false, binaryPerms)
+	err = clientDependencies[selectedConsensus].Download(consensusTag, "", false, binaryPerms)
 	if err != nil {
 		return cli.Exit(fmt.Sprintf("❌  There was an error while downloading %s: %v", selectedConsensus, err), 1)
 	}
