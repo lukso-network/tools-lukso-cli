@@ -87,8 +87,6 @@ lukso-node
 |       |   └───config.yaml                 // Global Client Config
 │       ├───geth                            // Config for Geth Client
 │       ├───prysm                           // Config for Prysm Client
-│       ├───erigon                          // Config for Erigon Client
-│       └───lighthouse                      // Config for Lighthouse Client
 │
 ├───[network_type]-keystore                 // Network's Validator Data
 │   ├───keys                                // Encrypted Private Keys
@@ -201,9 +199,6 @@ $ lukso start --geth-config "./[config].toml"
 $ lukso start --prysm-config "./[config].yaml" \
 --geth-bootnodes "[custom_bootnode]"
 
-# An experienced user can also start custom clients
-# Example with Lighthouse and Erigon clients
-$ lukso start --lighthouse --erigon
 ```
 
 #### How to set up and customize a log folder
@@ -238,8 +233,6 @@ For specific client options, please visit their official documentations. All fla
 - [Geth Client Specification](https://geth.ethereum.org/docs/fundamentals/command-line-options)
 - [Prysm Client Specification](https://docs.prylabs.network/docs/prysm-usage/parameters)
 - [Prysm Validator Specification](https://docs.prylabs.network/docs/prysm-usage/parameters#validator-flags)
-- [Erigon Client Specification](https://github.com/ledgerwatch/erigon)
-- [Lighthouse Client Specification](https://lighthouse-book.sigmaprime.io/advanced-datadir.html)
 
 ### `stop`
 
