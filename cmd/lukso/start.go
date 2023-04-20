@@ -98,7 +98,6 @@ func startClients(ctx *cli.Context) error {
 		return cli.Exit(fmt.Sprintf("❌  Couldn't read from config file: %v", err), 1)
 	}
 
-	// TODO for now just check if installed - when multiple clients will be supported we can run it generically
 	executionClient := cfg.Execution()
 	consensusClient := cfg.Consensus()
 	if executionClient == "" || consensusClient == "" {
@@ -111,14 +110,24 @@ func startClients(ctx *cli.Context) error {
 		return cli.Exit(fmt.Sprintf("❌  %s flag is required but wasn't provided", transactionFeeRecipientFlag), 1)
 	}
 
-	err = startGeth(ctx)
+	switch executionClient {
+	case gethDependencyName:
+		err = startGeth(ctx)
+	case erigonDependencyName:
+		err = startErigon(ctx)
+	}
 	if err != nil {
-		return cli.Exit(fmt.Sprintf("❌  There was an error while starting geth: %v", err), 1)
+		return cli.Exit(fmt.Sprintf("❌  There was an error while starting %s: %v", executionClient, err), 1)
 	}
 
-	err = startPrysm(ctx)
+	switch executionClient {
+	case prysmDependencyName:
+		err = startPrysm(ctx)
+	case lighthouseDependencyName:
+		err = startLighthouse(ctx)
+	}
 	if err != nil {
-		return cli.Exit(fmt.Sprintf("❌  There was an error while starting prysm: %v", err), 1)
+		return cli.Exit(fmt.Sprintf("❌  There was an error while starting %s: %v", consensusClient, err), 1)
 	}
 
 	if ctx.Bool(validatorFlag) {
@@ -160,6 +169,23 @@ func startGeth(ctx *cli.Context) error {
 	return nil
 }
 
+func startErigon(ctx *cli.Context) error {
+	log.Info("🔄  Starting Erigon")
+	erigonFlags, ok := prepareErigonStartFlags(ctx)
+	if !ok {
+		return errFlagPathInvalid
+	}
+
+	err := clientDependencies[erigonDependencyName].Start(erigonFlags, ctx)
+	if err != nil {
+		return err
+	}
+
+	log.Info("✅  Erigon started! Use 'lukso log' to see logs.")
+
+	return nil
+}
+
 func startPrysm(ctx *cli.Context) error {
 	log.Info("🔄  Starting Prysm")
 	prysmFlags, ok := preparePrysmStartFlags(ctx)
@@ -173,6 +199,23 @@ func startPrysm(ctx *cli.Context) error {
 	}
 
 	log.Info("✅  Prysm started! Use 'lukso logs' to see the logs.")
+
+	return nil
+}
+
+func startLighthouse(ctx *cli.Context) error {
+	log.Info("🔄  Starting Lighthouse")
+	lighthouseFlags, ok := prepareLighthouseStartFlags(ctx)
+	if !ok {
+		return errFlagPathInvalid
+	}
+
+	err := clientDependencies[lighthouseDependencyName].Start(lighthouseFlags, ctx)
+	if err != nil {
+		return err
+	}
+
+	log.Info("✅  Lighthouse started! Use 'lukso log' to see logs.")
 
 	return nil
 }

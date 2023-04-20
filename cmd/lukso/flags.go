@@ -2,12 +2,12 @@ package main
 
 import (
 	"fmt"
+	"golang.org/x/term"
 	"os"
 	"strings"
 	"syscall"
 
 	"github.com/urfave/cli/v2"
-	"golang.org/x/term"
 )
 
 const (
@@ -72,6 +72,12 @@ const (
 	devnetLogs  = "./devnet-logs"
 
 	configsRootDir = "./configs"
+
+	// client flags - same values as dependencies but moved to flags for better code readability
+	gethFlag       = gethDependencyName
+	erigonFlag     = erigonDependencyName
+	prysmFlag      = prysmDependencyName
+	lighthouseFlag = lighthouseDependencyName
 
 	mainnetConfig = configsRootDir + "/mainnet"
 	testnetConfig = configsRootDir + "/testnet"
@@ -153,6 +159,31 @@ var (
 		consensusSelectedFlag,
 		validatorSelectedFlag,
 	}
+
+	// list of flags for starting specific clients - if none is provided start clients selected in configs
+	clientFlags = []cli.Flag{
+		&cli.BoolFlag{
+			Name:  gethFlag,
+			Usage: "Run configured geth",
+			Value: false,
+		},
+		&cli.BoolFlag{
+			Name:  erigonFlag,
+			Usage: "Run configured erigon",
+			Value: false,
+		},
+		&cli.BoolFlag{
+			Name:  prysmFlag,
+			Usage: "Run configured prysm beacon",
+			Value: false,
+		},
+		&cli.BoolFlag{
+			Name:  lighthouseFlag,
+			Usage: "Run configured lighthouse",
+			Value: false,
+		},
+	}
+
 	startFlags = []cli.Flag{
 		&cli.BoolFlag{
 			Name:  validatorFlag,
@@ -460,6 +491,72 @@ func prepareGethStartFlags(ctx *cli.Context) (startFlags []string, isCorrect boo
 	return
 }
 
+func prepareErigonStartFlags(ctx *cli.Context) (startFlags []string, isCorrect bool) {
+	isCorrect = true
+	if !flagFileExists(ctx, gethConfigFileFlag) {
+		isCorrect = false
+
+		return
+	}
+
+	startFlags = clientDependencies[gethDependencyName].PassStartFlags(ctx)
+	startFlags = append(startFlags, fmt.Sprintf("--config=%s", ctx.String(gethConfigFileFlag)))
+
+	return
+}
+
+func preparePrysmStartFlags(ctx *cli.Context) (startFlags []string, isCorrect bool) {
+	isCorrect = true
+
+	genesisExists := flagFileExists(ctx, prysmGenesisStateFlag)
+	prysmConfigExists := flagFileExists(ctx, prysmConfigFileFlag)
+	chainConfigExists := flagFileExists(ctx, prysmChainConfigFileFlag)
+	if !genesisExists || !prysmConfigExists || !chainConfigExists {
+		isCorrect = false
+
+		return
+	}
+
+	startFlags = clientDependencies[prysmDependencyName].PassStartFlags(ctx)
+	startFlags = append(startFlags, prepareLogfileFlag(ctx.String(logFolderFlag), prysmDependencyName))
+
+	// terms of use already accepted during installation
+	startFlags = append(startFlags, "--accept-terms-of-use")
+	startFlags = append(startFlags, fmt.Sprintf("--config-file=%s", ctx.String(prysmConfigFileFlag)))
+
+	if ctx.String(transactionFeeRecipientFlag) != "" {
+		startFlags = append(startFlags, fmt.Sprintf("--suggested-fee-recipient=%s", ctx.String(transactionFeeRecipientFlag)))
+	}
+	if ctx.String(prysmGenesisStateFlag) != "" {
+		startFlags = append(startFlags, fmt.Sprintf("--genesis-state=%s", ctx.String(prysmGenesisStateFlag)))
+	}
+	if ctx.String(prysmChainConfigFileFlag) != "" {
+		startFlags = append(startFlags, fmt.Sprintf("--chain-config-file=%s", ctx.String(prysmChainConfigFileFlag)))
+	}
+
+	isSlasher := !ctx.Bool(noSlasherFlag)
+	isValidator := ctx.Bool(validatorFlag)
+	if isSlasher && isValidator {
+		startFlags = append(startFlags, "--slasher")
+	}
+
+	return
+}
+
+func prepareLighthouseStartFlags(ctx *cli.Context) (startFlags []string, isCorrect bool) {
+	isCorrect = true
+	if !flagFileExists(ctx, gethConfigFileFlag) {
+		isCorrect = false
+
+		return
+	}
+
+	startFlags = clientDependencies[gethDependencyName].PassStartFlags(ctx)
+	startFlags = append(startFlags, fmt.Sprintf("--config=%s", ctx.String(gethConfigFileFlag)))
+
+	return
+}
+
 func prepareValidatorStartFlags(ctx *cli.Context) (startFlags []string, passwordPipe string, err error) {
 	validatorConfigExists := flagFileExists(ctx, validatorConfigFileFlag)
 	chainConfigExists := flagFileExists(ctx, prysmChainConfigFileFlag)
@@ -533,43 +630,5 @@ func prepareValidatorStartFlags(ctx *cli.Context) (startFlags []string, password
 	if ctx.String(validatorChainConfigFileFlag) != "" {
 		startFlags = append(startFlags, fmt.Sprintf("--chain-config-file=%s", ctx.String(validatorChainConfigFileFlag)))
 	}
-	return
-}
-
-func preparePrysmStartFlags(ctx *cli.Context) (startFlags []string, isCorrect bool) {
-	isCorrect = true
-
-	genesisExists := flagFileExists(ctx, prysmGenesisStateFlag)
-	prysmConfigExists := flagFileExists(ctx, prysmConfigFileFlag)
-	chainConfigExists := flagFileExists(ctx, prysmChainConfigFileFlag)
-	if !genesisExists || !prysmConfigExists || !chainConfigExists {
-		isCorrect = false
-
-		return
-	}
-
-	startFlags = clientDependencies[prysmDependencyName].PassStartFlags(ctx)
-	startFlags = append(startFlags, prepareLogfileFlag(ctx.String(logFolderFlag), prysmDependencyName))
-
-	// terms of use already accepted during installation
-	startFlags = append(startFlags, "--accept-terms-of-use")
-	startFlags = append(startFlags, fmt.Sprintf("--config-file=%s", ctx.String(prysmConfigFileFlag)))
-
-	if ctx.String(transactionFeeRecipientFlag) != "" {
-		startFlags = append(startFlags, fmt.Sprintf("--suggested-fee-recipient=%s", ctx.String(transactionFeeRecipientFlag)))
-	}
-	if ctx.String(prysmGenesisStateFlag) != "" {
-		startFlags = append(startFlags, fmt.Sprintf("--genesis-state=%s", ctx.String(prysmGenesisStateFlag)))
-	}
-	if ctx.String(prysmChainConfigFileFlag) != "" {
-		startFlags = append(startFlags, fmt.Sprintf("--chain-config-file=%s", ctx.String(prysmChainConfigFileFlag)))
-	}
-
-	isSlasher := !ctx.Bool(noSlasherFlag)
-	isValidator := ctx.Bool(validatorFlag)
-	if isSlasher && isValidator {
-		startFlags = append(startFlags, "--slasher")
-	}
-
 	return
 }
