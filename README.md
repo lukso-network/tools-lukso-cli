@@ -116,7 +116,7 @@ lukso-node
 | `update`           | Updates all or specific clients in the working directory to the newest version           |
 | `start`            | Starts all or specific clients and connects to the specified network                     |
 | `stop`             | Stops all or specific clients that are currently running                                 |
-| `log`              | Listens to all log events from a specific client in the current terminal window          |
+| `log`              | Listens and saves all log events from a specific client in the current terminal window   |
 | `status`           | Shows the client processes that are currently running                                    |
 | `reset`            | Resets all or specific client data directories and logs excluding the validator keys     |
 | `validator import` | Import the validator keys in the wallet                                                  |
@@ -263,15 +263,21 @@ $ lukso stop --consensus
 #### How to view logs of the clients
 
 ```sh
-# Displays the logs of the execution client
-$ lukso log execution
-
-# Displays the logs of the consensus client
+# Displays and saves the logs of the mainnet's consensus client
 $ lukso log consensus
 
-# Displays the logs of the validator
-$ lukso log validator
+# Displays and saves the logs of the devnet's execution client
+$ lukso log execution --devnet
+
+# Displays and saves the logs of the testnet's validator
+$ lukso log validator --testnet
 ```
+
+| Option    | Description                                                       |
+| --------- | ----------------------------------------------------------------- |
+| --mainnet | Logs the mainnet client (default) (./mainnet-logs/[client_type]/) |
+| --testnet | Logs the testnet client (./testnet-logs/[client_type]/)           |
+| --devnet  | Logs the devnet client (./devnet-logs/[client_type]/)             |
 
 ### `status`
 
@@ -343,7 +349,7 @@ After generating the validator keys, they can be imported into the LUKSO CLI. To
 #### Genesis Amounts
 
 - All genesis validators will be prompted to vote for the initial token supply of LYX
-- The initial token supply will determie how much LYX the Foundation will receive
+- The initial token supply will determine how much LYX the Foundation will receive
 - More details at: https://deposit.mainnet.lukso.network
 
 #### Validator Stake
