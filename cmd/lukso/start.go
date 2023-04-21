@@ -24,18 +24,18 @@ func (dependency *ClientDependency) Start(
 	command := exec.Command(dependency.name, arguments...)
 
 	// since geth removed --logfile flag we have to manually adjust geth's stdout
-	if dependency.name == gethDependencyName {
+	if dependency.name == gethDependencyName || dependency.name == erigonDependencyName {
 		var (
 			logFile  *os.File
 			fullPath string
 		)
 
-		gethLogDir := ctx.String(logFolderFlag)
-		if gethLogDir == "" {
+		logFolder := ctx.String(logFolderFlag)
+		if logFolder == "" {
 			return cli.Exit(fmt.Sprintf("%v- %s", errFlagMissing, logFolderFlag), 1)
 		}
 
-		fullPath, err = prepareTimestampedFile(gethLogDir, gethDependencyName)
+		fullPath, err = prepareTimestampedFile(logFolder, dependency.name)
 		if err != nil {
 			return
 		}
@@ -120,7 +120,7 @@ func startClients(ctx *cli.Context) error {
 		return cli.Exit(fmt.Sprintf("❌  There was an error while starting %s: %v", executionClient, err), 1)
 	}
 
-	switch executionClient {
+	switch consensusClient {
 	case prysmDependencyName:
 		err = startPrysm(ctx)
 	case lighthouseDependencyName:
@@ -146,7 +146,7 @@ func startClients(ctx *cli.Context) error {
 func startGeth(ctx *cli.Context) error {
 	log.Info("⚙️  Running geth init first...")
 
-	err := initGeth(ctx)
+	err := initClient(gethDependencyName, ctx)
 	if err != nil && !errors.Is(err, errAlreadyRunning) { // if it is already running it will be caught during start
 		log.Errorf("❌  There was an error while initalizing geth. Error: %v", err)
 
@@ -154,6 +154,7 @@ func startGeth(ctx *cli.Context) error {
 	}
 
 	log.Info("🔄  Starting Geth")
+
 	gethFlags, ok := prepareGethStartFlags(ctx)
 	if !ok {
 		return errFlagPathInvalid
@@ -170,13 +171,23 @@ func startGeth(ctx *cli.Context) error {
 }
 
 func startErigon(ctx *cli.Context) error {
+	log.Info("⚙️  Running erigon init first...")
+
+	err := initClient(erigonDependencyName, ctx)
+	if err != nil && !errors.Is(err, errAlreadyRunning) { // if it is already running it will be caught during start
+		log.Errorf("❌  There was an error while initalizing geth. Error: %v", err)
+
+		return err
+	}
+
 	log.Info("🔄  Starting Erigon")
+
 	erigonFlags, ok := prepareErigonStartFlags(ctx)
 	if !ok {
 		return errFlagPathInvalid
 	}
 
-	err := clientDependencies[erigonDependencyName].Start(erigonFlags, ctx)
+	err = clientDependencies[erigonDependencyName].Start(erigonFlags, ctx)
 	if err != nil {
 		return err
 	}
@@ -188,12 +199,12 @@ func startErigon(ctx *cli.Context) error {
 
 func startPrysm(ctx *cli.Context) error {
 	log.Info("🔄  Starting Prysm")
-	prysmFlags, ok := preparePrysmStartFlags(ctx)
-	if !ok {
-		return errFlagPathInvalid
+	prysmFlags, err := preparePrysmStartFlags(ctx)
+	if err != nil {
+		return err
 	}
 
-	err := clientDependencies[prysmDependencyName].Start(prysmFlags, ctx)
+	err = clientDependencies[prysmDependencyName].Start(prysmFlags, ctx)
 	if err != nil {
 		return err
 	}
@@ -275,7 +286,7 @@ func stopClients(ctx *cli.Context) (err error) {
 	if stopExecution {
 		log.Infof("⚙️  Stopping execution [%s]", executionClient)
 
-		err = stopClient(clientDependencies[gethDependencyName])
+		err = stopClient(clientDependencies[executionClient])
 		if err != nil {
 			return cli.Exit(fmt.Sprintf("❌  There was an error while stopping geth: %v", err), 1)
 		}
@@ -284,7 +295,7 @@ func stopClients(ctx *cli.Context) (err error) {
 	if stopConsensus {
 		log.Infof("⚙️  Stopping consensus [%s]", consensusClient)
 
-		err = stopClient(clientDependencies[prysmDependencyName])
+		err = stopClient(clientDependencies[consensusClient])
 		if err != nil {
 			return cli.Exit(fmt.Sprintf("❌  There was an error while stopping prysm: %v", err), 1)
 		}
@@ -308,8 +319,8 @@ func stopClient(dependency *ClientDependency) error {
 	return err
 }
 
-func initGeth(ctx *cli.Context) (err error) {
-	if isRunning(gethDependencyName) {
+func initClient(client string, ctx *cli.Context) (err error) {
+	if isRunning(client) {
 		return errAlreadyRunning
 	}
 
@@ -317,8 +328,15 @@ func initGeth(ctx *cli.Context) (err error) {
 		return errors.New("❌  Genesis JSON not found")
 	}
 
-	dataDir := fmt.Sprintf("--datadir=%s", ctx.String(gethDatadirFlag))
-	command := exec.Command("geth", "init", dataDir, ctx.String(genesisJsonFlag))
+	var dataDir string
+	switch client {
+	case gethDependencyName:
+		dataDir = fmt.Sprintf("--datadir=%s", ctx.String(gethDatadirFlag))
+	case erigonDependencyName:
+		dataDir = fmt.Sprintf("--datadir=%s", ctx.String(erigonDatadirFlag))
+	}
+	fmt.Println(dataDir)
+	command := exec.Command(client, "init", dataDir, ctx.String(genesisJsonFlag))
 	command.Stdout = os.Stdout
 	command.Stderr = os.Stderr
 

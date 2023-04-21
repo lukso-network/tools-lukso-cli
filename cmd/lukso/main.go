@@ -54,6 +54,7 @@ func init() {
 	startFlags = append(startFlags, gethStartFlags...)
 	startFlags = append(startFlags, prysmStartFlags...)
 	startFlags = append(startFlags, validatorStartFlags...)
+	startFlags = append(startFlags, erigonStartFlags...)
 	startFlags = append(startFlags, networkFlags...)
 
 	logsFlags = append(logsFlags, gethLogsFlags...)

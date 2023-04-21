@@ -163,30 +163,6 @@ var (
 		validatorSelectedFlag,
 	}
 
-	// list of flags for starting specific clients - if none is provided start clients selected in configs
-	clientFlags = []cli.Flag{
-		&cli.BoolFlag{
-			Name:  gethFlag,
-			Usage: "Run configured geth",
-			Value: false,
-		},
-		&cli.BoolFlag{
-			Name:  erigonFlag,
-			Usage: "Run configured erigon",
-			Value: false,
-		},
-		&cli.BoolFlag{
-			Name:  prysmFlag,
-			Usage: "Run configured prysm beacon",
-			Value: false,
-		},
-		&cli.BoolFlag{
-			Name:  lighthouseFlag,
-			Usage: "Run configured lighthouse",
-			Value: false,
-		},
-	}
-
 	startFlags = []cli.Flag{
 		&cli.BoolFlag{
 			Name:  validatorFlag,
@@ -515,26 +491,29 @@ func prepareErigonStartFlags(ctx *cli.Context) (startFlags []string, isCorrect b
 		return
 	}
 
-	startFlags = clientDependencies[gethDependencyName].PassStartFlags(ctx)
+	startFlags = clientDependencies[erigonDependencyName].PassStartFlags(ctx)
 	startFlags = append(startFlags, fmt.Sprintf("--config=%s", ctx.String(erigonConfigFileFlag)))
 
 	return
 }
 
-func preparePrysmStartFlags(ctx *cli.Context) (startFlags []string, isCorrect bool) {
-	isCorrect = true
-
+func preparePrysmStartFlags(ctx *cli.Context) (startFlags []string, err error) {
 	genesisExists := flagFileExists(ctx, prysmGenesisStateFlag)
 	prysmConfigExists := flagFileExists(ctx, prysmConfigFileFlag)
 	chainConfigExists := flagFileExists(ctx, prysmChainConfigFileFlag)
 	if !genesisExists || !prysmConfigExists || !chainConfigExists {
-		isCorrect = false
+		err = errFlagPathInvalid
 
 		return
 	}
 
+	logFilePath, err := prepareTimestampedFile(ctx.String(logFolderFlag), prysmDependencyName)
+	if err != nil {
+		return
+	}
+
 	startFlags = clientDependencies[prysmDependencyName].PassStartFlags(ctx)
-	startFlags = append(startFlags, prepareLogfileFlag(ctx.String(logFolderFlag), prysmDependencyName))
+	startFlags = append(startFlags, fmt.Sprintf("--log-file=%s", logFilePath))
 
 	// terms of use already accepted during installation
 	startFlags = append(startFlags, "--accept-terms-of-use")
@@ -632,10 +611,15 @@ func prepareValidatorStartFlags(ctx *cli.Context) (startFlags []string, password
 
 	startFlags = clientDependencies[validatorDependencyName].PassStartFlags(ctx)
 
+	logFilePath, err := prepareTimestampedFile(ctx.String(logFolderFlag), validatorDependencyName)
+	if err != nil {
+		return
+	}
+
 	// terms of use already accepted during installation
 	startFlags = append(startFlags, "--accept-terms-of-use")
 	startFlags = append(startFlags, fmt.Sprintf("--config-file=%s", ctx.String(validatorConfigFileFlag)))
-	startFlags = append(startFlags, prepareLogfileFlag(ctx.String(logFolderFlag), validatorDependencyName))
+	startFlags = append(startFlags, fmt.Sprintf("--log-file=%s", logFilePath))
 	startFlags = append(startFlags, fmt.Sprintf("--suggested-fee-recipient=%s", ctx.String(transactionFeeRecipientFlag)))
 	if ctx.String(validatorKeysFlag) != "" {
 		startFlags = append(startFlags, fmt.Sprintf("--wallet-dir=%s", ctx.String(validatorKeysFlag)))

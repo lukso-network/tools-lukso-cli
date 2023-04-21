@@ -31,17 +31,6 @@ func prepareTimestampedFile(logDir, logFileName string) (logFile string, err err
 	return
 }
 
-func prepareLogfileFlag(logDir, dependencyName string) string {
-	prysmFullLogPath, err := prepareTimestampedFile(logDir, dependencyName)
-	if err != nil {
-		log.Warnf("⚠️  Couldn't prepare the logs folder for %s client. Continuing without log files being saved", dependencyName)
-
-		return ""
-	}
-
-	return fmt.Sprintf("--log-file=%s", prysmFullLogPath)
-}
-
 func createJwtSecret(dest string) error {
 	log.Info("🔄  Creating new JWT secret")
 	jwtDir := truncateFileFromDir(dest)
