@@ -113,7 +113,6 @@ lukso-node
 | ------------------ | ---------------------------------------------------------------------------------------- |
 | `install`          | Installs choosen clients (Execution, Consensus, Validator) and their binary dependencies |
 | `init`             | Initializes the working directory, it's structure, and network configuration             |
-| `update`           | Updates all or specific clients in the working directory to the newest version           |
 | `start`            | Starts all or specific clients and connects to the specified network                     |
 | `stop`             | Stops all or specific clients that are currently running                                 |
 | `log`              | Listens and saves all log events from a specific client in the current terminal window   |
@@ -156,18 +155,6 @@ $ lukso install --agree-terms
 | Option        | Description                               |
 | ------------- | ----------------------------------------- |
 | --agree-terms | Automatically accept Terms and Conditions |
-
-### `update`
-
-#### How to update clients
-
-```sh
-# Updates installed clients
-$ lukso update
-
-# Update Geth client to a latest version
-$ lukso update geth
-```
 
 ### `start`
 
