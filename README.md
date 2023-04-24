@@ -151,6 +151,8 @@ $ lukso install
 $ lukso install --agree-terms
 ```
 
+#### Options for `install`
+
 | Option        | Description                               |
 | ------------- | ----------------------------------------- |
 | --agree-terms | Automatically accept Terms and Conditions |
@@ -209,20 +211,24 @@ $ lukso start --prysm-config "./[config].yaml" \
 $ lukso start --log-folder "[folder_path]"
 ```
 
+#### Options for `start`
+
 | Option                               | Description                                                              |
 | ------------------------------------ | ------------------------------------------------------------------------ |
+| --no-slasher                         | Disables slasher                                                         |
 | --geth-config [string]               | Defines the path to geth TOML config file                                |
 | --prysm-config [string]              | Defines the path to pryms YAML config file                               |
 | --genesis-json [string]              | Defines the path to genesis JSON file                                    |
 | --genesis-ssz [string]               | Defines the path to genesis SSZ file                                     |
 | --log-folder [string]                | Sets up a custom log directory (default: "./\[network_type\]-logs")      |
-| --no-slasher                         | Disables slasher                                                         |
 | **VALIDATOR**                        |                                                                          |
 | --validator                          | Starts the validator client                                              |
 | --transaction-fee-recipient [string] | The address that receives block fees [required when --validator is set]  |
 | --validator-keys [string]            | Directory of the validator keys (default: "./\[network_type\]-keystore") |
 | --validator-wallet-password [string] | Location of password file that you used for generated validator keys     |
 | --validator-config [string]          | Path to prysm.yaml config file                                           |
+| **CLIENT OPTIONS**                   |                                                                          |
+| --geth-[command]                     | The `command` will be passed to geth                                     |
 | **NETWORK**                          |                                                                          |
 | --mainnet                            | Starts the LUKSO node with mainnet data (default) (./configs/mainnet)    |
 | --testnet                            | Starts the LUKSO node with testnet data (./configs/tesnet)               |
@@ -252,6 +258,8 @@ $ lukso stop --execution
 $ lukso stop --consensus
 ```
 
+#### Options for `stop`
+
 | Option      | Description                |
 | ----------- | -------------------------- |
 | --validator | Stops the validator client |
@@ -272,6 +280,8 @@ $ lukso log execution --devnet
 # Displays and saves the logs of the testnet's validator
 $ lukso log validator --testnet
 ```
+
+#### Options for `log`
 
 | Option    | Description                                                       |
 | --------- | ----------------------------------------------------------------- |
@@ -303,6 +313,8 @@ $ lukso reset --testnet
 $ lukso reset --devnet
 ```
 
+#### Options for `reset`
+
 | Option              | Description                 |
 | ------------------- | --------------------------- |
 | --mainnet [default] | Resets LUKSO's mainnet data |
@@ -332,7 +344,7 @@ $ lukso help
 $ lukso start --help
 
 # Displays the help page of the start command
-$ lukso -h start
+$ lukso start -h
 ```
 
 ## Running a Validator
@@ -371,6 +383,8 @@ lukso validator import
 # Import skipping generated questions
 lukso validator import --keys-dir "./myDir"
 ```
+
+#### Options for `validator import`
 
 | Option              | Description                                                                |
 | ------------------- | -------------------------------------------------------------------------- |
