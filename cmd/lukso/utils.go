@@ -128,16 +128,24 @@ func isRunning(dependency string) bool {
 
 func isAnyRunning() bool {
 	gethRunning := isRunning(gethDependencyName)
+	erigonRunning := isRunning(erigonDependencyName)
 	prysmRunning := isRunning(prysmDependencyName)
+	lighthouseRunning := isRunning(lighthouseDependencyName)
 	validatorRunning := isRunning(validatorDependencyName)
 
-	if gethRunning || prysmRunning || validatorRunning {
+	if gethRunning || prysmRunning || validatorRunning || erigonRunning || lighthouseRunning {
 		message := "⚠️  Please stop the following clients before continuing: "
 		if gethRunning {
 			message += "geth "
 		}
+		if erigonRunning {
+			message += "erigon "
+		}
 		if prysmRunning {
 			message += "prysm "
+		}
+		if lighthouseRunning {
+			message += "lighthouse "
 		}
 		if validatorRunning {
 			message += "validator "

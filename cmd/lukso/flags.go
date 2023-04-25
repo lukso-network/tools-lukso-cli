@@ -548,6 +548,7 @@ func prepareLighthouseStartFlags(ctx *cli.Context) (startFlags []string, err err
 
 	startFlags = append(startFlags, fmt.Sprintf("--logfile=%s", logFile))
 	startFlags = append(startFlags, "--logfile-max-number=1")
+	startFlags = append(startFlags, "--logfile-debug-level=info")
 
 	return
 }
