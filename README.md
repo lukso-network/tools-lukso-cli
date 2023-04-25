@@ -202,12 +202,10 @@ $ lukso start --log-folder "[folder_path]"
 
 | Option                               | Description                                                              |
 | ------------------------------------ | ------------------------------------------------------------------------ |
-| --no-slasher                         | Disables slasher                                                         |
-| --geth-config [string]               | Defines the path to geth TOML config file                                |
-| --prysm-config [string]              | Defines the path to pryms YAML config file                               |
-| --genesis-json [string]              | Defines the path to genesis JSON file                                    |
-| --genesis-ssz [string]               | Defines the path to genesis SSZ file                                     |
-| --log-folder [string]                | Sets up a custom log directory (default: "./\[network_type\]-logs")      |
+| **NETWORK**                          |                                                                          |
+| --mainnet                            | Starts the LUKSO node with mainnet data (default) (./configs/mainnet)    |
+| --testnet                            | Starts the LUKSO node with testnet data (./configs/tesnet)               |
+| --devnet                             | Starts the LUKSO node with devnet data (./configs/devnet)                |
 | **VALIDATOR**                        |                                                                          |
 | --validator                          | Starts the validator client                                              |
 | --transaction-fee-recipient [string] | The address that receives block fees [required when --validator is set]  |
@@ -216,10 +214,12 @@ $ lukso start --log-folder "[folder_path]"
 | --validator-config [string]          | Path to prysm.yaml config file                                           |
 | **CLIENT OPTIONS**                   |                                                                          |
 | --geth-[command]                     | The `command` will be passed to geth                                     |
-| **NETWORK**                          |                                                                          |
-| --mainnet                            | Starts the LUKSO node with mainnet data (default) (./configs/mainnet)    |
-| --testnet                            | Starts the LUKSO node with testnet data (./configs/tesnet)               |
-| --devnet                             | Starts the LUKSO node with devnet data (./configs/devnet)                |
+| --geth-config [string]               | Defines the path to geth TOML config file                                |
+| --prysm-config [string]              | Defines the path to pryms YAML config file                               |
+| --genesis-json [string]              | Defines the path to genesis JSON file                                    |
+| --genesis-ssz [string]               | Defines the path to genesis SSZ file                                     |
+| --log-folder [string]                | Sets up a custom log directory (default: "./\[network_type\]-logs")      |
+| --no-slasher                         | Disables slasher                                                         |
 
 For specific client options, please visit their official documentations. All flags and their parameters will be passed to the underlying clients.
 
@@ -375,6 +375,7 @@ lukso validator import --keys-dir "./myDir"
 
 | Option              | Description                                                                |
 | ------------------- | -------------------------------------------------------------------------- |
+| **SHORTCUT**        |                                                                            |
 | --keys-dir [string] | Directory of the validator keys (default: "./\[network_type\]-keystore")   |
 | **NETWORK**         |                                                                            |
 | --mainnet           | Will import the keys for mainnet [default] (default: "./mainnet-keystore") |
