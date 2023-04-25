@@ -216,12 +216,14 @@ func startPrysm(ctx *cli.Context) error {
 
 func startLighthouse(ctx *cli.Context) error {
 	log.Info("🔄  Starting Lighthouse")
-	lighthouseFlags, ok := prepareLighthouseStartFlags(ctx)
-	if !ok {
-		return errFlagPathInvalid
+	lighthouseFlags, err := prepareLighthouseStartFlags(ctx)
+	if err != nil {
+		return err
 	}
 
-	err := clientDependencies[lighthouseDependencyName].Start(lighthouseFlags, ctx)
+	lighthouseFlags = append([]string{"beacon_node"}, lighthouseFlags...)
+
+	err = clientDependencies[lighthouseDependencyName].Start(lighthouseFlags, ctx)
 	if err != nil {
 		return err
 	}
@@ -335,7 +337,7 @@ func initClient(client string, ctx *cli.Context) (err error) {
 	case erigonDependencyName:
 		dataDir = fmt.Sprintf("--datadir=%s", ctx.String(erigonDatadirFlag))
 	}
-	fmt.Println(dataDir)
+
 	command := exec.Command(client, "init", dataDir, ctx.String(genesisJsonFlag))
 	command.Stdout = os.Stdout
 	command.Stderr = os.Stderr

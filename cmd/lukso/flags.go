@@ -538,16 +538,16 @@ func preparePrysmStartFlags(ctx *cli.Context) (startFlags []string, err error) {
 	return
 }
 
-func prepareLighthouseStartFlags(ctx *cli.Context) (startFlags []string, isCorrect bool) {
-	isCorrect = true
-	if !flagFileExists(ctx, gethConfigFileFlag) {
-		isCorrect = false
+func prepareLighthouseStartFlags(ctx *cli.Context) (startFlags []string, err error) {
+	startFlags = clientDependencies[lighthouseDependencyName].PassStartFlags(ctx)
 
+	logFile, err := prepareTimestampedFile(ctx.String(logFolderFlag), lighthouseDependencyName)
+	if err != nil {
 		return
 	}
 
-	startFlags = clientDependencies[gethDependencyName].PassStartFlags(ctx)
-	startFlags = append(startFlags, fmt.Sprintf("--config=%s", ctx.String(gethConfigFileFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--logfile=%s", logFile))
+	startFlags = append(startFlags, "--logfile-max-number=1")
 
 	return
 }

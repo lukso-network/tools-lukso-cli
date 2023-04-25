@@ -21,7 +21,7 @@ func initializeDirectory(ctx *cli.Context) error {
 	if cfg.Exists() {
 		message := "⚠️  This folder has already been initialized. Do you want to re-initialize it? Please note that configs in this folder will NOT be overwritten [y/N]:\n> "
 		input := registerInputWithMessage(message)
-		if !strings.EqualFold(input, "y") && input == "" {
+		if !strings.EqualFold(input, "y") {
 			log.Info("Aborting...")
 
 			return nil
