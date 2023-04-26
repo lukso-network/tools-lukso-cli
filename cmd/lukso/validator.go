@@ -2,10 +2,9 @@ package main
 
 import (
 	"fmt"
+	"github.com/urfave/cli/v2"
 	"os"
 	"os/exec"
-
-	"github.com/urfave/cli/v2"
 )
 
 func importValidator(ctx *cli.Context) error {
@@ -55,6 +54,31 @@ func importValidator(ctx *cli.Context) error {
 	if err != nil {
 		return cli.Exit(fmt.Sprintf("❌  There was an error while importing validator accounts: %v", err), 1)
 	}
+
+	return nil
+}
+
+func startValidator(ctx *cli.Context) error {
+	log.Info("🔄  Starting Validator")
+	validatorFlags, passwordPipe, err := prepareValidatorStartFlags(ctx)
+	if passwordPipe != "" {
+		defer os.Remove(passwordPipe)
+	}
+	if err != nil {
+		return err
+	}
+	if !fileExists(fmt.Sprintf("%s/direct/accounts/all-accounts.keystore.json", ctx.String(validatorKeysFlag))) { // path to imported keys
+		log.Error("⚠️  Validator is not initialized. Run lukso validator import to initialize your validator.")
+
+		return nil
+	}
+
+	err = clientDependencies[validatorDependencyName].Start(validatorFlags, ctx)
+	if err != nil {
+		return err
+	}
+
+	log.Info("✅  Validator started! Use 'lukso logs' to see the logs.")
 
 	return nil
 }
