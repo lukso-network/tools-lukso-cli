@@ -31,9 +31,12 @@ const (
 	prysmTestnetConfigDependencyName = "prysm testnet config"
 	prysmDevnetConfigDependencyName  = "prysm devnet config"
 
-	lighthouseMainnetConfigDependencyName = "lighthouse mainnet config"
-	lighthouseTestnetConfigDependencyName = "lighthouse testnet config"
-	lighthouseDevnetConfigDependencyName  = "lighthouse devnet config"
+	lighthouseMainnetConfigDependencyName  = "lighthouse mainnet config"
+	lighthouseTestnetConfigDependencyName  = "lighthouse testnet config"
+	lighthouseDevnetConfigDependencyName   = "lighthouse devnet config"
+	deployBlockMainnetConfigDependencyName = "mainnet deploy block"
+	deployBlockTestnetConfigDependencyName = "testnet deploy block"
+	deployBlockDevnetConfigDependencyName  = "devnet deploy block"
 
 	validatorMainnetConfigDependencyName = "validator mainnet config"
 	validatorTestnetConfigDependencyName = "validator testnet config"
@@ -201,6 +204,11 @@ var (
 			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/feature/lighthouse-configs/devnets/3030/lighthouse/lighthouse.yaml",
 			name:     lighthouseDevnetConfigDependencyName,
 			filePath: devnetConfig + "/" + lighthouseYamlPath,
+		},
+		deployBlockDevnetConfigDependencyName: {
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/feature/lighthouse-configs/devnets/3030/shared/deploy_block.txt",
+			name:     deployBlockDevnetConfigDependencyName,
+			filePath: devnetConfig + "/" + deployBlockPath,
 		},
 		validatorDevnetConfigDependencyName: {
 			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/devnets/3030/prysm/validator.yaml",

@@ -148,14 +148,13 @@ func LoadLighthouseConfig(path string) (args []string, err error) {
 	}
 
 	keys := v.AllKeys()
-	fmt.Println(keys)
 
 	for _, key := range keys {
 		val := v.Get(key)
 
 		strVal, ok := val.(string)
 		if ok {
-			args = append(args, fmt.Sprintf("--%s", key), strVal)
+			args = append(args, fmt.Sprintf("--%s", key), fmt.Sprintf("%s", strVal))
 
 			continue
 		}
@@ -169,12 +168,9 @@ func LoadLighthouseConfig(path string) (args []string, err error) {
 
 		boolVal, ok := val.(bool)
 		if ok {
-			boolValStr := "false"
 			if boolVal {
-				boolValStr = "true"
+				args = append(args, fmt.Sprintf("--%s", key))
 			}
-
-			args = append(args, fmt.Sprintf("--%s", key), boolValStr)
 
 			continue
 		}

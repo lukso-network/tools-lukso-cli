@@ -106,6 +106,7 @@ const (
 	genesisJsonPath      = "shared/genesis.json"
 	prysmYamlPath        = "prysm/prysm.yaml"
 	lighthouseYamlPath   = "lighthouse/lighthouse.yaml"
+	deployBlockPath      = "shared/deploy_block.txt"
 	validatorYamlPath    = "prysm/validator.yaml"
 
 	// validator tool related flags
@@ -555,22 +556,24 @@ func preparePrysmStartFlags(ctx *cli.Context) (startFlags []string, err error) {
 }
 
 func prepareLighthouseStartFlags(ctx *cli.Context) (startFlags []string, err error) {
-	startFlags = clientDependencies[lighthouseDependencyName].PassStartFlags(ctx)
-	args, err := config.LoadLighthouseConfig(ctx.String(lighthouseConfigFileFlag))
-	if err != nil {
-		return
-	}
-
-	startFlags = append(startFlags, args...)
-
 	logFile, err := prepareTimestampedFile(ctx.String(logFolderFlag), lighthouseDependencyName)
 	if err != nil {
 		return
 	}
 
-	startFlags = append(startFlags, fmt.Sprintf("--logfile=%s", logFile))
-	startFlags = append(startFlags, "--logfile-max-number=1")
-	startFlags = append(startFlags, "--logfile-debug-level=info")
+	defaults, err := config.LoadLighthouseConfig(ctx.String(lighthouseConfigFileFlag))
+	if err != nil {
+		return
+	}
+
+	defaults = append(defaults, fmt.Sprintf("--logfile=%s", logFile))
+	defaults = append(defaults, "--logfile-debug-level=info")
+	defaults = append(defaults, "--logfile-max-number=1")
+
+	userFlags := clientDependencies[lighthouseDependencyName].PassStartFlags(ctx)
+
+	startFlags = mergeFlags(userFlags, defaults)
+	fmt.Println(startFlags)
 
 	return
 }

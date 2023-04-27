@@ -265,6 +265,68 @@ func flagFileExists(ctx *cli.Context, flag string) bool {
 	return true
 }
 
-func mergeFlags(userFlags []string, configFlags string) {
+// mergeFlags takes 2 arrays of flag sets, and replaces all flags present in both with user input. Appends default otherwise
+func mergeFlags(userFlags, configFlags []string) (startFlags []string) {
+	for cfgI, configArg := range configFlags {
+		for usrI, userArg := range userFlags {
+			if !strings.HasPrefix(configArg, "--") || !strings.HasPrefix(userArg, "--") {
+				continue
+			}
 
+			if configArg != userArg {
+				continue
+			}
+
+			if usrI == len(userFlags)-1 || cfgI == len(configFlags)-1 {
+				userFlags = pop(userFlags, usrI)
+
+				continue
+			}
+
+			if !strings.HasPrefix(userFlags[usrI+1], "--") {
+				userFlags = pop(userFlags, usrI)
+
+				continue
+			}
+
+			configFlags[cfgI+1] = userFlags[usrI+1]
+
+			userFlags = pop(userFlags, usrI)
+		}
+	}
+
+	var mergedFlags []string
+	mergedFlags = append(mergedFlags, userFlags...)
+	mergedFlags = append(mergedFlags, configFlags...)
+	fmt.Println(" ---------------- merged flags: ", mergedFlags)
+
+	// merge flags with values using =
+	for i, arg := range mergedFlags {
+		if i == len(mergedFlags)-1 {
+			break
+		}
+
+		if strings.HasPrefix(arg, "--") {
+			if !strings.HasPrefix(mergedFlags[i+1], "--") {
+				startFlags = append(startFlags, fmt.Sprintf("%s=%s", arg, mergedFlags[i+1]))
+
+				continue
+			}
+
+			startFlags = append(startFlags, arg)
+		}
+
+	}
+
+	startFlags = append(startFlags, userFlags...)
+
+	return
+}
+
+func pop(arr []string, i int) []string {
+	l := arr[:i]
+	r := arr[i+1:]
+	l = append(l, r...)
+
+	return append([]string{}, l...)
 }
