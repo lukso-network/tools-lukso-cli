@@ -212,20 +212,19 @@ $ lukso start --log-folder "[folder_path]"
 | --validator-keys [string]            | Directory of the validator keys (default: "./\[network_type\]-keystore") |
 | --validator-wallet-password [string] | Location of password file that you used for generated validator keys     |
 | --validator-config [string]          | Path to prysm.yaml config file                                           |
-| **CLIENT OPTIONS**                   |                                                                          |
-| --geth-[command]                     | The `command` will be passed to geth                                     |
-| --geth-config [string]               | Defines the path to geth TOML config file                                |
-| --prysm-config [string]              | Defines the path to pryms YAML config file                               |
 | --genesis-json [string]              | Defines the path to genesis JSON file                                    |
 | --genesis-ssz [string]               | Defines the path to genesis SSZ file                                     |
+| **CLIENT OPTIONS**                   |                                                                          |
 | --log-folder [string]                | Sets up a custom log directory (default: "./\[network_type\]-logs")      |
 | --no-slasher                         | Disables slasher                                                         |
+| --geth-config [string]               | Defines the path to geth TOML config file                                |
+| --erigon-config [string]               | Defines the path to erigon TOML config file                            |
+| --prysm-config [string]              | Defines the path to prysm YAML config file                               |
+| --geth-[command]                     | The `command` will be passed to the geth client. [See the client docs for details](https://geth.ethereum.org/docs/fundamentals/command-line-options)  |
+| --ergion-[command]                     | The `command` will be passed to the erigon client. [See the client docs for details](https://github.com/ledgerwatch/erigon#readme)  |
+| --prysm-[command]                     | The `command` will be passed to the prysm client. [See the client docs for details](https://docs.prylabs.network/docs/prysm-usage/parameters)  |
+| --lighthouse-[command]                     | The `command` will be passed to the lighthouse client. [See the client docs for details](https://lighthouse-book.sigmaprime.io/run_a_node.html)  |
 
-For specific client options, please visit their official documentations. All flags and their parameters will be passed to the underlying clients.
-
-- [Geth Client Specification](https://geth.ethereum.org/docs/fundamentals/command-line-options)
-- [Prysm Client Specification](https://docs.prylabs.network/docs/prysm-usage/parameters)
-- [Prysm Validator Specification](https://docs.prylabs.network/docs/prysm-usage/parameters#validator-flags)
 
 ### `stop`
 
