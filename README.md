@@ -185,8 +185,7 @@ $ lukso start --geth-config "./[config].toml"
 # Prysm Configutation
 # Change [config] to the name of your configuration file
 # Change [custom_bootnode] to the bootnode's name
-$ lukso start --prysm-config "./[config].yaml" \
---geth-bootnodes "[custom_bootnode]"
+$ lukso start --prysm-config "./[config].yaml" --geth-bootnodes "[custom_bootnode]"
 
 ```
 
