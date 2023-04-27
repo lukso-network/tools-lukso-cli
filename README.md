@@ -165,14 +165,14 @@ $ lukso install --agree-terms
 # Uses the default config files from configs/mainnet folder
 $ lukso start
 
+# Starts your node and connects to mainnet as a validator
+$ lukso start --validator
+
 # Starts your node and connects to the LUKSO testnet
 $ lukso start --testnet
 
-# Starts your node and connects to the LUKSO devnet
-$ lukso start --devnet
-
-# Starts your node and connects to mainnet as a validator
-$ lukso start --validator
+# Starts your node and connects to testnet as a validator
+$ lukso start --testnet --validator
 ```
 
 #### How to start a node using config files
