@@ -210,7 +210,7 @@ $ lukso start --log-folder "[folder_path]"
 | --validator-keys [string]            | Directory of the validator keys (default: "./\[network_type\]-keystore") |
 | --validator-wallet-password [string] | Location of password file that you used for generated validator keys     |
 | --validator-config [string]          | Path to prysm.yaml config file                                           |
-| --transaction-fee-recipient [string] | The address that receives block fees [required for --validator flag]     |
+| --transaction-fee-recipient [string] | The address that receives block fees (required for --validator flag)     |
 | --genesis-json [string]              | Defines the path to genesis JSON file                                    |
 | --genesis-ssz [string]               | Defines the path to genesis SSZ file                                     |
 | --no-slasher                         | Disables slasher                                                         |
