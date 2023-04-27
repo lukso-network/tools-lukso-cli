@@ -52,9 +52,10 @@ func init() {
 	updateFlags = append(updateFlags, validatorUpdateFlags...)
 
 	startFlags = append(startFlags, gethStartFlags...)
-	startFlags = append(startFlags, prysmStartFlags...)
-	startFlags = append(startFlags, validatorStartFlags...)
 	startFlags = append(startFlags, erigonStartFlags...)
+	startFlags = append(startFlags, prysmStartFlags...)
+	startFlags = append(startFlags, lighthouseStartFlags...)
+	startFlags = append(startFlags, validatorStartFlags...)
 	startFlags = append(startFlags, networkFlags...)
 
 	logsFlags = append(logsFlags, gethLogsFlags...)
@@ -225,6 +226,34 @@ REPO: https://github.com/lukso-network/tools-lukso-cli
 			Usage:           "Display the version of the LUKSO CLI that is currently installed",
 			Action:          displayVersion,
 			HideHelpCommand: true,
+		},
+		{
+			Name:  "test",
+			Flags: startFlags,
+			Action: selectNetworkFor(func(c *cli.Context) error {
+				fmt.Println(c.String(lighthouseConfigFileFlag))
+				args, err := config.LoadLighthouseConfig(c.String(lighthouseConfigFileFlag))
+				if err != nil {
+					return err
+				}
+
+				fmt.Println(args)
+
+				return nil
+			}),
+		},
+		{
+			Name: "an",
+			Flags: []cli.Flag{
+				&cli.BoolFlag{
+					Name:  "dsadsa",
+					Value: false,
+				},
+			},
+			Action: func(c *cli.Context) error {
+				fmt.Println(c.String("dsadsa"))
+				return nil
+			},
 		},
 	}
 

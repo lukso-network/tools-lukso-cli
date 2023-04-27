@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/m8b-dev/lukso-cli/config"
 	"golang.org/x/term"
 	"os"
 	"strings"
@@ -32,7 +33,9 @@ const (
 	noSlasherFlag            = "no-slasher"
 
 	// lighthouse related flag names
-	lighthouseTagFlag = "lighthouse-tag"
+	lighthouseTagFlag        = "lighthouse-tag"
+	lighthouseConfigFileFlag = "lighthouse-config"
+	lighthouseDatadirFlag    = "lighthouse-datadir"
 
 	// Validator related flag names
 	validatorTagFlag                = "validator-tag"
@@ -102,6 +105,7 @@ const (
 	erigonTomlPath       = "erigon/erigon.toml"
 	genesisJsonPath      = "shared/genesis.json"
 	prysmYamlPath        = "prysm/prysm.yaml"
+	lighthouseYamlPath   = "lighthouse/lighthouse.yaml"
 	validatorYamlPath    = "prysm/validator.yaml"
 
 	// validator tool related flags
@@ -345,6 +349,18 @@ var (
 			Value: "v4.1.0",
 		},
 	}
+	lighthouseStartFlags = []cli.Flag{
+		&cli.StringFlag{
+			Name:  lighthouseConfigFileFlag,
+			Usage: "Path to lighthouse.yaml config file",
+			Value: mainnetConfig + "/" + lighthouseYamlPath,
+		},
+		&cli.StringFlag{
+			Name:  lighthouseDatadirFlag,
+			Usage: "Lighthouse datadir",
+			Value: consensusMainnetDatadir,
+		},
+	}
 
 	// VALIDATOR
 	// DOWNLOAD
@@ -540,6 +556,12 @@ func preparePrysmStartFlags(ctx *cli.Context) (startFlags []string, err error) {
 
 func prepareLighthouseStartFlags(ctx *cli.Context) (startFlags []string, err error) {
 	startFlags = clientDependencies[lighthouseDependencyName].PassStartFlags(ctx)
+	args, err := config.LoadLighthouseConfig(ctx.String(lighthouseConfigFileFlag))
+	if err != nil {
+		return
+	}
+
+	startFlags = append(startFlags, args...)
 
 	logFile, err := prepareTimestampedFile(ctx.String(logFolderFlag), lighthouseDependencyName)
 	if err != nil {

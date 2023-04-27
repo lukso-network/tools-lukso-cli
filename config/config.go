@@ -1,7 +1,10 @@
 package config
 
 import (
+	"fmt"
+	"github.com/urfave/cli/v2"
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/spf13/viper"
@@ -12,7 +15,7 @@ const Path = "./cli-config.yaml"
 // parsePath returns a path to file, excluding file, and the file name itself.
 // Path parameter is used as a full file path.
 // This parse is used to create a viper instance
-// Example: ./path/to/file.txt => (./path/to, file.txt)
+// Example: ./path/to/file.txt => (./path/to, file, txt)
 func parsePath(path string) (dir, fileName, extension string) {
 	var lastIndex int
 
@@ -129,4 +132,55 @@ func (c *Config) Execution() string {
 
 func (c *Config) Consensus() string {
 	return c.consensusClient
+}
+
+func LoadLighthouseConfig(path string) (args []string, err error) {
+	dir, fileName, ext := parsePath(path)
+	v := viper.New()
+
+	v.AddConfigPath(dir)
+	v.SetConfigName(fileName)
+	v.SetConfigType(ext)
+
+	err = v.ReadInConfig()
+	if err != nil {
+		return
+	}
+
+	keys := v.AllKeys()
+	fmt.Println(keys)
+
+	for _, key := range keys {
+		val := v.Get(key)
+
+		strVal, ok := val.(string)
+		if ok {
+			args = append(args, fmt.Sprintf("--%s", key), strVal)
+
+			continue
+		}
+
+		intVal, ok := val.(int)
+		if ok {
+			args = append(args, fmt.Sprintf("--%s", key), strconv.FormatInt(int64(intVal), 10))
+
+			continue
+		}
+
+		boolVal, ok := val.(bool)
+		if ok {
+			boolValStr := "false"
+			if boolVal {
+				boolValStr = "true"
+			}
+
+			args = append(args, fmt.Sprintf("--%s", key), boolValStr)
+
+			continue
+		}
+
+		return args, cli.Exit("Fatal error: failed to parse config file.", 1)
+	}
+
+	return
 }

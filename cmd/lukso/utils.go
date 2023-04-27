@@ -264,3 +264,7 @@ func flagFileExists(ctx *cli.Context, flag string) bool {
 
 	return true
 }
+
+func mergeFlags(userFlags []string, configFlags string) {
+
+}
