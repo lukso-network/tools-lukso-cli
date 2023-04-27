@@ -208,15 +208,15 @@ $ lukso start --log-folder "[folder_path]"
 | --devnet                             | Starts the LUKSO node with devnet data (./configs/devnet)                |
 | **VALIDATOR**                        |                                                                          |
 | --validator                          | Starts the validator client                                              |
-| --transaction-fee-recipient [string] | The address that receives block fees [required when --validator is set]  |
 | --validator-keys [string]            | Directory of the validator keys (default: "./\[network_type\]-keystore") |
 | --validator-wallet-password [string] | Location of password file that you used for generated validator keys     |
 | --validator-config [string]          | Path to prysm.yaml config file                                           |
+| --transaction-fee-recipient [string] | The address that receives block fees [required for --validator flag]     |
 | --genesis-json [string]              | Defines the path to genesis JSON file                                    |
 | --genesis-ssz [string]               | Defines the path to genesis SSZ file                                     |
+| --no-slasher                         | Disables slasher                                                         |
 | **CLIENT OPTIONS**                   |                                                                          |
 | --log-folder [string]                | Sets up a custom log directory (default: "./\[network_type\]-logs")      |
-| --no-slasher                         | Disables slasher                                                         |
 | --geth-config [string]               | Defines the path to geth TOML config file                                |
 | --erigon-config [string]               | Defines the path to erigon TOML config file                            |
 | --prysm-config [string]              | Defines the path to prysm YAML config file                               |
