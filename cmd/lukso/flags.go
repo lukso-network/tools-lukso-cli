@@ -477,7 +477,7 @@ func prepareValidatorStartFlags(ctx *cli.Context) (startFlags []string, err erro
 	validatorPasswordPath := ctx.String(validatorWalletPasswordFileFlag)
 	if validatorPasswordPath == "" {
 		var password []byte
-		fmt.Print("\nWallet password flag not found: Please enter your wallet password: ")
+		fmt.Print("\nPlease enter your keystore password: ")
 		password, err = term.ReadPassword(0)
 		fmt.Println("")
 

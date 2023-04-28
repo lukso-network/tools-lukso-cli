@@ -284,7 +284,7 @@ check_bin_dir() {
 
 print_install() {
   echo "To get started do the following:"
-  echo "${BOLD}1.${NO_COLOR} 📁  Create the working directory using ${BOLD}'mkdir luksoNode && cd ./luksoNode${NO_COLOR}'"
+  echo "${BOLD}1.${NO_COLOR} 📁  Create the working directory using ${BOLD}'mkdir myLUKSOnode && cd ./myLUKSOnode${NO_COLOR}'"
   echo "${BOLD}2.${NO_COLOR} 🚀  Initialize the folder using ${BOLD}'lukso init${NO_COLOR}'"
   echo "${BOLD}3.${NO_COLOR} 🛠️  Install your desired clients using ${BOLD}'lukso install${NO_COLOR}'"
 }
@@ -468,7 +468,7 @@ URL="${BASE_URL}/artifacts/lukso-${TARGET}.${EXT}"
 info "Tarball URL: ${UNDERLINE}${BLUE}${URL}${NO_COLOR}"
 info ""
 info "You need to agree to the LUKSO CLI terms before continuing:"
-info "${BOLD}https://github.com/lukso-network/tools-lukso-cli/blob/main/LICENSE.md${NO_COLOR}"
+info "${BOLD}https://github.com/lukso-network/tools-lukso-cli/blob/main/LICENSE${NO_COLOR}"
 confirm "Agree and install lukso ${GREEN}__VERSION__${NO_COLOR} to ${BOLD}${GREEN}${BIN_DIR}${NO_COLOR}?"
 check_bin_dir "${BIN_DIR}"
 

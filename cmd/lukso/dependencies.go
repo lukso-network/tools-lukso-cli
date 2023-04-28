@@ -8,11 +8,11 @@ import (
 
 // TODO: consider to move it to common/shared
 const (
-	gethDependencyName       = "geth"
-	prysmDependencyName      = "prysm"
-	validatorDependencyName  = "validator"
-	lighthouseDependencyName = "lighthouse"
-	erigonDependencyName     = "erigon"
+	gethDependencyName       = "Geth"
+	prysmDependencyName      = "Prysm"
+	validatorDependencyName  = "Prysm Validator"
+	lighthouseDependencyName = "Lighthouse"
+	erigonDependencyName     = "Erigon"
 
 	gethMainnetGenesisDependencyName      = "geth_mainnet_genesis"
 	gethMainnetConfigName                 = "geth_mainnet_config"
