@@ -39,7 +39,7 @@ func selectNetworkFor(f func(*cli.Context) error) func(*cli.Context) error {
 			return errMoreNetworksSelected
 		}
 
-		if enabledCount == 0 || testnetEnabled {
+		if enabledCount == 0 {
 			return errNetworkNotSupported // when any other network is supported we can simply pass in the config there
 		}
 
@@ -54,6 +54,18 @@ func selectNetworkFor(f func(*cli.Context) error) func(*cli.Context) error {
 				configPath:           devnetConfig,
 				keysPath:             devnetKeystore,
 				walletPath:           devnetKeystore,
+			}
+		}
+
+		if testnetEnabled {
+			cfg = networkConfig{
+				gethDatadirPath:      executionTestnetDatadir,
+				prysmDatadirPath:     consensusTestnetDatadir,
+				validatorDatadirPath: validatorTestnetDatadir,
+				logPath:              testnetLogs,
+				configPath:           testnetConfig,
+				keysPath:             testnetKeystore,
+				walletPath:           testnetKeystore,
 			}
 		}
 

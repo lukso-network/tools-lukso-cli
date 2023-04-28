@@ -125,12 +125,12 @@ var (
 			filePath: testnetConfig + "/" + chainConfigYamlPath,
 		},
 		prysmTestnetConfigDependencyName: {
-			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/feature/blockchain-clients-configs/testnet/prysm/prysm.yaml",
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/prysm/prysm.yaml",
 			name:     prysmTestnetConfigDependencyName,
 			filePath: testnetConfig + "/" + prysmYamlPath,
 		},
 		validatorTestnetConfigDependencyName: {
-			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/feature/blockchain-clients-configs/testnet/prysm/validator.yaml",
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/prysm/validator.yaml",
 			name:     validatorTestnetConfigDependencyName,
 			filePath: testnetConfig + "/" + validatorYamlPath,
 		},
