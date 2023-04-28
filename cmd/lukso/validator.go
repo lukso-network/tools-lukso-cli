@@ -58,7 +58,7 @@ func importValidator(ctx *cli.Context) error {
 	return nil
 }
 
-func startValidator(ctx *cli.Context) error {
+func startValidator(ctx *cli.Context) (err error) {
 	log.Info("🔄  Starting Validator")
 	validatorFlags, passwordPipe, err := prepareValidatorStartFlags(ctx)
 	if passwordPipe != "" {
@@ -80,5 +80,5 @@ func startValidator(ctx *cli.Context) error {
 
 	log.Info("✅  Validator started! Use 'lukso logs' to see the logs.")
 
-	return nil
+	return
 }

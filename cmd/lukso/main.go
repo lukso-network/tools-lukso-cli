@@ -228,33 +228,11 @@ REPO: https://github.com/lukso-network/tools-lukso-cli
 			HideHelpCommand: true,
 		},
 		{
-			Name:  "test",
-			Flags: startFlags,
-			Action: selectNetworkFor(func(c *cli.Context) error {
-				fmt.Println(c.String(lighthouseConfigFileFlag))
-				args, err := config.LoadLighthouseConfig(c.String(lighthouseConfigFileFlag))
-				if err != nil {
-					return err
-				}
-
-				fmt.Println(args)
-
-				return nil
-			}),
+			Name:   "test",
+			Flags:  startFlags,
+			Action: selectNetworkFor(startValidator),
 		},
-		{
-			Name: "an",
-			Flags: []cli.Flag{
-				&cli.BoolFlag{
-					Name:  "dsadsa",
-					Value: false,
-				},
-			},
-			Action: func(c *cli.Context) error {
-				fmt.Println(c.String("dsadsa"))
-				return nil
-			},
-		},
+		{},
 	}
 
 	app.Before = func(ctx *cli.Context) error {
