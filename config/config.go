@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-const Path = "./cli-config.yml"
+const Path = "./cli-config.yaml"
 
 // parsePath returns a path to file, excluding file, and the file name itself.
 // Path parameter is used as a full file path.
@@ -80,8 +80,8 @@ func (c *Config) Create(selectedExecution, selectedConsensus string) (err error)
 		return
 	}
 
-	c.viper.Set("selectedclients.execution", selectedExecution)
-	c.viper.Set("selectedclients.consensus", selectedConsensus)
+	c.viper.Set("useClients.execution", selectedExecution)
+	c.viper.Set("useClients.consensus", selectedConsensus)
 
 	err = c.viper.WriteConfigAs(c.path)
 
@@ -95,7 +95,7 @@ func (c *Config) Exists() bool {
 }
 
 func (c *Config) WriteExecution(selectedExecution string) (err error) {
-	c.viper.Set("selectedclients.execution", selectedExecution)
+	c.viper.Set("useClients.execution", selectedExecution)
 
 	err = c.viper.WriteConfigAs(c.path)
 
@@ -103,7 +103,7 @@ func (c *Config) WriteExecution(selectedExecution string) (err error) {
 }
 
 func (c *Config) WriteConsensus(selectedConsensus string) (err error) {
-	c.viper.Set("selectedclients.consensus", selectedConsensus)
+	c.viper.Set("useClients.consensus", selectedConsensus)
 
 	err = c.viper.WriteConfigAs(c.path)
 
@@ -117,8 +117,8 @@ func (c *Config) Read() (err error) {
 		return
 	}
 
-	c.executionClient = c.viper.Get("selectedclients.execution").(string)
-	c.consensusClient = c.viper.Get("selectedclients.consensus").(string)
+	c.executionClient = c.viper.Get("useClients.execution").(string)
+	c.consensusClient = c.viper.Get("useClients.consensus").(string)
 
 	return
 }
