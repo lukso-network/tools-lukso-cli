@@ -7,12 +7,13 @@ import (
 )
 
 // TODO: consider to move it to common/shared
+// TODO: Disconnect names of dependencies from actual terminal outputs
 const (
-	gethDependencyName       = "Geth"
-	prysmDependencyName      = "Prysm"
-	validatorDependencyName  = "Prysm Validator"
-	lighthouseDependencyName = "Lighthouse"
-	erigonDependencyName     = "Erigon"
+	gethDependencyName       = "geth"
+	prysmDependencyName      = "prysm"
+	validatorDependencyName  = "validator"
+	lighthouseDependencyName = "lighthouse"
+	erigonDependencyName     = "erigon"
 
 	gethMainnetGenesisDependencyName      = "geth_mainnet_genesis"
 	gethMainnetConfigName                 = "geth_mainnet_config"
