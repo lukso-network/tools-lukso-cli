@@ -142,7 +142,7 @@ jobs:
 
       - name: Build | Build
         run: |
-          env GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build \
+          env GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} CGO_ENABLED=0 go build \
               -C cmd/lukso \
               -o "$(pwd)/target/${{ matrix.target }}/release/lukso${{ matrix.bin }}" \
               -ldflags="-X 'main.Version=${{ needs.release_please.outputs.version_name }}'"
