@@ -36,7 +36,7 @@ func (dependency *ClientDependency) Download(tag, commitHash string, isUpdate bo
 				break
 			}
 
-			message := fmt.Sprintf("You already have %s installed: do you want to override your installation? [Y/n]: ", dependency.name)
+			message := fmt.Sprintf("You already have the %s client installed, do you want to override your installation? [Y/n]: ", dependency.name)
 			input := registerInputWithMessage(message)
 			if !strings.EqualFold(input, "y") && input != "" {
 				log.Info("⏭️  Skipping installation...")
@@ -138,7 +138,7 @@ func (dependency *ClientDependency) Download(tag, commitHash string, isUpdate bo
 		return
 	}
 
-	log.Infof("✅  Downloaded %s!\n\n", dependency.name)
+	log.Infof("✅ Downloaded %s!\n\n", dependency.name)
 
 	return
 }
