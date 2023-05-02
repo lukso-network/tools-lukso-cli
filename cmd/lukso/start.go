@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"time"
 
 	"github.com/m8b-dev/lukso-cli/pid"
 	"github.com/urfave/cli/v2"
@@ -60,6 +61,8 @@ func (dependency *ClientDependency) Start(
 
 	pidLocation := fmt.Sprintf("%s/%s.pid", pid.FileDir, dependency.name)
 	err = pid.Create(pidLocation, command.Process.Pid)
+
+	time.Sleep(1 * time.Second)
 
 	return
 }
@@ -176,7 +179,10 @@ func startPrysm(ctx *cli.Context) error {
 
 func startValidator(ctx *cli.Context) error {
 	log.Info("🔄  Starting Validator")
-	validatorFlags, err := prepareValidatorStartFlags(ctx)
+	validatorFlags, passwordPipe, err := prepareValidatorStartFlags(ctx)
+	if passwordPipe != "" {
+		defer os.Remove(passwordPipe)
+	}
 	if err != nil {
 		return err
 	}

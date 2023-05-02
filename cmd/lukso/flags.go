@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"syscall"
 
 	"github.com/urfave/cli/v2"
 	"golang.org/x/term"
@@ -459,7 +460,7 @@ func prepareGethStartFlags(ctx *cli.Context) (startFlags []string, isCorrect boo
 	return
 }
 
-func prepareValidatorStartFlags(ctx *cli.Context) (startFlags []string, err error) {
+func prepareValidatorStartFlags(ctx *cli.Context) (startFlags []string, passwordPipe string, err error) {
 	validatorConfigExists := flagFileExists(ctx, validatorConfigFileFlag)
 	chainConfigExists := flagFileExists(ctx, prysmChainConfigFileFlag)
 	validatorKeysExists := flagFileExists(ctx, validatorKeysFlag)
@@ -487,16 +488,30 @@ func prepareValidatorStartFlags(ctx *cli.Context) (startFlags []string, err erro
 			return
 		}
 
-		passwordPath := ctx.String(validatorKeysFlag) + "/pass.txt"
-		err = os.WriteFile(passwordPath, password, configPerms)
+		passwordPipe = ctx.String(validatorKeysFlag) + "/.pass.txt"
+		err = syscall.Mkfifo(passwordPipe, 0600)
 		if err != nil {
-			log.Errorf("Couldn't create password file: %v", err)
+			log.Errorf("Couldn't create password pipe: %v", err)
 
 			return
 		}
+		var f *os.File
+		f, err = os.OpenFile(passwordPipe, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0600)
+		if err != nil {
+			log.Errorf("Couldn't open password pipe: %v", err)
 
-		log.Infof("Password file created in %s", passwordPath)
-		err = ctx.Set(validatorWalletPasswordFileFlag, passwordPath)
+			return
+		}
+		_, err = f.Write(password)
+		if err != nil {
+			log.Errorf("Couldn't write password to pipe: %v", err)
+
+			return
+		}
+		f.Close()
+
+		log.Infof("Password pipe created in %s", passwordPipe)
+		err = ctx.Set(validatorWalletPasswordFileFlag, passwordPipe)
 		if err != nil {
 			return
 		}
