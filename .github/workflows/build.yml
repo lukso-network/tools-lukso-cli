@@ -280,7 +280,7 @@ jobs:
 
       - name: Setup | Publish Release
         if: ${{ needs.release_please.outputs.release_created == 'true' }}
-        run: gh release edit ${{ needs.release_please.outputs.tag_name }} --draft=false --repo=lukso/lukso
+        run: gh release edit ${{ needs.release_please.outputs.tag_name }} --draft=false --repo=lukso-network/tools-lukso-cli
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
