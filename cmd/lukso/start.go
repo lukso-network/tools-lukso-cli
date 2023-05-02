@@ -155,7 +155,7 @@ func startGeth(ctx *cli.Context) error {
 		return err
 	}
 
-	log.Info("✅  Geth started! Use 'lukso log' to see logs.")
+	log.Info("✅  Geth started! Use 'lukso logs' to see the logs.")
 
 	return nil
 }
@@ -172,7 +172,7 @@ func startPrysm(ctx *cli.Context) error {
 		return err
 	}
 
-	log.Info("✅  Prysm started! Use 'lukso log' to see logs.")
+	log.Info("✅  Prysm started! Use 'lukso logs' to see the logs.")
 
 	return nil
 }
@@ -197,7 +197,7 @@ func startValidator(ctx *cli.Context) error {
 		return err
 	}
 
-	log.Info("✅  Validator started! Use 'lukso log' to see logs.")
+	log.Info("✅  Validator started! Use 'lukso logs' to see the logs.")
 
 	return nil
 }

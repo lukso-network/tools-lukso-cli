@@ -188,13 +188,17 @@ func installBinaries(ctx *cli.Context) (err error) {
 		commitHash        string
 	)
 
+	// TODO: Add Erigon as 2nd option
 	consensusMessage := "\nWhich consensus client do you want to install?\n" +
-		"1: prysm\n2: lighthouse\n> "
-	executionMessage := "\nWhich execution client do you want to install?\n" +
-		"1: geth\n2: erigon\n> "
+		"1: prysm\n> "
 
+	// TODO: Add Lighthouse as 2nd option
+	executionMessage := "\nWhich execution client do you want to install?\n" +
+		"1: geth\n> "
+
+	// TODO: Add check for input "2" after Erigon/Lighthouse is added
 	consensusInput = registerInputWithMessage(consensusMessage)
-	for consensusInput != "1" && consensusInput != "2" {
+	for consensusInput != "1" {
 		consensusInput = registerInputWithMessage("Please provide a valid option\n> ")
 	}
 
@@ -257,7 +261,7 @@ func installBinaries(ctx *cli.Context) (err error) {
 
 	log.Info("✅  Configuration files created!")
 	log.Info("✅  Clients have been successfully installed.")
-	log.Info("➡️  Start your node using 'lukso start'")
+	log.Info("➡️   Start your node using 'lukso start'")
 
 	return
 }

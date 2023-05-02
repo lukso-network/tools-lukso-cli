@@ -42,7 +42,7 @@ const (
 
 	// shared flags
 	transactionFeeRecipientFlag = "transaction-fee-recipient"
-	logFolderFlag               = "log-folder"
+	logFolderFlag               = "logs-folder"
 
 	// non-specific flags
 	mainnetFlag   = "mainnet"
