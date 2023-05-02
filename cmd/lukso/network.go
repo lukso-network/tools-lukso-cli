@@ -78,7 +78,7 @@ func selectNetworkFor(f func(*cli.Context) error) func(*cli.Context) error {
 	}
 }
 
-// updateValues is responsible for overriding values for data dirs, log dirs etc.
+// updateValues is responsible for overriding values for data and logs directories etc.
 func updateValues(ctx *cli.Context, config networkConfig) (err error) {
 	var (
 		//genesisJson  = config.configPath + "/" + genesisJsonPath

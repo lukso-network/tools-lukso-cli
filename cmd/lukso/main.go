@@ -163,8 +163,8 @@ REPO: https://github.com/lukso-network/tools-lukso-cli
 			HideHelpCommand: true,
 		},
 		{
-			Name:            "log",
-			Usage:           "Listens to all log events from a specific client in the current terminal window",
+			Name:            "logs",
+			Usage:           "Listens to and logs all events from a specific client in the current terminal window",
 			Action:          logClients,
 			HideHelpCommand: true,
 			Subcommands: []*cli.Command{

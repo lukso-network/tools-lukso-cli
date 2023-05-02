@@ -51,7 +51,7 @@ func (dependency *ClientDependency) Stat() (isRunning bool) {
 }
 
 func logClients(ctx *cli.Context) error {
-	log.Info("⚠️  Please specify your client - run 'lukso log --help' for more info")
+	log.Info("⚠️  Please specify your client - run 'lukso logs --help' for more info")
 
 	return nil
 }
@@ -69,7 +69,7 @@ func logLayer(layer string) func(*cli.Context) error {
 
 		err := cfg.Read()
 		if err != nil {
-			return cli.Exit(fmt.Sprintf("❌  There was an error while reading configuration file: %v", err), 1)
+			return cli.Exit(fmt.Sprintf("❌  There was an error while reading the configuration file: %v", err), 1)
 		}
 
 		var dependencyName string
@@ -90,13 +90,13 @@ func logLayer(layer string) func(*cli.Context) error {
 			return nil
 		}
 		if err != nil {
-			return cli.Exit(fmt.Sprintf("There was an error while getting latest log file: %v", err), 1)
+			return cli.Exit(fmt.Sprintf("There was an error while getting the latest log file: %v", err), 1)
 		}
 
 		log.Infof("Selected layer: %s", layer)
 		log.Infof("Selected client: %s", dependencyName)
 
-		message := fmt.Sprintf("(NOTE: PATH TO FILE: %s)\nDo you want to show log file %s?"+
+		message := fmt.Sprintf("(NOTE: PATH TO FILE: %s)\nDo you want to show the log file %s?"+
 			" Doing so can print lots of text on your screen [Y/n]: ", logFileDir+"/"+latestFile, latestFile)
 
 		input := registerInputWithMessage(message)
