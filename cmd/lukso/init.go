@@ -51,7 +51,7 @@ func initializeDirectory(ctx *cli.Context) error {
 		return cli.Exit(fmt.Sprintf("❌  There was an error while preparing PID directory: %v", err), 1)
 	}
 
-	log.Info("⚙️  Creating LUKSO configuration file...")
+	log.Info("⚙️   Creating LUKSO configuration file...")
 
 	err = cfg.Create("", "")
 	if err != nil {
