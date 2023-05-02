@@ -59,7 +59,7 @@ func initializeDirectory(ctx *cli.Context) error {
 	}
 
 	log.Infof("✅  LUKSO configuration created under %s", config.Path)
-	log.Info("✅  Folder initialized! \n1) ⚙️  Use 'lukso install' to install clients. \n2) ▶️  Use 'lukso start' to start your node.")
+	log.Info("✅  Working directory initialized! \n1. ⚙️  Use 'lukso install' to install clients. \n2. ▶️  Use 'lukso start' to start your node.")
 
 	return nil
 }
