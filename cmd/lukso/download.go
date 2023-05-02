@@ -257,7 +257,7 @@ func installBinaries(ctx *cli.Context) (err error) {
 
 	log.Info("✅  Configuration files created!")
 	log.Info("✅  Clients have been successfully installed.")
-	log.Info("➡️  Start your node using 'lukso start'")
+	log.Info("➡️   Start your node using 'lukso start'")
 
 	return
 }
