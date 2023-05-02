@@ -489,17 +489,22 @@ func prepareValidatorStartFlags(ctx *cli.Context) (startFlags []string, password
 		}
 
 		passwordPipe = ctx.String(validatorKeysFlag) + "/pass.txt"
-		syscall.Mkfifo(passwordPipe, 0666)
+		err = syscall.Mkfifo(passwordPipe, 0666)
+		if err != nil {
+			log.Errorf("Couldn't create password pipe: %v", err)
+
+			return
+		}
 		var f *os.File
 		f, err = os.OpenFile(passwordPipe, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 		if err != nil {
-			log.Error("Couldn't open password pipe: %v", err)
+			log.Errorf("Couldn't open password pipe: %v", err)
 
 			return
 		}
 		_, err = f.Write(password)
 		if err != nil {
-			log.Error("Couldn't write password to pipe: %v", err)
+			log.Errorf("Couldn't write password to pipe: %v", err)
 
 			return
 		}
