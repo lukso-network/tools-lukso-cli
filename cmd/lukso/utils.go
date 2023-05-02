@@ -34,7 +34,7 @@ func prepareTimestampedFile(logDir, logFileName string) (logFile string, err err
 func prepareLogfileFlag(logDir, dependencyName string) string {
 	prysmFullLogPath, err := prepareTimestampedFile(logDir, dependencyName)
 	if err != nil {
-		log.Warnf("⚠️  Couldn't prepare log folder for %s client. Continuing without log files being saved", dependencyName)
+		log.Warnf("⚠️  Couldn't prepare the logs folder for %s client. Continuing without log files being saved", dependencyName)
 
 		return ""
 	}
