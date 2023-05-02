@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"time"
 
 	"github.com/m8b-dev/lukso-cli/pid"
 	"github.com/urfave/cli/v2"
@@ -60,6 +61,8 @@ func (dependency *ClientDependency) Start(
 
 	pidLocation := fmt.Sprintf("%s/%s.pid", pid.FileDir, dependency.name)
 	err = pid.Create(pidLocation, command.Process.Pid)
+
+	time.Sleep(1 * time.Second)
 
 	return
 }
