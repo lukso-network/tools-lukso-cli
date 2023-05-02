@@ -176,7 +176,10 @@ func startPrysm(ctx *cli.Context) error {
 
 func startValidator(ctx *cli.Context) error {
 	log.Info("🔄  Starting Validator")
-	validatorFlags, err := prepareValidatorStartFlags(ctx)
+	validatorFlags, passwordPipe, err := prepareValidatorStartFlags(ctx)
+	if passwordPipe != "" {
+		defer os.Remove(passwordPipe)
+	}
 	if err != nil {
 		return err
 	}
