@@ -159,7 +159,7 @@ func statClient(dependencyName, layer string) func(*cli.Context) error {
 				return errProcessNotFound
 			}
 
-			log.Infof("PID %d - %s (%s): Running ✅", pidVal, layer, dependencyName)
+			log.Infof("PID %d - %s (%s): Running 🟢", pidVal, layer, dependencyName)
 
 			return nil
 		}
@@ -168,7 +168,7 @@ func statClient(dependencyName, layer string) func(*cli.Context) error {
 			dependencyName = "none"
 		}
 
-		log.Warnf("PID None - %s (%s): Stopped 🛑", layer, dependencyName)
+		log.Warnf("PID None - %s (%s): Stopped 🔘", layer, dependencyName)
 
 		return nil
 	}
