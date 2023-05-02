@@ -217,12 +217,8 @@ $ lukso start --logs-folder "[folder_path]"
 | **CLIENT OPTIONS**                   |                                                                                                                                                      |
 | --logs-folder [string]               | Sets up a custom logs directory (default: "./\[network_type\]-logs")                                                                                 |
 | --geth-config [string]               | Defines the path to geth TOML config file                                                                                                            |
-| --erigon-config [string]             | Defines the path to erigon TOML config file                                                                                                          |
 | --prysm-config [string]              | Defines the path to prysm YAML config file                                                                                                           |
 | --geth-[command]                     | The `command` will be passed to the geth client. [See the client docs for details](https://geth.ethereum.org/docs/fundamentals/command-line-options) |
-| --ergion-[command]                   | The `command` will be passed to the erigon client. [See the client docs for details](https://github.com/ledgerwatch/erigon#readme)                   |
-| --prysm-[command]                    | The `command` will be passed to the prysm client. [See the client docs for details](https://docs.prylabs.network/docs/prysm-usage/parameters)        |
-| --lighthouse-[command]               | The `command` will be passed to the lighthouse client. [See the client docs for details](https://lighthouse-book.sigmaprime.io/run_a_node.html)      |
 
 ### `stop`
 
