@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.5.7](https://github.com/lukso-network/tools-lukso-cli/compare/v0.5.6...v0.5.7) (2023-05-03)
+
+
+### Bug Fixes
+
+* Download artifacts all the time ([fc4a754](https://github.com/lukso-network/tools-lukso-cli/commit/fc4a7549f46df963e25392985752ce0f5e6190c9))
+* geth v1.11.6 commit hash ([d216bdf](https://github.com/lukso-network/tools-lukso-cli/commit/d216bdfaf5d7675b490b1c3cde4dd4961e779b6c))
+
 ## [0.5.6](https://github.com/lukso-network/tools-lukso-cli/compare/v0.5.5...v0.5.6) (2023-05-03)
 
 
