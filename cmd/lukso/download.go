@@ -45,7 +45,7 @@ func (dependency *ClientDependency) Download(tag, commitHash string, isUpdate bo
 			}
 
 		case false:
-			log.Infof("❌  Downloading %s file aborted: already exists", dependency.filePath)
+			log.Infof("  ⏩️  Skipping file %s: the file already exists", dependency.filePath)
 
 			return
 		}
@@ -138,7 +138,7 @@ func (dependency *ClientDependency) Download(tag, commitHash string, isUpdate bo
 		return
 	}
 
-	log.Infof("✅ Downloaded %s!\n\n", dependency.name)
+	log.Infof("✅  Downloaded %s!\n\n", dependency.name)
 
 	return
 }
@@ -261,7 +261,7 @@ func installBinaries(ctx *cli.Context) (err error) {
 
 	log.Info("✅  Configuration files created!")
 	log.Info("✅  Clients have been successfully installed.")
-	log.Info("➡️   Start your node using 'lukso start'")
+	log.Info("➡️  Start your node using 'lukso start'")
 
 	return
 }
