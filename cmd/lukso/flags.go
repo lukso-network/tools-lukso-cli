@@ -190,7 +190,7 @@ var (
 		&cli.StringFlag{
 			Name:  gethTagFlag,
 			Usage: "A tag of geth you would like to run",
-			Value: "1.11.5",
+			Value: "1.11.6",
 		},
 		&cli.StringFlag{
 			Name:  gethCommitHashFlag,
@@ -203,7 +203,7 @@ var (
 		&cli.StringFlag{
 			Name:  gethTagFlag,
 			Usage: "A tag of geth you would like to run",
-			Value: "1.11.5",
+			Value: "1.11.6",
 		},
 	}
 	// START
