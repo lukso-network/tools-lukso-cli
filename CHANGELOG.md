@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.2](https://github.com/lukso-network/tools-lukso-cli/compare/v0.5.1...v0.5.2) (2023-05-03)
+
+
+### Bug Fixes
+
+* Resolve posting of build (missing # again for some reason). Add pull_request_review* for fake_status ([5df5931](https://github.com/lukso-network/tools-lukso-cli/commit/5df593126118bcf34329a25e28e971ced8af65d2))
+
 ## [0.5.1](https://github.com/lukso-network/tools-lukso-cli/compare/v0.5.0...v0.5.1) (2023-05-03)
 
 
