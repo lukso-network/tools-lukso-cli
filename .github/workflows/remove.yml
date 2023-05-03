@@ -28,4 +28,4 @@ jobs:
       - name: Copy files
         run: |-
           gcloud auth login --brief --cred-file="${{ steps.gcpauth.outputs.credentials_file_path }}"
-          gsutil -m rm -r -f ./bucket/${{ github.event.number }}/*
+          gsutil -m rm -r -f gs://lks-lz-binaries-euw4/${{ github.event.number }}/*

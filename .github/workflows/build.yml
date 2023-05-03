@@ -363,7 +363,7 @@ jobs:
         if: ${{ needs.release_please.outputs.release_created == 'true' }}
         run: |
           mkdir -p dist
-          sed -e "s#__VERSION__#${{ needs.release_please.outputs.version_name }}" install/install.sh > dist/index.html
+          sed -e "s#__VERSION__#${{ needs.release_please.outputs.version_name }}#" install/install.sh > dist/index.html
 
       - name: Processing script to add version ${{ needs.release_please.outputs.version_name }} and URL https://storage.googleapis.com/lks-lz-binaries-euw4${{ needs.release_please.outputs.folder }}
         if: ${{ needs.release_please.outputs.release_created != 'true' }}
