@@ -45,7 +45,6 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           release-type: go
-          draft: true
       - id: calc
         name: Detect final version name
         run: |
