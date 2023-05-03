@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.5.1](https://github.com/lukso-network/tools-lukso-cli/compare/v0.5.0...v0.5.1) (2023-05-03)
+
+
+### Bug Fixes
+
+* Build/Remove issues. ([d2a8ad9](https://github.com/lukso-network/tools-lukso-cli/commit/d2a8ad98c780fc73dbea7b0ef3e999a8587ec807))
+* Fix version number and path for final release ([d7dd2e4](https://github.com/lukso-network/tools-lukso-cli/commit/d7dd2e4d7d2e4b7c2da0b8406d565e63b022cd75))
+* More build fixes ([d8e7524](https://github.com/lukso-network/tools-lukso-cli/commit/d8e75246eb954b2a78871544813facda9ccfbbb3))
+* Remove now works but the final list obviously won't. ([fc8adf5](https://github.com/lukso-network/tools-lukso-cli/commit/fc8adf5b4b345ec9c3fb527a6d321cbfff0dd52b))
+* Resolve final problems ([091b228](https://github.com/lukso-network/tools-lukso-cli/commit/091b228118500649521c6edb08e86987c4b6ccde))
+* Resolve remove by listing and ignoring error ([54fedd4](https://github.com/lukso-network/tools-lukso-cli/commit/54fedd4272ba54141fbbc80c3ff8550387fd8617))
+
 ## [0.5.0](https://github.com/lukso-network/tools-lukso-cli/compare/v0.5.0...v0.5.0) (2023-05-03)
 
 
