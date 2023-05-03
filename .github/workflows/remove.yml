@@ -28,5 +28,11 @@ jobs:
       - name: Copy files
         run: |-
           gcloud auth login --brief --cred-file="${{ steps.gcpauth.outputs.credentials_file_path }}"
-          gsutil -m ls gs://lks-lz-binaries-euw4/${{ github.event.number }}/*
-          gsutil -m rm -r -f gs://lks-lz-binaries-euw4/${{ github.event.number }}/* || echo "some files left behind"
+          if gsutil -m ls "gs://lks-lz-binaries-euw4/${{ github.event.number }}/*"
+          then
+            echo "Deleting PR ${{ github.event.number }} release files"
+            if ! gsutil -m rm -r -f "gs://lks-lz-binaries-euw4/${{ github.event.number }}/*"
+            then
+              echo "There was an error while deleting the files, but it's ok, we have a large bucket!"
+            fi
+          fi
