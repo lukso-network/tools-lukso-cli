@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.5.3](https://github.com/lukso-network/tools-lukso-cli/compare/v0.5.2...v0.5.3) (2023-05-03)
+
+
+### Bug Fixes
+
+* Make sure to add v in front of tag ([9c7db46](https://github.com/lukso-network/tools-lukso-cli/commit/9c7db46665bad325a13dac9fdb41c234bafbbc92))
+* Somehow tags are not visible to release please ([4cddde3](https://github.com/lukso-network/tools-lukso-cli/commit/4cddde3c2b6bfca2bb266599cb2fea595322e24e))
+
 ## [0.5.2](https://github.com/lukso-network/tools-lukso-cli/compare/v0.5.1...v0.5.2) (2023-05-03)
 
 
