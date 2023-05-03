@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.4](https://github.com/lukso-network/tools-lukso-cli/compare/v0.5.3...v0.5.4) (2023-05-03)
+
+
+### Bug Fixes
+
+* Resolve remove by properly decoding return status ([aa659fd](https://github.com/lukso-network/tools-lukso-cli/commit/aa659fd6fb27ef3ddab45588b9b650e8fedfbc52))
+
 ## [0.5.3](https://github.com/lukso-network/tools-lukso-cli/compare/v0.5.2...v0.5.3) (2023-05-03)
 
 
