@@ -52,14 +52,13 @@ jobs:
           then
             SHA="${{ github.sha }}"
             # For the extension we cannot use - but must use . for the PR number.
-            VERSION="v$(node -pe 'require("./.release-please-manifest.json")["."]')+${SHA:0:7}"
+            VERSION="v$(node -pe 'require("./.release-please-manifest.json")["."]')"
             if [ -n "${{ github.event.number }}" ]
             then
-              VERSION="${VERSION}+pr-${{ github.event.number }}"
+              VERSION="${VERSION}+${SHA:0:7}+pr-${{ github.event.number }}"
               FOLDER="/${{ github.event.number }}"
             else
-              VERSION="${VERSION}+${{ github.ref }}"
-              FOLDER="/preview"
+              FOLDER="/"
             fi
           else
             VERSION="${{ steps.release.outputs.tag_name }}"
