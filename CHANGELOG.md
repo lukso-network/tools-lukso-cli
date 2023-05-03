@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.5.5](https://github.com/lukso-network/tools-lukso-cli/compare/v0.5.4...v0.5.5) (2023-05-03)
+
+
+### Bug Fixes
+
+* change version of geth to 1.11.6 ([73e4418](https://github.com/lukso-network/tools-lukso-cli/commit/73e441848d8fdbe24646c13f19ee7b9aba2f3956))
+* Remove draft flag to match other release-please repos ([be7ed92](https://github.com/lukso-network/tools-lukso-cli/commit/be7ed92e1f9c42ba121044b0d1c6637e6edf4b9c))
+* Resolve ([c5bdfaa](https://github.com/lukso-network/tools-lukso-cli/commit/c5bdfaa5cd1177b114912f8688c0696eb5138760))
+
 ## [0.5.4](https://github.com/lukso-network/tools-lukso-cli/compare/v0.5.3...v0.5.4) (2023-05-03)
 
 
