@@ -319,10 +319,12 @@ jobs:
         with:
           path: artifacts
 
-      - name: Prepare install.sh with version=${{ needs.release_please.outputs.version_name }}
+      - name: Prepare install.sh and artifacts with version=${{ needs.release_please.outputs.version_name }}
         if: ${{ needs.release_please.outputs.release_created == 'true' }}
         run: |
           mkdir -p bucket
+          rm -rf bucket/artifacts && mkdir -p bucket/artifacts
+          find artifacts -type f -exec cp {} bucket/artifacts \;
           sed -e "s#__VERSION__#${{ needs.release_please.outputs.version_name }}#" install/install.sh > bucket/install.sh
 
       - name: Prepare install.sh and artifacts with version=${{ needs.release_please.outputs.version_name }} and URL=https://storage.googleapis.com/lks-lz-binaries-euw4${{ needs.release_please.outputs.folder }}
