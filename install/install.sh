@@ -421,7 +421,7 @@ then
   PREVIOUS=$(echo "${PREVIOUS}" | sed -n -e "s#.*\(v[0-9][0-9]*\..*\)\$#\1#p" -e "s#.*\(develop\)\$#\1#p")
   if [ -n "${PREVIOUS}" ]
   then
-    if [ "${PREVIOUS}" == "__VERSION__" ]
+    if [ "${PREVIOUS}" = "__VERSION__" ]
     then
       printf "  %s\n" "${UNDERLINE}${GREEN}You currently have the current version installed${NO_COLOR}"
       info "${BOLD}Current bin${NO_COLOR}:      ${GREEN}${WHERE}${NO_COLOR}"

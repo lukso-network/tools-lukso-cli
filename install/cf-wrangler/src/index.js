@@ -3,6 +3,7 @@ const cors = {
   "Access-Control-Allow-Methods": "GET,HEAD,OPTIONS",
   "Access-Control-Max-Age": "86400",
   "Access-Control-Allow-Headers": "content-type",
+  "Cache-Control": "max-age=3600",
 };
 
 export default {
@@ -24,7 +25,11 @@ export default {
       }
       const output = await proxyRequest.text();
       return new Response(output, {
-        headers: { "content-type": "text/plain", ...cors },
+        headers: {
+          ...proxyRequest.headers,
+          "content-type": "text/plain",
+          ...cors,
+        },
       });
     }
     return new Response("File not found", {
