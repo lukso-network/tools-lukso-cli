@@ -59,8 +59,6 @@ jobs:
             then
               VERSION="${VERSION}+${SHA:0:7}+pr-${{ github.event.number }}"
               FOLDER="/${{ github.event.number }}"
-            else
-              FOLDER="/"
             fi
           else
             VERSION="${{ steps.release.outputs.tag_name }}"
