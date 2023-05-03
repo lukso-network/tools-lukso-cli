@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.6](https://github.com/lukso-network/tools-lukso-cli/compare/v0.5.5...v0.5.6) (2023-05-03)
+
+
+### Bug Fixes
+
+* Repair posting of final release ([8ffdbcd](https://github.com/lukso-network/tools-lukso-cli/commit/8ffdbcde02ee1262bb59c1c32f9ada7d5570a731))
+
 ## [0.5.5](https://github.com/lukso-network/tools-lukso-cli/compare/v0.5.4...v0.5.5) (2023-05-03)
 
 
