@@ -37,6 +37,8 @@ jobs:
     steps:
       - name: Validate | Checkout
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - uses: google-github-actions/release-please-action@v3
         if: ${{ github.ref_name == 'main' && github.ref_type == 'branch' }}
         id: release
