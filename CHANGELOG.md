@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.8](https://github.com/lukso-network/tools-lukso-cli/compare/v0.5.7...v0.5.8) (2023-05-03)
+
+
+### Bug Fixes
+
+* Shell script and wrangler caching ([d44d9cb](https://github.com/lukso-network/tools-lukso-cli/commit/d44d9cbff3ad2e63bd6f293041b8f622e358bc67))
+
 ## [0.5.7](https://github.com/lukso-network/tools-lukso-cli/compare/v0.5.6...v0.5.7) (2023-05-03)
 
 
