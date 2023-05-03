@@ -7,11 +7,13 @@ on:
       - closed
 
 permissions:
-  contents: read
+  id-token: write
+  pull-requests: write
+  contents: write
 
 jobs:
   publish_docs:
-    name: Publish script
+    name: Remove old script
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
