@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
-	"github.com/urfave/cli/v2"
 	"os"
 	"os/exec"
+
+	"github.com/urfave/cli/v2"
 )
 
 func importValidator(ctx *cli.Context) error {

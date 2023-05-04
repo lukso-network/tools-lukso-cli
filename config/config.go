@@ -2,12 +2,12 @@ package config
 
 import (
 	"fmt"
-	"github.com/urfave/cli/v2"
 	"os"
 	"strconv"
 	"strings"
 
 	"github.com/spf13/viper"
+	"github.com/urfave/cli/v2"
 )
 
 const Path = "./cli-config.yaml"
@@ -154,7 +154,7 @@ func LoadLighthouseConfig(path string) (args []string, err error) {
 
 		strVal, ok := val.(string)
 		if ok {
-			args = append(args, fmt.Sprintf("--%s", key), fmt.Sprintf("%s", strVal))
+			args = append(args, fmt.Sprintf("--%s", key), strVal)
 
 			continue
 		}

@@ -2,13 +2,14 @@ package main
 
 import (
 	"fmt"
-	"github.com/m8b-dev/lukso-cli/config"
-	"golang.org/x/term"
 	"os"
 	"strings"
 	"syscall"
 
 	"github.com/urfave/cli/v2"
+	"golang.org/x/term"
+
+	"github.com/m8b-dev/lukso-cli/config"
 )
 
 const (
@@ -77,12 +78,6 @@ const (
 	devnetLogs  = "./devnet-logs"
 
 	configsRootDir = "./configs"
-
-	// client flags - same values as dependencies but moved to flags for better code readability
-	gethFlag       = gethDependencyName
-	erigonFlag     = erigonDependencyName
-	prysmFlag      = prysmDependencyName
-	lighthouseFlag = lighthouseDependencyName
 
 	mainnetConfig = configsRootDir + "/mainnet"
 	testnetConfig = configsRootDir + "/testnet"

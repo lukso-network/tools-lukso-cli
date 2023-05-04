@@ -23,8 +23,7 @@ func (dependency *ClientDependency) Start(
 
 	command := exec.Command(dependency.name, arguments...)
 
-	// since geth removed --logfile flag we have to manually adjust geth's stdout
-	if dependency.name == gethDependencyName || dependency.name == erigonDependencyName || dependency.name == lighthouseDependencyName {
+	if dependency.name == gethDependencyName || dependency.name == erigonDependencyName {
 		var (
 			logFile  *os.File
 			fullPath string
