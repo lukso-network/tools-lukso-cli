@@ -188,17 +188,14 @@ func installBinaries(ctx *cli.Context) (err error) {
 		commitHash        string
 	)
 
-	// TODO: Add Erigon as 2nd option
 	consensusMessage := "\nWhich consensus client do you want to install?\n" +
-		"1: prysm\n> "
+		"1: prysm\n2: lighthouse\n> "
 
-	// TODO: Add Lighthouse as 2nd option
 	executionMessage := "\nWhich execution client do you want to install?\n" +
-		"1: geth\n> "
+		"1: geth\n2: erigon\n> "
 
-	// TODO: Add check for input "2" after Erigon/Lighthouse is added
 	consensusInput = registerInputWithMessage(consensusMessage)
-	for consensusInput != "1" {
+	for consensusInput != "1" && consensusInput != "2" {
 		consensusInput = registerInputWithMessage("Please provide a valid option\n> ")
 	}
 

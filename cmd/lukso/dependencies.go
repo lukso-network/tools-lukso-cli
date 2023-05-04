@@ -123,6 +123,11 @@ var (
 			name:     lighthouseMainnetConfigDependencyName,
 			filePath: mainnetConfig + "/" + lighthouseYamlPath,
 		},
+		deployBlockMainnetConfigDependencyName: {
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/feature/lighthouse-configs/mainnet/shared/deploy_block.txt",
+			name:     deployBlockDevnetConfigDependencyName,
+			filePath: mainnetConfig + "/" + deployBlockPath,
+		},
 		validatorMainnetConfigDependencyName: {
 			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/prysm/validator.yaml",
 			name:     validatorMainnetConfigDependencyName,
@@ -163,6 +168,11 @@ var (
 			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/lighthouse/lighthouse.yaml",
 			name:     lighthouseTestnetConfigDependencyName,
 			filePath: testnetConfig + "/" + lighthouseYamlPath,
+		},
+		deployBlockTestnetConfigDependencyName: {
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/feature/lighthouse-configs/testnet/shared/deploy_block.txt",
+			name:     deployBlockDevnetConfigDependencyName,
+			filePath: testnetConfig + "/" + deployBlockPath,
 		},
 		validatorTestnetConfigDependencyName: {
 			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/prysm/validator.yaml",
