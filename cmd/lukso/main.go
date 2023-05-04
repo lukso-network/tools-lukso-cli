@@ -219,6 +219,14 @@ REPO: https://github.com/lukso-network/tools-lukso-cli
 					SkipFlagParsing: true,
 					HideHelpCommand: true,
 				},
+				{
+					Name:            "list",
+					Usage:           "List your imported validator keys from the client wallet",
+					Flags:           validatorImportFlags,
+					Action:          selectNetworkFor(listValidator),
+					SkipFlagParsing: true,
+					HideHelpCommand: true,
+				},
 			},
 		},
 		{
