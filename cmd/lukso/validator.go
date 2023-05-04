@@ -58,3 +58,30 @@ func importValidator(ctx *cli.Context) error {
 
 	return nil
 }
+
+func executeValidatorList(network string) error {
+	cmd := exec.Command("validator", "accounts", "list", "--wallet-dir", fmt.Sprintf("%s-keystore", network))
+
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	err := cmd.Run()
+	if err != nil {
+		return fmt.Errorf("Could not fetch imported keys within the validator wallet: %v", err)
+	}
+
+	return nil
+}
+
+func listValidator(ctx *cli.Context) error {
+	network := "mainnet" // Set the default network to mainnet
+
+	if ctx.Bool(testnetFlag) {
+		network = "testnet"
+	} else if ctx.Bool(devnetFlag) {
+		network = "devnet"
+	}
+
+	return executeValidatorList(network)
+}
