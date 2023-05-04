@@ -573,7 +573,6 @@ func prepareLighthouseStartFlags(ctx *cli.Context) (startFlags []string, err err
 	userFlags := clientDependencies[lighthouseDependencyName].PassStartFlags(ctx)
 
 	startFlags = mergeFlags(userFlags, defaults)
-	fmt.Println(startFlags)
 
 	return
 }

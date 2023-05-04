@@ -124,7 +124,7 @@ var (
 			filePath: mainnetConfig + "/" + lighthouseYamlPath,
 		},
 		deployBlockMainnetConfigDependencyName: {
-			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/feature/lighthouse-configs/mainnet/shared/deploy_block.txt",
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/deploy_block.txt",
 			name:     deployBlockDevnetConfigDependencyName,
 			filePath: mainnetConfig + "/" + deployBlockPath,
 		},
@@ -170,7 +170,7 @@ var (
 			filePath: testnetConfig + "/" + lighthouseYamlPath,
 		},
 		deployBlockTestnetConfigDependencyName: {
-			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/feature/lighthouse-configs/testnet/shared/deploy_block.txt",
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/shared/deploy_block.txt",
 			name:     deployBlockDevnetConfigDependencyName,
 			filePath: testnetConfig + "/" + deployBlockPath,
 		},
@@ -211,12 +211,12 @@ var (
 			filePath: devnetConfig + "/" + prysmYamlPath,
 		},
 		lighthouseDevnetConfigDependencyName: {
-			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/feature/lighthouse-configs/devnets/3030/lighthouse/lighthouse.yaml",
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/devnets/3030/lighthouse/lighthouse.yaml",
 			name:     lighthouseDevnetConfigDependencyName,
 			filePath: devnetConfig + "/" + lighthouseYamlPath,
 		},
 		deployBlockDevnetConfigDependencyName: {
-			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/feature/lighthouse-configs/devnets/3030/shared/deploy_block.txt",
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/devnets/3030/shared/deploy_block.txt",
 			name:     deployBlockDevnetConfigDependencyName,
 			filePath: devnetConfig + "/" + deployBlockPath,
 		},

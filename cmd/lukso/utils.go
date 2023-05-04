@@ -298,7 +298,6 @@ func mergeFlags(userFlags, configFlags []string) (startFlags []string) {
 	var mergedFlags []string
 	mergedFlags = append(mergedFlags, userFlags...)
 	mergedFlags = append(mergedFlags, configFlags...)
-	fmt.Println(" ---------------- merged flags: ", mergedFlags)
 
 	// merge flags with values using =
 	for i, arg := range mergedFlags {
