@@ -227,12 +227,6 @@ REPO: https://github.com/lukso-network/tools-lukso-cli
 			Action:          displayVersion,
 			HideHelpCommand: true,
 		},
-		{
-			Name:   "test",
-			Flags:  startFlags,
-			Action: selectNetworkFor(startValidator),
-		},
-		{},
 	}
 
 	app.Before = func(ctx *cli.Context) error {

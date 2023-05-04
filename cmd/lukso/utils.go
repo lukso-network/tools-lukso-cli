@@ -278,20 +278,17 @@ func mergeFlags(userFlags, configFlags []string) (startFlags []string) {
 			}
 
 			if usrI == len(userFlags)-1 || cfgI == len(configFlags)-1 {
-				userFlags = pop(userFlags, usrI)
+				configFlags = pop(configFlags, cfgI)
 
 				continue
 			}
 
 			if !strings.HasPrefix(userFlags[usrI+1], "--") {
-				userFlags = pop(userFlags, usrI)
+				configFlags = pop(configFlags, cfgI)
+				configFlags = pop(configFlags, cfgI)
 
 				continue
 			}
-
-			configFlags[cfgI+1] = userFlags[usrI+1]
-
-			userFlags = pop(userFlags, usrI)
 		}
 	}
 
@@ -316,8 +313,6 @@ func mergeFlags(userFlags, configFlags []string) (startFlags []string) {
 		}
 
 	}
-
-	startFlags = append(startFlags, userFlags...)
 
 	return
 }

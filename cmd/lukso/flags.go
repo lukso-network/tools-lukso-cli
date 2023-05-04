@@ -105,7 +105,7 @@ const (
 	erigonTomlPath       = "erigon/erigon.toml"
 	genesisJsonPath      = "shared/genesis.json"
 	prysmYamlPath        = "prysm/prysm.yaml"
-	lighthouseYamlPath   = "lighthouse/lighthouse.yaml"
+	lighthouseTomlPath   = "lighthouse/lighthouse.toml"
 	deployBlockPath      = "shared/deploy_block.txt"
 	validatorYamlPath    = "prysm/validator.yaml"
 
@@ -353,8 +353,8 @@ var (
 	lighthouseStartFlags = []cli.Flag{
 		&cli.StringFlag{
 			Name:  lighthouseConfigFileFlag,
-			Usage: "Path to lighthouse.yaml config file",
-			Value: mainnetConfig + "/" + lighthouseYamlPath,
+			Usage: "Path to lighthouse.toml config file",
+			Value: mainnetConfig + "/" + lighthouseTomlPath,
 		},
 		&cli.StringFlag{
 			Name:  lighthouseDatadirFlag,
@@ -468,10 +468,7 @@ func (dependency *ClientDependency) PassStartFlags(ctx *cli.Context) (startFlags
 				continue
 			}
 
-			startFlags = append(
-				startFlags,
-				fmt.Sprintf("%s=%s", removePrefix(arg, name), nextArg),
-			)
+			startFlags = append(startFlags, removePrefix(arg, name), nextArg)
 		}
 	}
 

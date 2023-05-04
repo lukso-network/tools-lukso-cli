@@ -85,7 +85,7 @@ func updateValues(ctx *cli.Context, config networkConfig) (err error) {
 		gethToml       = config.configPath + "/" + gethTomlPath
 		erigonToml     = config.configPath + "/" + erigonTomlPath
 		prysmYaml      = config.configPath + "/" + prysmYamlPath
-		lighthouseYaml = config.configPath + "/" + lighthouseYamlPath
+		lighthouseToml = config.configPath + "/" + lighthouseTomlPath
 		validatorYaml  = config.configPath + "/" + validatorYamlPath
 		gethGenesis    = config.configPath + "/" + genesisJsonPath
 		genesisState   = config.configPath + "/" + genesisStateFilePath
@@ -111,7 +111,7 @@ func updateValues(ctx *cli.Context, config networkConfig) (err error) {
 		gethConfigFileFlag:           gethToml,
 		erigonConfigFileFlag:         erigonToml,
 		prysmConfigFileFlag:          prysmYaml,
-		lighthouseConfigFileFlag:     lighthouseYaml,
+		lighthouseConfigFileFlag:     lighthouseToml,
 		validatorConfigFileFlag:      validatorYaml,
 		genesisJsonFlag:              gethGenesis,
 		prysmChainConfigFileFlag:     configYaml,

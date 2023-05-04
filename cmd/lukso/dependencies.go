@@ -119,9 +119,9 @@ var (
 			filePath: mainnetConfig + "/" + prysmYamlPath,
 		},
 		lighthouseMainnetConfigDependencyName: {
-			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/lighthouse/lighthouse.yaml",
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/lighthouse/lighthouse.toml",
 			name:     lighthouseMainnetConfigDependencyName,
-			filePath: mainnetConfig + "/" + lighthouseYamlPath,
+			filePath: mainnetConfig + "/" + lighthouseTomlPath,
 		},
 		deployBlockMainnetConfigDependencyName: {
 			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/lighthouse/deploy_block.txt",
@@ -165,9 +165,9 @@ var (
 			filePath: testnetConfig + "/" + prysmYamlPath,
 		},
 		lighthouseTestnetConfigDependencyName: {
-			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/lighthouse/lighthouse.yaml",
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/lighthouse/lighthouse.toml",
 			name:     lighthouseTestnetConfigDependencyName,
-			filePath: testnetConfig + "/" + lighthouseYamlPath,
+			filePath: testnetConfig + "/" + lighthouseTomlPath,
 		},
 		deployBlockTestnetConfigDependencyName: {
 			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/lighthouse/deploy_block.txt",
@@ -211,9 +211,9 @@ var (
 			filePath: devnetConfig + "/" + prysmYamlPath,
 		},
 		lighthouseDevnetConfigDependencyName: {
-			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/devnets/3030/lighthouse/lighthouse.yaml",
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/devnets/3030/lighthouse/lighthouse.toml",
 			name:     lighthouseDevnetConfigDependencyName,
-			filePath: devnetConfig + "/" + lighthouseYamlPath,
+			filePath: devnetConfig + "/" + lighthouseTomlPath,
 		},
 		deployBlockDevnetConfigDependencyName: {
 			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/devnets/3030/lighthouse/deploy_block.txt",

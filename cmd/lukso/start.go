@@ -308,7 +308,7 @@ func initClient(client string, ctx *cli.Context) (err error) {
 	var dataDir string
 	switch client {
 	case gethDependencyName:
-		dataDir = fmt.Sprintf("--datadi r=%s", ctx.String(gethDatadirFlag))
+		dataDir = fmt.Sprintf("--datadir=%s", ctx.String(gethDatadirFlag))
 	case erigonDependencyName:
 		dataDir = fmt.Sprintf("--datadir=%s", ctx.String(erigonDatadirFlag))
 	}
