@@ -5,9 +5,10 @@ import (
 	"os"
 	"strings"
 
+	"github.com/urfave/cli/v2"
+
 	"github.com/m8b-dev/lukso-cli/config"
 	"github.com/m8b-dev/lukso-cli/pid"
-	"github.com/urfave/cli/v2"
 )
 
 const jwtSecretPath = configsRootDir + "/shared/secrets/jwt.hex"
@@ -51,14 +52,20 @@ func initializeDirectory(ctx *cli.Context) error {
 		return cli.Exit(fmt.Sprintf("❌  There was an error while preparing PID directory: %v", err), 1)
 	}
 
-	log.Info("⚙️   Creating LUKSO configuration file...")
+	switch cfg.Exists() {
+	case true:
+		log.Info("⚙️   LUKSO configuration already exists - continuing...")
+	case false:
+		log.Info("⚙️   Creating LUKSO configuration file...")
 
-	err = cfg.Create("", "")
-	if err != nil {
-		return cli.Exit(fmt.Sprintf("❌  There was an error while preparing LUKSO configuration: %v", err), 1)
+		err = cfg.Create("", "")
+		if err != nil {
+			return cli.Exit(fmt.Sprintf("❌  There was an error while preparing LUKSO configuration: %v", err), 1)
+		}
+
+		log.Infof("✅  LUKSO configuration created under %s", config.Path)
 	}
 
-	log.Infof("✅  LUKSO configuration created under %s", config.Path)
 	log.Info("✅  Working directory initialized! \n1. ⚙️  Use 'lukso install' to install clients. \n2. ▶️  Use 'lukso start' to start your node.")
 
 	return nil
