@@ -2,12 +2,13 @@ package main
 
 import (
 	"fmt"
-	"github.com/m8b-dev/lukso-cli/config"
 	"os"
 	"strings"
 
-	"github.com/m8b-dev/lukso-cli/pid"
 	"github.com/urfave/cli/v2"
+
+	"github.com/m8b-dev/lukso-cli/config"
+	"github.com/m8b-dev/lukso-cli/pid"
 )
 
 const jwtSecretPath = configsRootDir + "/shared/secrets/jwt.hex"
