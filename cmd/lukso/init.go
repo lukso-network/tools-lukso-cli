@@ -29,22 +29,22 @@ func initializeDirectory(ctx *cli.Context) error {
 		}
 	}
 
-	log.Infof("⬇️  Downloading shared configuration files...")
+	log.Info("⬇️  Downloading shared configuration files...")
 	_ = initConfigGroup(sharedConfigDependencies) // we can omit errors - all errors are catched by cli.Exit()
 
-	log.Infof("⬇️  Downloading geth configuration files...")
+	log.Info("⬇️  Downloading geth configuration files...")
 	_ = initConfigGroup(gethConfigDependencies)
 
-	log.Infof("⬇️  Downloading erigon configuration files...")
+	log.Info("⬇️  Downloading erigon configuration files...")
 	_ = initConfigGroup(erigonConfigDependencies)
 
-	log.Infof("⬇️  Downloading prysm configuration files...")
+	log.Info("⬇️  Downloading prysm configuration files...")
 	_ = initConfigGroup(prysmConfigDependencies)
 
-	log.Infof("⬇️  Downloading lighthouse configuration files...")
+	log.Info("⬇️  Downloading lighthouse configuration files...")
 	_ = initConfigGroup(lighthouseConfigDependencies)
 
-	log.Infof("⬇️  Downloading prysm validator configuration files...")
+	log.Info("⬇️  Downloading prysm validator configuration files...")
 	_ = initConfigGroup(validatorConfigDependencies)
 
 	err := createJwtSecret(jwtSecretPath)

@@ -20,8 +20,6 @@ const (
 )
 
 func (dependency *ClientDependency) Download(tag, commitHash string, isUpdate bool, permissions int) (err error) {
-	log.Infof("⬇️  Downloading %s...", dependency.name)
-
 	err = dependency.createDir()
 	if err != nil {
 		return
@@ -234,11 +232,13 @@ func installBinaries(ctx *cli.Context) (err error) {
 		log.Info("✅  You accepted Prysm's Terms of Use: https://github.com/prysmaticlabs/prysm/blob/develop/TERMS_OF_SERVICE.md")
 	}
 
+	log.Infof("⬇️  Downloading %s...", selectedExecution)
 	err = clientDependencies[selectedExecution].Download(executionTag, commitHash, false, binaryPerms)
 	if err != nil {
 		return cli.Exit(fmt.Sprintf("❌  There was an error while downloading %s: %v", selectedExecution, err), 1)
 	}
 
+	log.Infof("⬇️  Downloading %s...", selectedConsensus)
 	err = clientDependencies[selectedConsensus].Download(consensusTag, "", false, binaryPerms)
 	if err != nil {
 		return cli.Exit(fmt.Sprintf("❌  There was an error while downloading %s: %v", selectedConsensus, err), 1)
@@ -246,6 +246,7 @@ func installBinaries(ctx *cli.Context) (err error) {
 
 	// for now, we also need to download a validator client
 	// when other validator clients will be implemented we will download the one bound to consensus clients
+	log.Infof("⬇️  Downloading %s...", validatorDependencyName)
 	err = clientDependencies[validatorDependencyName].Download(prysmTag, "", false, binaryPerms)
 	if err != nil {
 		return cli.Exit(fmt.Sprintf("❌  There was an error while downloading validator: %v", err), 1)
