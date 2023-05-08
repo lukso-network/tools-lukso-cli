@@ -29,18 +29,23 @@ func initializeDirectory(ctx *cli.Context) error {
 		}
 	}
 
-	for _, dependency := range clientDependencies {
-		// this logic may fail when folder structure changes, but this shouldn't be the case
-		if dependency.isBinary {
-			continue
-		}
+	log.Infof("⬇️  Downloading shared configuration files...")
+	_ = initConfigGroup(sharedConfigDependencies) // we can omit errors - all errors are catched by cli.Exit()
 
-		err := dependency.Download("", "", false, configPerms)
-		if err != nil {
-			return cli.Exit(fmt.Sprintf("❌  There was error while downloading %s file: %v", dependency.name, err), 1)
-		}
+	log.Infof("⬇️  Downloading geth configuration files...")
+	_ = initConfigGroup(gethConfigDependencies)
 
-	}
+	log.Infof("⬇️  Downloading erigon configuration files...")
+	_ = initConfigGroup(erigonConfigDependencies)
+
+	log.Infof("⬇️  Downloading prysm configuration files...")
+	_ = initConfigGroup(prysmConfigDependencies)
+
+	log.Infof("⬇️  Downloading lighthouse configuration files...")
+	_ = initConfigGroup(lighthouseConfigDependencies)
+
+	log.Infof("⬇️  Downloading prysm validator configuration files...")
+	_ = initConfigGroup(validatorConfigDependencies)
 
 	err := createJwtSecret(jwtSecretPath)
 	if err != nil {
@@ -67,6 +72,18 @@ func initializeDirectory(ctx *cli.Context) error {
 	}
 
 	log.Info("✅  Working directory initialized! \n1. ⚙️  Use 'lukso install' to install clients. \n2. ▶️  Use 'lukso start' to start your node.")
+
+	return nil
+}
+
+// initConfigGroup takes map of config dependencies and downloads them.
+func initConfigGroup(configDependencies map[string]*ClientDependency) error {
+	for _, dependency := range configDependencies {
+		err := dependency.Download("", "", false, configPerms)
+		if err != nil {
+			return cli.Exit(fmt.Sprintf("❌  There was error while downloading %s file: %v", dependency.name, err), 1)
+		}
+	}
 
 	return nil
 }

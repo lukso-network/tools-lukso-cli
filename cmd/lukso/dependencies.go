@@ -85,9 +85,11 @@ var (
 			filePath: "", // binary dir selected during runtime
 			isBinary: true,
 		},
+	}
 
-		// ----- CONFIGS -----
-		// ----- MAINNET -----
+	// ----- CONFIGS -----
+	sharedConfigDependencies = map[string]*ClientDependency{
+		// ----- SHARED -----
 		mainnetGenesisDependencyName: {
 			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/genesis.json",
 			name:     mainnetGenesisDependencyName,
@@ -103,37 +105,11 @@ var (
 			name:     mainnetChainConfigDependencyName,
 			filePath: mainnetConfig + "/" + chainConfigYamlPath,
 		},
-		gethMainnetConfigName: {
-			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/geth/geth.toml",
-			name:     gethMainnetConfigName,
-			filePath: mainnetConfig + "/" + gethTomlPath,
-		},
-		erigonMainnetConfigName: {
-			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/erigon/erigon.toml",
-			name:     erigonMainnetConfigName,
-			filePath: mainnetConfig + "/" + erigonTomlPath,
-		},
-		prysmMainnetConfigDependencyName: {
-			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/prysm/prysm.yaml",
-			name:     prysmMainnetConfigDependencyName,
-			filePath: mainnetConfig + "/" + prysmYamlPath,
-		},
-		lighthouseMainnetConfigDependencyName: {
-			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/lighthouse/lighthouse.toml",
-			name:     lighthouseMainnetConfigDependencyName,
-			filePath: mainnetConfig + "/" + lighthouseTomlPath,
-		},
 		deployBlockMainnetConfigDependencyName: {
 			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/lighthouse/deploy_block.txt",
 			name:     deployBlockDevnetConfigDependencyName,
 			filePath: mainnetConfig + "/" + deployBlockPath,
 		},
-		validatorMainnetConfigDependencyName: {
-			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/prysm/validator.yaml",
-			name:     validatorMainnetConfigDependencyName,
-			filePath: mainnetConfig + "/" + validatorYamlPath,
-		},
-		// ----- TESTNET -----
 		testnetGenesisDependencyName: {
 			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/shared/genesis.json",
 			name:     testnetGenesisDependencyName,
@@ -149,37 +125,11 @@ var (
 			name:     testnetChainConfigDependencyName,
 			filePath: testnetConfig + "/" + chainConfigYamlPath,
 		},
-		gethTestnetConfigName: {
-			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/geth/geth.toml",
-			name:     gethTestnetConfigName,
-			filePath: testnetConfig + "/" + gethTomlPath,
-		},
-		erigonTestnetConfigName: {
-			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/erigon/erigon.toml",
-			name:     erigonTestnetConfigName,
-			filePath: testnetConfig + "/" + erigonTomlPath,
-		},
-		prysmTestnetConfigDependencyName: {
-			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/prysm/prysm.yaml",
-			name:     prysmTestnetConfigDependencyName,
-			filePath: testnetConfig + "/" + prysmYamlPath,
-		},
-		lighthouseTestnetConfigDependencyName: {
-			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/lighthouse/lighthouse.toml",
-			name:     lighthouseTestnetConfigDependencyName,
-			filePath: testnetConfig + "/" + lighthouseTomlPath,
-		},
 		deployBlockTestnetConfigDependencyName: {
 			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/lighthouse/deploy_block.txt",
 			name:     deployBlockDevnetConfigDependencyName,
 			filePath: testnetConfig + "/" + deployBlockPath,
 		},
-		validatorTestnetConfigDependencyName: {
-			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/prysm/validator.yaml",
-			name:     validatorTestnetConfigDependencyName,
-			filePath: testnetConfig + "/" + validatorYamlPath,
-		},
-		// ----- DEVNET -----
 		devnetGenesisDependencyName: {
 			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/devnets/3030/shared/genesis.json",
 			name:     devnetGenesisDependencyName,
@@ -195,30 +145,95 @@ var (
 			name:     devnetChainConfigDependencyName,
 			filePath: devnetConfig + "/" + chainConfigYamlPath,
 		},
+		deployBlockDevnetConfigDependencyName: {
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/devnets/3030/lighthouse/deploy_block.txt",
+			name:     deployBlockDevnetConfigDependencyName,
+			filePath: devnetConfig + "/" + deployBlockPath,
+		},
+	}
+
+	gethConfigDependencies = map[string]*ClientDependency{
+		gethMainnetConfigName: {
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/geth/geth.toml",
+			name:     gethMainnetConfigName,
+			filePath: mainnetConfig + "/" + gethTomlPath,
+		},
+		gethTestnetConfigName: {
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/geth/geth.toml",
+			name:     gethTestnetConfigName,
+			filePath: testnetConfig + "/" + gethTomlPath,
+		},
 		gethDevnetConfigName: {
 			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/devnets/3030/geth/geth.toml",
 			name:     gethDevnetConfigName,
 			filePath: devnetConfig + "/" + gethTomlPath,
+		},
+	}
+
+	erigonConfigDependencies = map[string]*ClientDependency{
+		erigonMainnetConfigName: {
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/erigon/erigon.toml",
+			name:     erigonMainnetConfigName,
+			filePath: mainnetConfig + "/" + erigonTomlPath,
+		},
+		erigonTestnetConfigName: {
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/erigon/erigon.toml",
+			name:     erigonTestnetConfigName,
+			filePath: testnetConfig + "/" + erigonTomlPath,
 		},
 		erigonDevnetConfigName: {
 			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/devnets/3030/erigon/erigon.toml",
 			name:     erigonDevnetConfigName,
 			filePath: devnetConfig + "/" + erigonTomlPath,
 		},
+	}
+
+	prysmConfigDependencies = map[string]*ClientDependency{
+		prysmMainnetConfigDependencyName: {
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/prysm/prysm.yaml",
+			name:     prysmMainnetConfigDependencyName,
+			filePath: mainnetConfig + "/" + prysmYamlPath,
+		},
+		prysmTestnetConfigDependencyName: {
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/prysm/prysm.yaml",
+			name:     prysmTestnetConfigDependencyName,
+			filePath: testnetConfig + "/" + prysmYamlPath,
+		},
 		prysmDevnetConfigDependencyName: {
 			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/devnets/3030/prysm/prysm.yaml",
 			name:     prysmDevnetConfigDependencyName,
 			filePath: devnetConfig + "/" + prysmYamlPath,
+		},
+	}
+
+	lighthouseConfigDependencies = map[string]*ClientDependency{
+		lighthouseMainnetConfigDependencyName: {
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/lighthouse/lighthouse.toml",
+			name:     lighthouseMainnetConfigDependencyName,
+			filePath: mainnetConfig + "/" + lighthouseTomlPath,
+		},
+		lighthouseTestnetConfigDependencyName: {
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/lighthouse/lighthouse.toml",
+			name:     lighthouseTestnetConfigDependencyName,
+			filePath: testnetConfig + "/" + lighthouseTomlPath,
 		},
 		lighthouseDevnetConfigDependencyName: {
 			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/devnets/3030/lighthouse/lighthouse.toml",
 			name:     lighthouseDevnetConfigDependencyName,
 			filePath: devnetConfig + "/" + lighthouseTomlPath,
 		},
-		deployBlockDevnetConfigDependencyName: {
-			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/devnets/3030/lighthouse/deploy_block.txt",
-			name:     deployBlockDevnetConfigDependencyName,
-			filePath: devnetConfig + "/" + deployBlockPath,
+	}
+
+	validatorConfigDependencies = map[string]*ClientDependency{
+		validatorMainnetConfigDependencyName: {
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/prysm/validator.yaml",
+			name:     validatorMainnetConfigDependencyName,
+			filePath: mainnetConfig + "/" + validatorYamlPath,
+		},
+		validatorTestnetConfigDependencyName: {
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/prysm/validator.yaml",
+			name:     validatorTestnetConfigDependencyName,
+			filePath: testnetConfig + "/" + validatorYamlPath,
 		},
 		validatorDevnetConfigDependencyName: {
 			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/devnets/3030/prysm/validator.yaml",
