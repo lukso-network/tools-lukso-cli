@@ -16,9 +16,9 @@ The LUKSO CLI is a command line tool to install, manage and set up validators of
 
 The LUKSO CLI is able to install multiple clients for running the node.
 
-- Execution Clients: [Geth](https://geth.ethereum.org/)
-- Consensus Clients: [Prysm](https://github.com/prysmaticlabs/prysm)
-- Validator Client for Staking: [Prysm](https://docs.prylabs.network/docs/how-prysm-works/prysm-validator-client)
+- Execution Clients: [Geth](https://geth.ethereum.org/), [Erigon](https://github.com/ledgerwatch/erigon)
+- Consensus Clients: [Prysm](https://github.com/prysmaticlabs/prysm), [Lighthouse](https://github.com/sigp/lighthouse)
+- Validator Staking Clients: [Prysm](https://docs.prylabs.network/docs/how-prysm-works/prysm-validator-client), [Lighthouse](https://github.com/sigp/lighthouse)
 
 ## Setting up the Node
 
@@ -87,6 +87,8 @@ lukso-node
 |       |   └───config.yaml                 // Global Client Config
 │       ├───geth                            // Config for Geth Client
 │       ├───prysm                           // Config for Prysm Client
+│       ├───erigon                          // Config for Erigon Client
+│       └───lighthouse                      // Config for Lighthouse Client
 │
 ├───[network_type]-keystore                 // Network's Validator Data
 │   ├───keys                                // Encrypted Private Keys
@@ -188,6 +190,9 @@ $ lukso start --geth-config "./[config].toml"
 # Change [custom_bootnode] to the bootnode's name
 $ lukso start --prysm-config "./[config].yaml" --geth-bootnodes "[custom_bootnode]"
 
+# An experienced user can also start custom clients
+# Example with Lighthouse and Erigon clients
+$ lukso start --lighthouse --erigon
 ```
 
 #### How to set up and customize a logs folder
@@ -200,26 +205,30 @@ $ lukso start --logs-folder "[folder_path]"
 
 #### Options for `start`
 
-| Option                               | Description                                                                                                                                          |
-| ------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **NETWORK**                          |                                                                                                                                                      |
-| --mainnet                            | Starts the LUKSO node with mainnet data (default) (./configs/mainnet)                                                                                |
-| --testnet                            | Starts the LUKSO node with testnet data (./configs/tesnet)                                                                                           |
-| --devnet                             | Starts the LUKSO node with devnet data (./configs/devnet)                                                                                            |
-| **VALIDATOR**                        |                                                                                                                                                      |
-| --validator                          | Starts the validator client                                                                                                                          |
-| --validator-keys [string]            | Directory of the validator keys (default: "./\[network_type\]-keystore")                                                                             |
-| --validator-wallet-password [string] | Location of password file that you used for generated validator keys                                                                                 |
-| --validator-config [string]          | Path to prysms validator.yaml config file                                                                                                            |
-| --transaction-fee-recipient [string] | The address that receives block reward from transactions (required for --validator flag)                                                             |
-| --genesis-json [string]              | The path to genesis JSON file                                                                                                                        |
-| --genesis-ssz [string]               | The path to genesis SSZ file                                                                                                                         |
-| --no-slasher                         | Disables slasher                                                                                                                                     |
-| **CLIENT OPTIONS**                   |                                                                                                                                                      |
-| --logs-folder [string]               | Sets up a custom logs directory (default: "./\[network_type\]-logs")                                                                                 |
-| --geth-config [string]               | Defines the path to geth TOML config file                                                                                                            |
-| --prysm-config [string]              | Defines the path to prysm YAML config file                                                                                                           |
-| --geth-[command]                     | The `command` will be passed to the geth client. [See the client docs for details](https://geth.ethereum.org/docs/fundamentals/command-line-options) |
+| Option                               | Description                                                                                                                                           |
+| ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **NETWORK**                          |                                                                                                                                                       |
+| --mainnet                            | Starts the LUKSO node with mainnet data (default) (./configs/mainnet)                                                                                 |
+| --testnet                            | Starts the LUKSO node with testnet data (./configs/tesnet)                                                                                            |
+| --devnet                             | Starts the LUKSO node with devnet data (./configs/devnet)                                                                                             |
+| **VALIDATOR**                        |                                                                                                                                                       |
+| --validator                          | Starts the validator client                                                                                                                           |
+| --validator-keys [string]            | Directory of the validator keys (default: "./\[network_type\]-keystore")                                                                              |
+| --validator-wallet-password [string] | Location of password file that you used for generated validator keys                                                                                  |
+| --validator-config [string]          | Path to prysms validator.yaml config file                                                                                                             |
+| --transaction-fee-recipient [string] | The address that receives block reward from transactions (required for --validator flag)                                                              |
+| --genesis-json [string]              | The path to genesis JSON file                                                                                                                         |
+| --genesis-ssz [string]               | The path to genesis SSZ file                                                                                                                          |
+| --no-slasher                         | Disables slasher                                                                                                                                      |
+| **CLIENT OPTIONS**                   |                                                                                                                                                       |
+| --logs-folder [string]               | Sets up a custom logs directory (default: "./\[network_type\]-logs")                                                                                  |
+| --geth-config [string]               | Defines the path to geth TOML config file                                                                                                             |
+| --prysm-config [string]              | Defines the path to prysm YAML config file                                                                                                            |
+| --erigon-config [string]             | Defines the path to erigon TOML config file                                                                                                           |
+| --geth-[command]                     | The `command` will be passed to the Geth client. [See the client docs for details](https://geth.ethereum.org/docs/fundamentals/command-line-options)  |
+| --prysm-[command]                    | The `command` will be passed to the Prysm client. [See the client docs for details](https://docs.prylabs.network/docs/prysm-usage/parameters)         |
+| --lighhouse-[command]                | The `command` will be passed to the Lighthouse client. [See the client docs for details](https://lighthouse-book.sigmaprime.io/advanced-datadir.html) |
+| --erigon-[command]                   | The `command` will be passed to the Erigon client. [See the client docs for details](https://github.com/ledgerwatch/erigon)                           |
 
 ### `stop`
 
