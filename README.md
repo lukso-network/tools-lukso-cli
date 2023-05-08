@@ -465,6 +465,12 @@ $ rm -rf /usr/local/bin/geth
 # Uninstall Prysm Consensus Client
 $ rm -rf /usr/local/bin/prysm
 
+# Uninstall Lighthouse Consensus Client
+$ rm -rf /usr/local/bin/lighthouse
+
+# Uninstall Erigon Execution Client
+$ rm -rf /usr/local/bin/erigon
+
 # Remove the node data
 # Make sure to backup your keys first
 $ rm -rf ~/myNodeFolder
