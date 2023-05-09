@@ -59,6 +59,31 @@ func importValidator(ctx *cli.Context) error {
 	return nil
 }
 
+func startValidator(ctx *cli.Context) (err error) {
+	log.Info("🔄  Starting Validator")
+	validatorFlags, passwordPipe, err := prepareValidatorStartFlags(ctx)
+	if passwordPipe != "" {
+		defer os.Remove(passwordPipe)
+	}
+	if err != nil {
+		return err
+	}
+	if !fileExists(fmt.Sprintf("%s/direct/accounts/all-accounts.keystore.json", ctx.String(validatorKeysFlag))) { // path to imported keys
+		log.Error("⚠️  Validator is not initialized. Run lukso validator import to initialize your validator.")
+
+		return nil
+	}
+
+	err = clientDependencies[validatorDependencyName].Start(validatorFlags, ctx)
+	if err != nil {
+		return err
+	}
+
+	log.Info("✅  Validator started! Use 'lukso logs' to see the logs.")
+
+	return
+}
+
 func executeValidatorList(network string) error {
 	cmd := exec.Command("validator", "accounts", "list", "--wallet-dir", fmt.Sprintf("%s-keystore", network))
 

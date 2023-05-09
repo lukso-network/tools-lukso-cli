@@ -10,8 +10,8 @@ import (
 
 // networkConfig serves as a collection of variables that need to be changed when different network is selected
 type networkConfig struct {
-	gethDatadirPath      string
-	prysmDatadirPath     string
+	executionDatadirPath string
+	consensusDatadirPath string
 	validatorDatadirPath string
 	logPath              string
 	configPath           string
@@ -47,8 +47,8 @@ func selectNetworkFor(f func(*cli.Context) error) func(*cli.Context) error {
 
 		if devnetEnabled {
 			cfg = networkConfig{
-				gethDatadirPath:      executionDevnetDatadir,
-				prysmDatadirPath:     consensusDevnetDatadir,
+				executionDatadirPath: executionDevnetDatadir,
+				consensusDatadirPath: consensusDevnetDatadir,
 				validatorDatadirPath: validatorDevnetDatadir,
 				logPath:              devnetLogs,
 				configPath:           devnetConfig,
@@ -59,8 +59,8 @@ func selectNetworkFor(f func(*cli.Context) error) func(*cli.Context) error {
 
 		if testnetEnabled {
 			cfg = networkConfig{
-				gethDatadirPath:      executionTestnetDatadir,
-				prysmDatadirPath:     consensusTestnetDatadir,
+				executionDatadirPath: executionTestnetDatadir,
+				consensusDatadirPath: consensusTestnetDatadir,
 				validatorDatadirPath: validatorTestnetDatadir,
 				logPath:              testnetLogs,
 				configPath:           testnetConfig,
@@ -82,12 +82,14 @@ func selectNetworkFor(f func(*cli.Context) error) func(*cli.Context) error {
 func updateValues(ctx *cli.Context, config networkConfig) (err error) {
 	var (
 		//genesisJson  = config.configPath + "/" + genesisJsonPath
-		gethToml      = config.configPath + "/" + gethTomlPath
-		prysmYaml     = config.configPath + "/" + prysmYamlPath
-		validatorYaml = config.configPath + "/" + validatorYamlPath
-		gethGenesis   = config.configPath + "/" + genesisJsonPath
-		genesisState  = config.configPath + "/" + genesisStateFilePath
-		configYaml    = config.configPath + "/" + chainConfigYamlPath
+		gethToml       = config.configPath + "/" + gethTomlPath
+		erigonToml     = config.configPath + "/" + erigonTomlPath
+		prysmYaml      = config.configPath + "/" + prysmYamlPath
+		lighthouseToml = config.configPath + "/" + lighthouseTomlPath
+		validatorYaml  = config.configPath + "/" + validatorYamlPath
+		gethGenesis    = config.configPath + "/" + genesisJsonPath
+		genesisState   = config.configPath + "/" + genesisStateFilePath
+		configYaml     = config.configPath + "/" + chainConfigYamlPath
 	)
 
 	passedArgs := make([]string, 0)
@@ -100,13 +102,16 @@ func updateValues(ctx *cli.Context, config networkConfig) (err error) {
 
 	// varyingFlags represents list of all flags that can be affected by selecting network and values that may be replaced
 	varyingFlags := map[string]string{
-		gethDatadirFlag:              config.gethDatadirPath,
-		prysmDatadirFlag:             config.prysmDatadirPath,
+		gethDatadirFlag:              config.executionDatadirPath,
+		erigonDatadirFlag:            config.executionDatadirPath,
+		prysmDatadirFlag:             config.consensusDatadirPath,
 		validatorDatadirFlag:         config.validatorDatadirPath,
 		logFolderFlag:                config.logPath,
 		validatorKeysFlag:            config.keysPath,
 		gethConfigFileFlag:           gethToml,
+		erigonConfigFileFlag:         erigonToml,
 		prysmConfigFileFlag:          prysmYaml,
+		lighthouseConfigFileFlag:     lighthouseToml,
 		validatorConfigFileFlag:      validatorYaml,
 		genesisJsonFlag:              gethGenesis,
 		prysmChainConfigFileFlag:     configYaml,
