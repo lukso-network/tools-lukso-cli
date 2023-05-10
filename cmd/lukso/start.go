@@ -301,6 +301,10 @@ func initClient(client string, ctx *cli.Context) (err error) {
 	}
 
 	if !flagFileExists(ctx, genesisJsonFlag) {
+		if ctx.Bool(testnetFlag) || ctx.Bool(devnetFlag) {
+			return errors.New("❌  Genesis JSON not found")
+		}
+
 		message := `Choose your preferred initial LYX supply:
 For more information read:
 👉 https://medium.com/lukso/genesis-validators-deposit-smart-contract-freeze-and-testnet-launch-c5f7b568b1fc
@@ -334,15 +338,13 @@ For more information read:
 				err = ctx.Set(genesisStateFlag, mainnetConfig+"/"+genesisState100FilePath)
 
 			default:
-				log.Warn("Please select a valid option\n")
+				log.Warn("Please select a valid option\n\n")
 			}
 
 			if err != nil {
 				return
 			}
 		}
-
-		return errors.New("❌  Genesis JSON not found")
 	}
 
 	var dataDir string

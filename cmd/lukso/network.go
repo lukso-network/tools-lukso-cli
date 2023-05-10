@@ -39,11 +39,17 @@ func selectNetworkFor(f func(*cli.Context) error) func(*cli.Context) error {
 			return errMoreNetworksSelected
 		}
 
-		if enabledCount == 0 {
-			return errNetworkNotSupported // when any other network is supported we can simply pass in the config there
-		}
-
 		var cfg networkConfig
+
+		cfg = networkConfig{
+			executionDatadirPath: executionMainnetDatadir,
+			consensusDatadirPath: consensusMainnetDatadir,
+			validatorDatadirPath: validatorMainnetDatadir,
+			logPath:              mainnetLogs,
+			configPath:           mainnetConfig,
+			keysPath:             mainnetKeystore,
+			walletPath:           mainnetKeystore,
+		}
 
 		if devnetEnabled {
 			cfg = networkConfig{
