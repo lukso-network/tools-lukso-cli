@@ -27,7 +27,7 @@ const (
 
 	// Prysm related flag names
 	prysmTagFlag             = "prysm-tag"
-	prysmGenesisStateFlag    = "genesis-ssz"
+	genesisStateFlag         = "genesis-ssz"
 	prysmChainConfigFileFlag = "prysm-chain-config"
 	prysmConfigFileFlag      = "prysm-config"
 	prysmDatadirFlag         = "prysm-datadir"
@@ -94,15 +94,24 @@ const (
 
 	// structure inside configs/selected-network directory.
 	// we will select directory based on provided flag, by concatenating config path + file path
-	genesisStateFilePath = "shared/genesis.ssz"
-	chainConfigYamlPath  = "shared/config.yaml"
-	gethTomlPath         = "geth/geth.toml"
-	erigonTomlPath       = "erigon/erigon.toml"
-	genesisJsonPath      = "shared/genesis.json"
-	prysmYamlPath        = "prysm/prysm.yaml"
-	lighthouseTomlPath   = "lighthouse/lighthouse.toml"
-	deployBlockPath      = "shared/deploy_block.txt"
-	validatorYamlPath    = "prysm/validator.yaml"
+	chainConfigYamlPath = "shared/config.yaml"
+	gethTomlPath        = "geth/geth.toml"
+	erigonTomlPath      = "erigon/erigon.toml"
+	prysmYamlPath       = "prysm/prysm.yaml"
+	lighthouseTomlPath  = "lighthouse/lighthouse.toml"
+	deployBlockPath     = "shared/deploy_block.txt"
+	validatorYamlPath   = "prysm/validator.yaml"
+
+	// genesis related files
+	genesisJsonPath    = "shared/genesis.json"
+	genesis35JsonPath  = "shared/genesis_35.json"
+	genesis42JsonPath  = "shared/genesis_42.json"
+	genesis100JsonPath = "shared/genesis_100.json"
+
+	genesisStateFilePath    = "shared/genesis.ssz"
+	genesisState35FilePath  = "shared/genesis_35.ssz"
+	genesisState42FilePath  = "shared/genesis_42.ssz"
+	genesisState100FilePath = "shared/genesis_100.ssz"
 
 	// validator tool related flags
 	validatorKeysFlag = "validator-keys"
@@ -296,7 +305,7 @@ var (
 	// START
 	prysmStartFlags = []cli.Flag{
 		&cli.StringFlag{
-			Name:  prysmGenesisStateFlag,
+			Name:  genesisStateFlag,
 			Usage: "Path to genesis.ssz file",
 			Value: mainnetConfig + "/" + genesisStateFilePath,
 		},
@@ -507,7 +516,7 @@ func prepareErigonStartFlags(ctx *cli.Context) (startFlags []string, isCorrect b
 }
 
 func preparePrysmStartFlags(ctx *cli.Context) (startFlags []string, err error) {
-	genesisExists := flagFileExists(ctx, prysmGenesisStateFlag)
+	genesisExists := flagFileExists(ctx, genesisStateFlag)
 	prysmConfigExists := flagFileExists(ctx, prysmConfigFileFlag)
 	chainConfigExists := flagFileExists(ctx, prysmChainConfigFileFlag)
 	if !genesisExists || !prysmConfigExists || !chainConfigExists {
@@ -531,8 +540,8 @@ func preparePrysmStartFlags(ctx *cli.Context) (startFlags []string, err error) {
 	if ctx.String(transactionFeeRecipientFlag) != "" {
 		startFlags = append(startFlags, fmt.Sprintf("--suggested-fee-recipient=%s", ctx.String(transactionFeeRecipientFlag)))
 	}
-	if ctx.String(prysmGenesisStateFlag) != "" {
-		startFlags = append(startFlags, fmt.Sprintf("--genesis-state=%s", ctx.String(prysmGenesisStateFlag)))
+	if ctx.String(genesisStateFlag) != "" {
+		startFlags = append(startFlags, fmt.Sprintf("--genesis-state=%s", ctx.String(genesisStateFlag)))
 	}
 	if ctx.String(prysmChainConfigFileFlag) != "" {
 		startFlags = append(startFlags, fmt.Sprintf("--chain-config-file=%s", ctx.String(prysmChainConfigFileFlag)))

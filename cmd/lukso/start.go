@@ -301,7 +301,50 @@ func initClient(client string, ctx *cli.Context) (err error) {
 	}
 
 	if !flagFileExists(ctx, genesisJsonFlag) {
-		return errors.New("❌  Genesis JSON not found")
+		if ctx.Bool(testnetFlag) || ctx.Bool(devnetFlag) {
+			return errors.New("❌  Genesis JSON not found")
+		}
+
+		message := `Choose your preferred initial LYX supply:
+For more information read:
+👉 https://medium.com/lukso/genesis-validators-deposit-smart-contract-freeze-and-testnet-launch-c5f7b568b1fc
+1: 35M LYX
+2: 42M LYX
+3: 100M LYX
+> `
+		var input string
+		for input != "1" && input != "2" && input != "3" {
+			input = registerInputWithMessage(message)
+			switch input {
+			case "1":
+				err = ctx.Set(genesisJsonFlag, mainnetConfig+"/"+genesis35JsonPath)
+				if err != nil {
+					return
+				}
+				err = ctx.Set(genesisStateFlag, mainnetConfig+"/"+genesisState35FilePath)
+
+			case "2":
+				err = ctx.Set(genesisJsonFlag, mainnetConfig+"/"+genesis42JsonPath)
+				if err != nil {
+					return
+				}
+				err = ctx.Set(genesisStateFlag, mainnetConfig+"/"+genesisState42FilePath)
+
+			case "3":
+				err = ctx.Set(genesisJsonFlag, mainnetConfig+"/"+genesis100JsonPath)
+				if err != nil {
+					return
+				}
+				err = ctx.Set(genesisStateFlag, mainnetConfig+"/"+genesisState100FilePath)
+
+			default:
+				log.Warn("Please select a valid option\n\n")
+			}
+
+			if err != nil {
+				return
+			}
+		}
 	}
 
 	var dataDir string
