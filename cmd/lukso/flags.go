@@ -27,7 +27,7 @@ const (
 
 	// Prysm related flag names
 	prysmTagFlag             = "prysm-tag"
-	prysmGenesisStateFlag    = "genesis-ssz"
+	genesisStateFlag         = "genesis-ssz"
 	prysmChainConfigFileFlag = "prysm-chain-config"
 	prysmConfigFileFlag      = "prysm-config"
 	prysmDatadirFlag         = "prysm-datadir"
@@ -305,7 +305,7 @@ var (
 	// START
 	prysmStartFlags = []cli.Flag{
 		&cli.StringFlag{
-			Name:  prysmGenesisStateFlag,
+			Name:  genesisStateFlag,
 			Usage: "Path to genesis.ssz file",
 			Value: mainnetConfig + "/" + genesisStateFilePath,
 		},
@@ -516,7 +516,7 @@ func prepareErigonStartFlags(ctx *cli.Context) (startFlags []string, isCorrect b
 }
 
 func preparePrysmStartFlags(ctx *cli.Context) (startFlags []string, err error) {
-	genesisExists := flagFileExists(ctx, prysmGenesisStateFlag)
+	genesisExists := flagFileExists(ctx, genesisStateFlag)
 	prysmConfigExists := flagFileExists(ctx, prysmConfigFileFlag)
 	chainConfigExists := flagFileExists(ctx, prysmChainConfigFileFlag)
 	if !genesisExists || !prysmConfigExists || !chainConfigExists {
@@ -540,8 +540,8 @@ func preparePrysmStartFlags(ctx *cli.Context) (startFlags []string, err error) {
 	if ctx.String(transactionFeeRecipientFlag) != "" {
 		startFlags = append(startFlags, fmt.Sprintf("--suggested-fee-recipient=%s", ctx.String(transactionFeeRecipientFlag)))
 	}
-	if ctx.String(prysmGenesisStateFlag) != "" {
-		startFlags = append(startFlags, fmt.Sprintf("--genesis-state=%s", ctx.String(prysmGenesisStateFlag)))
+	if ctx.String(genesisStateFlag) != "" {
+		startFlags = append(startFlags, fmt.Sprintf("--genesis-state=%s", ctx.String(genesisStateFlag)))
 	}
 	if ctx.String(prysmChainConfigFileFlag) != "" {
 		startFlags = append(startFlags, fmt.Sprintf("--chain-config-file=%s", ctx.String(prysmChainConfigFileFlag)))

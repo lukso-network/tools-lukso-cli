@@ -106,17 +106,17 @@ var (
 			filePath: mainnetConfig + "/" + genesisJsonPath,
 		},
 		mainnetGenesis35DependencyName: {
-			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/genesis.json",
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/genesis_35.json",
 			name:     mainnetGenesis35DependencyName,
 			filePath: mainnetConfig + "/" + genesis35JsonPath,
 		},
 		mainnetGenesis42DependencyName: {
-			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/genesis.json",
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/genesis_42.json",
 			name:     mainnetGenesis42DependencyName,
 			filePath: mainnetConfig + "/" + genesis42JsonPath,
 		},
 		mainnetGenesis100DependencyName: {
-			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/genesis.json",
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/genesis_100.json",
 			name:     mainnetGenesis100DependencyName,
 			filePath: mainnetConfig + "/" + genesis100JsonPath,
 		},

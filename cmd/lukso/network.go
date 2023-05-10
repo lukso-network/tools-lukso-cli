@@ -116,7 +116,7 @@ func updateValues(ctx *cli.Context, config networkConfig) (err error) {
 		genesisJsonFlag:              gethGenesis,
 		prysmChainConfigFileFlag:     configYaml,
 		validatorChainConfigFileFlag: configYaml,
-		prysmGenesisStateFlag:        genesisState,
+		genesisStateFlag:             genesisState,
 		validatorWalletDirFlag:       config.walletPath,
 	}
 
