@@ -9,16 +9,35 @@ import (
 // TODO: consider to move it to common/shared
 // TODO: Disconnect names of dependencies from actual terminal outputs
 const (
+	// client names
 	gethDependencyName       = "geth"
 	prysmDependencyName      = "prysm"
 	validatorDependencyName  = "validator"
 	lighthouseDependencyName = "lighthouse"
 	erigonDependencyName     = "erigon"
 
-	mainnetGenesisDependencyName = "mainnet genesis"
-	testnetGenesisDependencyName = "testnet genesis"
-	devnetGenesisDependencyName  = "devnet genesis"
+	// genesis files
+	mainnetGenesisDependencyName    = "mainnet genesis"
+	testnetGenesisDependencyName    = "testnet genesis"
+	devnetGenesisDependencyName     = "devnet genesis"
+	mainnetGenesis35DependencyName  = "mainnet genesis (35M)"
+	mainnetGenesis42DependencyName  = "mainnet genesis (42M)"
+	mainnetGenesis100DependencyName = "mainnet genesis (100M)"
 
+	// genesis state files
+	mainnetGenesisStateDependencyName    = "mainnet genesis state"
+	testnetGenesisStateDependencyName    = "testnet genesis state"
+	devnetGenesisStateDependencyName     = "devnet genesis state"
+	mainnetGenesisState35DependencyName  = "mainnet genesis state (35M)"
+	mainnetGenesisState42DependencyName  = "mainnet genesis state (42M)"
+	mainnetGenesisState100DependencyName = "mainnet genesis state (100M)"
+
+	// chain configurations
+	mainnetChainConfigDependencyName = "mainnet chain config"
+	testnetChainConfigDependencyName = "testnet chain config"
+	devnetChainConfigDependencyName  = "devnet chain config"
+
+	// client configurations
 	gethMainnetConfigName = "geth mainnet config"
 	gethTestnetConfigName = "geth testnet config"
 	gethDevnetConfigName  = "geth devnet config"
@@ -41,15 +60,6 @@ const (
 	validatorMainnetConfigDependencyName = "validator mainnet config"
 	validatorTestnetConfigDependencyName = "validator testnet config"
 	validatorDevnetConfigDependencyName  = "validator devnet config"
-
-	mainnetGenesisStateDependencyName = "mainnet genesis state"
-	mainnetChainConfigDependencyName  = "mainnet chain config"
-
-	testnetGenesisStateDependencyName = "testnet genesis state"
-	testnetChainConfigDependencyName  = "testnet chain config"
-
-	devnetGenesisStateDependencyName = "devnet genesis state"
-	devnetChainConfigDependencyName  = "devnet chain config"
 )
 
 var (
@@ -95,10 +105,40 @@ var (
 			name:     mainnetGenesisDependencyName,
 			filePath: mainnetConfig + "/" + genesisJsonPath,
 		},
+		mainnetGenesis35DependencyName: {
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/genesis.json",
+			name:     mainnetGenesis35DependencyName,
+			filePath: mainnetConfig + "/" + genesis35JsonPath,
+		},
+		mainnetGenesis42DependencyName: {
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/genesis.json",
+			name:     mainnetGenesis42DependencyName,
+			filePath: mainnetConfig + "/" + genesis42JsonPath,
+		},
+		mainnetGenesis100DependencyName: {
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/genesis.json",
+			name:     mainnetGenesis100DependencyName,
+			filePath: mainnetConfig + "/" + genesis100JsonPath,
+		},
 		mainnetGenesisStateDependencyName: {
-			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/genesis.ssz", // no genesis state file for mainnet yet
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/genesis.ssz",
 			name:     mainnetGenesisStateDependencyName,
 			filePath: mainnetConfig + "/" + genesisStateFilePath,
+		},
+		mainnetGenesisState35DependencyName: {
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/genesis_35.ssz",
+			name:     mainnetGenesisState35DependencyName,
+			filePath: mainnetConfig + "/" + genesisState35FilePath,
+		},
+		mainnetGenesisState42DependencyName: {
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/genesis_42.ssz",
+			name:     mainnetGenesisState42DependencyName,
+			filePath: mainnetConfig + "/" + genesisState42FilePath,
+		},
+		mainnetGenesisState100DependencyName: {
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/genesis_100.ssz",
+			name:     mainnetGenesisState100DependencyName,
+			filePath: mainnetConfig + "/" + genesisState100FilePath,
 		},
 		mainnetChainConfigDependencyName: {
 			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/config.yaml",
@@ -116,7 +156,7 @@ var (
 			filePath: testnetConfig + "/" + genesisJsonPath,
 		},
 		testnetGenesisStateDependencyName: {
-			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/shared/genesis.ssz", // no genesis state file for testnet yet
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/shared/genesis.ssz",
 			name:     testnetGenesisStateDependencyName,
 			filePath: testnetConfig + "/" + genesisStateFilePath,
 		},

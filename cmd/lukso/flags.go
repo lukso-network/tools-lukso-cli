@@ -94,15 +94,24 @@ const (
 
 	// structure inside configs/selected-network directory.
 	// we will select directory based on provided flag, by concatenating config path + file path
-	genesisStateFilePath = "shared/genesis.ssz"
-	chainConfigYamlPath  = "shared/config.yaml"
-	gethTomlPath         = "geth/geth.toml"
-	erigonTomlPath       = "erigon/erigon.toml"
-	genesisJsonPath      = "shared/genesis.json"
-	prysmYamlPath        = "prysm/prysm.yaml"
-	lighthouseTomlPath   = "lighthouse/lighthouse.toml"
-	deployBlockPath      = "shared/deploy_block.txt"
-	validatorYamlPath    = "prysm/validator.yaml"
+	chainConfigYamlPath = "shared/config.yaml"
+	gethTomlPath        = "geth/geth.toml"
+	erigonTomlPath      = "erigon/erigon.toml"
+	prysmYamlPath       = "prysm/prysm.yaml"
+	lighthouseTomlPath  = "lighthouse/lighthouse.toml"
+	deployBlockPath     = "shared/deploy_block.txt"
+	validatorYamlPath   = "prysm/validator.yaml"
+
+	// genesis related files
+	genesisJsonPath    = "shared/genesis.json"
+	genesis35JsonPath  = "shared/genesis_35.json"
+	genesis42JsonPath  = "shared/genesis_42.json"
+	genesis100JsonPath = "shared/genesis_100.json"
+
+	genesisStateFilePath    = "shared/genesis.ssz"
+	genesisState35FilePath  = "shared/genesis_35.ssz"
+	genesisState42FilePath  = "shared/genesis_42.ssz"
+	genesisState100FilePath = "shared/genesis_100.ssz"
 
 	// validator tool related flags
 	validatorKeysFlag = "validator-keys"
