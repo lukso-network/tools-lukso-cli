@@ -11,7 +11,7 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-var Version = "develop"
+var Version = "0.6.0"
 
 const (
 	ubuntu  = "linux"
