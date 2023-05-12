@@ -626,7 +626,6 @@ func prepareValidatorStartFlags(ctx *cli.Context) (startFlags []string, password
 
 			return
 		}
-		f.Close()
 
 		log.Infof("Password pipe created in %s", passwordPipe)
 		err = ctx.Set(validatorWalletPasswordFileFlag, passwordPipe)
