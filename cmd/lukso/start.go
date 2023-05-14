@@ -137,7 +137,7 @@ func startClients(ctx *cli.Context) error {
 		return cli.Exit(fmt.Sprintf("❌  There was an error while starting validator: %v", err), 1)
 	}
 
-	log.Info("🎉  Clients have been started. Your node is now running 🆙.")
+	log.Info("🎉  Clients have been started. Your node is now 🆙.")
 
 	return nil
 }
@@ -305,9 +305,15 @@ func initClient(client string, ctx *cli.Context) (err error) {
 			return errors.New("❌  Genesis JSON not found")
 		}
 
-		message := `Choose your preferred initial LYX supply:
+		message := `Choose your preferred initial LYX supply!
+If you are a Genesis Validator, we recommend to choose the supply, which the majority of the Genesis Validators would choose,
+to prevent your node from running on a network that can not finalize due to missing validators!
+🗳️ See the voting results at https://deposit.mainnet.lukso.network
+
 For more information read:
 👉 https://medium.com/lukso/genesis-validators-deposit-smart-contract-freeze-and-testnet-launch-c5f7b568b1fc
+
+Which initial LYX supply do you choose?
 1: 35M LYX
 2: 42M LYX
 3: 100M LYX

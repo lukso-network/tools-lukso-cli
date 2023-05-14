@@ -159,34 +159,34 @@ REPO: https://github.com/lukso-network/tools-lukso-cli
 		},
 		{
 			Name:            "stop",
-			Usage:           "Stops all or specific clients that are currently running",
+			Usage:           "Stops all or specific client(s) that are currently running",
 			Action:          stopClients,
 			Flags:           stopFlags,
 			HideHelpCommand: true,
 		},
 		{
 			Name:            "logs",
-			Usage:           "Listens to and logs all events from a specific client in the current terminal window",
+			Usage:           "Streams all logs from a specific client in the current terminal window",
 			Action:          logClients,
 			HideHelpCommand: true,
 			Subcommands: []*cli.Command{
 				{
 					Name:            "execution",
-					Usage:           "Outputs selected execution client's logs",
+					Usage:           "Outputs selected execution client's logs, add the network flag, if not mainnet",
 					Flags:           gethLogsFlags,
 					Action:          selectNetworkFor(logLayer(executionLayer)),
 					HideHelpCommand: true,
 				},
 				{
 					Name:            "consensus",
-					Usage:           "Outputs selected consensus client's logs",
+					Usage:           "Outputs selected consensus client's logs, add the network flag, if not mainnet",
 					Flags:           prysmLogsFlags,
 					Action:          selectNetworkFor(logLayer(consensusLayer)),
 					HideHelpCommand: true,
 				},
 				{
 					Name:            "validator",
-					Usage:           "Outputs selected validator client's logs",
+					Usage:           "Outputs selected validator client's logs, add the network flag, if not mainnet",
 					Flags:           validatorLogsFlags,
 					Action:          selectNetworkFor(logLayer(validatorLayer)), // named as a layer for sake of
 					HideHelpCommand: true,
