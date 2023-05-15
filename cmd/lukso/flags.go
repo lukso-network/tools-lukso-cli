@@ -9,7 +9,7 @@ import (
 	"github.com/urfave/cli/v2"
 	"golang.org/x/term"
 
-	"github.com/m8b-dev/lukso-cli/config"
+	"github.com/lukso-network/tools-lukso-cli/config"
 )
 
 const (

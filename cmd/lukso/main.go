@@ -6,7 +6,7 @@ import (
 	"runtime"
 	runtimeDebug "runtime/debug"
 
-	"github.com/m8b-dev/lukso-cli/config"
+	"github.com/lukso-network/tools-lukso-cli/config"
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 )

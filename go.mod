@@ -1,4 +1,4 @@
-module github.com/m8b-dev/lukso-cli
+module github.com/lukso-network/tools-lukso-cli
 
 go 1.19
 
