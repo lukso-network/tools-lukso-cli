@@ -378,7 +378,6 @@ lukso validator import --keys-dir "./myDir"
 
 | Option              | Description                                                                |
 | ------------------- | -------------------------------------------------------------------------- |
-| **SHORTCUT**        |                                                                            |
 | --keys-dir [string] | Directory of the validator keys (default: "./\[network_type\]-keystore")   |
 | **NETWORK**         |                                                                            |
 | --mainnet           | Will import the keys for mainnet [default] (default: "./mainnet-keystore") |
