@@ -159,9 +159,9 @@ func LoadLighthouseConfig(path string) (args []string, err error) {
 			continue
 		}
 
-		intVal, ok := val.(int)
+		intVal, ok := val.(int64)
 		if ok {
-			args = append(args, fmt.Sprintf("--%s", key), strconv.FormatInt(int64(intVal), 10))
+			args = append(args, fmt.Sprintf("--%s", key), strconv.FormatInt(intVal, 10))
 
 			continue
 		}
@@ -175,7 +175,7 @@ func LoadLighthouseConfig(path string) (args []string, err error) {
 			continue
 		}
 
-		return args, cli.Exit("Fatal error: failed to parse config file.", 1)
+		return args, cli.Exit(fmt.Sprintf("Fatal error: failed to parse config file - %s without proper type", val), 1)
 	}
 
 	return

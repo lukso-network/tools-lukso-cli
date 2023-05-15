@@ -27,13 +27,14 @@ const (
 
 var (
 	appName        = "lukso"
+	log            = logrus.StandardLogger()
 	binDir         string
 	gethTag        string
 	gethCommitHash string
 	validatorTag   string
 	prysmTag       string
-	log            = logrus.StandardLogger()
 	systemOs       string
+	arch           string
 	cfg            *config.Config
 )
 
