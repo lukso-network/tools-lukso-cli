@@ -300,7 +300,7 @@ func initClient(client string, ctx *cli.Context) (err error) {
 		return errAlreadyRunning
 	}
 
-	if !flagFileExists(ctx, genesisJsonFlag) {
+	if !fileExists(ctx.String(genesisJsonFlag)) {
 		if ctx.Bool(testnetFlag) || ctx.Bool(devnetFlag) {
 			return errors.New("❌  Genesis JSON not found")
 		}
