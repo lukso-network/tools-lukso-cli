@@ -66,31 +66,31 @@ var (
 	clientDependencies = map[string]*ClientDependency{
 		// ----- BINARIES -----
 		gethDependencyName: {
-			baseUrl:  "https://gethstore.blob.core.windows.net/builds/geth-%s-amd64-%s-%s.tar.gz",
+			baseUrl:  "https://gethstore.blob.core.windows.net/builds/geth-|OS|-|ARCH|-|TAG|-|COMMIT|.tar.gz",
 			name:     gethDependencyName,
 			filePath: "", // binary dir selected during runtime
 			isBinary: true,
 		},
 		erigonDependencyName: {
-			baseUrl:  "https://github.com/ledgerwatch/erigon/releases/download/v%s/erigon_%s_%s_amd64.tar.gz",
+			baseUrl:  "https://github.com/ledgerwatch/erigon/releases/download/v|TAG|/erigon_|TAG|_|OS|_|ARCH|.tar.gz",
 			name:     erigonDependencyName,
 			filePath: "",
 			isBinary: true,
 		},
 		prysmDependencyName: {
-			baseUrl:  "https://github.com/prysmaticlabs/prysm/releases/download/%s/beacon-chain-%s-%s-amd64",
+			baseUrl:  "https://github.com/prysmaticlabs/prysm/releases/download/|TAG|/beacon-chain-|TAG|-|OS|-|ARCH|",
 			name:     prysmDependencyName,
 			filePath: "", // binary dir selected during runtime
 			isBinary: true,
 		},
 		lighthouseDependencyName: {
-			baseUrl:  "https://github.com/sigp/lighthouse/releases/download/%s/lighthouse-%s-x86_64-%s-%s.tar.gz",
+			baseUrl:  "https://github.com/sigp/lighthouse/releases/download/|TAG|/lighthouse-|TAG|-x86_64-|OS-NAME|-|OS|-portable.tar.gz",
 			name:     lighthouseDependencyName,
 			filePath: "", // binary dir selected during runtime
 			isBinary: true,
 		},
 		validatorDependencyName: {
-			baseUrl:  "https://github.com/prysmaticlabs/prysm/releases/download/%s/validator-%s-%s-amd64",
+			baseUrl:  "https://github.com/prysmaticlabs/prysm/releases/download/|TAG|/validator-|TAG|-|OS|-|ARCH|",
 			name:     validatorDependencyName,
 			filePath: "", // binary dir selected during runtime
 			isBinary: true,
@@ -291,37 +291,35 @@ type ClientDependency struct {
 }
 
 func (dependency *ClientDependency) ParseUrl(tag, commitHash string) (url string) {
-	// do not parse when no occurrences
+	// for lighthouse
 	var (
-		baseUrl           = dependency.baseUrl
-		sprintOccurrences = strings.Count(dependency.baseUrl, "%s")
-		systemName        string
-		urlSystem         = systemOs
+		systemName string
+		urlSystem  = systemOs
 	)
 
-	// for lighthouse
-	switch systemOs {
-	case ubuntu:
-		systemName = "unknown"
-		urlSystem += "-gnu"
-	case macos:
-		systemName = "apple"
-	default:
-		systemName = "unknown"
-		urlSystem += "-gnu"
+	if dependency.name == lighthouseDependencyName {
+		switch systemOs {
+		case ubuntu:
+			systemName = "unknown"
+			urlSystem += "-gnu"
+		case macos:
+			systemName = "apple"
+		default:
+			systemName = "unknown"
+			urlSystem += "-gnu"
+		}
 	}
 
-	switch sprintOccurrences {
-	case 3:
-		if commitHash != "" {
-			return fmt.Sprintf(baseUrl, systemOs, tag, commitHash)
-		}
-		return fmt.Sprintf(baseUrl, tag, tag, systemOs)
-	case 4:
-		return fmt.Sprintf(baseUrl, tag, tag, systemName, urlSystem)
-	default:
-		return baseUrl
-	}
+	baseUrl := dependency.baseUrl
+	url = baseUrl
+
+	url = strings.Replace(url, "|TAG|", tag, -1)
+	url = strings.Replace(url, "|OS|", urlSystem, -1)
+	url = strings.Replace(url, "|OS-NAME|", systemName, -1) // for lighthouse
+	url = strings.Replace(url, "|COMMIT|", commitHash, -1)
+	url = strings.Replace(url, "|ARCH|", arch, -1)
+
+	return
 }
 
 func (dependency *ClientDependency) ResolveDirPath(tagName string, datadir string) (location string) {
@@ -344,6 +342,7 @@ func (dependency *ClientDependency) ResolveBinaryPath(tagName string, datadir st
 
 func setupOperatingSystem() {
 	systemOs = runtime.GOOS
+	arch = runtime.GOARCH
 
 	switch systemOs {
 	case ubuntu, macos:

@@ -219,15 +219,17 @@ func installBinaries(ctx *cli.Context) (err error) {
 		executionTag = ctx.String(erigonTagFlag)
 	}
 
-	termsAgreed := ctx.Bool(agreeTermsFlag)
-	if !termsAgreed {
-		fmt.Println("")
-		accepted := acceptTermsInteractive()
-		if !accepted {
-			return cli.Exit("❌  Terms of use not accepted - aborting...", 1)
+	if selectedConsensus == prysmDependencyName {
+		termsAgreed := ctx.Bool(agreeTermsFlag)
+		if !termsAgreed {
+			fmt.Println("")
+			accepted := acceptTermsInteractive()
+			if !accepted {
+				return cli.Exit("❌  Terms of use not accepted - aborting...", 1)
+			}
+		} else {
+			log.Info("✅  You accepted Prysm's Terms of Use: https://github.com/prysmaticlabs/prysm/blob/develop/TERMS_OF_SERVICE.md")
 		}
-	} else {
-		log.Info("✅  You accepted Prysm's Terms of Use: https://github.com/prysmaticlabs/prysm/blob/develop/TERMS_OF_SERVICE.md")
 	}
 
 	log.Infof("⬇️  Downloading %s...", selectedExecution)
