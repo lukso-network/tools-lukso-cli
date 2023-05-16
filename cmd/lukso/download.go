@@ -136,6 +136,10 @@ func (dependency *ClientDependency) Download(tag, commitHash string, isUpdate bo
 		return
 	}
 
+	if dependency.isBinary {
+		log.Infof("✅  %s downloaded!\n\n", dependency.name)
+	}
+
 	return
 }
 
@@ -237,14 +241,12 @@ func installBinaries(ctx *cli.Context) (err error) {
 	if err != nil {
 		return cli.Exit(fmt.Sprintf("❌  There was an error while downloading %s: %v", selectedExecution, err), 1)
 	}
-	log.Infof("✅  %s downloaded!\n\n", selectedExecution)
 
 	log.Infof("⬇️  Downloading %s...", selectedConsensus)
 	err = clientDependencies[selectedConsensus].Download(consensusTag, "", false, binaryPerms)
 	if err != nil {
 		return cli.Exit(fmt.Sprintf("❌  There was an error while downloading %s: %v", selectedConsensus, err), 1)
 	}
-	log.Infof("✅  %s downloaded!\n\n", selectedConsensus)
 
 	// for now, we also need to download a validator client
 	// when other validator clients will be implemented we will download the one bound to consensus clients
@@ -253,7 +255,6 @@ func installBinaries(ctx *cli.Context) (err error) {
 	if err != nil {
 		return cli.Exit(fmt.Sprintf("❌  There was an error while downloading validator: %v", err), 1)
 	}
-	log.Infof("✅  %s downloaded!\n\n", validatorDependencyName)
 
 	err = cfg.Create(selectedExecution, selectedConsensus)
 	if err != nil {
