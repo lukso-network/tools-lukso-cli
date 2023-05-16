@@ -1,6 +1,8 @@
 package main
 
 import (
+	"crypto/rand"
+	"encoding/hex"
 	"fmt"
 	"os"
 	"strings"
@@ -606,7 +608,17 @@ func prepareValidatorStartFlags(ctx *cli.Context) (startFlags []string, password
 			return
 		}
 
-		passwordPipe = ctx.String(validatorKeysFlag) + "/.pass.txt"
+		b := make([]byte, 4)
+		_, err = rand.Read(b)
+		if err != nil {
+			log.Errorf("Couldn't create random byte array: %v", err)
+
+			return
+		}
+
+		randPipe := hex.EncodeToString(b)
+
+		passwordPipe = ctx.String(validatorKeysFlag) + fmt.Sprintf("/.%s.txt", randPipe)
 		err = syscall.Mkfifo(passwordPipe, 0600)
 		if err != nil {
 			log.Errorf("Couldn't create password pipe: %v", err)
@@ -627,7 +639,6 @@ func prepareValidatorStartFlags(ctx *cli.Context) (startFlags []string, password
 			return
 		}
 
-		log.Infof("Password pipe created in %s", passwordPipe)
 		err = ctx.Set(validatorWalletPasswordFileFlag, passwordPipe)
 		if err != nil {
 			return
