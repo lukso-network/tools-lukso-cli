@@ -28,7 +28,7 @@ func (dependency *ClientDependency) Start(
 	command := exec.Command(dependency.name, arguments...)
 
 	if dependency.name == gethDependencyName || dependency.name == erigonDependencyName {
-		log.Infof("⚙️  Running %s init first...", dependency.name)
+		log.Infof("⚙️  Running %s init...", dependency.name)
 
 		err = initClient(dependency.name, ctx)
 		if err != nil && !errors.Is(err, errAlreadyRunning) { // if it is already running it will be caught during start
@@ -66,6 +66,7 @@ func (dependency *ClientDependency) Start(
 		command.Stderr = logFile
 	}
 
+	log.Infof("🔄  Starting %s", dependency.name)
 	err = command.Start()
 	if err != nil {
 		return
@@ -156,8 +157,6 @@ func startClients(ctx *cli.Context) error {
 }
 
 func startGeth(ctx *cli.Context) error {
-	log.Info("🔄  Starting Geth")
-
 	gethFlags, ok := prepareGethStartFlags(ctx)
 	if !ok {
 		return errFlagPathInvalid
@@ -174,8 +173,6 @@ func startGeth(ctx *cli.Context) error {
 }
 
 func startErigon(ctx *cli.Context) error {
-	log.Info("🔄  Starting Erigon")
-
 	erigonFlags, ok := prepareErigonStartFlags(ctx)
 	if !ok {
 		return errFlagPathInvalid
@@ -192,7 +189,6 @@ func startErigon(ctx *cli.Context) error {
 }
 
 func startPrysm(ctx *cli.Context) error {
-	log.Info("🔄  Starting Prysm")
 	prysmFlags, err := preparePrysmStartFlags(ctx)
 	if err != nil {
 		return err
@@ -209,7 +205,6 @@ func startPrysm(ctx *cli.Context) error {
 }
 
 func startLighthouse(ctx *cli.Context) error {
-	log.Info("🔄  Starting Lighthouse")
 	lighthouseFlags, err := prepareLighthouseStartFlags(ctx)
 	if err != nil {
 		return err

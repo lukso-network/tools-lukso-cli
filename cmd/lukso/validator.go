@@ -60,7 +60,6 @@ func importValidator(ctx *cli.Context) error {
 }
 
 func startValidator(ctx *cli.Context) (err error) {
-	log.Info("🔄  Starting Validator")
 	validatorFlags, passwordPipe, err := prepareValidatorStartFlags(ctx)
 	if passwordPipe != "" {
 		defer os.Remove(passwordPipe)

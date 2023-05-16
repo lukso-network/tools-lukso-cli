@@ -309,6 +309,9 @@ func (dependency *ClientDependency) ParseUrl(tag, commitHash string) (url string
 			urlSystem += "-gnu"
 		}
 	}
+	if dependency.name == gethDependencyName && systemOs == macos {
+		url = strings.Replace(url, "|ARCH|", "amd64", -1)
+	}
 
 	baseUrl := dependency.baseUrl
 	url = baseUrl
