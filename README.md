@@ -208,7 +208,7 @@ $ lukso start --logs-folder "[folder_path]"
 | Option                               | Description                                                                                                                                           |
 | ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **NETWORK**                          |                                                                                                                                                       |
-| --mainnet                            | Starts the LUKSO node with mainnet data (default) (./configs/mainnet)                                                                                 |
+| --mainnet                            | Starts the LUKSO node with mainnet data [default] (./configs/mainnet)                                                                                 |
 | --testnet                            | Starts the LUKSO node with testnet data (./configs/tesnet)                                                                                            |
 | --devnet                             | Starts the LUKSO node with devnet data (./configs/devnet)                                                                                             |
 | **VALIDATOR**                        |                                                                                                                                                       |
@@ -275,7 +275,7 @@ $ lukso logs validator --testnet
 
 | Option    | Description                                                       |
 | --------- | ----------------------------------------------------------------- |
-| --mainnet | Logs the mainnet client (default) (./mainnet-logs/[client_type]/) |
+| --mainnet | Logs the mainnet client [default] (./mainnet-logs/[client_type]/) |
 | --testnet | Logs the testnet client (./testnet-logs/[client_type]/)           |
 | --devnet  | Logs the devnet client (./devnet-logs/[client_type]/)             |
 
@@ -305,11 +305,11 @@ $ lukso reset --devnet
 
 #### Options for `reset`
 
-| Option              | Description                 |
-| ------------------- | --------------------------- |
-| --mainnet [default] | Resets LUKSO's mainnet data |
-| --testnet           | Resets LUKSO's testnet data |
-| --devnet            | Resets LUKSO's devnet data  |
+| Option    | Description                           |
+| --------- | ------------------------------------- |
+| --mainnet | Resets LUKSO's mainnet data [default] |
+| --testnet | Resets LUKSO's testnet data           |
+| --devnet  | Resets LUKSO's devnet data            |
 
 ### `version`
 
