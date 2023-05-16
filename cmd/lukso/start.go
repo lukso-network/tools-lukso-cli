@@ -16,14 +16,27 @@ func (dependency *ClientDependency) Start(
 	ctx *cli.Context,
 ) (err error) {
 	if isRunning(dependency.name) {
-		log.Infof("⏭️  %s is already running - skipping...", dependency.name)
+		log.Infof("🔄️  %s is already running - stopping first...", dependency.name)
 
-		return nil
+		err = dependency.Stop()
+
+		if err != nil {
+			return
+		}
 	}
 
 	command := exec.Command(dependency.name, arguments...)
 
 	if dependency.name == gethDependencyName || dependency.name == erigonDependencyName {
+		log.Infof("⚙️  Running %s init first...", dependency.name)
+
+		err = initClient(dependency.name, ctx)
+		if err != nil && !errors.Is(err, errAlreadyRunning) { // if it is already running it will be caught during start
+			log.Errorf("❌  There was an error while initalizing %s. Error: %v", dependency.name, err)
+
+			return err
+		}
+
 		var (
 			logFile  *os.File
 			fullPath string
@@ -143,15 +156,6 @@ func startClients(ctx *cli.Context) error {
 }
 
 func startGeth(ctx *cli.Context) error {
-	log.Info("⚙️  Running geth init first...")
-
-	err := initClient(gethDependencyName, ctx)
-	if err != nil && !errors.Is(err, errAlreadyRunning) { // if it is already running it will be caught during start
-		log.Errorf("❌  There was an error while initalizing geth. Error: %v", err)
-
-		return err
-	}
-
 	log.Info("🔄  Starting Geth")
 
 	gethFlags, ok := prepareGethStartFlags(ctx)
@@ -159,9 +163,9 @@ func startGeth(ctx *cli.Context) error {
 		return errFlagPathInvalid
 	}
 
-	err = clientDependencies[gethDependencyName].Start(gethFlags, ctx)
+	err := clientDependencies[gethDependencyName].Start(gethFlags, ctx)
 	if err != nil {
-		return err
+		return cli.Exit(fmt.Sprintf("❌  There was an error while starting geth: %v", err), 1)
 	}
 
 	log.Info("✅  Geth started! Use 'lukso logs' to see the logs.")
@@ -170,15 +174,6 @@ func startGeth(ctx *cli.Context) error {
 }
 
 func startErigon(ctx *cli.Context) error {
-	log.Info("⚙️  Running erigon init first...")
-
-	err := initClient(erigonDependencyName, ctx)
-	if err != nil && !errors.Is(err, errAlreadyRunning) { // if it is already running it will be caught during start
-		log.Errorf("❌  There was an error while initalizing geth. Error: %v", err)
-
-		return err
-	}
-
 	log.Info("🔄  Starting Erigon")
 
 	erigonFlags, ok := prepareErigonStartFlags(ctx)
@@ -186,9 +181,9 @@ func startErigon(ctx *cli.Context) error {
 		return errFlagPathInvalid
 	}
 
-	err = clientDependencies[erigonDependencyName].Start(erigonFlags, ctx)
+	err := clientDependencies[erigonDependencyName].Start(erigonFlags, ctx)
 	if err != nil {
-		return err
+		return cli.Exit(fmt.Sprintf("❌  There was an error while starting erigon: %v", err), 1)
 	}
 
 	log.Info("✅  Erigon started! Use 'lukso log' to see logs.")
@@ -205,7 +200,7 @@ func startPrysm(ctx *cli.Context) error {
 
 	err = clientDependencies[prysmDependencyName].Start(prysmFlags, ctx)
 	if err != nil {
-		return err
+		return cli.Exit(fmt.Sprintf("❌  There was an error while starting prysm: %v", err), 1)
 	}
 
 	log.Info("✅  Prysm started! Use 'lukso logs' to see the logs.")
@@ -224,7 +219,7 @@ func startLighthouse(ctx *cli.Context) error {
 
 	err = clientDependencies[lighthouseDependencyName].Start(lighthouseFlags, ctx)
 	if err != nil {
-		return err
+		return cli.Exit(fmt.Sprintf("❌  There was an error while starting lighthouse: %v", err), 1)
 	}
 
 	log.Info("✅  Lighthouse started! Use 'lukso log' to see logs.")
