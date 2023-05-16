@@ -116,7 +116,8 @@ const (
 	genesisState100FilePath = "shared/genesis_100.ssz"
 
 	// validator tool related flags
-	validatorKeysFlag = "validator-keys"
+	validatorKeysFlag     = "validator-keys"
+	validatorPasswordFlag = "validator-password"
 )
 
 var (
@@ -163,6 +164,15 @@ var (
 			Name:   validatorWalletDirFlag,
 			Usage:  "Selected wallet",
 			Hidden: true,
+		},
+		&cli.StringFlag{
+			Name:     validatorKeysFlag,
+			Usage:    "Location of your validator keys",
+			Required: true,
+		},
+		&cli.StringFlag{
+			Name:  validatorPasswordFlag,
+			Usage: "Location of your validator keys",
 		},
 	}
 

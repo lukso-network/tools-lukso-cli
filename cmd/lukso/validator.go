@@ -1,11 +1,12 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
+	"github.com/urfave/cli/v2"
 	"os"
 	"os/exec"
-
-	"github.com/urfave/cli/v2"
+	"time"
 )
 
 func importValidator(ctx *cli.Context) error {
@@ -16,33 +17,14 @@ func importValidator(ctx *cli.Context) error {
 	args := []string{
 		"accounts",
 		"import",
+		"--wallet-dir",
+		ctx.String(validatorWalletDirFlag),
 	}
 
-	// we don't want to pass those flags
-	mainnet := fmt.Sprintf("--%s", mainnetFlag)
-	testnet := fmt.Sprintf("--%s", testnetFlag)
-	devnet := fmt.Sprintf("--%s", devnetFlag)
-	walletDir := "--wallet-dir"
+	validatorPass := ctx.String(validatorPasswordFlag)
 
-	for _, osArg := range os.Args[3:] {
-		if osArg == mainnet || osArg == testnet || osArg == devnet {
-			continue
-		}
-
-		args = append(args, osArg)
-	}
-
-	isWalletProvided := false
-	walletDefault := ctx.String(validatorWalletDirFlag)
-
-	for _, arg := range args {
-		if arg == walletDir {
-			isWalletProvided = true
-		}
-	}
-
-	if !isWalletProvided {
-		args = append(args, walletDir, walletDefault)
+	if validatorPass != "" {
+		args = append(args, "--account-password-file", validatorPass)
 	}
 
 	initCommand := exec.Command("validator", args...)
@@ -60,6 +42,12 @@ func importValidator(ctx *cli.Context) error {
 }
 
 func startValidator(ctx *cli.Context) (err error) {
+	if !fileExists(fmt.Sprintf("%s/direct/accounts/all-accounts.keystore.json", ctx.String(validatorKeysFlag))) { // path to imported keys
+		log.Error("⚠️  Validator is not initialized. Run lukso validator import to initialize your validator.")
+
+		return nil
+	}
+
 	validatorFlags, passwordPipe, err := prepareValidatorStartFlags(ctx)
 	if passwordPipe != "" {
 		defer os.Remove(passwordPipe)
@@ -67,18 +55,32 @@ func startValidator(ctx *cli.Context) (err error) {
 	if err != nil {
 		return err
 	}
-	if !fileExists(fmt.Sprintf("%s/direct/accounts/all-accounts.keystore.json", ctx.String(validatorKeysFlag))) { // path to imported keys
-		log.Error("⚠️  Validator is not initialized. Run lukso validator import to initialize your validator.")
 
-		return nil
+	// before starting validate password
+	walletDir := ctx.String(validatorKeysFlag)
+
+	validateCommand := exec.Command("validator", "accounts", "list", "--wallet-dir", walletDir, "--wallet-password-file", passwordPipe)
+	buf := new(bytes.Buffer)
+
+	validateCommand.Stdout = buf
+	validateCommand.Stderr = buf
+
+	fmt.Println(validateCommand.String())
+	err = validateCommand.Start()
+	if err != nil {
+		return cli.Exit(fmt.Sprintf("❌  There was an error while validating password: %v", err), 1)
 	}
+
+	time.Sleep(time.Second * 3)
+
+	fmt.Println(buf.String())
+
+	log.Error("❌  Password incorrect, please restart and try again")
 
 	err = clientDependencies[validatorDependencyName].Start(validatorFlags, ctx)
 	if err != nil {
 		return cli.Exit(fmt.Sprintf("❌  There was an error while starting validator: %v", err), 1)
 	}
-
-	log.Info("✅  Validator started! Use 'lukso logs' to see the logs.")
 
 	return
 }
@@ -109,3 +111,27 @@ func listValidator(ctx *cli.Context) error {
 
 	return executeValidatorList(network)
 }
+
+//err = cfg.Read()
+//if err != nil {
+//return cli.Exit(fmt.Sprintf("❌  There was an error while reading config file: %v", err), 1)
+//}
+//
+//err = clientDependencies[cfg.Execution()].Stop()
+//if err != nil {
+//return cli.Exit(fmt.Sprintf("❌  There was an error while stopping execution: %v", err), 1)
+//}
+//
+//err = clientDependencies[cfg.Consensus()].Stop()
+//if err != nil {
+//return cli.Exit(fmt.Sprintf("❌  There was an error while stopping consensus: %v", err), 1)
+//}
+//f, err := os.Open(passwordPipe)
+//if err != nil {
+//return cli.Exit(fmt.Sprintf("❌  There was an error while opening password pipe: %v", err), 1)
+//}
+//
+//_, err = f.Write(password)
+//if err != nil {
+//return cli.Exit(fmt.Sprintf("❌  There was an error while writing password: %v", err), 1)
+//}

@@ -19,10 +19,11 @@ func (dependency *ClientDependency) Start(
 		log.Infof("🔄️  %s is already running - stopping first...", dependency.name)
 
 		err = dependency.Stop()
-
 		if err != nil {
 			return
 		}
+
+		log.Infof("🛑  Stopped %s", dependency.name)
 	}
 
 	command := exec.Command(dependency.name, arguments...)
@@ -94,8 +95,6 @@ func (dependency *ClientDependency) Stop() error {
 	if err != nil {
 		return errProcessNotFound
 	}
-
-	log.Infof("🛑  Stopped %s", dependency.name)
 
 	return nil
 }
@@ -281,8 +280,13 @@ func stopClients(ctx *cli.Context) (err error) {
 
 func stopClient(dependency *ClientDependency) error {
 	err := dependency.Stop()
+	if err != nil {
+		return err
+	}
 
-	return err
+	log.Infof("🛑  Stopped %s", dependency.name)
+
+	return nil
 }
 
 func initClient(client string, ctx *cli.Context) (err error) {

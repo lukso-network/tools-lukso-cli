@@ -217,7 +217,6 @@ REPO: https://github.com/lukso-network/tools-lukso-cli
 					Usage:           "Import your validator keys in the client wallet",
 					Flags:           validatorImportFlags,
 					Action:          selectNetworkFor(importValidator),
-					SkipFlagParsing: true,
 					HideHelpCommand: true,
 				},
 				{
