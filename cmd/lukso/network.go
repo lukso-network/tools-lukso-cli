@@ -52,15 +52,7 @@ func selectNetworkFor(f func(*cli.Context) error) func(*cli.Context) error {
 		}
 
 		if devnetEnabled {
-			cfg = networkConfig{
-				executionDatadirPath: executionDevnetDatadir,
-				consensusDatadirPath: consensusDevnetDatadir,
-				validatorDatadirPath: validatorDevnetDatadir,
-				logPath:              devnetLogs,
-				configPath:           devnetConfig,
-				keysPath:             devnetKeystore,
-				walletPath:           devnetKeystore,
-			}
+			return cli.Exit("❌  Network not supported", 1)
 		}
 
 		if testnetEnabled {

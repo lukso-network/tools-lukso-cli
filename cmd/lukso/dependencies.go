@@ -19,7 +19,6 @@ const (
 	// genesis files
 	mainnetGenesisDependencyName    = "mainnet genesis"
 	testnetGenesisDependencyName    = "testnet genesis"
-	devnetGenesisDependencyName     = "devnet genesis"
 	mainnetGenesis35DependencyName  = "mainnet genesis (35M)"
 	mainnetGenesis42DependencyName  = "mainnet genesis (42M)"
 	mainnetGenesis100DependencyName = "mainnet genesis (100M)"
@@ -27,7 +26,6 @@ const (
 	// genesis state files
 	mainnetGenesisStateDependencyName    = "mainnet genesis state"
 	testnetGenesisStateDependencyName    = "testnet genesis state"
-	devnetGenesisStateDependencyName     = "devnet genesis state"
 	mainnetGenesisState35DependencyName  = "mainnet genesis state (35M)"
 	mainnetGenesisState42DependencyName  = "mainnet genesis state (42M)"
 	mainnetGenesisState100DependencyName = "mainnet genesis state (100M)"
@@ -35,31 +33,24 @@ const (
 	// chain configurations
 	mainnetChainConfigDependencyName = "mainnet chain config"
 	testnetChainConfigDependencyName = "testnet chain config"
-	devnetChainConfigDependencyName  = "devnet chain config"
 
 	// client configurations
 	gethMainnetConfigName = "geth mainnet config"
 	gethTestnetConfigName = "geth testnet config"
-	gethDevnetConfigName  = "geth devnet config"
 
 	erigonMainnetConfigName = "erigon mainnet config"
 	erigonTestnetConfigName = "erigon testnet config"
-	erigonDevnetConfigName  = "erigon devnet config"
 
 	prysmMainnetConfigDependencyName = "prysm mainnet config"
 	prysmTestnetConfigDependencyName = "prysm testnet config"
-	prysmDevnetConfigDependencyName  = "prysm devnet config"
 
 	lighthouseMainnetConfigDependencyName  = "lighthouse mainnet config"
 	lighthouseTestnetConfigDependencyName  = "lighthouse testnet config"
-	lighthouseDevnetConfigDependencyName   = "lighthouse devnet config"
 	deployBlockMainnetConfigDependencyName = "mainnet deploy block"
 	deployBlockTestnetConfigDependencyName = "testnet deploy block"
-	deployBlockDevnetConfigDependencyName  = "devnet deploy block"
 
 	validatorMainnetConfigDependencyName = "validator mainnet config"
 	validatorTestnetConfigDependencyName = "validator testnet config"
-	validatorDevnetConfigDependencyName  = "validator devnet config"
 )
 
 var (
@@ -147,7 +138,7 @@ var (
 		},
 		deployBlockMainnetConfigDependencyName: {
 			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/lighthouse/deploy_block.txt",
-			name:     deployBlockDevnetConfigDependencyName,
+			name:     deployBlockMainnetConfigDependencyName,
 			filePath: mainnetConfig + "/" + deployBlockPath,
 		},
 		testnetGenesisDependencyName: {
@@ -167,28 +158,8 @@ var (
 		},
 		deployBlockTestnetConfigDependencyName: {
 			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/lighthouse/deploy_block.txt",
-			name:     deployBlockDevnetConfigDependencyName,
+			name:     deployBlockTestnetConfigDependencyName,
 			filePath: testnetConfig + "/" + deployBlockPath,
-		},
-		devnetGenesisDependencyName: {
-			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/devnets/3030/shared/genesis.json",
-			name:     devnetGenesisDependencyName,
-			filePath: devnetConfig + "/" + genesisJsonPath,
-		},
-		devnetGenesisStateDependencyName: {
-			baseUrl:  "https://github.com/lukso-network/network-configs/raw/main/devnets/3030/shared/genesis.ssz",
-			name:     devnetGenesisStateDependencyName,
-			filePath: devnetConfig + "/" + genesisStateFilePath,
-		},
-		devnetChainConfigDependencyName: {
-			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/devnets/3030/shared/config.yaml",
-			name:     devnetChainConfigDependencyName,
-			filePath: devnetConfig + "/" + chainConfigYamlPath,
-		},
-		deployBlockDevnetConfigDependencyName: {
-			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/devnets/3030/lighthouse/deploy_block.txt",
-			name:     deployBlockDevnetConfigDependencyName,
-			filePath: devnetConfig + "/" + deployBlockPath,
 		},
 	}
 
@@ -203,11 +174,6 @@ var (
 			name:     gethTestnetConfigName,
 			filePath: testnetConfig + "/" + gethTomlPath,
 		},
-		gethDevnetConfigName: {
-			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/devnets/3030/geth/geth.toml",
-			name:     gethDevnetConfigName,
-			filePath: devnetConfig + "/" + gethTomlPath,
-		},
 	}
 
 	erigonConfigDependencies = map[string]*ClientDependency{
@@ -220,11 +186,6 @@ var (
 			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/erigon/erigon.toml",
 			name:     erigonTestnetConfigName,
 			filePath: testnetConfig + "/" + erigonTomlPath,
-		},
-		erigonDevnetConfigName: {
-			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/devnets/3030/erigon/erigon.toml",
-			name:     erigonDevnetConfigName,
-			filePath: devnetConfig + "/" + erigonTomlPath,
 		},
 	}
 
@@ -239,11 +200,6 @@ var (
 			name:     prysmTestnetConfigDependencyName,
 			filePath: testnetConfig + "/" + prysmYamlPath,
 		},
-		prysmDevnetConfigDependencyName: {
-			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/devnets/3030/prysm/prysm.yaml",
-			name:     prysmDevnetConfigDependencyName,
-			filePath: devnetConfig + "/" + prysmYamlPath,
-		},
 	}
 
 	lighthouseConfigDependencies = map[string]*ClientDependency{
@@ -257,11 +213,6 @@ var (
 			name:     lighthouseTestnetConfigDependencyName,
 			filePath: testnetConfig + "/" + lighthouseTomlPath,
 		},
-		lighthouseDevnetConfigDependencyName: {
-			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/devnets/3030/lighthouse/lighthouse.toml",
-			name:     lighthouseDevnetConfigDependencyName,
-			filePath: devnetConfig + "/" + lighthouseTomlPath,
-		},
 	}
 
 	validatorConfigDependencies = map[string]*ClientDependency{
@@ -274,11 +225,6 @@ var (
 			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/prysm/validator.yaml",
 			name:     validatorTestnetConfigDependencyName,
 			filePath: testnetConfig + "/" + validatorYamlPath,
-		},
-		validatorDevnetConfigDependencyName: {
-			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/devnets/3030/prysm/validator.yaml",
-			name:     validatorDevnetConfigDependencyName,
-			filePath: devnetConfig + "/" + validatorYamlPath,
 		},
 	}
 )
