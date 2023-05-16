@@ -76,7 +76,7 @@ func startValidator(ctx *cli.Context) (err error) {
 
 	err = clientDependencies[validatorDependencyName].Start(validatorFlags, ctx)
 	if err != nil {
-		return cli.Exit(fmt.Sprintf("❌  There was an error while starting validator: %v", err), 1)
+		return err
 	}
 
 	log.Info("✅  Validator started! Use 'lukso logs' to see the logs.")
