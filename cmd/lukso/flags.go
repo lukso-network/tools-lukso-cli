@@ -618,7 +618,7 @@ func prepareValidatorStartFlags(ctx *cli.Context) (startFlags []string, password
 
 		randPipe := hex.EncodeToString(b)
 
-		passwordPipe = ctx.String(validatorKeysFlag) + fmt.Sprintf("/.%s.txt", randPipe)
+		passwordPipe = ctx.String(validatorKeysFlag) + fmt.Sprintf("/.%s", randPipe)
 		err = syscall.Mkfifo(passwordPipe, 0600)
 		if err != nil {
 			log.Errorf("Couldn't create password pipe: %v", err)
