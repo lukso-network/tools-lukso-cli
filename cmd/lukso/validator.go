@@ -16,33 +16,14 @@ func importValidator(ctx *cli.Context) error {
 	args := []string{
 		"accounts",
 		"import",
+		"--wallet-dir",
+		ctx.String(validatorWalletDirFlag),
 	}
 
-	// we don't want to pass those flags
-	mainnet := fmt.Sprintf("--%s", mainnetFlag)
-	testnet := fmt.Sprintf("--%s", testnetFlag)
-	devnet := fmt.Sprintf("--%s", devnetFlag)
-	walletDir := "--wallet-dir"
+	validatorPass := ctx.String(validatorPasswordFlag)
 
-	for _, osArg := range os.Args[3:] {
-		if osArg == mainnet || osArg == testnet || osArg == devnet {
-			continue
-		}
-
-		args = append(args, osArg)
-	}
-
-	isWalletProvided := false
-	walletDefault := ctx.String(validatorWalletDirFlag)
-
-	for _, arg := range args {
-		if arg == walletDir {
-			isWalletProvided = true
-		}
-	}
-
-	if !isWalletProvided {
-		args = append(args, walletDir, walletDefault)
+	if validatorPass != "" {
+		args = append(args, "--account-password-file", validatorPass)
 	}
 
 	initCommand := exec.Command("validator", args...)
