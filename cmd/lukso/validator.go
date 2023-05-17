@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strings"
+	"time"
 
 	"github.com/urfave/cli/v2"
 )
@@ -18,6 +20,8 @@ func importValidator(ctx *cli.Context) error {
 		"import",
 		"--wallet-dir",
 		ctx.String(validatorWalletDirFlag),
+		"--keys-dir",
+		ctx.String(validatorKeysFlag),
 	}
 
 	validatorPass := ctx.String(validatorPasswordFlag)
@@ -42,8 +46,8 @@ func importValidator(ctx *cli.Context) error {
 
 func startValidator(ctx *cli.Context) (err error) {
 	validatorFlags, passwordPipe, err := prepareValidatorStartFlags(ctx)
-	if passwordPipe != "" {
-		defer os.Remove(passwordPipe)
+	if passwordPipe.Name() != "" {
+		defer os.Remove(passwordPipe.Name())
 	}
 	if err != nil {
 		return err
@@ -57,6 +61,40 @@ func startValidator(ctx *cli.Context) (err error) {
 	err = clientDependencies[validatorDependencyName].Start(validatorFlags, ctx)
 	if err != nil {
 		return cli.Exit(fmt.Sprintf("❌  There was an error while starting validator: %v", err), 1)
+	}
+
+	passwordPipe.Close()
+
+	log.Info("⚙️  Please wait a few seconds while we your password is being validated...")
+	time.Sleep(time.Second * 10) // should be enough
+
+	logFile, err := getLastFile(ctx.String(logFolderFlag), validatorDependencyName)
+	if err != nil {
+		return cli.Exit(fmt.Sprintf("❌  There was an error while getting latest log file: %v", err), 1)
+	}
+
+	logs, err := os.ReadFile(ctx.String(logFolderFlag) + "/" + logFile)
+	if err != nil {
+		return cli.Exit(fmt.Sprintf("❌  There was an error while reading log file: %v", err), 1)
+	}
+
+	if strings.Contains(string(logs), wrongPassword) {
+		err = cfg.Read()
+		if err != nil {
+			return cli.Exit(fmt.Sprintf("❌  There was an error while reading config: %v", err), 1)
+		}
+
+		err = clientDependencies[cfg.Consensus()].Stop()
+		if err != nil {
+			return cli.Exit(fmt.Sprintf("❌  There was an error while stopping consensus: %v", err), 1)
+		}
+
+		err = clientDependencies[cfg.Execution()].Stop()
+		if err != nil {
+			return cli.Exit(fmt.Sprintf("❌  There was an error while stopping execution: %v", err), 1)
+		}
+
+		return cli.Exit("❌  Incorrect password, please restart and try again", 1)
 	}
 
 	log.Info("✅  Validator started! Use 'lukso logs' to see the logs.")

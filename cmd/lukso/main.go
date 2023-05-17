@@ -83,12 +83,12 @@ func init() {
 	validatorResetFlags = append(validatorResetFlags, networkFlags...)
 
 	validatorImportFlags = append(validatorImportFlags, networkFlags...)
+	validatorListFlags = append(validatorListFlags, networkFlags...)
 }
 
 func main() {
 	app := cli.App{}
 	app.Name = appName
-	app.ExitErrHandler = func(c *cli.Context, err error) {} // this (somehow) produces error logs instead of standard output
 
 	cli.AppHelpTemplate = fmt.Sprintf(`%s
 
@@ -96,7 +96,7 @@ DOCS: https://docs.lukso.tech/
 REPO: https://github.com/lukso-network/tools-lukso-cli
 
 `, cli.AppHelpTemplate)
-
+	app.ExitErrHandler = func(c *cli.Context, err error) {} // this (somehow) produces error logs instead of standard output
 	app.Usage = "The LUKSO CLI is a command line tool to install, manage and set up validators of different clients for the LUKSO Blockchain."
 	app.Flags = appFlags
 	app.Commands = []*cli.Command{
@@ -222,7 +222,7 @@ REPO: https://github.com/lukso-network/tools-lukso-cli
 				{
 					Name:            "list",
 					Usage:           "List your imported validator keys from the client wallet",
-					Flags:           validatorImportFlags,
+					Flags:           validatorListFlags,
 					Action:          selectNetworkFor(listValidator),
 					SkipFlagParsing: true,
 					HideHelpCommand: true,
