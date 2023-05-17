@@ -65,7 +65,7 @@ func startValidator(ctx *cli.Context) (err error) {
 
 	passwordPipe.Close()
 
-	log.Info("⚙️  Please wait a few seconds while we your password is being validated...")
+	log.Info("⚙️  Please wait a few seconds while your password is being validated...")
 	time.Sleep(time.Second * 10) // should be enough
 
 	logFile, err := getLastFile(ctx.String(logFolderFlag), validatorDependencyName)
