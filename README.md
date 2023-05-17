@@ -372,7 +372,7 @@ For `validator import` command the `--validator-keys` flag is required.
 
 lukso validator import --validator-keys "./myKeysDir"  
 
-# You will be asked only for wallet passwor 
+# You will be asked only for wallet password 
 lukso validator import --validator-keys "./myKeysDir" --validator-password "./myKeysPasswordFile.txt"
 ```
 
