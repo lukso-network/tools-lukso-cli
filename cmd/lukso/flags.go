@@ -1,6 +1,8 @@
 package main
 
 import (
+	"crypto/rand"
+	"encoding/hex"
 	"fmt"
 	"os"
 	"strings"
@@ -8,6 +10,8 @@ import (
 
 	"github.com/urfave/cli/v2"
 	"golang.org/x/term"
+
+	"github.com/lukso-network/tools-lukso-cli/config"
 )
 
 const (
@@ -19,18 +23,22 @@ const (
 	genesisJsonFlag    = "genesis-json"
 
 	// erigon related flag names
-	erigonTagFlag = "erigon-tag"
+	erigonTagFlag        = "erigon-tag"
+	erigonConfigFileFlag = "erigon-config"
+	erigonDatadirFlag    = "erigon-datadir"
 
 	// Prysm related flag names
 	prysmTagFlag             = "prysm-tag"
-	prysmGenesisStateFlag    = "genesis-ssz"
+	genesisStateFlag         = "genesis-ssz"
 	prysmChainConfigFileFlag = "prysm-chain-config"
 	prysmConfigFileFlag      = "prysm-config"
 	prysmDatadirFlag         = "prysm-datadir"
 	noSlasherFlag            = "no-slasher"
 
 	// lighthouse related flag names
-	lighthouseTagFlag = "lighthouse-tag"
+	lighthouseTagFlag        = "lighthouse-tag"
+	lighthouseConfigFileFlag = "lighthouse-config"
+	lighthouseDatadirFlag    = "lighthouse-datadir"
 
 	// Validator related flag names
 	validatorTagFlag                = "validator-tag"
@@ -88,15 +96,28 @@ const (
 
 	// structure inside configs/selected-network directory.
 	// we will select directory based on provided flag, by concatenating config path + file path
-	genesisStateFilePath = "shared/genesis.ssz"
-	chainConfigYamlPath  = "shared/config.yaml"
-	gethTomlPath         = "geth/geth.toml"
-	genesisJsonPath      = "shared/genesis.json"
-	prysmYamlPath        = "prysm/prysm.yaml"
-	validatorYamlPath    = "prysm/validator.yaml"
+	chainConfigYamlPath = "shared/config.yaml"
+	gethTomlPath        = "geth/geth.toml"
+	erigonTomlPath      = "erigon/erigon.toml"
+	prysmYamlPath       = "prysm/prysm.yaml"
+	lighthouseTomlPath  = "lighthouse/lighthouse.toml"
+	deployBlockPath     = "shared/deploy_block.txt"
+	validatorYamlPath   = "prysm/validator.yaml"
+
+	// genesis related files
+	genesisJsonPath    = "shared/genesis.json"
+	genesis35JsonPath  = "shared/genesis_35.json"
+	genesis42JsonPath  = "shared/genesis_42.json"
+	genesis100JsonPath = "shared/genesis_100.json"
+
+	genesisStateFilePath    = "shared/genesis.ssz"
+	genesisState35FilePath  = "shared/genesis_35.ssz"
+	genesisState42FilePath  = "shared/genesis_42.ssz"
+	genesisState100FilePath = "shared/genesis_100.ssz"
 
 	// validator tool related flags
-	validatorKeysFlag = "validator-keys"
+	validatorKeysFlag     = "validator-keys"
+	validatorPasswordFlag = "validator-password"
 )
 
 var (
@@ -144,7 +165,17 @@ var (
 			Usage:  "Selected wallet",
 			Hidden: true,
 		},
+		&cli.StringFlag{
+			Name:     validatorKeysFlag,
+			Usage:    "Location of your validator keys",
+			Required: true,
+		},
+		&cli.StringFlag{
+			Name:  validatorPasswordFlag,
+			Usage: "Location of your validator keys' password",
+		},
 	}
+	validatorListFlags = []cli.Flag{}
 
 	installFlags []cli.Flag
 	updateFlags  []cli.Flag
@@ -153,6 +184,7 @@ var (
 		consensusSelectedFlag,
 		validatorSelectedFlag,
 	}
+
 	startFlags = []cli.Flag{
 		&cli.BoolFlag{
 			Name:  validatorFlag,
@@ -210,7 +242,7 @@ var (
 	gethStartFlags = []cli.Flag{
 		&cli.StringFlag{
 			Name:   gethDatadirFlag,
-			Usage:  "A path you would like to store your data",
+			Usage:  "Geth datadir",
 			Value:  executionMainnetDatadir,
 			Hidden: true,
 		},
@@ -252,6 +284,19 @@ var (
 			Value: "2.42.0",
 		},
 	}
+	// START
+	erigonStartFlags = []cli.Flag{
+		&cli.StringFlag{
+			Name:  erigonConfigFileFlag,
+			Usage: "Path to erigon.toml config file",
+			Value: mainnetConfig + "/" + erigonTomlPath,
+		},
+		&cli.StringFlag{
+			Name:  erigonDatadirFlag,
+			Usage: "Erigon datadir",
+			Value: executionMainnetDatadir,
+		},
+	}
 
 	// PRYSM FLAGS
 	// DOWNLOAD
@@ -273,7 +318,7 @@ var (
 	// START
 	prysmStartFlags = []cli.Flag{
 		&cli.StringFlag{
-			Name:  prysmGenesisStateFlag,
+			Name:  genesisStateFlag,
 			Usage: "Path to genesis.ssz file",
 			Value: mainnetConfig + "/" + genesisStateFilePath,
 		},
@@ -320,6 +365,18 @@ var (
 			Name:  lighthouseTagFlag,
 			Usage: "Tag for lighthouse",
 			Value: "v4.1.0",
+		},
+	}
+	lighthouseStartFlags = []cli.Flag{
+		&cli.StringFlag{
+			Name:  lighthouseConfigFileFlag,
+			Usage: "Path to lighthouse.toml config file",
+			Value: mainnetConfig + "/" + lighthouseTomlPath,
+		},
+		&cli.StringFlag{
+			Name:  lighthouseDatadirFlag,
+			Usage: "Lighthouse datadir",
+			Value: consensusMainnetDatadir,
 		},
 	}
 
@@ -428,10 +485,7 @@ func (dependency *ClientDependency) PassStartFlags(ctx *cli.Context) (startFlags
 				continue
 			}
 
-			startFlags = append(
-				startFlags,
-				fmt.Sprintf("%s=%s", removePrefix(arg, name), nextArg),
-			)
+			startFlags = append(startFlags, removePrefix(arg, name), nextArg)
 		}
 	}
 
@@ -460,7 +514,84 @@ func prepareGethStartFlags(ctx *cli.Context) (startFlags []string, isCorrect boo
 	return
 }
 
-func prepareValidatorStartFlags(ctx *cli.Context) (startFlags []string, passwordPipe string, err error) {
+func prepareErigonStartFlags(ctx *cli.Context) (startFlags []string, isCorrect bool) {
+	isCorrect = true
+	if !flagFileExists(ctx, erigonConfigFileFlag) {
+		isCorrect = false
+
+		return
+	}
+
+	startFlags = clientDependencies[erigonDependencyName].PassStartFlags(ctx)
+	startFlags = append(startFlags, fmt.Sprintf("--config=%s", ctx.String(erigonConfigFileFlag)))
+
+	return
+}
+
+func preparePrysmStartFlags(ctx *cli.Context) (startFlags []string, err error) {
+	genesisExists := flagFileExists(ctx, genesisStateFlag)
+	prysmConfigExists := flagFileExists(ctx, prysmConfigFileFlag)
+	chainConfigExists := flagFileExists(ctx, prysmChainConfigFileFlag)
+	if !genesisExists || !prysmConfigExists || !chainConfigExists {
+		err = errFlagPathInvalid
+
+		return
+	}
+
+	logFilePath, err := prepareTimestampedFile(ctx.String(logFolderFlag), prysmDependencyName)
+	if err != nil {
+		return
+	}
+
+	startFlags = clientDependencies[prysmDependencyName].PassStartFlags(ctx)
+	startFlags = append(startFlags, fmt.Sprintf("--log-file=%s", logFilePath))
+
+	// terms of use already accepted during installation
+	startFlags = append(startFlags, "--accept-terms-of-use")
+	startFlags = append(startFlags, fmt.Sprintf("--config-file=%s", ctx.String(prysmConfigFileFlag)))
+
+	if ctx.String(transactionFeeRecipientFlag) != "" {
+		startFlags = append(startFlags, fmt.Sprintf("--suggested-fee-recipient=%s", ctx.String(transactionFeeRecipientFlag)))
+	}
+	if ctx.String(genesisStateFlag) != "" {
+		startFlags = append(startFlags, fmt.Sprintf("--genesis-state=%s", ctx.String(genesisStateFlag)))
+	}
+	if ctx.String(prysmChainConfigFileFlag) != "" {
+		startFlags = append(startFlags, fmt.Sprintf("--chain-config-file=%s", ctx.String(prysmChainConfigFileFlag)))
+	}
+
+	isSlasher := !ctx.Bool(noSlasherFlag)
+	isValidator := ctx.Bool(validatorFlag)
+	if isSlasher && isValidator {
+		startFlags = append(startFlags, "--slasher")
+	}
+
+	return
+}
+
+func prepareLighthouseStartFlags(ctx *cli.Context) (startFlags []string, err error) {
+	logFile, err := prepareTimestampedFile(ctx.String(logFolderFlag), lighthouseDependencyName)
+	if err != nil {
+		return
+	}
+
+	defaults, err := config.LoadLighthouseConfig(ctx.String(lighthouseConfigFileFlag))
+	if err != nil {
+		return
+	}
+
+	defaults = append(defaults, fmt.Sprintf("--logfile=%s", logFile))
+	defaults = append(defaults, "--logfile-debug-level=info")
+	defaults = append(defaults, "--logfile-max-number=1")
+
+	userFlags := clientDependencies[lighthouseDependencyName].PassStartFlags(ctx)
+
+	startFlags = mergeFlags(userFlags, defaults)
+
+	return
+}
+
+func prepareValidatorStartFlags(ctx *cli.Context) (startFlags []string, passwordPipe *os.File, err error) {
 	validatorConfigExists := flagFileExists(ctx, validatorConfigFileFlag)
 	chainConfigExists := flagFileExists(ctx, prysmChainConfigFileFlag)
 	validatorKeysExists := flagFileExists(ctx, validatorKeysFlag)
@@ -488,15 +619,25 @@ func prepareValidatorStartFlags(ctx *cli.Context) (startFlags []string, password
 			return
 		}
 
-		passwordPipe = ctx.String(validatorKeysFlag) + "/.pass.txt"
-		err = syscall.Mkfifo(passwordPipe, 0600)
+		b := make([]byte, 4)
+		_, err = rand.Read(b)
+		if err != nil {
+			log.Errorf("Couldn't create random byte array: %v", err)
+
+			return
+		}
+
+		randPipe := hex.EncodeToString(b)
+
+		passwordPipePath := ctx.String(validatorKeysFlag) + fmt.Sprintf("/.%s", randPipe)
+		err = syscall.Mkfifo(passwordPipePath, 0600)
 		if err != nil {
 			log.Errorf("Couldn't create password pipe: %v", err)
 
 			return
 		}
 		var f *os.File
-		f, err = os.OpenFile(passwordPipe, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0600)
+		f, err = os.OpenFile(passwordPipePath, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0600)
 		if err != nil {
 			log.Errorf("Couldn't open password pipe: %v", err)
 
@@ -508,21 +649,26 @@ func prepareValidatorStartFlags(ctx *cli.Context) (startFlags []string, password
 
 			return
 		}
-		f.Close()
 
-		log.Infof("Password pipe created in %s", passwordPipe)
-		err = ctx.Set(validatorWalletPasswordFileFlag, passwordPipe)
+		err = ctx.Set(validatorWalletPasswordFileFlag, passwordPipePath)
 		if err != nil {
 			return
 		}
+
+		passwordPipe = f
 	}
 
 	startFlags = clientDependencies[validatorDependencyName].PassStartFlags(ctx)
 
+	logFilePath, err := prepareTimestampedFile(ctx.String(logFolderFlag), validatorDependencyName)
+	if err != nil {
+		return
+	}
+
 	// terms of use already accepted during installation
 	startFlags = append(startFlags, "--accept-terms-of-use")
 	startFlags = append(startFlags, fmt.Sprintf("--config-file=%s", ctx.String(validatorConfigFileFlag)))
-	startFlags = append(startFlags, prepareLogfileFlag(ctx.String(logFolderFlag), validatorDependencyName))
+	startFlags = append(startFlags, fmt.Sprintf("--log-file=%s", logFilePath))
 	startFlags = append(startFlags, fmt.Sprintf("--suggested-fee-recipient=%s", ctx.String(transactionFeeRecipientFlag)))
 	if ctx.String(validatorKeysFlag) != "" {
 		startFlags = append(startFlags, fmt.Sprintf("--wallet-dir=%s", ctx.String(validatorKeysFlag)))
@@ -533,43 +679,5 @@ func prepareValidatorStartFlags(ctx *cli.Context) (startFlags []string, password
 	if ctx.String(validatorChainConfigFileFlag) != "" {
 		startFlags = append(startFlags, fmt.Sprintf("--chain-config-file=%s", ctx.String(validatorChainConfigFileFlag)))
 	}
-	return
-}
-
-func preparePrysmStartFlags(ctx *cli.Context) (startFlags []string, isCorrect bool) {
-	isCorrect = true
-
-	genesisExists := flagFileExists(ctx, prysmGenesisStateFlag)
-	prysmConfigExists := flagFileExists(ctx, prysmConfigFileFlag)
-	chainConfigExists := flagFileExists(ctx, prysmChainConfigFileFlag)
-	if !genesisExists || !prysmConfigExists || !chainConfigExists {
-		isCorrect = false
-
-		return
-	}
-
-	startFlags = clientDependencies[prysmDependencyName].PassStartFlags(ctx)
-	startFlags = append(startFlags, prepareLogfileFlag(ctx.String(logFolderFlag), prysmDependencyName))
-
-	// terms of use already accepted during installation
-	startFlags = append(startFlags, "--accept-terms-of-use")
-	startFlags = append(startFlags, fmt.Sprintf("--config-file=%s", ctx.String(prysmConfigFileFlag)))
-
-	if ctx.String(transactionFeeRecipientFlag) != "" {
-		startFlags = append(startFlags, fmt.Sprintf("--suggested-fee-recipient=%s", ctx.String(transactionFeeRecipientFlag)))
-	}
-	if ctx.String(prysmGenesisStateFlag) != "" {
-		startFlags = append(startFlags, fmt.Sprintf("--genesis-state=%s", ctx.String(prysmGenesisStateFlag)))
-	}
-	if ctx.String(prysmChainConfigFileFlag) != "" {
-		startFlags = append(startFlags, fmt.Sprintf("--chain-config-file=%s", ctx.String(prysmChainConfigFileFlag)))
-	}
-
-	isSlasher := !ctx.Bool(noSlasherFlag)
-	isValidator := ctx.Bool(validatorFlag)
-	if isSlasher && isValidator {
-		startFlags = append(startFlags, "--slasher")
-	}
-
 	return
 }

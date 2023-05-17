@@ -6,12 +6,12 @@ import (
 	"runtime"
 	runtimeDebug "runtime/debug"
 
-	"github.com/m8b-dev/lukso-cli/config"
+	"github.com/lukso-network/tools-lukso-cli/config"
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 )
 
-var Version = "develop"
+var Version = "0.6.0"
 
 const (
 	ubuntu  = "linux"
@@ -27,13 +27,14 @@ const (
 
 var (
 	appName        = "lukso"
+	log            = logrus.StandardLogger()
 	binDir         string
 	gethTag        string
 	gethCommitHash string
 	validatorTag   string
 	prysmTag       string
-	log            = logrus.StandardLogger()
 	systemOs       string
+	arch           string
 	cfg            *config.Config
 )
 
@@ -52,7 +53,9 @@ func init() {
 	updateFlags = append(updateFlags, validatorUpdateFlags...)
 
 	startFlags = append(startFlags, gethStartFlags...)
+	startFlags = append(startFlags, erigonStartFlags...)
 	startFlags = append(startFlags, prysmStartFlags...)
+	startFlags = append(startFlags, lighthouseStartFlags...)
 	startFlags = append(startFlags, validatorStartFlags...)
 	startFlags = append(startFlags, networkFlags...)
 
@@ -80,12 +83,12 @@ func init() {
 	validatorResetFlags = append(validatorResetFlags, networkFlags...)
 
 	validatorImportFlags = append(validatorImportFlags, networkFlags...)
+	validatorListFlags = append(validatorListFlags, networkFlags...)
 }
 
 func main() {
 	app := cli.App{}
 	app.Name = appName
-	app.ExitErrHandler = func(c *cli.Context, err error) {} // this (somehow) produces error logs instead of standard output
 
 	cli.AppHelpTemplate = fmt.Sprintf(`%s
 
@@ -93,7 +96,7 @@ DOCS: https://docs.lukso.tech/
 REPO: https://github.com/lukso-network/tools-lukso-cli
 
 `, cli.AppHelpTemplate)
-
+	app.ExitErrHandler = func(c *cli.Context, err error) {} // this (somehow) produces error logs instead of standard output
 	app.Usage = "The LUKSO CLI is a command line tool to install, manage and set up validators of different clients for the LUKSO Blockchain."
 	app.Flags = appFlags
 	app.Commands = []*cli.Command{
@@ -157,34 +160,34 @@ REPO: https://github.com/lukso-network/tools-lukso-cli
 		},
 		{
 			Name:            "stop",
-			Usage:           "Stops all or specific clients that are currently running",
+			Usage:           "Stops all or specific client(s) that are currently running",
 			Action:          stopClients,
 			Flags:           stopFlags,
 			HideHelpCommand: true,
 		},
 		{
 			Name:            "logs",
-			Usage:           "Listens to and logs all events from a specific client in the current terminal window",
+			Usage:           "Streams all logs from a specific client in the current terminal window",
 			Action:          logClients,
 			HideHelpCommand: true,
 			Subcommands: []*cli.Command{
 				{
 					Name:            "execution",
-					Usage:           "Outputs selected execution client's logs",
+					Usage:           "Outputs selected execution client's logs, add the network flag, if not mainnet",
 					Flags:           gethLogsFlags,
 					Action:          selectNetworkFor(logLayer(executionLayer)),
 					HideHelpCommand: true,
 				},
 				{
 					Name:            "consensus",
-					Usage:           "Outputs selected consensus client's logs",
+					Usage:           "Outputs selected consensus client's logs, add the network flag, if not mainnet",
 					Flags:           prysmLogsFlags,
 					Action:          selectNetworkFor(logLayer(consensusLayer)),
 					HideHelpCommand: true,
 				},
 				{
 					Name:            "validator",
-					Usage:           "Outputs selected validator client's logs",
+					Usage:           "Outputs selected validator client's logs, add the network flag, if not mainnet",
 					Flags:           validatorLogsFlags,
 					Action:          selectNetworkFor(logLayer(validatorLayer)), // named as a layer for sake of
 					HideHelpCommand: true,
@@ -214,13 +217,12 @@ REPO: https://github.com/lukso-network/tools-lukso-cli
 					Usage:           "Import your validator keys in the client wallet",
 					Flags:           validatorImportFlags,
 					Action:          selectNetworkFor(importValidator),
-					SkipFlagParsing: true,
 					HideHelpCommand: true,
 				},
 				{
 					Name:            "list",
 					Usage:           "List your imported validator keys from the client wallet",
-					Flags:           validatorImportFlags,
+					Flags:           validatorListFlags,
 					Action:          selectNetworkFor(listValidator),
 					SkipFlagParsing: true,
 					HideHelpCommand: true,

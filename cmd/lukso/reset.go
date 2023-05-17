@@ -16,7 +16,7 @@ func resetClients(ctx *cli.Context) error {
 		return cli.Exit(folderNotInitialized, 1)
 	}
 
-	message := fmt.Sprintf("⚠️  WARNING: THIS ACTION WILL DELETE CLIENTS DATA DIRECTORIES ⚠️\n"+
+	message := fmt.Sprintf("⚠️  WARNING: THIS ACTION WILL DELETE THE CLIENTS DATA DIRECTORIES ⚠️\n"+
 		"\nDirectories that will be deleted:\n"+
 		"- %s\n- %s\n- %s\n\nAre you sure you want to continue? [y/N]: ", ctx.String(gethDatadirFlag), ctx.String(prysmDatadirFlag), ctx.String(validatorDatadirFlag))
 

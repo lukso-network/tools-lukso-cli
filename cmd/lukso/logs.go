@@ -6,7 +6,7 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/m8b-dev/lukso-cli/pid"
+	"github.com/lukso-network/tools-lukso-cli/pid"
 	"github.com/urfave/cli/v2"
 )
 
@@ -168,7 +168,7 @@ func statClient(dependencyName, layer string) func(*cli.Context) error {
 			dependencyName = "none"
 		}
 
-		log.Warnf("PID None - %s (%s): Stopped 🔘", layer, dependencyName)
+		log.Warnf("PID ----- - %s (%s): Stopped 🔘", layer, dependencyName)
 
 		return nil
 	}

@@ -31,17 +31,6 @@ func prepareTimestampedFile(logDir, logFileName string) (logFile string, err err
 	return
 }
 
-func prepareLogfileFlag(logDir, dependencyName string) string {
-	prysmFullLogPath, err := prepareTimestampedFile(logDir, dependencyName)
-	if err != nil {
-		log.Warnf("⚠️  Couldn't prepare the logs folder for %s client. Continuing without log files being saved", dependencyName)
-
-		return ""
-	}
-
-	return fmt.Sprintf("--log-file=%s", prysmFullLogPath)
-}
-
 func createJwtSecret(dest string) error {
 	log.Info("🔄  Creating new JWT secret")
 	jwtDir := truncateFileFromDir(dest)
@@ -139,16 +128,24 @@ func isRunning(dependency string) bool {
 
 func isAnyRunning() bool {
 	gethRunning := isRunning(gethDependencyName)
+	erigonRunning := isRunning(erigonDependencyName)
 	prysmRunning := isRunning(prysmDependencyName)
+	lighthouseRunning := isRunning(lighthouseDependencyName)
 	validatorRunning := isRunning(validatorDependencyName)
 
-	if gethRunning || prysmRunning || validatorRunning {
+	if gethRunning || prysmRunning || validatorRunning || erigonRunning || lighthouseRunning {
 		message := "⚠️  Please stop the following clients before continuing: "
 		if gethRunning {
 			message += "geth "
 		}
+		if erigonRunning {
+			message += "erigon "
+		}
 		if prysmRunning {
 			message += "prysm "
+		}
+		if lighthouseRunning {
+			message += "lighthouse "
 		}
 		if validatorRunning {
 			message += "validator "
@@ -266,4 +263,64 @@ func flagFileExists(ctx *cli.Context, flag string) bool {
 	}
 
 	return true
+}
+
+// mergeFlags takes 2 arrays of flag sets, and replaces all flags present in both with user input. Appends default otherwise
+func mergeFlags(userFlags, configFlags []string) (startFlags []string) {
+	for cfgI, configArg := range configFlags {
+		for usrI, userArg := range userFlags {
+			if !strings.HasPrefix(configArg, "--") || !strings.HasPrefix(userArg, "--") {
+				continue
+			}
+
+			if configArg != userArg {
+				continue
+			}
+
+			if usrI == len(userFlags)-1 || cfgI == len(configFlags)-1 {
+				configFlags = pop(configFlags, cfgI)
+
+				continue
+			}
+
+			if !strings.HasPrefix(userFlags[usrI+1], "--") {
+				configFlags = pop(configFlags, cfgI)
+				configFlags = pop(configFlags, cfgI)
+
+				continue
+			}
+		}
+	}
+
+	var mergedFlags []string
+	mergedFlags = append(mergedFlags, userFlags...)
+	mergedFlags = append(mergedFlags, configFlags...)
+
+	// merge flags with values using =
+	for i, arg := range mergedFlags {
+		if i == len(mergedFlags)-1 {
+			break
+		}
+
+		if strings.HasPrefix(arg, "--") {
+			if !strings.HasPrefix(mergedFlags[i+1], "--") {
+				startFlags = append(startFlags, fmt.Sprintf("%s=%s", arg, mergedFlags[i+1]))
+
+				continue
+			}
+
+			startFlags = append(startFlags, arg)
+		}
+
+	}
+
+	return
+}
+
+func pop(arr []string, i int) []string {
+	l := arr[:i]
+	r := arr[i+1:]
+	l = append(l, r...)
+
+	return append([]string{}, l...)
 }
