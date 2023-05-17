@@ -175,6 +175,7 @@ var (
 			Usage: "Location of your validator keys",
 		},
 	}
+	validatorListFlags = []cli.Flag{}
 
 	installFlags []cli.Flag
 	updateFlags  []cli.Flag
@@ -590,7 +591,7 @@ func prepareLighthouseStartFlags(ctx *cli.Context) (startFlags []string, err err
 	return
 }
 
-func prepareValidatorStartFlags(ctx *cli.Context) (startFlags []string, passwordPipe string, err error) {
+func prepareValidatorStartFlags(ctx *cli.Context) (startFlags []string, passwordPipe *os.File, err error) {
 	validatorConfigExists := flagFileExists(ctx, validatorConfigFileFlag)
 	chainConfigExists := flagFileExists(ctx, prysmChainConfigFileFlag)
 	validatorKeysExists := flagFileExists(ctx, validatorKeysFlag)
@@ -628,15 +629,15 @@ func prepareValidatorStartFlags(ctx *cli.Context) (startFlags []string, password
 
 		randPipe := hex.EncodeToString(b)
 
-		passwordPipe = ctx.String(validatorKeysFlag) + fmt.Sprintf("/.%s", randPipe)
-		err = syscall.Mkfifo(passwordPipe, 0600)
+		passwordPipePath := ctx.String(validatorKeysFlag) + fmt.Sprintf("/.%s", randPipe)
+		err = syscall.Mkfifo(passwordPipePath, 0600)
 		if err != nil {
 			log.Errorf("Couldn't create password pipe: %v", err)
 
 			return
 		}
 		var f *os.File
-		f, err = os.OpenFile(passwordPipe, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0600)
+		f, err = os.OpenFile(passwordPipePath, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0600)
 		if err != nil {
 			log.Errorf("Couldn't open password pipe: %v", err)
 
@@ -649,10 +650,12 @@ func prepareValidatorStartFlags(ctx *cli.Context) (startFlags []string, password
 			return
 		}
 
-		err = ctx.Set(validatorWalletPasswordFileFlag, passwordPipe)
+		err = ctx.Set(validatorWalletPasswordFileFlag, passwordPipePath)
 		if err != nil {
 			return
 		}
+
+		passwordPipe = f
 	}
 
 	startFlags = clientDependencies[validatorDependencyName].PassStartFlags(ctx)
