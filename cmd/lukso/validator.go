@@ -97,7 +97,7 @@ func startValidator(ctx *cli.Context) (err error) {
 		return cli.Exit("❌  Incorrect password, please restart and try again", 1)
 	}
 
-	log.Info("✅  Validator started! Use 'lukso logs' to see the logs.")
+	log.Info("✅  Validator started! Use 'lukso logs validator' to see the logs.")
 
 	return
 }
