@@ -172,7 +172,7 @@ var (
 		},
 		&cli.StringFlag{
 			Name:  validatorPasswordFlag,
-			Usage: "Location of your validator keys",
+			Usage: "Location of your validator keys' password",
 		},
 	}
 	validatorListFlags = []cli.Flag{}

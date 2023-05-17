@@ -65,7 +65,7 @@ func startValidator(ctx *cli.Context) (err error) {
 
 	passwordPipe.Close()
 
-	log.Info("⚙️  Please wait a few seconds while we validate your password...")
+	log.Info("⚙️  Please wait a few seconds while we your password is being validated...")
 	time.Sleep(time.Second * 10) // should be enough
 
 	logFile, err := getLastFile(ctx.String(logFolderFlag), validatorDependencyName)
@@ -94,7 +94,7 @@ func startValidator(ctx *cli.Context) (err error) {
 			return cli.Exit(fmt.Sprintf("❌  There was an error while stopping execution: %v", err), 1)
 		}
 
-		return cli.Exit("❌  Password incorrect, please restart and try again", 1)
+		return cli.Exit("❌  Incorrect password, please restart and try again", 1)
 	}
 
 	log.Info("✅  Validator started! Use 'lukso logs' to see the logs.")
