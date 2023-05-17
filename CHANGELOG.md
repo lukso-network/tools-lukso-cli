@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.6.0](https://github.com/lukso-network/tools-lukso-cli/compare/v0.5.8...v0.6.0) (2023-05-17)
+
+
+### Features
+
+* add description for validator list ([a75d7a4](https://github.com/lukso-network/tools-lukso-cli/commit/a75d7a4ca066cdd46a2382d2d8414e70cc36f2d5))
+* Add Erigon + Lighthouse documentation ([5b20b2a](https://github.com/lukso-network/tools-lukso-cli/commit/5b20b2a198cfc8f897f2d6733fc271c32ed8d45f))
+* add status check in the start command ([25accf1](https://github.com/lukso-network/tools-lukso-cli/commit/25accf12b32c511ca1499dc883b5d236f9730ef5))
+* Add validator list command ([8b6faf4](https://github.com/lukso-network/tools-lukso-cli/commit/8b6faf46ceb4b0ba013d2251055ef1ebdf7e3cd2))
+* add validator support notice ([2725c30](https://github.com/lukso-network/tools-lukso-cli/commit/2725c30718390789dcb45b63dca42a730ab472ff))
+
+
+### Bug Fixes
+
+* text ([c32020f](https://github.com/lukso-network/tools-lukso-cli/commit/c32020f43a4ec1d3d868b9747ca2109c5154f77b))
+* text fixes for start ([750844a](https://github.com/lukso-network/tools-lukso-cli/commit/750844a020b09b7556c9b98dc5749734552b2fda))
+
 ## [0.5.8](https://github.com/lukso-network/tools-lukso-cli/compare/v0.5.7...v0.5.8) (2023-05-03)
 
 
