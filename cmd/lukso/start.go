@@ -150,7 +150,14 @@ func startClients(ctx *cli.Context) error {
 		return cli.Exit(fmt.Sprintf("❌  There was an error while starting validator: %v", err), 1)
 	}
 
-	log.Info("🎉  Clients have been started. Your node is now 🆙.")
+	log.Info("🎉  Clients have been started. Checking status:")
+	log.Info("")
+
+	_ = statClients(ctx)
+
+	log.Info("")
+	log.Info("If execution and consensus clients are Running 🟢, your node is now 🆙.")
+	log.Info("👉 Please check the logs with 'lukso logs' to make sure everything is running correctly.")
 
 	return nil
 }
