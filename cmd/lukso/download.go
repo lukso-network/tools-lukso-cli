@@ -189,13 +189,13 @@ func installBinaries(ctx *cli.Context) (err error) {
 	)
 
 	consensusMessage := "\nWhich consensus client do you want to install?\n" +
-		"1: prysm\n2: lighthouse\n> "
+		"1: prysm\n> "
 
 	executionMessage := "\nWhich execution client do you want to install?\n" +
 		"1: geth\n2: erigon\n> "
 
 	consensusInput = registerInputWithMessage(consensusMessage)
-	for consensusInput != "1" && consensusInput != "2" {
+	for consensusInput != "1" {
 		consensusInput = registerInputWithMessage("Please provide a valid option\n> ")
 	}
 
