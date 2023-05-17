@@ -96,7 +96,7 @@ DOCS: https://docs.lukso.tech/
 REPO: https://github.com/lukso-network/tools-lukso-cli
 
 `, cli.AppHelpTemplate)
-
+	app.ExitErrHandler = func(c *cli.Context, err error) {} // this (somehow) produces error logs instead of standard output
 	app.Usage = "The LUKSO CLI is a command line tool to install, manage and set up validators of different clients for the LUKSO Blockchain."
 	app.Flags = appFlags
 	app.Commands = []*cli.Command{
