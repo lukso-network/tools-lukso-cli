@@ -15,7 +15,7 @@ The LUKSO CLI is a command line tool to install, manage and set up validators of
 The LUKSO CLI is able to install multiple clients for running the node.
 
 - Execution Clients: [Geth](https://geth.ethereum.org/), [Erigon](https://github.com/ledgerwatch/erigon)
-- Consensus Clients: [Prysm](https://github.com/prysmaticlabs/prysm), [Lighthouse](https://github.com/sigp/lighthouse)
+- Consensus Clients: [Prysm](https://github.com/prysmaticlabs/prysm)
 - Validator Staking Clients: [Prysm](https://docs.prylabs.network/docs/how-prysm-works/prysm-validator-client)
 
 > WIP: More clients will be added in the future. If you want to run a validator, please run the Prysm consensus client, as it's the only option with full validator support right now.
