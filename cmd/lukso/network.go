@@ -27,7 +27,7 @@ func selectNetworkFor(f func(*cli.Context) error) func(*cli.Context) error {
 			log.Debug("Skipping flag parsing on - parsing flags manually...")
 			err := parseFlags(ctx)
 			if err != nil {
-				return cli.Exit(fmt.Sprintf("❌  There was an error while parsing flags: %v", err), 1)
+				return exit(fmt.Sprintf("❌  There was an error while parsing flags: %v", err), 1)
 			}
 		}
 
@@ -52,7 +52,7 @@ func selectNetworkFor(f func(*cli.Context) error) func(*cli.Context) error {
 		}
 
 		if devnetEnabled {
-			return cli.Exit("❌  Network not supported", 1)
+			return exit("❌  Network not supported", 1)
 		}
 
 		if testnetEnabled {
@@ -119,13 +119,13 @@ func updateValues(ctx *cli.Context, config networkConfig) (err error) {
 	}
 
 	if len(os.Args) < 2 {
-		return cli.Exit(errNotEnoughArguments, 1)
+		return exit(errNotEnoughArguments.Error(), 1)
 	}
 
 	for _, flag := range ctx.Command.Flags {
 		names := flag.Names()
 		if len(names) < 1 {
-			return cli.Exit(errNotEnoughArguments, 1)
+			return exit(errNotEnoughArguments.Error(), 1)
 		}
 
 		targetName := names[0]

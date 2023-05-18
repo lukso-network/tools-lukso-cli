@@ -38,13 +38,24 @@ func importValidator(ctx *cli.Context) error {
 
 	err := initCommand.Run()
 	if err != nil {
-		return cli.Exit(fmt.Sprintf("❌  There was an error while importing validator accounts: %v", err), 1)
+		return exit(fmt.Sprintf("❌  There was an error while importing validator accounts: %v", err), 1)
 	}
 
 	return nil
 }
 
 func startValidator(ctx *cli.Context) (err error) {
+	err = cfg.Read()
+	if err != nil {
+		err = cli.Exit("ASDASD", 1)
+
+		return
+	}
+
+	return startPrysmValidator(ctx)
+}
+
+func startPrysmValidator(ctx *cli.Context) (err error) {
 	validatorFlags, passwordPipe, err := prepareValidatorStartFlags(ctx)
 	if passwordPipe != nil && passwordPipe.Name() != "" {
 		defer os.Remove(passwordPipe.Name())
@@ -60,7 +71,7 @@ func startValidator(ctx *cli.Context) (err error) {
 
 	err = clientDependencies[validatorDependencyName].Start(validatorFlags, ctx)
 	if err != nil {
-		return cli.Exit(fmt.Sprintf("❌  There was an error while starting validator: %v", err), 1)
+		return exit(fmt.Sprintf("❌  There was an error while starting validator: %v", err), 1)
 	}
 
 	passwordPipe.Close()
@@ -70,31 +81,31 @@ func startValidator(ctx *cli.Context) (err error) {
 
 	logFile, err := getLastFile(ctx.String(logFolderFlag), validatorDependencyName)
 	if err != nil {
-		return cli.Exit(fmt.Sprintf("❌  There was an error while getting latest log file: %v", err), 1)
+		return exit(fmt.Sprintf("❌  There was an error while getting latest log file: %v", err), 1)
 	}
 
 	logs, err := os.ReadFile(ctx.String(logFolderFlag) + "/" + logFile)
 	if err != nil {
-		return cli.Exit(fmt.Sprintf("❌  There was an error while reading log file: %v", err), 1)
+		return exit(fmt.Sprintf("❌  There was an error while reading log file: %v", err), 1)
 	}
 
 	if strings.Contains(string(logs), wrongPassword) {
 		err = cfg.Read()
 		if err != nil {
-			return cli.Exit(fmt.Sprintf("❌  There was an error while reading config: %v", err), 1)
+			return exit(fmt.Sprintf("❌  There was an error while reading config: %v", err), 1)
 		}
 
 		err = clientDependencies[cfg.Consensus()].Stop()
 		if err != nil {
-			return cli.Exit(fmt.Sprintf("❌  There was an error while stopping consensus: %v", err), 1)
+			return exit(fmt.Sprintf("❌  There was an error while stopping consensus: %v", err), 1)
 		}
 
 		err = clientDependencies[cfg.Execution()].Stop()
 		if err != nil {
-			return cli.Exit(fmt.Sprintf("❌  There was an error while stopping execution: %v", err), 1)
+			return exit(fmt.Sprintf("❌  There was an error while stopping execution: %v", err), 1)
 		}
 
-		return cli.Exit("❌  Incorrect password, please restart and try again", 1)
+		return exit("❌  Incorrect password, please restart and try again", 1)
 	}
 
 	log.Info("✅  Validator started! Use 'lukso logs validator' to see the logs.")
@@ -127,4 +138,12 @@ func listValidator(ctx *cli.Context) error {
 	}
 
 	return executeValidatorList(network)
+}
+
+func exit(message string, exitCode int) error {
+	log.Error(message)
+
+	os.Exit(exitCode)
+
+	return nil // so we can return commands with this func
 }

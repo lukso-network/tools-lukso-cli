@@ -45,7 +45,7 @@ func (dependency *ClientDependency) Start(
 
 		logFolder := ctx.String(logFolderFlag)
 		if logFolder == "" {
-			return cli.Exit(fmt.Sprintf("%v- %s", errFlagMissing, logFolderFlag), 1)
+			return exit(fmt.Sprintf("%v- %s", errFlagMissing, logFolderFlag), 1)
 		}
 
 		fullPath, err = prepareTimestampedFile(logFolder, dependency.name)
@@ -102,24 +102,24 @@ func (dependency *ClientDependency) Stop() error {
 func startClients(ctx *cli.Context) error {
 	log.Info("🔎  Looking for client configuration file...")
 	if !cfg.Exists() {
-		return cli.Exit(folderNotInitialized, 1)
+		return exit(folderNotInitialized, 1)
 	}
 
 	err := cfg.Read()
 	if err != nil {
-		return cli.Exit(fmt.Sprintf("❌  Couldn't read from config file: %v", err), 1)
+		return exit(fmt.Sprintf("❌  Couldn't read from config file: %v", err), 1)
 	}
 
 	executionClient := cfg.Execution()
 	consensusClient := cfg.Consensus()
 	if executionClient == "" || consensusClient == "" {
-		return cli.Exit(selectedClientsNotFound, 1)
+		return exit(selectedClientsNotFound, 1)
 	}
 
 	log.Info("🔄  Starting all clients")
 
 	if ctx.Bool(validatorFlag) && ctx.String(transactionFeeRecipientFlag) == "" || ctx.Bool(transactionFeeRecipientFlag) { // this means that we provided flag without value
-		return cli.Exit(fmt.Sprintf("❌  %s flag is required but wasn't provided", transactionFeeRecipientFlag), 1)
+		return exit(fmt.Sprintf("❌  %s flag is required but wasn't provided", transactionFeeRecipientFlag), 1)
 	}
 
 	switch executionClient {
@@ -129,7 +129,7 @@ func startClients(ctx *cli.Context) error {
 		err = startErigon(ctx)
 	}
 	if err != nil {
-		return cli.Exit(fmt.Sprintf("❌  There was an error while starting %s: %v", executionClient, err), 1)
+		return exit(fmt.Sprintf("❌  There was an error while starting %s: %v", executionClient, err), 1)
 	}
 
 	switch consensusClient {
@@ -139,7 +139,7 @@ func startClients(ctx *cli.Context) error {
 		err = startLighthouse(ctx)
 	}
 	if err != nil {
-		return cli.Exit(fmt.Sprintf("❌  There was an error while starting %s: %v", consensusClient, err), 1)
+		return exit(fmt.Sprintf("❌  There was an error while starting %s: %v", consensusClient, err), 1)
 	}
 
 	if ctx.Bool(validatorFlag) {
@@ -147,7 +147,7 @@ func startClients(ctx *cli.Context) error {
 	}
 
 	if err != nil {
-		return cli.Exit(fmt.Sprintf("❌  There was an error while starting validator: %v", err), 1)
+		return exit(fmt.Sprintf("❌  There was an error while starting validator: %v", err), 1)
 	}
 
 	log.Info("🎉  Clients have been started. Checking status:")
@@ -170,7 +170,7 @@ func startGeth(ctx *cli.Context) error {
 
 	err := clientDependencies[gethDependencyName].Start(gethFlags, ctx)
 	if err != nil {
-		return cli.Exit(fmt.Sprintf("❌  There was an error while starting geth: %v", err), 1)
+		return exit(fmt.Sprintf("❌  There was an error while starting geth: %v", err), 1)
 	}
 
 	log.Info("✅  Geth started! Use 'lukso logs' to see the logs.")
@@ -186,7 +186,7 @@ func startErigon(ctx *cli.Context) error {
 
 	err := clientDependencies[erigonDependencyName].Start(erigonFlags, ctx)
 	if err != nil {
-		return cli.Exit(fmt.Sprintf("❌  There was an error while starting erigon: %v", err), 1)
+		return exit(fmt.Sprintf("❌  There was an error while starting erigon: %v", err), 1)
 	}
 
 	log.Info("✅  Erigon started! Use 'lukso log' to see logs.")
@@ -202,7 +202,7 @@ func startPrysm(ctx *cli.Context) error {
 
 	err = clientDependencies[prysmDependencyName].Start(prysmFlags, ctx)
 	if err != nil {
-		return cli.Exit(fmt.Sprintf("❌  There was an error while starting prysm: %v", err), 1)
+		return exit(fmt.Sprintf("❌  There was an error while starting prysm: %v", err), 1)
 	}
 
 	log.Info("✅  Prysm started! Use 'lukso logs' to see the logs.")
@@ -220,7 +220,7 @@ func startLighthouse(ctx *cli.Context) error {
 
 	err = clientDependencies[lighthouseDependencyName].Start(lighthouseFlags, ctx)
 	if err != nil {
-		return cli.Exit(fmt.Sprintf("❌  There was an error while starting lighthouse: %v", err), 1)
+		return exit(fmt.Sprintf("❌  There was an error while starting lighthouse: %v", err), 1)
 	}
 
 	log.Info("✅  Lighthouse started! Use 'lukso log' to see logs.")
@@ -230,18 +230,18 @@ func startLighthouse(ctx *cli.Context) error {
 
 func stopClients(ctx *cli.Context) (err error) {
 	if !cfg.Exists() {
-		return cli.Exit(folderNotInitialized, 1)
+		return exit(folderNotInitialized, 1)
 	}
 
 	err = cfg.Read()
 	if err != nil {
-		return cli.Exit(fmt.Sprintf("❌  Couldn't read from config file: %v", err), 1)
+		return exit(fmt.Sprintf("❌  Couldn't read from config file: %v", err), 1)
 	}
 
 	executionClient := cfg.Execution()
 	consensusClient := cfg.Consensus()
 	if executionClient == "" || consensusClient == "" {
-		return cli.Exit(selectedClientsNotFound, 1)
+		return exit(selectedClientsNotFound, 1)
 	}
 
 	stopConsensus := ctx.Bool(consensusFlag)
@@ -260,7 +260,7 @@ func stopClients(ctx *cli.Context) (err error) {
 
 		err = stopClient(clientDependencies[executionClient])
 		if err != nil {
-			return cli.Exit(fmt.Sprintf("❌  There was an error while stopping geth: %v", err), 1)
+			return exit(fmt.Sprintf("❌  There was an error while stopping geth: %v", err), 1)
 		}
 	}
 
@@ -269,7 +269,7 @@ func stopClients(ctx *cli.Context) (err error) {
 
 		err = stopClient(clientDependencies[consensusClient])
 		if err != nil {
-			return cli.Exit(fmt.Sprintf("❌  There was an error while stopping prysm: %v", err), 1)
+			return exit(fmt.Sprintf("❌  There was an error while stopping prysm: %v", err), 1)
 		}
 	}
 
@@ -278,7 +278,7 @@ func stopClients(ctx *cli.Context) (err error) {
 
 		err = stopClient(clientDependencies[validatorDependencyName])
 		if err != nil {
-			return cli.Exit(fmt.Sprintf("❌  There was an error while stopping validator: %v", err), 1)
+			return exit(fmt.Sprintf("❌  There was an error while stopping validator: %v", err), 1)
 		}
 	}
 
