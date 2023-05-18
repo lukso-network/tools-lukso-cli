@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.1](https://github.com/lukso-network/tools-lukso-cli/compare/v0.6.0...v0.6.1) (2023-05-18)
+
+
+### Bug Fixes
+
+* Fix crash when supplying passwords with file path ([f9514fa](https://github.com/lukso-network/tools-lukso-cli/commit/f9514fa7c1cf9c20c6f411408a9ea557f09814aa))
+
 ## [0.6.0](https://github.com/lukso-network/tools-lukso-cli/compare/v0.5.8...v0.6.0) (2023-05-17)
 
 
