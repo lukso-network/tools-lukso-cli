@@ -6,10 +6,12 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"fmt"
+	"golang.org/x/term"
 	"os"
 	"os/exec"
 	"strconv"
 	"strings"
+	"syscall"
 	"time"
 
 	"github.com/urfave/cli/v2"
@@ -323,4 +325,57 @@ func pop(arr []string, i int) []string {
 	l = append(l, r...)
 
 	return append([]string{}, l...)
+}
+
+// readValidatorPassword is responsible for creating a secure way to
+// pass a validator password from lukso CLI to a client of user's choosing
+func readValidatorPassword(ctx *cli.Context) (f *os.File, err error) {
+	var password []byte
+	fmt.Print("\nPlease enter your keystore password: ")
+	password, err = term.ReadPassword(0)
+	fmt.Println("")
+
+	if err != nil {
+		err = exit(fmt.Sprintf("❌  Couldn't read password: %v", err), 1)
+
+		return
+	}
+
+	b := make([]byte, 4)
+	_, err = rand.Read(b)
+	if err != nil {
+		err = exit(fmt.Sprintf("❌  Couldn't create random byte array: %v", err), 1)
+
+		return
+	}
+
+	randPipe := hex.EncodeToString(b)
+
+	passwordPipePath := fmt.Sprintf("./.%s", randPipe)
+	err = syscall.Mkfifo(passwordPipePath, 0600)
+	if err != nil {
+		err = exit(fmt.Sprintf("❌  Couldn't create password pipe: %v", err), 1)
+
+		return
+	}
+
+	f, err = os.OpenFile(passwordPipePath, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0600)
+	if err != nil {
+		err = exit(fmt.Sprintf("❌  Couldn't open password pipe: %v", err), 1)
+
+		return
+	}
+	_, err = f.Write(password)
+	if err != nil {
+		err = exit(fmt.Sprintf("❌  Couldn't write password to pipe: %v", err), 1)
+
+		return
+	}
+
+	err = ctx.Set(validatorWalletPasswordFileFlag, passwordPipePath)
+	if err != nil {
+		return
+	}
+
+	return
 }

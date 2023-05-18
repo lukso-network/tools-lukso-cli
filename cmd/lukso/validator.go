@@ -10,11 +10,31 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-func importValidator(ctx *cli.Context) error {
+func importValidator(ctx *cli.Context) (err error) {
 	if len(os.Args) < 3 {
 		return errNotEnoughArguments
 	}
 
+	err = cfg.Read()
+	if err != nil {
+		return exit(fmt.Sprintf("❌  There was an error while reading config: %v", err), 1)
+	}
+
+	switch cfg.Consensus() {
+	case prysmDependencyName:
+		err = importPrysmValidator(ctx)
+	case lighthouseDependencyName:
+		err = importLighthouseValidator(ctx)
+	}
+
+	if err != nil {
+		return exit(fmt.Sprintf("❌  There was an error while starting validator: %v", err), 1)
+	}
+
+	return
+}
+
+func importPrysmValidator(ctx *cli.Context) (err error) {
 	args := []string{
 		"accounts",
 		"import",
@@ -36,7 +56,37 @@ func importValidator(ctx *cli.Context) error {
 	initCommand.Stderr = os.Stderr
 	initCommand.Stdin = os.Stdin
 
-	err := initCommand.Run()
+	err = initCommand.Run()
+	if err != nil {
+		return exit(fmt.Sprintf("❌  There was an error while importing validator accounts: %v", err), 1)
+	}
+
+	return nil
+}
+
+func importLighthouseValidator(ctx *cli.Context) (err error) {
+	args := []string{
+		"am",
+		"validator",
+		"import",
+		"--directory",
+		ctx.String(validatorKeysFlag),
+		"--datadir",
+		ctx.String(validatorDatadirFlag),
+	}
+
+	passwordFile := ctx.String(validatorPasswordFlag)
+	if passwordFile != "" {
+		args = append(args, "--password-file", passwordFile)
+	}
+
+	initCommand := exec.Command(lighthouseDependencyName, args...)
+
+	initCommand.Stdout = os.Stdout
+	initCommand.Stderr = os.Stderr
+	initCommand.Stdin = os.Stdin
+
+	err = initCommand.Run()
 	if err != nil {
 		return exit(fmt.Sprintf("❌  There was an error while importing validator accounts: %v", err), 1)
 	}
@@ -47,12 +97,21 @@ func importValidator(ctx *cli.Context) error {
 func startValidator(ctx *cli.Context) (err error) {
 	err = cfg.Read()
 	if err != nil {
-		err = cli.Exit("ASDASD", 1)
-
-		return
+		return exit(fmt.Sprintf("❌  There was an error while reading config: %v", err), 1)
 	}
 
-	return startPrysmValidator(ctx)
+	switch cfg.Consensus() {
+	case prysmDependencyName:
+		err = startPrysmValidator(ctx)
+	case lighthouseDependencyName:
+		err = startLighthouseValidator(ctx)
+	}
+
+	if err != nil {
+		return exit(fmt.Sprintf("❌  There was an error while starting validator: %v", err), 1)
+	}
+
+	return
 }
 
 func startPrysmValidator(ctx *cli.Context) (err error) {
@@ -64,9 +123,7 @@ func startPrysmValidator(ctx *cli.Context) (err error) {
 		return err
 	}
 	if !fileExists(fmt.Sprintf("%s/direct/accounts/all-accounts.keystore.json", ctx.String(validatorKeysFlag))) { // path to imported keys
-		log.Error("⚠️  Validator is not initialized. Run lukso validator import to initialize your validator.")
-
-		return nil
+		return exit("⚠️  Validator is not initialized. Run lukso validator import to initialize your validator.", 1)
 	}
 
 	err = clientDependencies[validatorDependencyName].Start(validatorFlags, ctx)
@@ -109,6 +166,33 @@ func startPrysmValidator(ctx *cli.Context) (err error) {
 	}
 
 	log.Info("✅  Validator started! Use 'lukso logs validator' to see the logs.")
+
+	return
+}
+
+func startLighthouseValidator(ctx *cli.Context) (err error) {
+	lighthouseValidatorFlags, passwordPipe, err := prepareLighthouseValidatorFlags(ctx)
+	if err != nil {
+		return exit(fmt.Sprintf("❌  There was an error while preparing lighthouse validator flags: %v", err), 1)
+	}
+	if passwordPipe != nil && passwordPipe.Name() != "" {
+		defer func() {
+			os.Remove(passwordPipe.Name())
+		}()
+	}
+
+	if !fileExists(fmt.Sprintf("%s/validators", ctx.String(validatorDatadirFlag))) { // path to imported keys
+		return exit("⚠️  Validator is not initialized. Run lukso validator import to initialize your validator.", 1)
+	}
+
+	lighthouseValidatorFlags = append([]string{"vc"}, lighthouseValidatorFlags...)
+	startCommand := exec.Command(lighthouseDependencyName, lighthouseValidatorFlags...)
+
+	fmt.Println(startCommand.String())
+	err = startCommand.Start()
+	if err != nil {
+		return exit(fmt.Sprintf("❌  There was an error while starting lighthouse validator flags: %v", err), 1)
+	}
 
 	return
 }
