@@ -46,7 +46,7 @@ func importValidator(ctx *cli.Context) error {
 
 func startValidator(ctx *cli.Context) (err error) {
 	validatorFlags, passwordPipe, err := prepareValidatorStartFlags(ctx)
-	if passwordPipe.Name() != "" {
+	if passwordPipe != nil && passwordPipe.Name() != "" {
 		defer os.Remove(passwordPipe.Name())
 	}
 	if err != nil {
