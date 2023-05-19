@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/lukso-network/tools-lukso-cli/pid"
 	"os"
 	"os/exec"
 	"strings"
@@ -72,7 +73,7 @@ func importLighthouseValidator(ctx *cli.Context) (err error) {
 		"--directory",
 		ctx.String(validatorKeysFlag),
 		"--datadir",
-		ctx.String(validatorDatadirFlag),
+		ctx.String(validatorWalletDirFlag),
 	}
 
 	passwordFile := ctx.String(validatorPasswordFlag)
@@ -181,7 +182,7 @@ func startLighthouseValidator(ctx *cli.Context) (err error) {
 		}()
 	}
 
-	if !fileExists(fmt.Sprintf("%s/validators", ctx.String(validatorDatadirFlag))) { // path to imported keys
+	if !fileExists(fmt.Sprintf("%s/validators", ctx.String(validatorKeysFlag))) { // path to imported keys
 		return exit("⚠️  Validator is not initialized. Run lukso validator import to initialize your validator.", 1)
 	}
 
@@ -193,6 +194,9 @@ func startLighthouseValidator(ctx *cli.Context) (err error) {
 	if err != nil {
 		return exit(fmt.Sprintf("❌  There was an error while starting lighthouse validator flags: %v", err), 1)
 	}
+
+	pidLocation := fmt.Sprintf("%s/%s.pid", pid.FileDir, validatorDependencyName)
+	err = pid.Create(pidLocation, startCommand.Process.Pid)
 
 	return
 }

@@ -331,7 +331,7 @@ func pop(arr []string, i int) []string {
 // pass a validator password from lukso CLI to a client of user's choosing
 func readValidatorPassword(ctx *cli.Context) (f *os.File, err error) {
 	var password []byte
-	fmt.Print("\nPlease enter your keystore password: ")
+	fmt.Print("\nPlease enter your wallet password: ")
 	password, err = term.ReadPassword(0)
 	fmt.Println("")
 
