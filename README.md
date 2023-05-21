@@ -90,14 +90,12 @@ lukso-node
 │       ├───erigon                          // Config for Erigon Client
 │       └───lighthouse                      // Config for Lighthouse Client
 │
-├───[network_type]-keystore                 // Network's Validator Data
+├───[network_type]-keystore                 // Network's Validator Wallet
 │   ├───keys                                // Encrypted Private Keys
 │   ├───...                                 // Files for Signature Creation
 |   ├───pubkeys.json                        // Validator Public Keys
 |   ├───deposit_data.json                   // Deposit JSON for Validators
 |   └───node_config.yaml                    // Node Configuration File
-|
-├───[network_type]-wallet                   // Network's Transaction Data
 |
 ├───[network_type]-data                     // Network's Blockchain Data
 │   ├───consensus                           // Storage of used Consensus Client
