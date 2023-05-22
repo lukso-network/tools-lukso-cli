@@ -49,8 +49,10 @@ const (
 	deployBlockMainnetConfigDependencyName = "mainnet deploy block"
 	deployBlockTestnetConfigDependencyName = "testnet deploy block"
 
-	validatorMainnetConfigDependencyName = "validator mainnet config"
-	validatorTestnetConfigDependencyName = "validator testnet config"
+	validatorMainnetConfigDependencyName           = "validator mainnet config"
+	validatorTestnetConfigDependencyName           = "validator testnet config"
+	lighthouseValidatorMainnetConfigDependencyName = "lighthouse validator mainnet config"
+	lighthouseValidatorTestnetConfigDependencyName = "lighthouse validator testnet config"
 )
 
 var (
@@ -212,6 +214,16 @@ var (
 			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/lighthouse/lighthouse.toml",
 			name:     lighthouseTestnetConfigDependencyName,
 			filePath: testnetConfig + "/" + lighthouseTomlPath,
+		},
+		lighthouseValidatorMainnetConfigDependencyName: {
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/lighthouse/validator.toml",
+			name:     lighthouseValidatorMainnetConfigDependencyName,
+			filePath: mainnetConfig + "/" + lighthouseValidatorTomlPath,
+		},
+		lighthouseValidatorTestnetConfigDependencyName: {
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/lighthouse/validator.toml",
+			name:     lighthouseValidatorTestnetConfigDependencyName,
+			filePath: testnetConfig + "/" + lighthouseValidatorTomlPath,
 		},
 	}
 

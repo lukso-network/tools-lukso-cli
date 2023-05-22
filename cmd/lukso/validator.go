@@ -78,7 +78,7 @@ func importLighthouseValidator(ctx *cli.Context) (err error) {
 
 	passwordFile := ctx.String(validatorPasswordFlag)
 	if passwordFile != "" {
-		args = append(args, "--password-file", passwordFile)
+		args = append(args, "--password-file", passwordFile, "--reuse-password")
 	}
 
 	initCommand := exec.Command(lighthouseDependencyName, args...)
@@ -172,14 +172,20 @@ func startPrysmValidator(ctx *cli.Context) (err error) {
 }
 
 func startLighthouseValidator(ctx *cli.Context) (err error) {
-	lighthouseValidatorFlags, passwordPipe, err := prepareLighthouseValidatorFlags(ctx)
+	if isRunning(validatorDependencyName) {
+		log.Infof("🔄️  %s is already running - stopping first...", validatorDependencyName)
+
+		err = clientDependencies[validatorDependencyName].Stop()
+		if err != nil {
+			return
+		}
+
+		log.Infof("🛑  Stopped %s", validatorDependencyName)
+	}
+
+	lighthouseValidatorFlags, err := prepareLighthouseValidatorFlags(ctx)
 	if err != nil {
 		return exit(fmt.Sprintf("❌  There was an error while preparing lighthouse validator flags: %v", err), 1)
-	}
-	if passwordPipe != nil && passwordPipe.Name() != "" {
-		defer func() {
-			os.Remove(passwordPipe.Name())
-		}()
 	}
 
 	if !fileExists(fmt.Sprintf("%s/validators", ctx.String(validatorKeysFlag))) { // path to imported keys

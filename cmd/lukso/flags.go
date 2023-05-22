@@ -653,7 +653,7 @@ func prepareValidatorStartFlags(ctx *cli.Context) (startFlags []string, password
 	return
 }
 
-func prepareLighthouseValidatorFlags(ctx *cli.Context) (startFlags []string, passwordPipe *os.File, err error) {
+func prepareLighthouseValidatorFlags(ctx *cli.Context) (startFlags []string, err error) {
 	validatorConfigExists := flagFileExists(ctx, validatorConfigFileFlag)
 	chainConfigExists := flagFileExists(ctx, prysmChainConfigFileFlag)
 	if !validatorConfigExists || !chainConfigExists {
@@ -661,19 +661,6 @@ func prepareLighthouseValidatorFlags(ctx *cli.Context) (startFlags []string, pas
 
 		return
 	}
-
-	validatorPasswordPath := ctx.String(validatorWalletPasswordFileFlag)
-	if validatorPasswordPath == "" {
-		passwordPipe, err = readValidatorPassword(ctx)
-		if err != nil {
-			err = exit(fmt.Sprintf("❌  There was an error while reading password: %v", err), 1)
-		}
-	}
-	defer func() {
-		if err != nil {
-			os.Remove(passwordPipe.Name())
-		}
-	}()
 
 	defaults, err := config.LoadLighthouseConfig(ctx.String(lighthouseValidatorConfigFileFlag))
 	if err != nil {
@@ -685,7 +672,7 @@ func prepareLighthouseValidatorFlags(ctx *cli.Context) (startFlags []string, pas
 		return
 	}
 
-	defaults = append(defaults, fmt.Sprintf("--logfile", logFilePath))
+	defaults = append(defaults, "--logfile", logFilePath)
 	defaults = append(defaults, "--logfile-debug-level", "info")
 	defaults = append(defaults, "--logfile-max-number", "1")
 	defaults = append(defaults, "--suggested-fee-recipient", ctx.String(transactionFeeRecipientFlag))
