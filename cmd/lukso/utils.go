@@ -313,7 +313,6 @@ func mergeFlags(userFlags, configFlags []string) (startFlags []string) {
 
 			startFlags = append(startFlags, arg)
 		}
-
 	}
 
 	return

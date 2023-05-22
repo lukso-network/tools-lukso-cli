@@ -201,14 +201,25 @@ func startLighthouseValidator(ctx *cli.Context) (err error) {
 	return
 }
 
-func executeValidatorList(network string) error {
-	cmd := exec.Command("validator", "accounts", "list", "--wallet-dir", fmt.Sprintf("%s-keystore", network))
+func executeValidatorList(network string) (err error) {
+	err = cfg.Read()
+	if err != nil {
+		return exit("❌  There was an error while reading config file", 1)
+	}
+
+	var cmd *exec.Cmd
+	switch cfg.Consensus() {
+	case prysmDependencyName:
+		cmd = exec.Command("validator", "accounts", "list", "--wallet-dir", fmt.Sprintf("%s-keystore", network))
+	case lighthouseDependencyName:
+		cmd = exec.Command("lighthouse", "am", "validator", "list", "--datadir", fmt.Sprintf("%s-keystore", network))
+	}
 
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 
-	err := cmd.Run()
+	err = cmd.Run()
 	if err != nil {
 		return fmt.Errorf("Could not fetch imported keys within the validator wallet: %v", err)
 	}

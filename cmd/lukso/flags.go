@@ -586,11 +586,11 @@ func prepareLighthouseStartFlags(ctx *cli.Context) (startFlags []string, err err
 		return
 	}
 
-	defaults = append(defaults, fmt.Sprintf("--logfile=%s", logFile))
-	defaults = append(defaults, "--logfile-debug-level=info")
-	defaults = append(defaults, "--logfile-max-number=1")
+	defaults = append(defaults, "--logfile", logFile)
+	defaults = append(defaults, "--logfile-debug-level", "info")
+	defaults = append(defaults, "--logfile-max-number", "1")
 	if ctx.String(transactionFeeRecipientFlag) != "" {
-		startFlags = append(startFlags, fmt.Sprintf("--suggested-fee-recipient=%s", ctx.String(transactionFeeRecipientFlag)))
+		startFlags = append(startFlags, "--suggested-fee-recipient", ctx.String(transactionFeeRecipientFlag))
 	}
 
 	userFlags := clientDependencies[lighthouseDependencyName].PassStartFlags(ctx)
@@ -685,10 +685,10 @@ func prepareLighthouseValidatorFlags(ctx *cli.Context) (startFlags []string, pas
 		return
 	}
 
-	defaults = append(defaults, fmt.Sprintf("--logfile=%s", logFilePath))
-	defaults = append(defaults, "--logfile-debug-level=info")
-	defaults = append(defaults, "--logfile-max-number=1")
-	defaults = append(defaults, fmt.Sprintf("--suggested-fee-recipient=%s", ctx.String(transactionFeeRecipientFlag)))
+	defaults = append(defaults, fmt.Sprintf("--logfile", logFilePath))
+	defaults = append(defaults, "--logfile-debug-level", "info")
+	defaults = append(defaults, "--logfile-max-number", "1")
+	defaults = append(defaults, "--suggested-fee-recipient", ctx.String(transactionFeeRecipientFlag))
 
 	userFlags := clientDependencies[validatorDependencyName].PassStartFlags(ctx)
 
