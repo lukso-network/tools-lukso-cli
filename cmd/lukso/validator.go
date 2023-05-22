@@ -195,7 +195,6 @@ func startLighthouseValidator(ctx *cli.Context) (err error) {
 	lighthouseValidatorFlags = append([]string{"vc"}, lighthouseValidatorFlags...)
 	startCommand := exec.Command(lighthouseDependencyName, lighthouseValidatorFlags...)
 
-	fmt.Println(startCommand.String())
 	err = startCommand.Start()
 	if err != nil {
 		return exit(fmt.Sprintf("❌  There was an error while starting lighthouse validator flags: %v", err), 1)
