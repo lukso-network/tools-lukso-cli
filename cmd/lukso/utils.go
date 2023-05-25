@@ -6,7 +6,6 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"fmt"
-	"golang.org/x/term"
 	"os"
 	"os/exec"
 	"strconv"
@@ -15,6 +14,7 @@ import (
 	"time"
 
 	"github.com/urfave/cli/v2"
+	"golang.org/x/term"
 )
 
 // prepareTimestampedFile concatenates directory of logs, prefix of file name and timestamp.

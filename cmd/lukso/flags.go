@@ -2,10 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/lukso-network/tools-lukso-cli/config"
-	"github.com/urfave/cli/v2"
 	"os"
 	"strings"
+
+	"github.com/urfave/cli/v2"
+
+	"github.com/lukso-network/tools-lukso-cli/config"
 )
 
 const (
@@ -590,7 +592,7 @@ func prepareLighthouseStartFlags(ctx *cli.Context) (startFlags []string, err err
 	defaults = append(defaults, "--logfile-debug-level", "info")
 	defaults = append(defaults, "--logfile-max-number", "1")
 	if ctx.String(transactionFeeRecipientFlag) != "" {
-		startFlags = append(startFlags, "--suggested-fee-recipient", ctx.String(transactionFeeRecipientFlag))
+		defaults = append(defaults, "--suggested-fee-recipient", ctx.String(transactionFeeRecipientFlag))
 	}
 
 	userFlags := clientDependencies[lighthouseDependencyName].PassStartFlags(ctx)

@@ -2,13 +2,14 @@ package main
 
 import (
 	"fmt"
-	"github.com/lukso-network/tools-lukso-cli/pid"
 	"os"
 	"os/exec"
 	"strings"
 	"time"
 
 	"github.com/urfave/cli/v2"
+
+	"github.com/lukso-network/tools-lukso-cli/pid"
 )
 
 func importValidator(ctx *cli.Context) (err error) {
