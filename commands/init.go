@@ -1,27 +1,30 @@
-package main
+package commands
 
 import (
 	"fmt"
+	"github.com/lukso-network/tools-lukso-cli/common/utils"
+	"github.com/lukso-network/tools-lukso-cli/dependencies/configs"
 	"os"
 	"strings"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 
 	"github.com/lukso-network/tools-lukso-cli/config"
 	"github.com/lukso-network/tools-lukso-cli/pid"
 )
 
-const jwtSecretPath = configsRootDir + "/shared.go.go/secrets/jwt.hex"
+const jwtSecretPath = configs.ConfigRootDir + "/shared/secrets/jwt.hex"
 
-// initializeDirectory initializes a working directory for lukso node, with all configurations for all networks
-func initializeDirectory(ctx *cli.Context) error {
-	if isAnyRunning() {
+// InitializeDirectory initializes a working directory for lukso node, with all configurations for all networks
+func InitializeDirectory(ctx *cli.Context) error {
+	if utils.IsAnyRunning() {
 		return nil
 	}
 
 	if cfg.Exists() {
 		message := "⚠️  This folder has already been initialized. Do you want to re-initialize it? Please note that configs in this folder will NOT be overwritten [y/N]:\n> "
-		input := registerInputWithMessage(message)
+		input := utils.RegisterInputWithMessage(message)
 		if !strings.EqualFold(input, "y") {
 			log.Info("Aborting...")
 
@@ -30,37 +33,37 @@ func initializeDirectory(ctx *cli.Context) error {
 	}
 
 	log.Info("⬇️  Downloading shared.go.go configuration files...")
-	_ = initConfigGroup(sharedConfigDependencies) // we can omit errors - all errors are catched by cli.Exit()
+	_ = initConfigGroup(configs.SharedConfigDependencies) // we can omit errors - all errors are catched by cli.Exit()
 	log.Info("✅  Shared configuration files downloaded!\n\n")
 
 	log.Info("⬇️  Downloading geth configuration files...")
-	_ = initConfigGroup(gethConfigDependencies)
+	_ = initConfigGroup(configs.GethConfigDependencies)
 	log.Info("✅  Geth configuration files downloaded!\n\n")
 
 	log.Info("⬇️  Downloading erigon configuration files...")
-	_ = initConfigGroup(erigonConfigDependencies)
+	_ = initConfigGroup(configs.ErigonConfigDependencies)
 	log.Info("✅  Erigon configuration files downloaded!\n\n")
 
 	log.Info("⬇️  Downloading prysm configuration files...")
-	_ = initConfigGroup(prysmConfigDependencies)
+	_ = initConfigGroup(configs.PrysmConfigDependencies)
 	log.Info("✅  Prysm configuration files downloaded!\n\n")
 
 	log.Info("⬇️  Downloading lighthouse configuration files...")
-	_ = initConfigGroup(lighthouseConfigDependencies)
+	_ = initConfigGroup(configs.LighthouseConfigDependencies)
 	log.Info("✅  Lighthouse configuration files downloaded!\n\n")
 
 	log.Info("⬇️  Downloading prysm validator configuration files...")
-	_ = initConfigGroup(validatorConfigDependencies)
+	_ = initConfigGroup(configs.PrysmValidatorConfigDependencies)
 	log.Info("✅  Prysm validator configuration files downloaded!\n\n")
 
-	err := createJwtSecret(jwtSecretPath)
+	err := utils.CreateJwtSecret(jwtSecretPath)
 	if err != nil {
-		return exit(fmt.Sprintf("❌  There was an error while creating JWT secret file: %v", err), 1)
+		return utils.Exit(fmt.Sprintf("❌  There was an error while creating JWT secret file: %v", err), 1)
 	}
 
-	err = os.MkdirAll(pid.FileDir, configPerms)
+	err = os.MkdirAll(pid.FileDir, configs.ConfigPerms)
 	if err != nil {
-		return exit(fmt.Sprintf("❌  There was an error while preparing PID directory: %v", err), 1)
+		return utils.Exit(fmt.Sprintf("❌  There was an error while preparing PID directory: %v", err), 1)
 	}
 
 	switch cfg.Exists() {
@@ -71,7 +74,7 @@ func initializeDirectory(ctx *cli.Context) error {
 
 		err = cfg.Create("", "")
 		if err != nil {
-			return exit(fmt.Sprintf("❌  There was an error while preparing LUKSO configuration: %v", err), 1)
+			return utils.Exit(fmt.Sprintf("❌  There was an error while preparing LUKSO configuration: %v", err), 1)
 		}
 
 		log.Infof("✅  LUKSO configuration created under %s", config.Path)
@@ -83,11 +86,11 @@ func initializeDirectory(ctx *cli.Context) error {
 }
 
 // initConfigGroup takes map of config dependencies and downloads them.
-func initConfigGroup(configDependencies map[string]*ClientDependency) error {
+func initConfigGroup(configDependencies map[string]configs.ClientConfigDependency) error {
 	for _, dependency := range configDependencies {
-		err := dependency.Download("", "", false, configPerms)
+		err := dependency.Install()
 		if err != nil {
-			return exit(fmt.Sprintf("❌  There was error while downloading %s file: %v", dependency.name, err), 1)
+			return utils.Exit(fmt.Sprintf("❌  There was error while downloading %s file: %v", dependency.Name(), err), 1)
 		}
 	}
 

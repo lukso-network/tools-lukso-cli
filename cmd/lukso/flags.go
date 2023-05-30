@@ -93,25 +93,25 @@ const (
 
 	// structure inside configs/selected-network directory.
 	// we will select directory based on provided flag, by concatenating config path + file path
-	chainConfigYamlPath         = "shared/config.yaml"
+	chainConfigYamlPath         = "shared.go.go/config.yaml"
 	gethTomlPath                = "geth/geth.toml"
 	erigonTomlPath              = "erigon/erigon.toml"
 	prysmYamlPath               = "prysm/prysm.yaml"
 	lighthouseTomlPath          = "lighthouse/lighthouse.toml"
 	lighthouseValidatorTomlPath = "lighthouse/validator.toml"
-	deployBlockPath             = "shared/deploy_block.txt"
+	deployBlockPath             = "shared.go.go/deploy_block.txt"
 	validatorYamlPath           = "prysm/validator.yaml"
 
 	// genesis related files
-	genesisJsonPath    = "shared/genesis.json"
-	genesis35JsonPath  = "shared/genesis_35.json"
-	genesis42JsonPath  = "shared/genesis_42.json"
-	genesis100JsonPath = "shared/genesis_100.json"
+	genesisJsonPath    = "shared.go.go/genesis.json"
+	genesis35JsonPath  = "shared.go.go/genesis_35.json"
+	genesis42JsonPath  = "shared.go.go/genesis_42.json"
+	genesis100JsonPath = "shared.go.go/genesis_100.json"
 
-	genesisStateFilePath    = "shared/genesis.ssz"
-	genesisState35FilePath  = "shared/genesis_35.ssz"
-	genesisState42FilePath  = "shared/genesis_42.ssz"
-	genesisState100FilePath = "shared/genesis_100.ssz"
+	genesisStateFilePath    = "shared.go.go/genesis.ssz"
+	genesisState35FilePath  = "shared.go.go/genesis_35.ssz"
+	genesisState42FilePath  = "shared.go.go/genesis_42.ssz"
+	genesisState100FilePath = "shared.go.go/genesis_100.ssz"
 
 	// validator tool related flags
 	validatorKeysFlag     = "validator-keys"

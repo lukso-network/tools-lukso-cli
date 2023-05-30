@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// TODO: consider to move it to common/shared
+// TODO: consider to move it to common/shared.go.go
 // TODO: Disconnect names of dependencies from actual terminal outputs
 const (
 	// client names
