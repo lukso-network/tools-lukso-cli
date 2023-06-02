@@ -272,6 +272,10 @@ func (dependency *ClientDependency) ParseUrl(tag, commitHash string) (url string
 		default:
 			systemName = "unknown"
 			urlSystem += "-gnu"
+			alternativeArch = "x86_64"
+			if arch == "aarch64" {
+				alternativeArch = arch
+			}
 		}
 	}
 	baseUrl := dependency.baseUrl
