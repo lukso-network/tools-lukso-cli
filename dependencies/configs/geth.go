@@ -5,12 +5,12 @@ var (
 		gethMainnetConfigName: &clientConfig{
 			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/geth/geth.toml",
 			name:     gethMainnetConfigName,
-			filePath: MainnetConfig + "/" + gethTomlPath,
+			filePath: MainnetConfig + "/" + GethTomlPath,
 		},
 		gethTestnetConfigName: &clientConfig{
 			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/geth/geth.toml",
 			name:     gethTestnetConfigName,
-			filePath: TestnetConfig + "/" + gethTomlPath,
+			filePath: TestnetConfig + "/" + GethTomlPath,
 		},
 	}
 )

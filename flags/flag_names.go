@@ -38,4 +38,10 @@ const (
 	ExecutionFlag = "execution"
 
 	LogFolderFlag = "logs-folder"
+
+	ValidatorKeysFlag     = "validator-keys"
+	ValidatorPasswordFlag = "validator-password"
+
+	TransactionFeeRecipientFlag = "transaction-fee-recipient"
+	AgreeTermsFlag              = "agree-terms"
 )

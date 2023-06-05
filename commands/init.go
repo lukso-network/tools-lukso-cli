@@ -32,7 +32,7 @@ func InitializeDirectory(ctx *cli.Context) error {
 		}
 	}
 
-	log.Info("⬇️  Downloading shared.go.go configuration files...")
+	log.Info("⬇️  Downloading shared configuration files...")
 	_ = initConfigGroup(configs.SharedConfigDependencies) // we can omit errors - all errors are catched by cli.Exit()
 	log.Info("✅  Shared configuration files downloaded!\n\n")
 

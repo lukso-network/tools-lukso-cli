@@ -11,7 +11,7 @@ import (
 	"github.com/lukso-network/tools-lukso-cli/pid"
 )
 
-const jwtSecretPath = configsRootDir + "/shared.go.go/secrets/jwt.hex"
+const jwtSecretPath = configsRootDir + "/shared/secrets/jwt.hex"
 
 // initializeDirectory initializes a working directory for lukso node, with all configurations for all networks
 func initializeDirectory(ctx *cli.Context) error {
@@ -29,7 +29,7 @@ func initializeDirectory(ctx *cli.Context) error {
 		}
 	}
 
-	log.Info("⬇️  Downloading shared.go.go configuration files...")
+	log.Info("⬇️  Downloading shared configuration files...")
 	_ = initConfigGroup(sharedConfigDependencies) // we can omit errors - all errors are catched by cli.Exit()
 	log.Info("✅  Shared configuration files downloaded!\n\n")
 

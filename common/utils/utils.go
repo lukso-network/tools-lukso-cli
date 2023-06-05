@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"fmt"
+	"github.com/lukso-network/tools-lukso-cli/dependencies/clients"
 	log "github.com/sirupsen/logrus"
 	"os"
 )
@@ -14,38 +16,25 @@ func Exit(message string, exitCode int) error {
 }
 
 func IsAnyRunning() bool {
-	//gethRunning := isRunning(gethDependencyName)
-	//erigonRunning := isRunning(erigonDependencyName)
-	//prysmRunning := isRunning(prysmDependencyName)
-	//lighthouseRunning := isRunning(lighthouseDependencyName)
-	//validatorRunning := isRunning(validatorDependencyName)
-	//
-	//if gethRunning || prysmRunning || validatorRunning || erigonRunning || lighthouseRunning {
-	//	message := "⚠️  Please stop the following clients before continuing: "
-	//	if gethRunning {
-	//		message += "geth "
-	//	}
-	//	if erigonRunning {
-	//		message += "erigon "
-	//	}
-	//	if prysmRunning {
-	//		message += "prysm "
-	//	}
-	//	if lighthouseRunning {
-	//		message += "lighthouse "
-	//	}
-	//	if validatorRunning {
-	//		message += "validator "
-	//	}
-	//
-	//	message += "\n➡️  You can use 'lukso stop' to stop clients."
-	//
-	//	log.Warn(message)
-	//
-	//	return true
-	//}
-	//
-	//return false
+	var runningClients string
+	for _, client := range clients.AllClients {
+		if client.IsRunning() {
+			runningClients += fmt.Sprintf("- %s\n", client.Name())
+		}
+	}
 
-	return false
+	if runningClients == "" {
+		return false
+	}
+
+	log.Warnf("⚠️  Please stop the following clients before continuing: \n%s", runningClients)
+
+	return true
+}
+
+func BoolToInt(b bool) int {
+	if b {
+		return 1
+	}
+	return 0
 }

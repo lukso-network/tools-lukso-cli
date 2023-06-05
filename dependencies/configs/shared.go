@@ -1,11 +1,33 @@
 package configs
 
+import "os"
+
 const (
-	ConfigRootDir = "./configs"
+	BinaryPerms   = os.ModePerm
 	ConfigPerms   = 0750
+	ConfigRootDir = "./configs"
 
 	MainnetConfig = ConfigRootDir + "/mainnet"
 	TestnetConfig = ConfigRootDir + "/testnet"
+
+	MainnetLogs = "./mainnet-logs"
+	TestnetLogs = "./testnet-logs"
+
+	MainnetKeystore = "./mainnet-keystore"
+	TestnetKeystore = "./testnet-keystore"
+
+	ExecutionMainnetDatadir = "./mainnet-data/execution"
+	ExecutionTestnetDatadir = "./testnet-data/execution"
+
+	ConsensusMainnetDatadir = "./mainnet-data/consensus"
+	ConsensusTestnetDatadir = "./testnet-data/consensus"
+
+	ValidatorMainnetDatadir = "./mainnet-data/validator"
+	ValidatorTestnetDatadir = "./testnet-data/validator"
+
+	ExecutionLayer = "execution"
+	ConsensusLayer = "consensus"
+	ValidatorLayer = "validator"
 
 	// genesis file names
 	mainnetGenesisDependencyName    = "mainnet genesis"
@@ -21,16 +43,15 @@ const (
 	mainnetGenesisState42DependencyName  = "mainnet genesis state (42M)"
 	mainnetGenesisState100DependencyName = "mainnet genesis state (100M)"
 
-	// Genesis related files
-	GenesisJsonPath    = "shared.go.go/genesis.json"
-	Genesis35JsonPath  = "shared.go.go/genesis_35.json"
-	Genesis42JsonPath  = "shared.go.go/genesis_42.json"
-	Genesis100JsonPath = "shared.go.go/genesis_100.json"
+	GenesisJsonPath    = "shared/genesis.json"
+	Genesis35JsonPath  = "shared/genesis_35.json"
+	Genesis42JsonPath  = "shared/genesis_42.json"
+	Genesis100JsonPath = "shared/genesis_100.json"
 
-	GenesisStateFilePath    = "shared.go.go/genesis.ssz"
-	GenesisState35FilePath  = "shared.go.go/genesis_35.ssz"
-	GenesisState42FilePath  = "shared.go.go/genesis_42.ssz"
-	GenesisState100FilePath = "shared.go.go/genesis_100.ssz"
+	GenesisStateFilePath    = "shared/genesis.ssz"
+	GenesisState35FilePath  = "shared/genesis_35.ssz"
+	GenesisState42FilePath  = "shared/genesis_42.ssz"
+	GenesisState100FilePath = "shared/genesis_100.ssz"
 
 	// chain configurations
 	mainnetChainConfigDependencyName = "mainnet chain config"
@@ -56,14 +77,14 @@ const (
 	lighthouseValidatorMainnetConfigDependencyName = "lighthouse validator mainnet config"
 	lighthouseValidatorTestnetConfigDependencyName = "lighthouse validator testnet config"
 
-	chainConfigYamlPath         = "shared.go.go/config.yaml"
-	gethTomlPath                = "geth/geth.toml"
-	erigonTomlPath              = "erigon/erigon.toml"
-	prysmYamlPath               = "prysm/prysm.yaml"
-	lighthouseTomlPath          = "lighthouse/lighthouse.toml"
-	lighthouseValidatorTomlPath = "lighthouse/validator.toml"
-	deployBlockPath             = "shared.go.go/deploy_block.txt"
-	validatorYamlPath           = "prysm/validator.yaml"
+	ChainConfigYamlPath         = "shared/config.yaml"
+	GethTomlPath                = "geth/geth.toml"
+	ErigonTomlPath              = "erigon/erigon.toml"
+	PrysmYamlPath               = "prysm/prysm.yaml"
+	LighthouseTomlPath          = "lighthouse/lighthouse.toml"
+	LighthouseValidatorTomlPath = "lighthouse/validator.toml"
+	DeployBlockPath             = "shared/deploy_block.txt"
+	ValidatorYamlPath           = "prysm/validator.yaml"
 )
 
 var (
@@ -112,12 +133,12 @@ var (
 		mainnetChainConfigDependencyName: &clientConfig{
 			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/config.yaml",
 			name:     mainnetChainConfigDependencyName,
-			filePath: MainnetConfig + "/" + chainConfigYamlPath,
+			filePath: MainnetConfig + "/" + ChainConfigYamlPath,
 		},
 		deployBlockMainnetConfigDependencyName: &clientConfig{
 			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/lighthouse/deploy_block.txt",
 			name:     deployBlockMainnetConfigDependencyName,
-			filePath: MainnetConfig + "/" + deployBlockPath,
+			filePath: MainnetConfig + "/" + DeployBlockPath,
 		},
 		testnetGenesisDependencyName: &clientConfig{
 			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/shared/genesis.json",
@@ -132,12 +153,12 @@ var (
 		testnetChainConfigDependencyName: &clientConfig{
 			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/shared/config.yaml",
 			name:     testnetChainConfigDependencyName,
-			filePath: TestnetConfig + "/" + chainConfigYamlPath,
+			filePath: TestnetConfig + "/" + ChainConfigYamlPath,
 		},
 		deployBlockTestnetConfigDependencyName: &clientConfig{
 			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/lighthouse/deploy_block.txt",
 			name:     deployBlockTestnetConfigDependencyName,
-			filePath: TestnetConfig + "/" + deployBlockPath,
+			filePath: TestnetConfig + "/" + DeployBlockPath,
 		},
 	}
 )

@@ -1,16 +1,23 @@
 package clients
 
 import (
+	"archive/tar"
+	"bytes"
+	"compress/gzip"
 	"fmt"
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
+	"github.com/lukso-network/tools-lukso-cli/common/system"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
 	"github.com/lukso-network/tools-lukso-cli/dependencies/configs"
 	"github.com/lukso-network/tools-lukso-cli/flags"
 	"github.com/lukso-network/tools-lukso-cli/pid"
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
+	"io"
+	"net/http"
 	"os"
 	"os/exec"
+	"strings"
 	"time"
 )
 
@@ -24,7 +31,7 @@ const (
 )
 
 var (
-	allClients = []ClientBinaryDependency{Geth}
+	AllClients = []ClientBinaryDependency{Geth}
 )
 
 type clientBinary struct {
@@ -35,7 +42,9 @@ type clientBinary struct {
 	githubLocation string // user + repo, f.e. prysmaticlabs/prysm
 }
 
-func start(ctx *cli.Context, client ClientBinaryDependency, arguments []string) (err error) {
+var _ ClientBinaryDependency = &clientBinary{}
+
+func (client *clientBinary) Start(ctx *cli.Context, arguments []string) (err error) {
 	if client.IsRunning() {
 		log.Infof("🔄️  %s is already running - stopping first...", client.Name())
 
@@ -102,36 +111,176 @@ func start(ctx *cli.Context, client ClientBinaryDependency, arguments []string) 
 	return
 }
 
-func stop(client ClientBinaryDependency) (err error) {
+func (client *clientBinary) Stop() (err error) {
+	pidLocation := fmt.Sprintf("%s/%s.pid", pid.FileDir, client.CommandName())
+
+	pidVal, err := pid.Load(pidLocation)
+	if err != nil {
+		log.Warnf("⏭️  %s is not running - skipping...", client.CommandName())
+
+		return nil
+	}
+
+	err = pid.Kill(pidLocation, pidVal)
+	if err != nil {
+		return errors.ErrProcessNotFound
+	}
+
 	return
 }
 
-func status(client ClientBinaryDependency) {
+func (client *clientBinary) Logs(logFilePath string) (err error) {
+	var commandName string
+	var commandArgs []string
+
+	commandName = "tail"
+	commandArgs = []string{"-f", "-n", "+0"}
+
+	command := exec.Command(commandName, append(commandArgs, logFilePath)...)
+
+	command.Stdout = os.Stdout
+
+	err = command.Run()
+	if _, ok := err.(*exec.ExitError); ok {
+		log.Error("No error logs found")
+
+		return
+	}
+
+	// error unrelated to command execution
+	if err != nil {
+		log.Errorf("There was an error while executing command: %s. Error: %v", commandName, err)
+	}
+
+	return
+}
+
+func (client *clientBinary) Reset(dataDirPath string) (err error) {
+	if dataDirPath == "" {
+		return utils.Exit(fmt.Sprintf("%v", errors.ErrFlagMissing), 1)
+	}
+
+	return os.RemoveAll(dataDirPath)
+}
+
+func (client *clientBinary) Install(tag, commitHash string) (err error) {
+	fileUrl := client.ParseUrl(tag, commitHash)
+
+	if utils.FileExists(client.FilePath()) {
+		message := fmt.Sprintf("You already have the %s client installed, do you want to override your installation? [Y/n]: ", client.Name())
+		input := utils.RegisterInputWithMessage(message)
+		if !strings.EqualFold(input, "y") && input != "" {
+			log.Info("⏭️  Skipping installation...")
+
+			return nil
+		}
+	}
+
+	response, err := http.Get(fileUrl)
+
+	if nil != err {
+		return
+	}
+
+	defer func() {
+		_ = response.Body.Close()
+	}()
+
+	if response.StatusCode == http.StatusNotFound {
+		log.Warnf("⚠️  File under URL %s not found - skipping...", fileUrl)
+
+		return nil
+	}
+
+	if http.StatusOK != response.StatusCode {
+		return fmt.Errorf(
+			"❌  Invalid response when downloading on file url: %s. Response code: %s",
+			fileUrl,
+			response.Status,
+		)
+	}
+
+	var responseReader io.Reader = response.Body
+
+	// this means that we are fetching tared client
+	switch client.Name() {
+	case gethDependencyName, erigonDependencyName, lighthouseDependencyName:
+		g, err := gzip.NewReader(response.Body)
+		if err != nil {
+			return err
+		}
+
+		defer func() {
+			_ = g.Close()
+		}()
+
+		t := tar.NewReader(g)
+		for {
+			header, err := t.Next()
+
+			switch {
+			case err == io.EOF:
+				break
+
+			case err != nil:
+				return err
+
+			default:
+
+			}
+
+			var targetHeader string
+			switch client.Name() {
+			case gethDependencyName:
+				targetHeader = "/" + gethDependencyName
+			case erigonDependencyName, lighthouseDependencyName:
+				targetHeader = client.Name()
+			}
+
+			if header.Typeflag == tar.TypeReg && strings.Contains(header.Name, targetHeader) {
+				responseReader = t
+
+				break
+			}
+		}
+	}
+
+	buf := new(bytes.Buffer)
+	_, err = buf.ReadFrom(responseReader)
+	if err != nil {
+		return
+	}
+
+	err = os.WriteFile(client.FilePath(), buf.Bytes(), configs.BinaryPerms)
+
+	if err != nil && strings.Contains(err.Error(), "Permission denied") {
+		return errors.ErrNeedRoot
+	}
+
+	if err != nil {
+		log.Infof("❌  Couldn't save file: %v", err)
+
+		return
+	}
+
+	log.Infof("✅  %s downloaded!\n\n", client.Name())
+
+	return
 
 }
 
-func logs(client ClientBinaryDependency) {
+func (client *clientBinary) Update() {
 
 }
 
-func reset(client ClientBinaryDependency) {
+func (client *clientBinary) IsRunning() bool {
+	pidLocation := fmt.Sprintf("%s/%s.pid", pid.FileDir, client.CommandName())
 
-}
-
-func install(client ClientBinaryDependency) {
-
-}
-
-func update(client ClientBinaryDependency) {
-
-}
-
-func isRunning(client ClientBinaryDependency) bool {
-	return false
+	return pid.Exists(pidLocation)
 }
 
 func initClient(ctx *cli.Context, client ClientBinaryDependency) (err error) {
-	if isRunning(client) {
+	if client.IsRunning() {
 		return errors.ErrAlreadyRunning
 	}
 
@@ -201,4 +350,35 @@ Which initial LYX supply do you choose?
 	command.Stderr = os.Stderr
 
 	return command.Run()
+}
+
+func (client *clientBinary) ParseUrl(tag, commitHash string) (url string) {
+	url = client.baseUrl
+
+	url = strings.Replace(url, "|TAG|", tag, -1)
+	url = strings.Replace(url, "|OS|", system.Os, -1)
+	url = strings.Replace(url, "|COMMIT|", commitHash, -1)
+	url = strings.Replace(url, "|ARCH|", system.Arch, -1)
+
+	return
+}
+
+func (client *clientBinary) FilePath() string {
+	return system.UnixBinDir + "/" + client.CommandName()
+}
+
+func (client *clientBinary) Name() string {
+	return client.name
+}
+
+func (client *clientBinary) CommandName() string {
+	return client.commandName
+}
+
+func (client *clientBinary) ParseUserFlags() {
+
+}
+
+func (client *clientBinary) PrepareStartFlags() {
+
 }
