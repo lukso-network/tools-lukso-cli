@@ -375,10 +375,62 @@ func (client *clientBinary) CommandName() string {
 	return client.commandName
 }
 
-func (client *clientBinary) ParseUserFlags() {
+func (client *clientBinary) ParseUserFlags(ctx *cli.Context) (startFlags []string) {
+	name := client.name
+	args := ctx.Args()
+	argsLen := args.Len()
+	flagsToSkip := []string{
+		flags.ValidatorFlag,
+		flags.GethConfigFileFlag,
+		flags.PrysmConfigFileFlag,
+		flags.ValidatorConfigFileFlag,
+		flags.ValidatorWalletPasswordFileFlag,
+	}
 
+	for i := 0; i < argsLen; i++ {
+		skip := false
+		arg := args.Get(i)
+		for _, flagToSkip := range flagsToSkip {
+			if arg == fmt.Sprintf("--%s", flagToSkip) {
+				skip = true
+			}
+		}
+		if skip {
+			continue
+		}
+
+		if strings.HasPrefix(arg, fmt.Sprintf("--%s", name)) {
+			if i+1 == argsLen {
+				startFlags = append(startFlags, removePrefix(arg, name))
+
+				return
+			}
+
+			// we found a flag for our client - now we need to check if it's a value or bool flag
+			nextArg := args.Get(i + 1)
+			if strings.HasPrefix(nextArg, "--") { // we found a next flag, so current one is a bool
+				startFlags = append(startFlags, removePrefix(arg, name))
+
+				continue
+			}
+
+			startFlags = append(startFlags, removePrefix(arg, name), nextArg)
+		}
+	}
+
+	return
 }
 
-func (client *clientBinary) PrepareStartFlags() {
+func (client *clientBinary) PrepareStartFlags() (startFlags []string) {
+	_ = cli.Exit(fmt.Sprintf("FATAL: START FLAGS NOT CONFIGURED FOR %s CLIENT - PLEASE MARK THIS ISSUE TO THE LUKSO TEAM", client.Name()), 1)
 
+	return
+}
+
+func removePrefix(arg, name string) string {
+	prefix := fmt.Sprintf("--%s-", name)
+
+	arg = strings.TrimPrefix(arg, prefix)
+
+	return fmt.Sprintf("--%s", strings.Trim(arg, "- "))
 }
