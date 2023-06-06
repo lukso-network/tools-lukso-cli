@@ -5,6 +5,7 @@ import (
 	"github.com/lukso-network/tools-lukso-cli/dependencies/clients"
 	log "github.com/sirupsen/logrus"
 	"os"
+	"strings"
 )
 
 func Exit(message string, exitCode int) error {
@@ -37,4 +38,19 @@ func BoolToInt(b bool) int {
 		return 1
 	}
 	return 0
+}
+
+func AcceptTermsInteractive() bool {
+	message := "You are about to download the clients that are necessary to run the LUKSO Blockchain.\n" +
+		"To install Prysm you are required to accept the terms of use:\n" +
+		"https://github.com/prysmaticlabs/prysm/blob/develop/TERMS_OF_SERVICE.md\n\n" +
+		"Do you agree? [Y/n]: "
+
+	input := RegisterInputWithMessage(message)
+	if !strings.EqualFold(input, "y") && input != "" {
+		log.Error("You need to type Y to continue.")
+		return false
+	}
+
+	return true
 }

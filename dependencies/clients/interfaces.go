@@ -44,3 +44,9 @@ type ClientBinaryDependency interface {
 	// FilePath returns path to installed binary
 	FilePath() string
 }
+
+type ValidatorBinaryDependency interface {
+	ClientBinaryDependency
+	Import()
+	List()
+}

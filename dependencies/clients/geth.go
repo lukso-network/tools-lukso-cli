@@ -5,7 +5,14 @@ type GethClient struct {
 }
 
 func NewGethClient() *GethClient {
-	return &GethClient{}
+	return &GethClient{
+		&clientBinary{
+			name:           gethDependencyName,
+			commandName:    "geth",
+			baseUrl:        "",
+			githubLocation: "",
+		},
+	}
 }
 
 var Geth = NewGethClient()

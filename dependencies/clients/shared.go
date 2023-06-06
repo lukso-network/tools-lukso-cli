@@ -22,7 +22,6 @@ import (
 )
 
 const (
-	// client names - to use them in anything non-log related use CommandName() to access non-capitalized name
 	gethDependencyName       = "Geth"
 	prysmDependencyName      = "Prysm"
 	validatorDependencyName  = "Validator"
@@ -31,14 +30,13 @@ const (
 )
 
 var (
-	AllClients = []ClientBinaryDependency{Geth}
+	AllClients = []ClientBinaryDependency{Geth, Erigon, Prysm, Lighthouse, PrysmValidator, LighthouseValidator}
 )
 
 type clientBinary struct {
 	name           string
 	commandName    string
 	baseUrl        string
-	filePath       string
 	githubLocation string // user + repo, f.e. prysmaticlabs/prysm
 }
 
