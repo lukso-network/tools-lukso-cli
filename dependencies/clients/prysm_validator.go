@@ -7,7 +7,7 @@ type PrysmValidatorClient struct {
 func NewPrysmValidatorClient() *PrysmClient {
 	return &PrysmClient{
 		&clientBinary{
-			name:           validatorDependencyName,
+			name:           prysmValidatorDependencyName,
 			commandName:    "validator",
 			baseUrl:        "",
 			githubLocation: "",

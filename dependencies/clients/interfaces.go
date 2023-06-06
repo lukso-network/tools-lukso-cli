@@ -28,7 +28,7 @@ type ClientBinaryDependency interface {
 	ParseUserFlags(ctx *cli.Context) []string
 
 	// PrepareStartFlags parses arguments that are later supplied to Start
-	PrepareStartFlags() []string
+	PrepareStartFlags(ctx *cli.Context) ([]string, error)
 
 	// Name is a user-readable name utility, f.e. in logs etc.
 	// Should be uppercase and match CommandName (non-case-sensitively)

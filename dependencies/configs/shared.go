@@ -16,14 +16,17 @@ const (
 	MainnetKeystore = "./mainnet-keystore"
 	TestnetKeystore = "./testnet-keystore"
 
-	ExecutionMainnetDatadir = "./mainnet-data/execution"
-	ExecutionTestnetDatadir = "./testnet-data/execution"
+	MainnetDatadir = "./mainnet-data"
+	TestnetDatadir = "./mainnet-data"
 
-	ConsensusMainnetDatadir = "./mainnet-data/consensus"
-	ConsensusTestnetDatadir = "./testnet-data/consensus"
+	ExecutionMainnetDatadir = MainnetDatadir + "/execution"
+	ExecutionTestnetDatadir = TestnetDatadir + "/execution"
 
-	ValidatorMainnetDatadir = "./mainnet-data/validator"
-	ValidatorTestnetDatadir = "./testnet-data/validator"
+	ConsensusMainnetDatadir = MainnetDatadir + "/consensus"
+	ConsensusTestnetDatadir = TestnetDatadir + "/consensus"
+
+	ValidatorMainnetDatadir = MainnetDatadir + "/validator"
+	ValidatorTestnetDatadir = TestnetDatadir + "/validator"
 
 	ExecutionLayer = "execution"
 	ConsensusLayer = "consensus"

@@ -22,15 +22,23 @@ import (
 )
 
 const (
-	gethDependencyName       = "Geth"
-	prysmDependencyName      = "Prysm"
-	validatorDependencyName  = "Validator"
-	lighthouseDependencyName = "Lighthouse"
-	erigonDependencyName     = "Erigon"
+	gethDependencyName                = "Geth"
+	prysmDependencyName               = "Prysm"
+	prysmValidatorDependencyName      = "Prysm Validator"
+	lighthouseDependencyName          = "Lighthouse"
+	lighthouseValidatorDependencyName = "Lighthouse Validator"
+	erigonDependencyName              = "Erigon"
 )
 
 var (
-	AllClients = []ClientBinaryDependency{Geth, Erigon, Prysm, Lighthouse, PrysmValidator, LighthouseValidator}
+	AllClients = map[string]ClientBinaryDependency{
+		gethDependencyName:                Geth,
+		erigonDependencyName:              Erigon,
+		prysmDependencyName:               Prysm,
+		lighthouseDependencyName:          Lighthouse,
+		prysmValidatorDependencyName:      PrysmValidator,
+		lighthouseValidatorDependencyName: LighthouseValidator,
+	}
 )
 
 type clientBinary struct {
@@ -419,7 +427,7 @@ func (client *clientBinary) ParseUserFlags(ctx *cli.Context) (startFlags []strin
 	return
 }
 
-func (client *clientBinary) PrepareStartFlags() (startFlags []string) {
+func (client *clientBinary) PrepareStartFlags(ctx *cli.Context) (startFlags []string, err error) {
 	_ = cli.Exit(fmt.Sprintf("FATAL: START FLAGS NOT CONFIGURED FOR %s CLIENT - PLEASE MARK THIS ISSUE TO THE LUKSO TEAM", client.Name()), 1)
 
 	return

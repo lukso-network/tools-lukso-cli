@@ -7,7 +7,7 @@ type LighthouseValidatorClient struct {
 func NewLighthouseValidatorClient() *LighthouseClient {
 	return &LighthouseClient{
 		&clientBinary{
-			name:           validatorDependencyName,
+			name:           lighthouseValidatorDependencyName,
 			commandName:    "lighthouse", // we run it using lighthouse bin
 			baseUrl:        "",
 			githubLocation: "",

@@ -1,12 +1,15 @@
 package utils
 
 import (
+	"bufio"
+	"bytes"
 	"crypto/rand"
 	"encoding/hex"
 	"fmt"
 	"github.com/lukso-network/tools-lukso-cli/dependencies/configs"
 	log "github.com/sirupsen/logrus"
 	"os"
+	"os/exec"
 	"strings"
 	"time"
 )
@@ -53,6 +56,54 @@ func PrepareTimestampedFile(logDir, logFileName string) (logFile string, err err
 	logFile = fmt.Sprintf("%s/%s_%s.log", logDir, logFileName, t)
 
 	return
+}
+
+// GetLastFile returns name of last file from given directory in alphabetical order.
+// In case of log files last one is also the newest (format increments similar to typical number - YYYY-MM-DD_HH:MM:SS)
+func GetLastFile(dir string, dependency string) (string, error) {
+	var (
+		commandName string
+		lsBuf       = new(bytes.Buffer)
+		grepBuf     = new(bytes.Buffer)
+		files       []string
+	)
+
+	commandName = "ls"
+
+	command := exec.Command(commandName, dir)
+	command.Stdout = lsBuf
+
+	grepCommand := exec.Command("grep", dependency)
+	grepCommand.Stdin = lsBuf
+	grepCommand.Stdout = grepBuf
+
+	err := command.Run()
+	if err != nil {
+		log.Errorf("❌  There was an error while executing command: %s. Error: %v", commandName, err)
+
+		return "", err
+	}
+
+	err = grepCommand.Run()
+	if err != nil {
+		log.Errorf("❌  There was an error while executing command: %s. Error: %v", commandName, err)
+
+		return "", err
+	}
+
+	scan := bufio.NewScanner(grepBuf)
+	for scan.Scan() {
+		files = append(files, scan.Text())
+	}
+	if len(files) < 1 {
+		log.Infof("❗️  No log files found in %s", dir)
+
+		return "", nil
+	}
+
+	lastFile := files[len(files)-1]
+
+	return lastFile, nil
 }
 
 // truncateFileFromDir removes file name from its path.

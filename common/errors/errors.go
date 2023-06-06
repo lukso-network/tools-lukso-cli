@@ -11,6 +11,7 @@ var (
 	ErrFlagPathInvalid      = errors.New("⚠️  Invalid flag path ")
 	ErrAlreadyRunning       = errors.New("⚠️  Process is already running ")
 	ErrValidatorNotImported = errors.New("Validator has not been initialized - use 'lukso validator import' to initialize your validator ")
+	ErrClientNotSupported   = errors.New("❌  Client found in LUKSO configuration file is not supported - if you think it is please contact LUKSO team")
 	ErrGenesisNotFound      = errors.New("❌  Genesis JSON not found")
 )
 

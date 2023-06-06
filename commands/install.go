@@ -106,7 +106,7 @@ func InstallBinaries(ctx *cli.Context) (err error) {
 		}
 	}
 
-	err = cfg.Create(selectedExecution.CommandName(), selectedConsensus.CommandName())
+	err = cfg.Create(selectedExecution.Name(), selectedConsensus.Name())
 	if err != nil {
 		return utils.Exit(fmt.Sprintf("❌  There was an error while creating configration file: %v", err), 1)
 	}
