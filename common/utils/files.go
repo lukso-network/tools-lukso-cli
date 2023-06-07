@@ -6,11 +6,14 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"fmt"
-	"github.com/lukso-network/tools-lukso-cli/dependencies/configs"
+	"github.com/lukso-network/tools-lukso-cli/common"
 	log "github.com/sirupsen/logrus"
+	"github.com/urfave/cli/v2"
+	"golang.org/x/term"
 	"os"
 	"os/exec"
 	"strings"
+	"syscall"
 	"time"
 )
 
@@ -21,9 +24,9 @@ func FileExists(path string) bool {
 
 func CreateJwtSecret(dest string) error {
 	log.Info("🔄  Creating new JWT secret")
-	jwtDir := truncateFileFromDir(dest)
+	jwtDir := TruncateFileFromDir(dest)
 
-	err := os.MkdirAll(jwtDir, configs.ConfigPerms)
+	err := os.MkdirAll(jwtDir, common.ConfigPerms)
 	if err != nil {
 		return err
 	}
@@ -35,7 +38,7 @@ func CreateJwtSecret(dest string) error {
 		return err
 	}
 
-	err = os.WriteFile(dest, []byte(hex.EncodeToString(secretBytes)), configs.ConfigPerms)
+	err = os.WriteFile(dest, []byte(hex.EncodeToString(secretBytes)), common.ConfigPerms)
 	if err != nil {
 		return err
 	}
@@ -46,7 +49,7 @@ func CreateJwtSecret(dest string) error {
 }
 
 func PrepareTimestampedFile(logDir, logFileName string) (logFile string, err error) {
-	err = os.MkdirAll(logDir, configs.ConfigPerms)
+	err = os.MkdirAll(logDir, common.ConfigPerms)
 	if err != nil {
 		return
 	}
@@ -106,10 +109,70 @@ func GetLastFile(dir string, dependency string) (string, error) {
 	return lastFile, nil
 }
 
-// truncateFileFromDir removes file name from its path.
+// TruncateFileFromDir removes file name from its path.
 // Example: /path/to/foo/foo.txt => /path/to/foo
-func truncateFileFromDir(filePath string) string {
+func TruncateFileFromDir(filePath string) string {
 	segments := strings.Split(filePath, "/")
 
 	return strings.Join(segments[:len(segments)-1], "/")
+}
+
+// FlagFileExists check whether a path under given flag exists
+func FlagFileExists(ctx *cli.Context, flag string) bool {
+	flagPath := ctx.String(flag)
+	if !FileExists(flagPath) {
+		log.Errorf("⚠️  Path '%s' in --%s flag doesn't exist - please provide a valid file path", flagPath, flag)
+
+		return false
+	}
+
+	return true
+}
+
+// ReadValidatorPassword is responsible for creating a secure way to
+// pass a validator password from lukso CLI to a client of user's choosing
+func ReadValidatorPassword(ctx *cli.Context) (f *os.File, err error) {
+	var password []byte
+	fmt.Print("\nPlease enter your wallet password: ")
+	password, err = term.ReadPassword(0)
+	fmt.Println("")
+
+	if err != nil {
+		err = Exit(fmt.Sprintf("❌  Couldn't read password: %v", err), 1)
+
+		return
+	}
+
+	b := make([]byte, 4)
+	_, err = rand.Read(b)
+	if err != nil {
+		err = Exit(fmt.Sprintf("❌  Couldn't create random byte array: %v", err), 1)
+
+		return
+	}
+
+	randPipe := hex.EncodeToString(b)
+
+	passwordPipePath := fmt.Sprintf("./.%s", randPipe)
+	err = syscall.Mkfifo(passwordPipePath, 0600)
+	if err != nil {
+		err = Exit(fmt.Sprintf("❌  Couldn't create password pipe: %v", err), 1)
+
+		return
+	}
+
+	f, err = os.OpenFile(passwordPipePath, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0600)
+	if err != nil {
+		err = Exit(fmt.Sprintf("❌  Couldn't open password pipe: %v", err), 1)
+
+		return
+	}
+	_, err = f.Write(password)
+	if err != nil {
+		err = Exit(fmt.Sprintf("❌  Couldn't write password to pipe: %v", err), 1)
+
+		return
+	}
+
+	return
 }

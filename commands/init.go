@@ -2,7 +2,9 @@ package commands
 
 import (
 	"fmt"
+	"github.com/lukso-network/tools-lukso-cli/common"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
+	"github.com/lukso-network/tools-lukso-cli/dependencies/clients"
 	"github.com/lukso-network/tools-lukso-cli/dependencies/configs"
 	"os"
 	"strings"
@@ -18,7 +20,7 @@ const jwtSecretPath = configs.ConfigRootDir + "/shared/secrets/jwt.hex"
 
 // InitializeDirectory initializes a working directory for lukso node, with all configurations for all networks
 func InitializeDirectory(ctx *cli.Context) error {
-	if utils.IsAnyRunning() {
+	if clients.IsAnyRunning() {
 		return nil
 	}
 
@@ -61,7 +63,7 @@ func InitializeDirectory(ctx *cli.Context) error {
 		return utils.Exit(fmt.Sprintf("❌  There was an error while creating JWT secret file: %v", err), 1)
 	}
 
-	err = os.MkdirAll(pid.FileDir, configs.ConfigPerms)
+	err = os.MkdirAll(pid.FileDir, common.ConfigPerms)
 	if err != nil {
 		return utils.Exit(fmt.Sprintf("❌  There was an error while preparing PID directory: %v", err), 1)
 	}

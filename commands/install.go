@@ -12,7 +12,7 @@ import (
 )
 
 func InstallBinaries(ctx *cli.Context) (err error) {
-	if utils.IsAnyRunning() {
+	if clients.IsAnyRunning() {
 		return
 	}
 
@@ -87,20 +87,20 @@ func InstallBinaries(ctx *cli.Context) (err error) {
 	}
 
 	log.Infof("⬇️  Downloading %s...", selectedExecution.Name())
-	err = selectedExecution.Install(executionTag, commitHash)
+	err = selectedExecution.Install(selectedExecution.ParseUrl(executionTag, commitHash), false)
 	if err != nil {
 		return utils.Exit(fmt.Sprintf("❌  There was an error while downloading %s: %v", selectedExecution, err), 1)
 	}
 
-	log.Infof("⬇️  Downloading %s...", selectedConsensus)
-	err = selectedConsensus.Install(consensusTag, commitHash)
+	log.Infof("⬇️  Downloading %s...", selectedConsensus.Name())
+	err = selectedConsensus.Install(selectedConsensus.ParseUrl(consensusTag, commitHash), false)
 	if err != nil {
 		return utils.Exit(fmt.Sprintf("❌  There was an error while downloading %s: %v", selectedConsensus, err), 1)
 	}
 
 	if selectedConsensus == clients.Prysm {
 		log.Infof("⬇️  Downloading %s...", clients.PrysmValidator.Name())
-		err = clients.PrysmValidator.Install(consensusTag, "")
+		err = clients.PrysmValidator.Install(clients.PrysmValidator.ParseUrl(consensusTag, ""), false)
 		if err != nil {
 			return utils.Exit(fmt.Sprintf("❌  There was an error while downloading validator: %v", err), 1)
 		}

@@ -16,10 +16,10 @@ type ClientBinaryDependency interface {
 	Reset(datadir string) error
 
 	// Install installs the client with given version
-	Install(tag, commitHash string) error
+	Install(url string, isUpdate bool) error
 
 	// Update updates client to specific version - TODO
-	Update()
+	Update() error
 
 	// IsRunning determines whether the client is already running
 	IsRunning() bool
@@ -47,6 +47,6 @@ type ClientBinaryDependency interface {
 
 type ValidatorBinaryDependency interface {
 	ClientBinaryDependency
-	Import()
-	List()
+	Import(ctx *cli.Context) error
+	List(ctx *cli.Context) error
 }

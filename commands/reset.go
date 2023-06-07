@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
+	"github.com/lukso-network/tools-lukso-cli/dependencies/clients"
 	"github.com/lukso-network/tools-lukso-cli/dependencies/configs"
 	"github.com/lukso-network/tools-lukso-cli/flags"
 	log "github.com/sirupsen/logrus"
@@ -13,7 +14,7 @@ import (
 )
 
 func ResetClients(ctx *cli.Context) (err error) {
-	if utils.IsAnyRunning() {
+	if clients.IsAnyRunning() {
 		return nil
 	}
 	if !cfg.Exists() {

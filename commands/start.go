@@ -8,6 +8,9 @@ import (
 	"github.com/lukso-network/tools-lukso-cli/flags"
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
+	"os"
+	"strings"
+	"time"
 )
 
 func StartClients(ctx *cli.Context) (err error) {
@@ -83,15 +86,73 @@ func startValidator(ctx *cli.Context) (err error) {
 		return utils.Exit(fmt.Sprintf("❌  There was an error while reading config: %v", err), 1)
 	}
 
+	var validatorClient clients.ValidatorBinaryDependency
 	consensusClient, ok := clients.AllClients[cfg.Consensus()]
 	if !ok {
 		return utils.Exit(errors.ErrClientNotSupported.Error(), 1)
 	}
 
-	err = startPrysmValidator(ctx)
+	switch consensusClient {
+	case clients.Prysm:
+		if !utils.FileExists(fmt.Sprintf("%s/direct/accounts/all-accounts.keystore.json", ctx.String(flags.ValidatorKeysFlag))) { // path to imported keys
+			return utils.Exit("⚠️  Validator is not initialized. Run lukso validator import to initialize your validator.", 1)
+		}
+		validatorClient = clients.PrysmValidator
+	case clients.Lighthouse:
+		if !utils.FileExists(fmt.Sprintf("%s/validators", ctx.String(flags.ValidatorKeysFlag))) { // path to imported keys
+			return utils.Exit("⚠️  Validator is not initialized. Run lukso validator import to initialize your validator.", 1)
+		}
+		validatorClient = clients.LighthouseValidator
+	}
 
+	var passwordPipe *os.File
+	validatorPasswordPath := ctx.String(flags.ValidatorWalletPasswordFileFlag)
+	if validatorPasswordPath == "" {
+		passwordPipe, err = utils.ReadValidatorPassword(ctx)
+		if err != nil {
+			err = utils.Exit(fmt.Sprintf("❌  There was an error while reading password: %v", err), 1)
+		}
+	}
 	if err != nil {
-		return exit(fmt.Sprintf("❌  There was an error while starting validator: %v", err), 1)
+		return
+	}
+
+	err = ctx.Set(flags.ValidatorWalletPasswordFileFlag, passwordPipe.Name())
+	if err != nil {
+		return
+	}
+
+	defer func() {
+		os.Remove(passwordPipe.Name())
+	}()
+
+	args, err := validatorClient.PrepareStartFlags(ctx)
+	if err != nil {
+		err = utils.Exit(fmt.Sprintf("❌  There was an error while preparing %s flags: %v", validatorClient.Name(), err), 1)
+	}
+
+	err = validatorClient.Start(ctx, args)
+	if err != nil {
+		err = utils.Exit(fmt.Sprintf("❌  There was an error while starting %s: %v", validatorClient.Name(), err), 1)
+	}
+
+	os.Remove(passwordPipe.Name())
+
+	log.Info("⚙️  Please wait a few seconds while your password is being validated...")
+	time.Sleep(time.Second * 10) // should be enough
+
+	logFile, err := utils.GetLastFile(ctx.String(flags.LogFolderFlag), validatorClient.CommandName())
+	if err != nil {
+		return utils.Exit(fmt.Sprintf("❌  There was an error while getting latest log file: %v", err), 1)
+	}
+
+	logs, err := os.ReadFile(ctx.String(flags.LogFolderFlag) + "/" + logFile)
+	if err != nil {
+		return utils.Exit(fmt.Sprintf("❌  There was an error while reading log file: %v", err), 1)
+	}
+
+	if strings.Contains(string(logs), errors.WrongPassword) {
+		return utils.Exit("❌  Incorrect password, please restart and try again", 1)
 	}
 
 	return

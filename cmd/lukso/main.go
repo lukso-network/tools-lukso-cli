@@ -48,7 +48,7 @@ REPO: https://github.com/lukso-network/tools-lukso-cli
 		},
 		{
 			Name:            "update",
-			Usage:           "Updates all or specific clients in the working directory to the latest version",
+			Usage:           "Updates all or specific clients to the latest version",
 			Action:          commands.UpdateClients,
 			Flags:           flags.UpdateFlags,
 			HideHelpCommand: true,

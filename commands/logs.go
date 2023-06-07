@@ -42,12 +42,17 @@ func LogLayer(layer string) func(*cli.Context) error {
 		case configs.ConsensusLayer:
 			dependencyName = cfg.Consensus()
 		case configs.ValidatorLayer:
-			dependencyName = clients.PrysmValidator.CommandName()
+			dependencyName = clients.PrysmValidator.Name()
 		default:
 			return utils.Exit("❌  Unexpected error: unknown layer logged", 1)
 		}
 
-		latestFile, err := utils.GetLastFile(logFileDir, dependencyName)
+		client, ok := clients.AllClients[dependencyName]
+		if !ok {
+			return utils.Exit(errors.ErrClientNotSupported.Error(), 1)
+		}
+
+		latestFile, err := utils.GetLastFile(logFileDir, client.CommandName())
 		if latestFile == "" && err == nil {
 			return nil
 		}
@@ -66,11 +71,6 @@ func LogLayer(layer string) func(*cli.Context) error {
 			log.Info("❌  Aborting...") // there is no error, just a possible change of mind - shouldn't return err
 
 			return nil
-		}
-
-		client, ok := clients.AllClients[dependencyName]
-		if !ok {
-			return utils.Exit("❌  Client found in LUKSO configuration file is not supported", 1)
 		}
 
 		return client.Logs(logFileDir + "/" + latestFile)

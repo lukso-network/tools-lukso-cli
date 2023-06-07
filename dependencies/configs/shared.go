@@ -1,10 +1,20 @@
 package configs
 
-import "os"
+import (
+	"bytes"
+	"fmt"
+	"github.com/lukso-network/tools-lukso-cli/common"
+	"github.com/lukso-network/tools-lukso-cli/common/errors"
+	"github.com/lukso-network/tools-lukso-cli/common/utils"
+	log "github.com/sirupsen/logrus"
+	"io"
+	"net/http"
+	"os"
+	"strings"
+)
 
 const (
 	BinaryPerms   = os.ModePerm
-	ConfigPerms   = 0750
 	ConfigRootDir = "./configs"
 
 	MainnetConfig = ConfigRootDir + "/mainnet"
@@ -17,7 +27,7 @@ const (
 	TestnetKeystore = "./testnet-keystore"
 
 	MainnetDatadir = "./mainnet-data"
-	TestnetDatadir = "./mainnet-data"
+	TestnetDatadir = "./testnet-data"
 
 	ExecutionMainnetDatadir = MainnetDatadir + "/execution"
 	ExecutionTestnetDatadir = TestnetDatadir + "/execution"
@@ -175,9 +185,85 @@ type clientConfig struct {
 var _ ClientConfigDependency = &clientConfig{}
 
 func (c *clientConfig) Install() (err error) {
+	err = c.createDir()
+	if err != nil {
+		return
+	}
+
+	if utils.FileExists(c.filePath) {
+		message := fmt.Sprintf("You already have the %s client installed, do you want to override your installation? [Y/n]: ", c.name)
+		input := utils.RegisterInputWithMessage(message)
+		if !strings.EqualFold(input, "y") && input != "" {
+			log.Info("⏭️  Skipping installation...")
+
+			return nil
+		}
+
+		log.Infof("  ⏩️  Skipping file %s: the file already exists", c.filePath)
+
+		return
+	}
+
+	response, err := http.Get(c.url)
+
+	if nil != err {
+		return
+	}
+
+	defer func() {
+		_ = response.Body.Close()
+	}()
+
+	if response.StatusCode == http.StatusNotFound {
+		log.Warnf("⚠️  File under URL %s not found - skipping...", c.url)
+
+		return nil
+	}
+
+	if http.StatusOK != response.StatusCode {
+		return fmt.Errorf(
+			"❌  Invalid response when downloading on file url: %s. Response code: %s",
+			c.url,
+			response.Status,
+		)
+	}
+
+	var responseReader io.Reader = response.Body
+
+	buf := new(bytes.Buffer)
+	_, err = buf.ReadFrom(responseReader)
+	if err != nil {
+		return
+	}
+
+	err = os.WriteFile(c.filePath, buf.Bytes(), common.ConfigPerms)
+
+	if err != nil && strings.Contains(err.Error(), "Permission denied") {
+		return errors.ErrNeedRoot
+	}
+
+	if err != nil {
+		log.Infof("❌  Couldn't save file: %v", err)
+
+		return
+	}
+
 	return
 }
 
 func (c *clientConfig) Name() string {
 	return c.name
+}
+
+func (c *clientConfig) createDir() error {
+	err := os.MkdirAll(utils.TruncateFileFromDir(c.filePath), common.ConfigPerms)
+	if err == os.ErrExist {
+		log.Errorf("%s already exists!", c.name)
+	}
+
+	if err == os.ErrPermission {
+		return errors.ErrNeedRoot
+	}
+
+	return err
 }

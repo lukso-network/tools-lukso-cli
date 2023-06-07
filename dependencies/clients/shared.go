@@ -4,10 +4,12 @@ import (
 	"archive/tar"
 	"bytes"
 	"compress/gzip"
+	"encoding/json"
 	"fmt"
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
 	"github.com/lukso-network/tools-lukso-cli/common/system"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
+	"github.com/lukso-network/tools-lukso-cli/dependencies/apitypes"
 	"github.com/lukso-network/tools-lukso-cli/dependencies/configs"
 	"github.com/lukso-network/tools-lukso-cli/flags"
 	"github.com/lukso-network/tools-lukso-cli/pid"
@@ -28,6 +30,11 @@ const (
 	lighthouseDependencyName          = "Lighthouse"
 	lighthouseValidatorDependencyName = "Lighthouse Validator"
 	erigonDependencyName              = "Erigon"
+
+	gethGithubLocation          = "ethereum/go-ethereum"
+	prysmaticLabsGithubLocation = "prysmaticlabs/prysm"
+	lighthouseGithubLocation    = "sigp/lighthouse"
+	erigonGithubLocation        = "ledgerwatch/erigon"
 )
 
 var (
@@ -114,6 +121,8 @@ func (client *clientBinary) Start(ctx *cli.Context, arguments []string) (err err
 
 	time.Sleep(1 * time.Second)
 
+	log.Infof("✅  %s started!", client.Name())
+
 	return
 }
 
@@ -169,10 +178,8 @@ func (client *clientBinary) Reset(dataDirPath string) (err error) {
 	return os.RemoveAll(dataDirPath)
 }
 
-func (client *clientBinary) Install(tag, commitHash string) (err error) {
-	fileUrl := client.ParseUrl(tag, commitHash)
-
-	if utils.FileExists(client.FilePath()) {
+func (client *clientBinary) Install(url string, isUpdate bool) (err error) {
+	if utils.FileExists(client.FilePath()) && !isUpdate {
 		message := fmt.Sprintf("You already have the %s client installed, do you want to override your installation? [Y/n]: ", client.Name())
 		input := utils.RegisterInputWithMessage(message)
 		if !strings.EqualFold(input, "y") && input != "" {
@@ -182,7 +189,7 @@ func (client *clientBinary) Install(tag, commitHash string) (err error) {
 		}
 	}
 
-	response, err := http.Get(fileUrl)
+	response, err := http.Get(url)
 
 	if nil != err {
 		return
@@ -193,7 +200,7 @@ func (client *clientBinary) Install(tag, commitHash string) (err error) {
 	}()
 
 	if response.StatusCode == http.StatusNotFound {
-		log.Warnf("⚠️  File under URL %s not found - skipping...", fileUrl)
+		log.Warnf("⚠️  File under URL %s not found - skipping...", url)
 
 		return nil
 	}
@@ -201,7 +208,7 @@ func (client *clientBinary) Install(tag, commitHash string) (err error) {
 	if http.StatusOK != response.StatusCode {
 		return fmt.Errorf(
 			"❌  Invalid response when downloading on file url: %s. Response code: %s",
-			fileUrl,
+			url,
 			response.Status,
 		)
 	}
@@ -238,9 +245,11 @@ func (client *clientBinary) Install(tag, commitHash string) (err error) {
 			var targetHeader string
 			switch client.Name() {
 			case gethDependencyName:
-				targetHeader = "/" + gethDependencyName
-			case erigonDependencyName, lighthouseDependencyName:
-				targetHeader = client.Name()
+				targetHeader = "/" + client.CommandName()
+			case erigonDependencyName:
+				targetHeader = "erigon"
+			case lighthouseDependencyName:
+				targetHeader = "lighthouse"
 			}
 
 			if header.Typeflag == tar.TypeReg && strings.Contains(header.Name, targetHeader) {
@@ -269,14 +278,32 @@ func (client *clientBinary) Install(tag, commitHash string) (err error) {
 		return
 	}
 
-	log.Infof("✅  %s downloaded!\n\n", client.Name())
+	switch isUpdate {
+	case true:
+		log.Infof("✅  %s upadted!\n\n", client.Name())
+	case false:
+		log.Infof("✅  %s downloaded!\n\n", client.Name())
+	}
 
 	return
 
 }
 
-func (client *clientBinary) Update() {
+func (client *clientBinary) Update() (err error) {
+	log.Infof("⬇️  Fetching latest release for %s", client.name)
 
+	latestTag, err := fetchTag(client.githubLocation)
+	if err != nil {
+		return err
+	}
+
+	log.Infof("✅  Fetched latest release: %s", latestTag)
+
+	log.WithField("dependencyTag", latestTag).Infof("⬇️  Updating %s", client.name)
+
+	url := client.ParseUrl(latestTag, "")
+
+	return client.Install(url, true)
 }
 
 func (client *clientBinary) IsRunning() bool {
@@ -428,7 +455,7 @@ func (client *clientBinary) ParseUserFlags(ctx *cli.Context) (startFlags []strin
 }
 
 func (client *clientBinary) PrepareStartFlags(ctx *cli.Context) (startFlags []string, err error) {
-	_ = cli.Exit(fmt.Sprintf("FATAL: START FLAGS NOT CONFIGURED FOR %s CLIENT - PLEASE MARK THIS ISSUE TO THE LUKSO TEAM", client.Name()), 1)
+	_ = utils.Exit(fmt.Sprintf("FATAL: START FLAGS NOT CONFIGURED FOR %s CLIENT - PLEASE MARK THIS ISSUE TO THE LUKSO TEAM", client.Name()), 1)
 
 	return
 }
@@ -439,4 +466,78 @@ func removePrefix(arg, name string) string {
 	arg = strings.TrimPrefix(arg, prefix)
 
 	return fmt.Sprintf("--%s", strings.Trim(arg, "- "))
+}
+
+func IsAnyRunning() bool {
+	var runningClients string
+	for _, client := range AllClients {
+		if client.IsRunning() {
+			runningClients += fmt.Sprintf("- %s\n", client.Name())
+		}
+	}
+
+	if runningClients == "" {
+		return false
+	}
+
+	log.Warnf("⚠️  Please stop the following clients before continuing: \n%s", runningClients)
+
+	return true
+}
+
+// fetchTag fetches the newest release tag for given dependency from GitHub API
+func fetchTag(githubLocation string) (string, error) {
+	latestReleaseUrl := fmt.Sprintf("https://api.github.com/repos/%s/releases/latest", githubLocation)
+
+	response, err := http.Get(latestReleaseUrl)
+	if err != nil {
+		return "", err
+	}
+
+	respBytes, err := io.ReadAll(response.Body)
+	if err != nil {
+		return "", err
+	}
+
+	var latestReleaseResponse apitypes.GithubApiReleaseResponse
+
+	err = json.Unmarshal(respBytes, &latestReleaseResponse)
+	if err != nil {
+		return "", err
+	}
+
+	return latestReleaseResponse.TagName, nil
+}
+
+// fetchTagAndCommitHash fetches both release and latest commit hash from GitHub API
+func fetchTagAndCommitHash(githubLocation string) (releaseTag, commitHash string, err error) {
+	latestTag, err := fetchTag(githubLocation)
+	if err != nil {
+		return
+	}
+
+	releaseTag = latestTag
+
+	latestCommitUrl := fmt.Sprintf("https://api.github.com/repos/%s/git/ref/tags/%s", githubLocation, latestTag)
+
+	response, err := http.Get(latestCommitUrl)
+	if err != nil {
+		return
+	}
+
+	respBytes, err := io.ReadAll(response.Body)
+	if err != nil {
+		return
+	}
+
+	var latestCommitResponse apitypes.GithubApiCommitResponse
+
+	err = json.Unmarshal(respBytes, &latestCommitResponse)
+	if err != nil {
+		return
+	}
+
+	commitHash = latestCommitResponse.Object.Sha
+
+	return
 }
