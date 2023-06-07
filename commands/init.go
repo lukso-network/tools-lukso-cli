@@ -74,7 +74,7 @@ func InitializeDirectory(ctx *cli.Context) error {
 	case false:
 		log.Info("⚙️   Creating LUKSO configuration file...")
 
-		err = cfg.Create("", "")
+		err = cfg.Create("", "", "")
 		if err != nil {
 			return utils.Exit(fmt.Sprintf("❌  There was an error while preparing LUKSO configuration: %v", err), 1)
 		}

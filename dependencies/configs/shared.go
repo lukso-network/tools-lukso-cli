@@ -191,14 +191,6 @@ func (c *clientConfig) Install() (err error) {
 	}
 
 	if utils.FileExists(c.filePath) {
-		message := fmt.Sprintf("You already have the %s client installed, do you want to override your installation? [Y/n]: ", c.name)
-		input := utils.RegisterInputWithMessage(message)
-		if !strings.EqualFold(input, "y") && input != "" {
-			log.Info("⏭️  Skipping installation...")
-
-			return nil
-		}
-
 		log.Infof("  ⏩️  Skipping file %s: the file already exists", c.filePath)
 
 		return

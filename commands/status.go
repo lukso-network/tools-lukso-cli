@@ -23,7 +23,7 @@ func StatClients(ctx *cli.Context) (err error) {
 
 	selectedExecution := cfg.Execution()
 	selectedConsensus := cfg.Consensus()
-	validatorDependencyName := clients.PrysmValidator.Name()
+	validatorDependencyName := cfg.Validator()
 
 	err = statClient(selectedExecution, "Execution")(ctx)
 	if err != nil {
@@ -45,6 +45,14 @@ func StatClients(ctx *cli.Context) (err error) {
 
 func statClient(dependencyName, layer string) func(*cli.Context) error {
 	return func(ctx *cli.Context) error {
+		if dependencyName == "" {
+			dependencyName = "none"
+
+			log.Warnf("PID ----- - %s (%s): Stopped 🔘", layer, dependencyName)
+
+			return nil
+		}
+
 		client, ok := clients.AllClients[dependencyName]
 		if !ok {
 			return cli.Exit(errors.ErrClientNotSupported, 1)
@@ -67,10 +75,6 @@ func statClient(dependencyName, layer string) func(*cli.Context) error {
 			log.Infof("PID %d - %s (%s): Running 🟢", pidVal, layer, dependencyName)
 
 			return nil
-		}
-
-		if dependencyName == "" {
-			dependencyName = "none"
 		}
 
 		log.Warnf("PID ----- - %s (%s): Stopped 🔘", layer, dependencyName)

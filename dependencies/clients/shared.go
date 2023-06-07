@@ -131,7 +131,7 @@ func (client *clientBinary) Stop() (err error) {
 
 	pidVal, err := pid.Load(pidLocation)
 	if err != nil {
-		log.Warnf("⏭️  %s is not running - skipping...", client.CommandName())
+		log.Warnf("⏭️  %s is not running - skipping...", client.Name())
 
 		return nil
 	}

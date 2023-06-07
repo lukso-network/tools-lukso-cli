@@ -98,7 +98,10 @@ func InstallBinaries(ctx *cli.Context) (err error) {
 		return utils.Exit(fmt.Sprintf("❌  There was an error while downloading %s: %v", selectedConsensus, err), 1)
 	}
 
+	var selectedValidator clients.ValidatorBinaryDependency = clients.LighthouseValidator
+
 	if selectedConsensus == clients.Prysm {
+		selectedValidator = clients.PrysmValidator
 		log.Infof("⬇️  Downloading %s...", clients.PrysmValidator.Name())
 		err = clients.PrysmValidator.Install(clients.PrysmValidator.ParseUrl(consensusTag, ""), false)
 		if err != nil {
@@ -106,7 +109,7 @@ func InstallBinaries(ctx *cli.Context) (err error) {
 		}
 	}
 
-	err = cfg.Create(selectedExecution.Name(), selectedConsensus.Name())
+	err = cfg.Create(selectedExecution.Name(), selectedConsensus.Name(), selectedValidator.Name())
 	if err != nil {
 		return utils.Exit(fmt.Sprintf("❌  There was an error while creating configration file: %v", err), 1)
 	}

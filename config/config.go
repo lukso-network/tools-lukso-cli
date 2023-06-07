@@ -58,6 +58,7 @@ type Config struct {
 	viper           *viper.Viper
 	executionClient string `mapstructure:"executionclient"`
 	consensusClient string `mapstructure:"consensusclient"`
+	validatorClient string `mapstructure:"validatorclient"`
 }
 
 // NewConfig creates and initializes viper config instance - it doesn't load config, to load use c.Read().
@@ -77,7 +78,7 @@ func NewConfig(path string) *Config {
 
 // Create creates a new config that keeps track of selected dependencies and writes to it.
 // By default, this file should be present in root of initialized lukso directory
-func (c *Config) Create(selectedExecution, selectedConsensus string) (err error) {
+func (c *Config) Create(selectedExecution, selectedConsensus, selectedValidator string) (err error) {
 	_, err = os.Create(c.path)
 	if err != nil {
 		return
@@ -85,6 +86,7 @@ func (c *Config) Create(selectedExecution, selectedConsensus string) (err error)
 
 	c.viper.Set("useClients.execution", selectedExecution)
 	c.viper.Set("useClients.consensus", selectedConsensus)
+	c.viper.Set("useClients.validator", selectedValidator)
 
 	err = c.viper.WriteConfigAs(c.path)
 
@@ -122,6 +124,7 @@ func (c *Config) Read() (err error) {
 
 	c.executionClient = c.viper.Get("useClients.execution").(string)
 	c.consensusClient = c.viper.Get("useClients.consensus").(string)
+	c.validatorClient = c.viper.Get("useClients.validator").(string)
 
 	return
 }
@@ -132,6 +135,10 @@ func (c *Config) Execution() string {
 
 func (c *Config) Consensus() string {
 	return c.consensusClient
+}
+
+func (c *Config) Validator() string {
+	return c.validatorClient
 }
 
 func LoadLighthouseConfig(path string) (args []string, err error) {

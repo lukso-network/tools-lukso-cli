@@ -42,7 +42,7 @@ func LogLayer(layer string) func(*cli.Context) error {
 		case configs.ConsensusLayer:
 			dependencyName = cfg.Consensus()
 		case configs.ValidatorLayer:
-			dependencyName = clients.PrysmValidator.Name()
+			dependencyName = cfg.Validator()
 		default:
 			return utils.Exit("❌  Unexpected error: unknown layer logged", 1)
 		}

@@ -96,6 +96,8 @@ func (l *LighthouseClient) PrepareStartFlags(ctx *cli.Context) (startFlags []str
 
 	startFlags = mergeFlags(userFlags, defaults)
 
+	startFlags = append([]string{"bn"}, startFlags...)
+
 	return
 }
 
