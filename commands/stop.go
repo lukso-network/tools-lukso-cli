@@ -22,13 +22,14 @@ func StopClients(ctx *cli.Context) (err error) {
 
 	selectedExecution := cfg.Execution()
 	selectedConsensus := cfg.Consensus()
-	if selectedExecution == "" || selectedConsensus == "" {
+	selectedValidator := cfg.Validator()
+	if selectedExecution == "" || selectedConsensus == "" || selectedValidator == "" {
 		return utils.Exit(errors.SelectedClientsNotFound, 1)
 	}
 
 	executionClient := clients.AllClients[selectedExecution]
 	consensusClient := clients.AllClients[selectedConsensus]
-	validatorClient := clients.PrysmValidator
+	validatorClient := clients.AllClients[selectedValidator]
 
 	stopConsensus := ctx.Bool(flags.ConsensusFlag)
 	stopExecution := ctx.Bool(flags.ExecutionFlag)
@@ -60,7 +61,7 @@ func StopClients(ctx *cli.Context) (err error) {
 	}
 
 	if stopValidator {
-		log.Info("⚙️  Stopping validator")
+		log.Infof("⚙️  Stopping validator [%s]", selectedValidator)
 
 		err = stopClient(validatorClient)
 		if err != nil {

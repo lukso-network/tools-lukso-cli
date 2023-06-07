@@ -21,15 +21,10 @@ func ImportValidator(ctx *cli.Context) (err error) {
 		return utils.Exit(fmt.Sprintf("❌  There was an error while reading config: %v", err), 1)
 	}
 
-	var validatorClient clients.ValidatorBinaryDependency
-
-	switch cfg.Consensus() {
-	case clients.Prysm.Name():
-		validatorClient = clients.PrysmValidator
-	case clients.Prysm.Name():
-		validatorClient = clients.LighthouseValidator
-	default:
-		return utils.Exit(fmt.Sprintf(errors.SelectedClientsNotFound), 1)
+	selectedValidator := cfg.Validator()
+	validatorClient, ok := clients.AllClients[selectedValidator].(clients.ValidatorBinaryDependency)
+	if !ok {
+		return utils.Exit(errors.SelectedClientsNotFound, 1)
 	}
 
 	err = validatorClient.Import(ctx)
@@ -63,7 +58,7 @@ func executeValidatorList(network string) (err error) {
 	case clients.Prysm.Name():
 		cmd = exec.Command("validator", "accounts", "list", "--wallet-dir", fmt.Sprintf("%s-keystore", network))
 	case clients.Lighthouse.Name():
-		cmd = exec.Command("lighthouse", "am", "validator", "list", "--datadir", fmt.Sprintf("%s-keystore", network))
+		cmd = exec.Command(clients.Lighthouse.CommandName(), "am", "validator", "list", "--datadir", fmt.Sprintf("%s-keystore", network))
 	}
 
 	cmd.Stdin = os.Stdin

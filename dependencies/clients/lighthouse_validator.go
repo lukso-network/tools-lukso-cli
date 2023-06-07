@@ -6,9 +6,12 @@ import (
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
 	"github.com/lukso-network/tools-lukso-cli/config"
 	"github.com/lukso-network/tools-lukso-cli/flags"
+	"github.com/lukso-network/tools-lukso-cli/pid"
+	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 	"os"
 	"os/exec"
+	"time"
 )
 
 type LighthouseValidatorClient struct {
@@ -29,6 +32,75 @@ func NewLighthouseValidatorClient() *LighthouseValidatorClient {
 var LighthouseValidator = NewLighthouseValidatorClient()
 
 var _ ValidatorBinaryDependency = &LighthouseValidatorClient{}
+
+func (l *LighthouseValidatorClient) Start(ctx *cli.Context, args []string) (err error) {
+	if l.IsRunning() {
+		log.Infof("🔄️  %s is already running - stopping first...", l.Name())
+
+		err = l.Stop()
+		if err != nil {
+			return
+		}
+
+		log.Infof("🛑  Stopped %s", l.Name())
+	}
+
+	command := exec.Command(Lighthouse.commandName, args...)
+
+	if l.Name() == gethDependencyName || l.Name() == erigonDependencyName {
+		log.Infof("⚙️  Running %s init...", l.Name())
+
+		err = initClient(ctx, l)
+		if err != nil && err != errors.ErrAlreadyRunning { // if it is already running it will be caught during start
+			log.Errorf("❌  There was an error while initalizing %s. Error: %v", l.Name(), err)
+
+			return err
+		}
+	}
+
+	var (
+		logFile  *os.File
+		fullPath string
+	)
+
+	logFolder := ctx.String(flags.LogFolderFlag)
+	if logFolder == "" {
+		return utils.Exit(fmt.Sprintf("%v- %s", errors.ErrFlagMissing, flags.LogFolderFlag), 1)
+	}
+
+	fullPath, err = utils.PrepareTimestampedFile(logFolder, l.CommandName())
+	if err != nil {
+		return
+	}
+
+	err = os.WriteFile(fullPath, []byte{}, 0750)
+	if err != nil {
+		return
+	}
+
+	logFile, err = os.OpenFile(fullPath, os.O_RDWR, 0750)
+	if err != nil {
+		return
+	}
+
+	command.Stdout = logFile
+	command.Stderr = logFile
+
+	log.Infof("🔄  Starting %s", l.Name())
+	err = command.Start()
+	if err != nil {
+		return
+	}
+
+	pidLocation := fmt.Sprintf("%s/%s.pid", pid.FileDir, l.CommandName())
+	err = pid.Create(pidLocation, command.Process.Pid)
+
+	time.Sleep(1 * time.Second)
+
+	log.Infof("✅  %s started!", l.Name())
+
+	return
+}
 
 func (l *LighthouseValidatorClient) PrepareStartFlags(ctx *cli.Context) (startFlags []string, err error) {
 	validatorConfigExists := utils.FlagFileExists(ctx, flags.ValidatorConfigFileFlag)
@@ -58,6 +130,8 @@ func (l *LighthouseValidatorClient) PrepareStartFlags(ctx *cli.Context) (startFl
 
 	startFlags = mergeFlags(userFlags, defaults)
 
+	startFlags = append([]string{"vc"}, startFlags...)
+
 	return
 }
 
@@ -77,7 +151,7 @@ func (l *LighthouseValidatorClient) Import(ctx *cli.Context) (err error) {
 		args = append(args, "--password-file", passwordFile, "--reuse-password")
 	}
 
-	initCommand := exec.Command(lighthouseDependencyName, args...)
+	initCommand := exec.Command(Lighthouse.CommandName(), args...)
 
 	initCommand.Stdout = os.Stdout
 	initCommand.Stderr = os.Stderr
