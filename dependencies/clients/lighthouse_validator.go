@@ -24,8 +24,8 @@ func NewLighthouseValidatorClient() *LighthouseValidatorClient {
 	return &LighthouseValidatorClient{
 		&clientBinary{
 			name:           lighthouseValidatorDependencyName,
-			commandName:    "lighthouse_validator", // we run it using lighthouse bin
-			baseUrl:        "",                     // no separate client for lighthouse validator - lighthouse_beacon for reference
+			commandName:    "validator", // we run it using lighthouse bin
+			baseUrl:        "",          // no separate client for lighthouse validator - lighthouse_beacon for reference
 			githubLocation: "",
 		},
 	}
@@ -52,17 +52,6 @@ func (l *LighthouseValidatorClient) Start(ctx *cli.Context, args []string) (err 
 	}
 
 	command := exec.Command(Lighthouse.commandName, args...)
-
-	if l.Name() == gethDependencyName || l.Name() == erigonDependencyName {
-		log.Infof("⚙️  Running %s init...", l.Name())
-
-		err = initClient(ctx, l)
-		if err != nil && err != errors.ErrAlreadyRunning { // if it is already running it will be caught during start
-			log.Errorf("❌  There was an error while initalizing %s. Error: %v", l.Name(), err)
-
-			return err
-		}
-	}
 
 	var (
 		logFile  *os.File
