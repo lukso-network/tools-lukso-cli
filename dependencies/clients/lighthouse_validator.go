@@ -33,6 +33,10 @@ var LighthouseValidator = NewLighthouseValidatorClient()
 
 var _ ValidatorBinaryDependency = &LighthouseValidatorClient{}
 
+func (l *LighthouseValidatorClient) Update() error {
+	return nil
+}
+
 func (l *LighthouseValidatorClient) Start(ctx *cli.Context, args []string) (err error) {
 	if l.IsRunning() {
 		log.Infof("🔄️  %s is already running - stopping first...", l.Name())
