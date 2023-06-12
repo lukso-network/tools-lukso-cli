@@ -31,11 +31,11 @@ var Geth = NewGethClient()
 var _ ClientBinaryDependency = &GethClient{}
 
 func (g *GethClient) ParseUrl(tag, commitHash string) (url string) {
+	url = g.baseUrl
+
 	if g.name == gethDependencyName && system.Os == system.Macos {
 		url = strings.Replace(url, "|ARCH|", "amd64", -1)
 	}
-
-	url = g.baseUrl
 
 	url = strings.Replace(url, "|TAG|", tag, -1)
 	url = strings.Replace(url, "|OS|", system.Os, -1)
