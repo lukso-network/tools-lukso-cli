@@ -2,13 +2,15 @@ package commands
 
 import (
 	"fmt"
+
+	log "github.com/sirupsen/logrus"
+	"github.com/urfave/cli/v2"
+
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
 	"github.com/lukso-network/tools-lukso-cli/common/system"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
 	"github.com/lukso-network/tools-lukso-cli/dependencies/clients"
 	"github.com/lukso-network/tools-lukso-cli/flags"
-	log "github.com/sirupsen/logrus"
-	"github.com/urfave/cli/v2"
 )
 
 func InstallBinaries(ctx *cli.Context) (err error) {

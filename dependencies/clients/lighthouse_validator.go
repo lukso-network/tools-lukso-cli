@@ -2,16 +2,18 @@ package clients
 
 import (
 	"fmt"
+	"os"
+	"os/exec"
+	"time"
+
+	log "github.com/sirupsen/logrus"
+	"github.com/urfave/cli/v2"
+
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
 	"github.com/lukso-network/tools-lukso-cli/config"
 	"github.com/lukso-network/tools-lukso-cli/flags"
 	"github.com/lukso-network/tools-lukso-cli/pid"
-	log "github.com/sirupsen/logrus"
-	"github.com/urfave/cli/v2"
-	"os"
-	"os/exec"
-	"time"
 )
 
 type LighthouseValidatorClient struct {

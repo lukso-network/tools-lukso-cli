@@ -2,15 +2,16 @@ package commands
 
 import (
 	"fmt"
+	"os"
+	"strings"
+
+	log "github.com/sirupsen/logrus"
+	"github.com/urfave/cli/v2"
+
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
 	"github.com/lukso-network/tools-lukso-cli/dependencies/configs"
 	"github.com/lukso-network/tools-lukso-cli/flags"
-	log "github.com/sirupsen/logrus"
-	"os"
-	"strings"
-
-	"github.com/urfave/cli/v2"
 )
 
 // networkConfig serves as a collection of variables that need to be changed when different network is selected

@@ -2,17 +2,17 @@ package commands
 
 import (
 	"fmt"
-	"github.com/lukso-network/tools-lukso-cli/common"
-	"github.com/lukso-network/tools-lukso-cli/common/utils"
-	"github.com/lukso-network/tools-lukso-cli/dependencies/clients"
-	"github.com/lukso-network/tools-lukso-cli/dependencies/configs"
 	"os"
 	"strings"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 
+	"github.com/lukso-network/tools-lukso-cli/common"
+	"github.com/lukso-network/tools-lukso-cli/common/utils"
 	"github.com/lukso-network/tools-lukso-cli/config"
+	"github.com/lukso-network/tools-lukso-cli/dependencies/clients"
+	"github.com/lukso-network/tools-lukso-cli/dependencies/configs"
 	"github.com/lukso-network/tools-lukso-cli/pid"
 )
 

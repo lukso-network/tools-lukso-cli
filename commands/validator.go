@@ -2,13 +2,15 @@ package commands
 
 import (
 	"fmt"
+	"os"
+	"os/exec"
+
+	"github.com/urfave/cli/v2"
+
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
 	"github.com/lukso-network/tools-lukso-cli/dependencies/clients"
 	"github.com/lukso-network/tools-lukso-cli/flags"
-	"github.com/urfave/cli/v2"
-	"os"
-	"os/exec"
 )
 
 func ImportValidator(ctx *cli.Context) (err error) {

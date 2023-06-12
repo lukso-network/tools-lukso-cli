@@ -2,13 +2,15 @@ package clients
 
 import (
 	"fmt"
+	"strings"
+
+	log "github.com/sirupsen/logrus"
+	"github.com/urfave/cli/v2"
+
 	"github.com/lukso-network/tools-lukso-cli/common/system"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
 	"github.com/lukso-network/tools-lukso-cli/config"
 	"github.com/lukso-network/tools-lukso-cli/flags"
-	log "github.com/sirupsen/logrus"
-	"github.com/urfave/cli/v2"
-	"strings"
 )
 
 type LighthouseClient struct {

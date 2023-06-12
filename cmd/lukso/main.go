@@ -2,15 +2,16 @@ package main
 
 import (
 	"fmt"
-	"github.com/lukso-network/tools-lukso-cli/commands"
-	"github.com/lukso-network/tools-lukso-cli/dependencies/configs"
-	"github.com/lukso-network/tools-lukso-cli/flags"
 	"os"
 	"runtime"
 	runtimeDebug "runtime/debug"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
+
+	"github.com/lukso-network/tools-lukso-cli/commands"
+	"github.com/lukso-network/tools-lukso-cli/dependencies/configs"
+	"github.com/lukso-network/tools-lukso-cli/flags"
 )
 
 var Version = "develop"

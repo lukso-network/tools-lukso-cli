@@ -6,7 +6,6 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"fmt"
-	"golang.org/x/term"
 	"os"
 	"os/exec"
 	"strings"
@@ -15,6 +14,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
+	"golang.org/x/term"
 
 	"github.com/lukso-network/tools-lukso-cli/common"
 )
