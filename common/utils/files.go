@@ -6,15 +6,17 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"fmt"
-	"github.com/lukso-network/tools-lukso-cli/common"
-	log "github.com/sirupsen/logrus"
-	"github.com/urfave/cli/v2"
 	"golang.org/x/term"
 	"os"
 	"os/exec"
 	"strings"
 	"syscall"
 	"time"
+
+	log "github.com/sirupsen/logrus"
+	"github.com/urfave/cli/v2"
+
+	"github.com/lukso-network/tools-lukso-cli/common"
 )
 
 func FileExists(path string) bool {

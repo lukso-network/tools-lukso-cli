@@ -3,14 +3,16 @@ package configs
 import (
 	"bytes"
 	"fmt"
-	"github.com/lukso-network/tools-lukso-cli/common"
-	"github.com/lukso-network/tools-lukso-cli/common/errors"
-	"github.com/lukso-network/tools-lukso-cli/common/utils"
-	log "github.com/sirupsen/logrus"
 	"io"
 	"net/http"
 	"os"
 	"strings"
+
+	log "github.com/sirupsen/logrus"
+
+	"github.com/lukso-network/tools-lukso-cli/common"
+	"github.com/lukso-network/tools-lukso-cli/common/errors"
+	"github.com/lukso-network/tools-lukso-cli/common/utils"
 )
 
 const (
