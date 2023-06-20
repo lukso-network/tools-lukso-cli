@@ -281,7 +281,7 @@ var (
 		&cli.StringFlag{
 			Name:  erigonTagFlag,
 			Usage: "Tag for erigon",
-			Value: "2.42.0",
+			Value: "2.45.3",
 		},
 	}
 	// START
