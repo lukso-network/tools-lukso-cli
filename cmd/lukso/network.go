@@ -27,7 +27,7 @@ func selectNetworkFor(f func(*cli.Context) error) func(*cli.Context) error {
 			log.Debug("Skipping flag parsing on - parsing flags manually...")
 			err := parseFlags(ctx)
 			if err != nil {
-				return cli.Exit(fmt.Sprintf("❌  There was an error while parsing flags: %v", err), 1)
+				return exit(fmt.Sprintf("❌  There was an error while parsing flags: %v", err), 1)
 			}
 		}
 
@@ -52,7 +52,7 @@ func selectNetworkFor(f func(*cli.Context) error) func(*cli.Context) error {
 		}
 
 		if devnetEnabled {
-			return cli.Exit("❌  Network not supported", 1)
+			return exit("❌  Network not supported", 1)
 		}
 
 		if testnetEnabled {
@@ -80,14 +80,15 @@ func selectNetworkFor(f func(*cli.Context) error) func(*cli.Context) error {
 func updateValues(ctx *cli.Context, config networkConfig) (err error) {
 	var (
 		//genesisJson  = config.configPath + "/" + genesisJsonPath
-		gethToml       = config.configPath + "/" + gethTomlPath
-		erigonToml     = config.configPath + "/" + erigonTomlPath
-		prysmYaml      = config.configPath + "/" + prysmYamlPath
-		lighthouseToml = config.configPath + "/" + lighthouseTomlPath
-		validatorYaml  = config.configPath + "/" + validatorYamlPath
-		gethGenesis    = config.configPath + "/" + genesisJsonPath
-		genesisState   = config.configPath + "/" + genesisStateFilePath
-		configYaml     = config.configPath + "/" + chainConfigYamlPath
+		gethToml                = config.configPath + "/" + gethTomlPath
+		erigonToml              = config.configPath + "/" + erigonTomlPath
+		prysmYaml               = config.configPath + "/" + prysmYamlPath
+		lighthouseToml          = config.configPath + "/" + lighthouseTomlPath
+		lighthouseValidatorToml = config.configPath + "/" + lighthouseValidatorTomlPath
+		validatorYaml           = config.configPath + "/" + validatorYamlPath
+		gethGenesis             = config.configPath + "/" + genesisJsonPath
+		genesisState            = config.configPath + "/" + genesisStateFilePath
+		configYaml              = config.configPath + "/" + chainConfigYamlPath
 	)
 
 	passedArgs := make([]string, 0)
@@ -100,32 +101,33 @@ func updateValues(ctx *cli.Context, config networkConfig) (err error) {
 
 	// varyingFlags represents list of all flags that can be affected by selecting network and values that may be replaced
 	varyingFlags := map[string]string{
-		gethDatadirFlag:              config.executionDatadirPath,
-		erigonDatadirFlag:            config.executionDatadirPath,
-		prysmDatadirFlag:             config.consensusDatadirPath,
-		validatorDatadirFlag:         config.validatorDatadirPath,
-		logFolderFlag:                config.logPath,
-		validatorKeysFlag:            config.keysPath,
-		gethConfigFileFlag:           gethToml,
-		erigonConfigFileFlag:         erigonToml,
-		prysmConfigFileFlag:          prysmYaml,
-		lighthouseConfigFileFlag:     lighthouseToml,
-		validatorConfigFileFlag:      validatorYaml,
-		genesisJsonFlag:              gethGenesis,
-		prysmChainConfigFileFlag:     configYaml,
-		validatorChainConfigFileFlag: configYaml,
-		genesisStateFlag:             genesisState,
-		validatorWalletDirFlag:       config.walletPath,
+		gethDatadirFlag:                   config.executionDatadirPath,
+		erigonDatadirFlag:                 config.executionDatadirPath,
+		prysmDatadirFlag:                  config.consensusDatadirPath,
+		validatorDatadirFlag:              config.validatorDatadirPath,
+		logFolderFlag:                     config.logPath,
+		validatorKeysFlag:                 config.keysPath,
+		gethConfigFileFlag:                gethToml,
+		erigonConfigFileFlag:              erigonToml,
+		prysmConfigFileFlag:               prysmYaml,
+		lighthouseConfigFileFlag:          lighthouseToml,
+		lighthouseValidatorConfigFileFlag: lighthouseValidatorToml,
+		validatorConfigFileFlag:           validatorYaml,
+		genesisJsonFlag:                   gethGenesis,
+		prysmChainConfigFileFlag:          configYaml,
+		validatorChainConfigFileFlag:      configYaml,
+		genesisStateFlag:                  genesisState,
+		validatorWalletDirFlag:            config.walletPath,
 	}
 
 	if len(os.Args) < 2 {
-		return cli.Exit(errNotEnoughArguments, 1)
+		return exit(errNotEnoughArguments.Error(), 1)
 	}
 
 	for _, flag := range ctx.Command.Flags {
 		names := flag.Names()
 		if len(names) < 1 {
-			return cli.Exit(errNotEnoughArguments, 1)
+			return exit(errNotEnoughArguments.Error(), 1)
 		}
 
 		targetName := names[0]

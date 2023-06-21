@@ -49,8 +49,10 @@ const (
 	deployBlockMainnetConfigDependencyName = "mainnet deploy block"
 	deployBlockTestnetConfigDependencyName = "testnet deploy block"
 
-	validatorMainnetConfigDependencyName = "validator mainnet config"
-	validatorTestnetConfigDependencyName = "validator testnet config"
+	validatorMainnetConfigDependencyName           = "validator mainnet config"
+	validatorTestnetConfigDependencyName           = "validator testnet config"
+	lighthouseValidatorMainnetConfigDependencyName = "lighthouse validator mainnet config"
+	lighthouseValidatorTestnetConfigDependencyName = "lighthouse validator testnet config"
 )
 
 var (
@@ -75,7 +77,7 @@ var (
 			isBinary: true,
 		},
 		lighthouseDependencyName: {
-			baseUrl:  "https://github.com/sigp/lighthouse/releases/download/|TAG|/lighthouse-|TAG|-x86_64-|OS-NAME|-|OS|-portable.tar.gz",
+			baseUrl:  "https://github.com/sigp/lighthouse/releases/download/|TAG|/lighthouse-|TAG|-|ARCH|-|OS-NAME|-|OS|-portable.tar.gz",
 			name:     lighthouseDependencyName,
 			filePath: "", // binary dir selected during runtime
 			isBinary: true,
@@ -213,6 +215,16 @@ var (
 			name:     lighthouseTestnetConfigDependencyName,
 			filePath: testnetConfig + "/" + lighthouseTomlPath,
 		},
+		lighthouseValidatorMainnetConfigDependencyName: {
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/lighthouse/validator.toml",
+			name:     lighthouseValidatorMainnetConfigDependencyName,
+			filePath: mainnetConfig + "/" + lighthouseValidatorTomlPath,
+		},
+		lighthouseValidatorTestnetConfigDependencyName: {
+			baseUrl:  "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/lighthouse/validator.toml",
+			name:     lighthouseValidatorTestnetConfigDependencyName,
+			filePath: testnetConfig + "/" + lighthouseValidatorTomlPath,
+		},
 	}
 
 	validatorConfigDependencies = map[string]*ClientDependency{
@@ -239,8 +251,9 @@ type ClientDependency struct {
 func (dependency *ClientDependency) ParseUrl(tag, commitHash string) (url string) {
 	// for lighthouse
 	var (
-		systemName string
-		urlSystem  = systemOs
+		systemName      string
+		urlSystem       = systemOs
+		alternativeArch = arch
 	)
 
 	if dependency.name == lighthouseDependencyName {
@@ -248,11 +261,21 @@ func (dependency *ClientDependency) ParseUrl(tag, commitHash string) (url string
 		case ubuntu:
 			systemName = "unknown"
 			urlSystem += "-gnu"
+			alternativeArch = "x86_64"
+			if arch == "aarch64" {
+				alternativeArch = arch
+			}
+
 		case macos:
 			systemName = "apple"
+			alternativeArch = "x86_64"
 		default:
 			systemName = "unknown"
 			urlSystem += "-gnu"
+			alternativeArch = "x86_64"
+			if arch == "aarch64" {
+				alternativeArch = arch
+			}
 		}
 	}
 	baseUrl := dependency.baseUrl
@@ -266,7 +289,7 @@ func (dependency *ClientDependency) ParseUrl(tag, commitHash string) (url string
 	url = strings.Replace(url, "|OS|", urlSystem, -1)
 	url = strings.Replace(url, "|OS-NAME|", systemName, -1) // for lighthouse
 	url = strings.Replace(url, "|COMMIT|", commitHash, -1)
-	url = strings.Replace(url, "|ARCH|", arch, -1)
+	url = strings.Replace(url, "|ARCH|", alternativeArch, -1)
 
 	return
 }

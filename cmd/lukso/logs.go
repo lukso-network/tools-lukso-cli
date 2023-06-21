@@ -60,16 +60,16 @@ func logLayer(layer string) func(*cli.Context) error {
 	return func(ctx *cli.Context) error {
 		logFileDir := ctx.String(logFolderFlag)
 		if logFileDir == "" {
-			return cli.Exit(fmt.Sprintf("%v- %s", errFlagMissing, logFolderFlag), 1)
+			return exit(fmt.Sprintf("%v- %s", errFlagMissing, logFolderFlag), 1)
 		}
 
 		if !cfg.Exists() {
-			return cli.Exit(folderNotInitialized, 1)
+			return exit(folderNotInitialized, 1)
 		}
 
 		err := cfg.Read()
 		if err != nil {
-			return cli.Exit(fmt.Sprintf("❌  There was an error while reading the configuration file: %v", err), 1)
+			return exit(fmt.Sprintf("❌  There was an error while reading the configuration file: %v", err), 1)
 		}
 
 		var dependencyName string
@@ -82,7 +82,7 @@ func logLayer(layer string) func(*cli.Context) error {
 		case validatorLayer:
 			dependencyName = validatorDependencyName
 		default:
-			return cli.Exit("❌  Unexpected error: unknown layer logged", 1)
+			return exit("❌  Unexpected error: unknown layer logged", 1)
 		}
 
 		latestFile, err := getLastFile(logFileDir, dependencyName)
@@ -90,7 +90,7 @@ func logLayer(layer string) func(*cli.Context) error {
 			return nil
 		}
 		if err != nil {
-			return cli.Exit(fmt.Sprintf("There was an error while getting the latest log file: %v", err), 1)
+			return exit(fmt.Sprintf("There was an error while getting the latest log file: %v", err), 1)
 		}
 
 		log.Infof("Selected layer: %s", layer)
@@ -112,7 +112,7 @@ func logLayer(layer string) func(*cli.Context) error {
 
 func statClients(ctx *cli.Context) (err error) {
 	if !cfg.Exists() {
-		return cli.Exit(folderNotInitialized, 1)
+		return exit(folderNotInitialized, 1)
 	}
 
 	err = cfg.Read()

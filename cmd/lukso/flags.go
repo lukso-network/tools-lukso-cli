@@ -1,15 +1,11 @@
 package main
 
 import (
-	"crypto/rand"
-	"encoding/hex"
 	"fmt"
 	"os"
 	"strings"
-	"syscall"
 
 	"github.com/urfave/cli/v2"
-	"golang.org/x/term"
 
 	"github.com/lukso-network/tools-lukso-cli/config"
 )
@@ -36,9 +32,10 @@ const (
 	noSlasherFlag            = "no-slasher"
 
 	// lighthouse related flag names
-	lighthouseTagFlag        = "lighthouse-tag"
-	lighthouseConfigFileFlag = "lighthouse-config"
-	lighthouseDatadirFlag    = "lighthouse-datadir"
+	lighthouseTagFlag                 = "lighthouse-tag"
+	lighthouseConfigFileFlag          = "lighthouse-config"
+	lighthouseValidatorConfigFileFlag = "lighthouse-validator-config"
+	lighthouseDatadirFlag             = "lighthouse-datadir"
 
 	// Validator related flag names
 	validatorTagFlag                = "validator-tag"
@@ -96,13 +93,14 @@ const (
 
 	// structure inside configs/selected-network directory.
 	// we will select directory based on provided flag, by concatenating config path + file path
-	chainConfigYamlPath = "shared/config.yaml"
-	gethTomlPath        = "geth/geth.toml"
-	erigonTomlPath      = "erigon/erigon.toml"
-	prysmYamlPath       = "prysm/prysm.yaml"
-	lighthouseTomlPath  = "lighthouse/lighthouse.toml"
-	deployBlockPath     = "shared/deploy_block.txt"
-	validatorYamlPath   = "prysm/validator.yaml"
+	chainConfigYamlPath         = "shared/config.yaml"
+	gethTomlPath                = "geth/geth.toml"
+	erigonTomlPath              = "erigon/erigon.toml"
+	prysmYamlPath               = "prysm/prysm.yaml"
+	lighthouseTomlPath          = "lighthouse/lighthouse.toml"
+	lighthouseValidatorTomlPath = "lighthouse/validator.toml"
+	deployBlockPath             = "shared/deploy_block.txt"
+	validatorYamlPath           = "prysm/validator.yaml"
 
 	// genesis related files
 	genesisJsonPath    = "shared/genesis.json"
@@ -163,6 +161,11 @@ var (
 		&cli.StringFlag{
 			Name:   validatorWalletDirFlag,
 			Usage:  "Selected wallet",
+			Hidden: true,
+		},
+		&cli.StringFlag{
+			Name:   validatorDatadirFlag,
+			Usage:  "Selected wallet", // wallet for lighthouse - incorporated into datadir
 			Hidden: true,
 		},
 		&cli.StringFlag{
@@ -378,6 +381,11 @@ var (
 			Usage: "Lighthouse datadir",
 			Value: consensusMainnetDatadir,
 		},
+		&cli.StringFlag{
+			Name:  lighthouseValidatorConfigFileFlag,
+			Usage: "Path to validator.toml config file",
+			Value: mainnetConfig + "/" + lighthouseValidatorTomlPath,
+		},
 	}
 
 	// VALIDATOR
@@ -580,9 +588,12 @@ func prepareLighthouseStartFlags(ctx *cli.Context) (startFlags []string, err err
 		return
 	}
 
-	defaults = append(defaults, fmt.Sprintf("--logfile=%s", logFile))
-	defaults = append(defaults, "--logfile-debug-level=info")
-	defaults = append(defaults, "--logfile-max-number=1")
+	defaults = append(defaults, "--logfile", logFile)
+	defaults = append(defaults, "--logfile-debug-level", "info")
+	defaults = append(defaults, "--logfile-max-number", "1")
+	if ctx.String(transactionFeeRecipientFlag) != "" {
+		defaults = append(defaults, "--suggested-fee-recipient", ctx.String(transactionFeeRecipientFlag))
+	}
 
 	userFlags := clientDependencies[lighthouseDependencyName].PassStartFlags(ctx)
 
@@ -608,55 +619,17 @@ func prepareValidatorStartFlags(ctx *cli.Context) (startFlags []string, password
 
 	validatorPasswordPath := ctx.String(validatorWalletPasswordFileFlag)
 	if validatorPasswordPath == "" {
-		var password []byte
-		fmt.Print("\nPlease enter your keystore password: ")
-		password, err = term.ReadPassword(0)
-		fmt.Println("")
-
+		passwordPipe, err = readValidatorPassword(ctx)
 		if err != nil {
-			log.Errorf("Couldn't read password: %v", err)
-
-			return
+			err = exit(fmt.Sprintf("❌  There was an error while reading password: %v", err), 1)
 		}
-
-		b := make([]byte, 4)
-		_, err = rand.Read(b)
-		if err != nil {
-			log.Errorf("Couldn't create random byte array: %v", err)
-
-			return
-		}
-
-		randPipe := hex.EncodeToString(b)
-
-		passwordPipePath := ctx.String(validatorKeysFlag) + fmt.Sprintf("/.%s", randPipe)
-		err = syscall.Mkfifo(passwordPipePath, 0600)
-		if err != nil {
-			log.Errorf("Couldn't create password pipe: %v", err)
-
-			return
-		}
-		var f *os.File
-		f, err = os.OpenFile(passwordPipePath, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0600)
-		if err != nil {
-			log.Errorf("Couldn't open password pipe: %v", err)
-
-			return
-		}
-		_, err = f.Write(password)
-		if err != nil {
-			log.Errorf("Couldn't write password to pipe: %v", err)
-
-			return
-		}
-
-		err = ctx.Set(validatorWalletPasswordFileFlag, passwordPipePath)
-		if err != nil {
-			return
-		}
-
-		passwordPipe = f
 	}
+
+	defer func() {
+		if err != nil {
+			os.Remove(passwordPipe.Name())
+		}
+	}()
 
 	startFlags = clientDependencies[validatorDependencyName].PassStartFlags(ctx)
 
@@ -679,5 +652,36 @@ func prepareValidatorStartFlags(ctx *cli.Context) (startFlags []string, password
 	if ctx.String(validatorChainConfigFileFlag) != "" {
 		startFlags = append(startFlags, fmt.Sprintf("--chain-config-file=%s", ctx.String(validatorChainConfigFileFlag)))
 	}
+	return
+}
+
+func prepareLighthouseValidatorFlags(ctx *cli.Context) (startFlags []string, err error) {
+	validatorConfigExists := flagFileExists(ctx, validatorConfigFileFlag)
+	chainConfigExists := flagFileExists(ctx, prysmChainConfigFileFlag)
+	if !validatorConfigExists || !chainConfigExists {
+		err = errFlagPathInvalid
+
+		return
+	}
+
+	defaults, err := config.LoadLighthouseConfig(ctx.String(lighthouseValidatorConfigFileFlag))
+	if err != nil {
+		return
+	}
+
+	logFilePath, err := prepareTimestampedFile(ctx.String(logFolderFlag), validatorDependencyName)
+	if err != nil {
+		return
+	}
+
+	defaults = append(defaults, "--logfile", logFilePath)
+	defaults = append(defaults, "--logfile-debug-level", "info")
+	defaults = append(defaults, "--logfile-max-number", "1")
+	defaults = append(defaults, "--suggested-fee-recipient", ctx.String(transactionFeeRecipientFlag))
+
+	userFlags := clientDependencies[validatorDependencyName].PassStartFlags(ctx)
+
+	startFlags = mergeFlags(userFlags, defaults)
+
 	return
 }
