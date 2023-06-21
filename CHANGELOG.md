@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.2](https://github.com/lukso-network/tools-lukso-cli/compare/v0.6.1...v0.6.2) (2023-06-21)
+
+
+### Bug Fixes
+
+* Working directory structure ([ce68758](https://github.com/lukso-network/tools-lukso-cli/commit/ce68758e04cd937e60f8616c673c5c74f5986607))
+
 ## [0.6.1](https://github.com/lukso-network/tools-lukso-cli/compare/v0.6.0...v0.6.1) (2023-05-18)
 
 
