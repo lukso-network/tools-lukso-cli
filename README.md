@@ -13,10 +13,19 @@ The LUKSO CLI is a command line tool to install, manage and set up validators of
 The LUKSO CLI is able to install multiple clients for running the node.
 
 - Execution Clients: [Geth](https://geth.ethereum.org/), [Erigon](https://github.com/ledgerwatch/erigon)
-- Consensus Clients: [Prysm](https://github.com/prysmaticlabs/prysm)
-- Validator Staking Clients: [Prysm](https://docs.prylabs.network/docs/how-prysm-works/prysm-validator-client)
+- Consensus Clients: [Prysm](https://github.com/prysmaticlabs/prysm), [Lighthouse](https://github.com/sigp/lighthouse)
+- Validator Staking Clients: [Prysm](https://docs.prylabs.network/docs/how-prysm-works/prysm-validator-client), [Lighthouse](https://github.com/sigp/lighthouse)
 
-> WIP: More clients will be added in the future. If you want to run a validator, please run the Prysm consensus client, as it's the only option with full validator support right now.
+> More clients will be added in the future.
+
+## Supported Platforms
+
+The LUKSO CLI is officially supported on Mac, Ubuntu, and Debian with the following architectures:
+
+- `x86`/`x86_64`: Intel and AMD Processors
+- `ARM`/`aarch64`: Single-Board Computers as M1 or Raspberry
+
+> The experience might differ with other setups or versions of these operating systems.
 
 ## Setting up the Node
 
@@ -72,7 +81,7 @@ As the LUKSO CLI is able to manage multiple clients for multiple blockchain netw
 
 Network Types: `mainnet`, `testnet`, `devnet`
 
-> Even if multiple networks are set up, only one can be active at the time
+> Even if multiple networks are set up, only one can be active simultaneously, as the LUKSO CLI runs natively within your system environments.
 
 ```
 lukso-node
@@ -186,6 +195,11 @@ $ lukso start --geth-config "./[config].toml"
 # Change [custom_bootnode] to the bootnode's name
 $ lukso start --prysm-config "./[config].yaml" --geth-bootnodes "[custom_bootnode]"
 
+# Lighthouse Configutation
+# Change [config] to the name of your configuration file
+# Change [custom_bootnode] to the bootnode's name
+$ lukso start --lighthouse-config "./[config].yaml" --lighthouse-bootnodes "[custom_bootnode]"
+
 # An experienced user can also start custom clients
 # Example with Lighthouse and Erigon clients
 $ lukso start --lighthouse --erigon
@@ -197,6 +211,24 @@ $ lukso start --lighthouse --erigon
 # Setting up a custom logs directory
 # Change [folder path] to a static or dynamic directory path
 $ lukso start --logs-folder "[folder_path]"
+```
+
+#### Using Checkpoint Syncing
+
+Checkpoint sync is a feature that significantly speeds up the initial sync between your beacon node and the Beacon Chain. With checkpoint sync configured, your beacon node will begin syncing from a recently finalized checkpoint instead of syncing from genesis. This can make installations, validator migrations, recoveries, and testnet deployments way faster.
+
+```sh
+# Mainnet Checkpoint for Prysm Consensus Client
+$ lukso start --prysm-checkpoint-sync-url=https://checkpoints.mainnet.lukso.network
+
+# Mainnet Checkpoint for Lighthouse Consensus Client
+$ lukso start --lighthouse-checkpoint-sync-url=https://checkpoints.mainnet.lukso.network
+
+# Testnet Checkpoint for Prysm Consensus Client
+$ lukso start --prysm-checkpoint-sync-url=https://checkpoints.testnet.lukso.network
+
+# Testnet Checkpoint for Lighthouse Consensus Client
+$ lukso start --lighthouse-checkpoint-sync-url=https://checkpoints.testnet.lukso.network
 ```
 
 #### Options for `start`
