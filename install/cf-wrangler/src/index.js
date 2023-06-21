@@ -1,9 +1,9 @@
 const cors = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET,HEAD,OPTIONS",
-  "Access-Control-Max-Age": "86400",
+  "Access-Control-Max-Age": "60",
   "Access-Control-Allow-Headers": "content-type",
-  "Cache-Control": "max-age=3600",
+  "Cache-Control": "max-age=60",
 };
 
 export default {
