@@ -167,15 +167,15 @@ func installBinaries(ctx *cli.Context) (err error) {
 	}
 
 	if !cfg.Exists() {
-		return cli.Exit(folderNotInitialized, 1)
+		return exit(folderNotInitialized, 1)
 	}
 
 	isRoot, err := isRoot()
 	if err != nil {
-		return cli.Exit(fmt.Sprintf("There was an error while checking user privileges: %v", err), 1)
+		return exit(fmt.Sprintf("There was an error while checking user privileges: %v", err), 1)
 	}
 	if !isRoot {
-		return cli.Exit(errNeedRoot, 1)
+		return exit(errNeedRoot.Error(), 1)
 	}
 
 	var (
@@ -189,13 +189,13 @@ func installBinaries(ctx *cli.Context) (err error) {
 	)
 
 	consensusMessage := "\nWhich consensus client do you want to install?\n" +
-		"1: prysm\n> "
+		"1: prysm\n2: lighthouse\n> "
 
 	executionMessage := "\nWhich execution client do you want to install?\n" +
 		"1: geth\n2: erigon\n> "
 
 	consensusInput = registerInputWithMessage(consensusMessage)
-	for consensusInput != "1" {
+	for consensusInput != "1" && consensusInput != "2" {
 		consensusInput = registerInputWithMessage("Please provide a valid option\n> ")
 	}
 
@@ -229,7 +229,7 @@ func installBinaries(ctx *cli.Context) (err error) {
 			fmt.Println("")
 			accepted := acceptTermsInteractive()
 			if !accepted {
-				return cli.Exit("❌  Terms of use not accepted - aborting...", 1)
+				return exit("❌  Terms of use not accepted - aborting...", 1)
 			}
 		} else {
 			log.Info("✅  You accepted Prysm's Terms of Use: https://github.com/prysmaticlabs/prysm/blob/develop/TERMS_OF_SERVICE.md")
@@ -239,13 +239,13 @@ func installBinaries(ctx *cli.Context) (err error) {
 	log.Infof("⬇️  Downloading %s...", selectedExecution)
 	err = clientDependencies[selectedExecution].Download(executionTag, commitHash, false, binaryPerms)
 	if err != nil {
-		return cli.Exit(fmt.Sprintf("❌  There was an error while downloading %s: %v", selectedExecution, err), 1)
+		return exit(fmt.Sprintf("❌  There was an error while downloading %s: %v", selectedExecution, err), 1)
 	}
 
 	log.Infof("⬇️  Downloading %s...", selectedConsensus)
 	err = clientDependencies[selectedConsensus].Download(consensusTag, "", false, binaryPerms)
 	if err != nil {
-		return cli.Exit(fmt.Sprintf("❌  There was an error while downloading %s: %v", selectedConsensus, err), 1)
+		return exit(fmt.Sprintf("❌  There was an error while downloading %s: %v", selectedConsensus, err), 1)
 	}
 
 	// for now, we also need to download a validator client
@@ -253,12 +253,12 @@ func installBinaries(ctx *cli.Context) (err error) {
 	log.Infof("⬇️  Downloading %s...", validatorDependencyName)
 	err = clientDependencies[validatorDependencyName].Download(prysmTag, "", false, binaryPerms)
 	if err != nil {
-		return cli.Exit(fmt.Sprintf("❌  There was an error while downloading validator: %v", err), 1)
+		return exit(fmt.Sprintf("❌  There was an error while downloading validator: %v", err), 1)
 	}
 
 	err = cfg.Create(selectedExecution, selectedConsensus)
 	if err != nil {
-		return cli.Exit(fmt.Sprintf("❌  There was an error while creating configration file: %v", err), 1)
+		return exit(fmt.Sprintf("❌  There was an error while creating configration file: %v", err), 1)
 	}
 
 	log.Info("✅  Configuration files created!")

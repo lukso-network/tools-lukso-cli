@@ -55,12 +55,12 @@ func initializeDirectory(ctx *cli.Context) error {
 
 	err := createJwtSecret(jwtSecretPath)
 	if err != nil {
-		return cli.Exit(fmt.Sprintf("❌  There was an error while creating JWT secret file: %v", err), 1)
+		return exit(fmt.Sprintf("❌  There was an error while creating JWT secret file: %v", err), 1)
 	}
 
 	err = os.MkdirAll(pid.FileDir, configPerms)
 	if err != nil {
-		return cli.Exit(fmt.Sprintf("❌  There was an error while preparing PID directory: %v", err), 1)
+		return exit(fmt.Sprintf("❌  There was an error while preparing PID directory: %v", err), 1)
 	}
 
 	switch cfg.Exists() {
@@ -71,7 +71,7 @@ func initializeDirectory(ctx *cli.Context) error {
 
 		err = cfg.Create("", "")
 		if err != nil {
-			return cli.Exit(fmt.Sprintf("❌  There was an error while preparing LUKSO configuration: %v", err), 1)
+			return exit(fmt.Sprintf("❌  There was an error while preparing LUKSO configuration: %v", err), 1)
 		}
 
 		log.Infof("✅  LUKSO configuration created under %s", config.Path)
@@ -87,7 +87,7 @@ func initConfigGroup(configDependencies map[string]*ClientDependency) error {
 	for _, dependency := range configDependencies {
 		err := dependency.Download("", "", false, configPerms)
 		if err != nil {
-			return cli.Exit(fmt.Sprintf("❌  There was error while downloading %s file: %v", dependency.name, err), 1)
+			return exit(fmt.Sprintf("❌  There was error while downloading %s file: %v", dependency.name, err), 1)
 		}
 	}
 
