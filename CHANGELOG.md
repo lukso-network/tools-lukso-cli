@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.3](https://github.com/lukso-network/tools-lukso-cli/compare/v0.6.2...v0.6.3) (2023-06-21)
+
+
+### Bug Fixes
+
+* Change proxy cache to 60 seconds from 3600 seconds ([9a4b5d2](https://github.com/lukso-network/tools-lukso-cli/commit/9a4b5d2e953eab64e38823d31e3e2ec89e663f87))
+
 ## [0.6.2](https://github.com/lukso-network/tools-lukso-cli/compare/v0.6.1...v0.6.2) (2023-06-21)
 
 
