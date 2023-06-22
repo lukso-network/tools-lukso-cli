@@ -2,14 +2,15 @@ package config
 
 import (
 	"fmt"
-	"github.com/lukso-network/tools-lukso-cli/common/errors"
-	log "github.com/sirupsen/logrus"
 	"os"
 	"strconv"
 	"strings"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"github.com/urfave/cli/v2"
+
+	"github.com/lukso-network/tools-lukso-cli/common/errors"
 )
 
 const Path = "./cli-config.yaml"
