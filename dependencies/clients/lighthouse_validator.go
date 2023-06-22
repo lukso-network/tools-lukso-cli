@@ -24,8 +24,8 @@ func NewLighthouseValidatorClient() *LighthouseValidatorClient {
 	return &LighthouseValidatorClient{
 		&clientBinary{
 			name:           lighthouseValidatorDependencyName,
-			commandName:    "validator", // we run it using lighthouse bin
-			baseUrl:        "",          // no separate client for lighthouse validator - lighthouse_beacon for reference
+			commandName:    "validator_lh", // we run it using lighthouse bin
+			baseUrl:        "",             // no separate client for lighthouse validator - lighthouse_beacon for reference
 			githubLocation: "",
 		},
 	}
