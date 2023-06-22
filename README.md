@@ -215,7 +215,7 @@ $ lukso start --logs-folder "[folder_path]"
 
 #### Using Checkpoint Syncing
 
-Checkpoint sync is a feature that significantly speeds up the initial sync between your beacon node and the Beacon Chain. With checkpoint sync configured, your beacon node will begin syncing from a recently finalized checkpoint instead of syncing from genesis. This can make installations, validator migrations, recoveries, and testnet deployments way faster.
+Checkpoint synchronization is a feature that significantly speeds up the initial sync time of the consensus client. If enabled, your node will begin syncing from a recently finalized consensus checkpoint instead of genesis. The shortcut makes installation, validator migration, or recovery much faster.
 
 ```sh
 # Mainnet Checkpoint for Prysm Consensus Client
