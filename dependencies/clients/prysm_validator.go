@@ -63,15 +63,9 @@ func (p *PrysmValidatorClient) PrepareStartFlags(ctx *cli.Context) (startFlags [
 
 	startFlags = p.ParseUserFlags(ctx)
 
-	logFilePath, err := utils.PrepareTimestampedFile(ctx.String(flags.LogFolderFlag), p.CommandName())
-	if err != nil {
-		return
-	}
-
 	// terms of use already accepted during installation
 	startFlags = append(startFlags, "--accept-terms-of-use")
 	startFlags = append(startFlags, fmt.Sprintf("--config-file=%s", ctx.String(flags.ValidatorConfigFileFlag)))
-	startFlags = append(startFlags, fmt.Sprintf("--log-file=%s", logFilePath))
 	startFlags = append(startFlags, fmt.Sprintf("--suggested-fee-recipient=%s", ctx.String(flags.TransactionFeeRecipientFlag)))
 	if ctx.String(flags.ValidatorKeysFlag) != "" {
 		startFlags = append(startFlags, fmt.Sprintf("--wallet-dir=%s", ctx.String(flags.ValidatorKeysFlag)))

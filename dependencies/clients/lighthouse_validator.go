@@ -111,14 +111,6 @@ func (l *LighthouseValidatorClient) PrepareStartFlags(ctx *cli.Context) (startFl
 		return
 	}
 
-	logFilePath, err := utils.PrepareTimestampedFile(ctx.String(flags.LogFolderFlag), l.CommandName())
-	if err != nil {
-		return
-	}
-
-	defaults = append(defaults, "--logfile", logFilePath)
-	defaults = append(defaults, "--logfile-debug-level", "info")
-	defaults = append(defaults, "--logfile-max-number", "1")
 	defaults = append(defaults, "--suggested-fee-recipient", ctx.String(flags.TransactionFeeRecipientFlag))
 
 	userFlags := l.ParseUserFlags(ctx)

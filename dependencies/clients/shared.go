@@ -411,7 +411,7 @@ func (client *clientBinary) CommandName() string {
 }
 
 func (client *clientBinary) ParseUserFlags(ctx *cli.Context) (startFlags []string) {
-	name := client.name
+	name := client.commandName
 	args := ctx.Args()
 	argsLen := args.Len()
 	flagsToSkip := []string{

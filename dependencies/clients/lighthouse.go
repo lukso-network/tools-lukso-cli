@@ -8,7 +8,6 @@ import (
 	"github.com/urfave/cli/v2"
 
 	"github.com/lukso-network/tools-lukso-cli/common/system"
-	"github.com/lukso-network/tools-lukso-cli/common/utils"
 	"github.com/lukso-network/tools-lukso-cli/config"
 	"github.com/lukso-network/tools-lukso-cli/flags"
 )
@@ -77,19 +76,11 @@ func (l *LighthouseClient) ParseUrl(tag, commitHash string) (url string) {
 }
 
 func (l *LighthouseClient) PrepareStartFlags(ctx *cli.Context) (startFlags []string, err error) {
-	logFile, err := utils.PrepareTimestampedFile(ctx.String(flags.LogFolderFlag), l.CommandName())
-	if err != nil {
-		return
-	}
-
 	defaults, err := config.LoadLighthouseConfig(ctx.String(flags.LighthouseConfigFileFlag))
 	if err != nil {
 		return
 	}
 
-	defaults = append(defaults, "--logfile", logFile)
-	defaults = append(defaults, "--logfile-debug-level", "info")
-	defaults = append(defaults, "--logfile-max-number", "1")
 	if ctx.String(flags.TransactionFeeRecipientFlag) != "" {
 		defaults = append(defaults, "--suggested-fee-recipient", ctx.String(flags.TransactionFeeRecipientFlag))
 	}

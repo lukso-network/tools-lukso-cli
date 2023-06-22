@@ -39,13 +39,7 @@ func (p *PrysmClient) PrepareStartFlags(ctx *cli.Context) (startFlags []string, 
 		return
 	}
 
-	logFilePath, err := utils.PrepareTimestampedFile(ctx.String(flags.LogFolderFlag), p.CommandName())
-	if err != nil {
-		return
-	}
-
 	startFlags = p.ParseUserFlags(ctx)
-	startFlags = append(startFlags, fmt.Sprintf("--log-file=%s", logFilePath))
 
 	// terms of use already accepted during installation
 	startFlags = append(startFlags, "--accept-terms-of-use")
