@@ -2,6 +2,8 @@ package config
 
 import (
 	"fmt"
+	"github.com/lukso-network/tools-lukso-cli/common/errors"
+	log "github.com/sirupsen/logrus"
 	"os"
 	"strconv"
 	"strings"
@@ -56,9 +58,9 @@ func parsePath(path string) (dir, fileName, extension string) {
 type Config struct {
 	path            string
 	viper           *viper.Viper
-	executionClient string `mapstructure:"executionclient"`
-	consensusClient string `mapstructure:"consensusclient"`
-	validatorClient string `mapstructure:"validatorclient"`
+	executionClient string `mapstructure:"execution"`
+	consensusClient string `mapstructure:"consensus"`
+	validatorClient string `mapstructure:"validator"`
 }
 
 // NewConfig creates and initializes viper config instance - it doesn't load config, to load use c.Read().
@@ -122,9 +124,21 @@ func (c *Config) Read() (err error) {
 		return
 	}
 
-	c.executionClient = c.viper.Get("useClients.execution").(string)
-	c.consensusClient = c.viper.Get("useClients.consensus").(string)
-	c.validatorClient = c.viper.Get("useClients.validator").(string)
+	exec, execOk := c.viper.Get("useClients.execution").(string)
+	cons, consOk := c.viper.Get("useClients.consensus").(string)
+	val, valOk := c.viper.Get("useClients.validator").(string)
+
+	if !execOk || !consOk || !valOk {
+		log.Error(errors.ErrOlderFolderDetected)
+
+		os.Exit(1)
+
+		return
+	}
+
+	c.executionClient = exec
+	c.consensusClient = cons
+	c.validatorClient = val
 
 	return
 }

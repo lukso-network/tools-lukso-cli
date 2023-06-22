@@ -13,6 +13,10 @@ var (
 	ErrValidatorNotImported = errors.New("Validator has not been initialized - use 'lukso validator import' to initialize your validator ")
 	ErrClientNotSupported   = errors.New("❌  Client found in LUKSO configuration file is not supported - if you think it is please contact LUKSO team")
 	ErrGenesisNotFound      = errors.New("❌  Genesis JSON not found")
+	ErrOlderFolderDetected  = errors.New(`⚠️  This folder is no longer suitable with the current CLI version - to continue working with the LUKSO CLI please do the following:
+- If you still have your node running, please stop the clients manually, using command like kill, killall etc.
+- Follow the instructions from the installation guide to setup a new node folder
+- (optionally) You can copy keystores, data directories from your old folder into a newer one, using commands like cp, scp etc.`)
 )
 
 const (
