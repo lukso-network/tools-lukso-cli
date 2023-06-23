@@ -13,10 +13,14 @@ var (
 	ErrValidatorNotImported = errors.New("Validator has not been initialized - use 'lukso validator import' to initialize your validator ")
 	ErrClientNotSupported   = errors.New("❌  Client found in LUKSO configuration file is not supported - if you think it is please contact LUKSO team")
 	ErrGenesisNotFound      = errors.New("❌  Genesis JSON not found")
-	ErrOlderFolderDetected  = errors.New(`⚠️  This folder is no longer suitable with the current CLI version - to continue working with the LUKSO CLI please do the following:
-- If you still have your node running, please stop the clients manually, using command like kill, killall etc.
-- Follow the instructions from the installation guide to setup a new node folder
-- (optionally) You can copy keystores, data directories from your old folder into a newer one, using commands like cp, scp etc.`)
+	ErrOlderFolderDetected  = errors.New(`❌  This node directory is not supported by your CLI version. To continue working with the CLI do the following:
+
+1. 🪦  If your node clients are still running, please stop the related processes by executing 'sudo pkill geth' (Geth), 'sudo pkill prysm' (Prysm), 'sudo pkill validator' (Prysm Validator), 'sudo pkill erigon' (Erigon), or 'sudo pkill lighthouse' (Lighthouse).
+2. 📁  Move into your home directory using 'cd' and create a new working directory, using 'mkdir myNewLUKSOnode && cd ./myNewLUKSOnode'
+3. 🚀  Initialize the new folder using 'lukso init'
+4. 🛠️  Re-Install your desired clients using 'lukso install'
+5. 📦  Optional: Copy over your chaindata using 'cp -r ../myOldLUKSOnode/<network>-data .' if you dont want to resyncronize the full blockchain state
+6. 🔑  Optional: If you are running a validator, import your validator keys or copy over your keystore files using 'cp -r ../myOldLUKSOnode/<network>-keystore .' Copying the keystore folder will only work in case you are using the same consensus client as before.`)
 )
 
 const (
