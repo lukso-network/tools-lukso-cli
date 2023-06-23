@@ -225,10 +225,10 @@ $ lukso start --prysm-checkpoint-sync-url=https://checkpoints.mainnet.lukso.netw
 $ lukso start --lighthouse-checkpoint-sync-url=https://checkpoints.mainnet.lukso.network
 
 # Testnet Checkpoint for Prysm Consensus Client
-$ lukso start --prysm-checkpoint-sync-url=https://checkpoints.testnet.lukso.network
+$ lukso start --testnet --prysm-checkpoint-sync-url=https://checkpoints.testnet.lukso.network
 
 # Testnet Checkpoint for Lighthouse Consensus Client
-$ lukso start --lighthouse-checkpoint-sync-url=https://checkpoints.testnet.lukso.network
+$ lukso start --testnet --lighthouse-checkpoint-sync-url=https://checkpoints.testnet.lukso.network
 ```
 
 #### Options for `start`
