@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.4](https://github.com/lukso-network/tools-lukso-cli/compare/v0.6.3...v0.6.4) (2023-06-26)
+
+
+### Bug Fixes
+
+* add missing testnet flag ([2fba396](https://github.com/lukso-network/tools-lukso-cli/commit/2fba39643902f22568c4f1a4231706a811d6460b))
+
 ## [0.6.3](https://github.com/lukso-network/tools-lukso-cli/compare/v0.6.2...v0.6.3) (2023-06-21)
 
 
