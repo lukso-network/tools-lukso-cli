@@ -155,3 +155,25 @@ func (l *LighthouseValidatorClient) Import(ctx *cli.Context) (err error) {
 func (l *LighthouseValidatorClient) List(ctx *cli.Context) (err error) {
 	return
 }
+
+func (l *LighthouseValidatorClient) Exit(ctx *cli.Context) (err error) {
+	keystore := ctx.String(flags.KeystoreFlag)
+	if keystore == "" {
+		return utils.Exit("❌  Keystore not provided - please provide a keystore containing a public key that you want to exit", 1)
+	}
+
+	args := []string{"a", "validator", "exit", "--keystore", keystore}
+
+	exitCommand := exec.Command(Lighthouse.CommandName(), args...)
+
+	exitCommand.Stdout = os.Stdout
+	exitCommand.Stderr = os.Stderr
+	exitCommand.Stdin = os.Stdin
+
+	err = exitCommand.Run()
+	if err != nil {
+		return utils.Exit(fmt.Sprintf("❌  There was an error while exiting validator: %v", err), 1)
+	}
+
+	return
+}

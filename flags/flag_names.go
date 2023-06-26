@@ -41,6 +41,7 @@ const (
 
 	ValidatorKeysFlag     = "validator-keys"
 	ValidatorPasswordFlag = "validator-password"
+	KeystoreFlag          = "keystore"
 
 	TransactionFeeRecipientFlag = "transaction-fee-recipient"
 	AgreeTermsFlag              = "agree-terms"

@@ -131,6 +131,13 @@ REPO: https://github.com/lukso-network/tools-lukso-cli
 					SkipFlagParsing: true,
 					HideHelpCommand: true,
 				},
+				{
+					Name:            "exit",
+					Usage:           "",
+					Flags:           flags.ValidatorExitFlags,
+					Action:          commands.ExitValidator,
+					HideHelpCommand: true,
+				},
 			},
 		},
 		{

@@ -112,3 +112,7 @@ func (p *PrysmValidatorClient) Import(ctx *cli.Context) (err error) {
 func (p *PrysmValidatorClient) List(ctx *cli.Context) (err error) {
 	return
 }
+
+func (p *PrysmValidatorClient) Exit(ctx *cli.Context) (err error) {
+	return
+}

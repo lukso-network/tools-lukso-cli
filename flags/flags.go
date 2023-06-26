@@ -51,6 +51,7 @@ func init() {
 
 	ValidatorImportFlags = append(ValidatorImportFlags, NetworkFlags...)
 	ValidatorListFlags = append(ValidatorListFlags, NetworkFlags...)
+	ValidatorExitFlags = append(ValidatorExitFlags, NetworkFlags...)
 }
 
 var (
@@ -115,9 +116,19 @@ var (
 	}
 
 	ValidatorListFlags = []cli.Flag{}
-	InstallFlags       []cli.Flag
-	UpdateFlags        []cli.Flag
-	StopFlags          = []cli.Flag{
+	ValidatorExitFlags = []cli.Flag{
+		&cli.StringFlag{
+			Name:  KeystoreFlag,
+			Usage: "Path to keystore containing public key that you want to exit - this flag is required when using Lighthouse validator",
+		},
+		&cli.StringFlag{
+			Name:  ValidatorWalletDirFlag,
+			Usage: "Path to wallet containing validators that you want to exit - this flag is required when using Prysm validator",
+		},
+	}
+	InstallFlags []cli.Flag
+	UpdateFlags  []cli.Flag
+	StopFlags    = []cli.Flag{
 		executionSelectedFlag,
 		consensusSelectedFlag,
 		validatorSelectedFlag,
