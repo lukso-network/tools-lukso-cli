@@ -6,8 +6,11 @@ import (
 	"strconv"
 	"strings"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"github.com/urfave/cli/v2"
+
+	"github.com/lukso-network/tools-lukso-cli/common/errors"
 )
 
 const Path = "./cli-config.yaml"
@@ -56,8 +59,9 @@ func parsePath(path string) (dir, fileName, extension string) {
 type Config struct {
 	path            string
 	viper           *viper.Viper
-	executionClient string `mapstructure:"executionclient"`
-	consensusClient string `mapstructure:"consensusclient"`
+	executionClient string `mapstructure:"execution"`
+	consensusClient string `mapstructure:"consensus"`
+	validatorClient string `mapstructure:"validator"`
 }
 
 // NewConfig creates and initializes viper config instance - it doesn't load config, to load use c.Read().
@@ -77,7 +81,7 @@ func NewConfig(path string) *Config {
 
 // Create creates a new config that keeps track of selected dependencies and writes to it.
 // By default, this file should be present in root of initialized lukso directory
-func (c *Config) Create(selectedExecution, selectedConsensus string) (err error) {
+func (c *Config) Create(selectedExecution, selectedConsensus, selectedValidator string) (err error) {
 	_, err = os.Create(c.path)
 	if err != nil {
 		return
@@ -85,6 +89,7 @@ func (c *Config) Create(selectedExecution, selectedConsensus string) (err error)
 
 	c.viper.Set("useClients.execution", selectedExecution)
 	c.viper.Set("useClients.consensus", selectedConsensus)
+	c.viper.Set("useClients.validator", selectedValidator)
 
 	err = c.viper.WriteConfigAs(c.path)
 
@@ -120,8 +125,21 @@ func (c *Config) Read() (err error) {
 		return
 	}
 
-	c.executionClient = c.viper.Get("useClients.execution").(string)
-	c.consensusClient = c.viper.Get("useClients.consensus").(string)
+	exec, execOk := c.viper.Get("useClients.execution").(string)
+	cons, consOk := c.viper.Get("useClients.consensus").(string)
+	val, valOk := c.viper.Get("useClients.validator").(string)
+
+	if !execOk || !consOk || !valOk {
+		log.Error(errors.ErrOlderFolderDetected)
+
+		os.Exit(1)
+
+		return
+	}
+
+	c.executionClient = exec
+	c.consensusClient = cons
+	c.validatorClient = val
 
 	return
 }
@@ -132,6 +150,10 @@ func (c *Config) Execution() string {
 
 func (c *Config) Consensus() string {
 	return c.consensusClient
+}
+
+func (c *Config) Validator() string {
+	return c.validatorClient
 }
 
 func LoadLighthouseConfig(path string) (args []string, err error) {
