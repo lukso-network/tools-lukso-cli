@@ -1,11 +1,14 @@
 package clients
 
 import (
+	"bytes"
 	"fmt"
+	"github.com/lukso-network/tools-lukso-cli/common/system"
+	log "github.com/sirupsen/logrus"
+	"github.com/urfave/cli/v2"
 	"os"
 	"os/exec"
-
-	"github.com/urfave/cli/v2"
+	"strings"
 
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
@@ -114,5 +117,77 @@ func (p *PrysmValidatorClient) List(ctx *cli.Context) (err error) {
 }
 
 func (p *PrysmValidatorClient) Exit(ctx *cli.Context) (err error) {
+	wallet := ctx.String(flags.ValidatorWalletDirFlag)
+	if wallet == "" {
+		return utils.Exit("❌  Wallet directory not provided - please provide a --validator-wallet-dir flag containing your keys directory", 1)
+	}
+
+	if !utils.FileExists(wallet) {
+		return utils.Exit("❌  Wallet directory missing - please provide a --validator-wallet-dir flag containing your keys directory or use a network flag", 1)
+	}
+
+	_, err = os.Stat(fmt.Sprintf("%s/prysmctl", system.UnixBinDir))
+	if err != nil {
+		err = installPrysmctl()
+	}
+	if err != nil {
+		return utils.Exit(fmt.Sprintf("❌  There was an error while installing prysmctl: %v", err), 1)
+	}
+
+	args := []string{"validator", "exit", "--wallet-dir", wallet}
+	rpc := ctx.String(flags.RpcAddressFlag)
+	if rpc != "" {
+		args = append(args, "--beacon-rpc-provider", rpc)
+	}
+
+	exitCommand := exec.Command("prysmctl", args...)
+
+	exitCommand.Stdout = os.Stdout
+	exitCommand.Stderr = os.Stderr
+	exitCommand.Stdin = os.Stdin
+
+	err = exitCommand.Run()
+	if err != nil {
+		return utils.Exit(fmt.Sprintf("❌  There was an error while exiting validator: %v", err), 1)
+	}
+
+	return
+}
+
+func installPrysmctl() (err error) {
+	message := "In order to exit the validator from the network you will need to install additional tool - prysmctl\n" +
+		"Do you want to proceed with instalation? [Y/n]\n>"
+
+	input := utils.RegisterInputWithMessage(message)
+	if !strings.EqualFold(input, "y") && input != "" {
+		log.Info("Aborting...")
+
+		os.Exit(0)
+	}
+
+	prysmctlBin := clientBinary{
+		name:        "prysmctl",
+		commandName: "prysmctl",
+		baseUrl:     "https://github.com/prysmaticlabs/prysm/releases/download/|TAG|/prysmctl-|TAG|-|OS|-|ARCH|",
+	}
+
+	versionCommand := exec.Command(PrysmValidator.CommandName(), "--version")
+	buf := new(bytes.Buffer)
+
+	versionCommand.Stdout = buf
+
+	err = versionCommand.Run()
+	if err != nil {
+		return utils.Exit(fmt.Sprintf("❌  There was an error while getting prysm version: %v", err), 1)
+	}
+
+	versionOutput := string(buf.Bytes())
+	version := strings.Split(versionOutput, "/")[1]
+
+	url := prysmctlBin.ParseUrl(version, "")
+
+	log.Info("⬇️  Downloading prysmctl...")
+	err = prysmctlBin.Install(url, false)
+
 	return
 }

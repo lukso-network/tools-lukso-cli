@@ -125,6 +125,15 @@ var (
 			Name:  ValidatorWalletDirFlag,
 			Usage: "Path to wallet containing validators that you want to exit - this flag is required when using Prysm validator",
 		},
+		&cli.StringFlag{
+			Name:  RpcAddressFlag,
+			Usage: "Address of node that is used to make an exit (defaults to the default RPC address provided by your selected client)",
+		},
+		&cli.StringFlag{
+			Name:  TestnetDirFlag,
+			Usage: "Path to network configuration folder",
+			Value: configs.MainnetConfig + "/shared",
+		},
 	}
 	InstallFlags []cli.Flag
 	UpdateFlags  []cli.Flag

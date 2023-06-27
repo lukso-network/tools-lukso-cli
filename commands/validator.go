@@ -55,16 +55,21 @@ func ExitValidator(ctx *cli.Context) (err error) {
 		return utils.Exit(fmt.Sprintf("❌  There was an error while reading config file: %v", err), 1)
 	}
 
-	var selectedValidator clients.ValidatorBinaryDependency
+	var (
+		selectedValidator clients.ValidatorBinaryDependency
+		selectedConsensus clients.ClientBinaryDependency
+	)
 
 	switch cfg.Validator() {
 	case clients.PrysmValidator.Name():
 		selectedValidator = clients.PrysmValidator
+		selectedConsensus = clients.Prysm
 	case clients.LighthouseValidator.Name():
 		selectedValidator = clients.LighthouseValidator
+		selectedConsensus = clients.Lighthouse
 	}
 
-	if !selectedValidator.IsRunning() {
+	if !selectedConsensus.IsRunning() {
 		return utils.Exit("⚠️  Please make sure that your validator client is running before exiting", 1)
 	}
 

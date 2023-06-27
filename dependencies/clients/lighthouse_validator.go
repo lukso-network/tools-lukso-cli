@@ -159,10 +159,14 @@ func (l *LighthouseValidatorClient) List(ctx *cli.Context) (err error) {
 func (l *LighthouseValidatorClient) Exit(ctx *cli.Context) (err error) {
 	keystore := ctx.String(flags.KeystoreFlag)
 	if keystore == "" {
-		return utils.Exit("❌  Keystore not provided - please provide a keystore containing a public key that you want to exit", 1)
+		return utils.Exit("❌  Keystore not provided - please provide a --keystore flag containing path to keystore", 1)
 	}
 
-	args := []string{"a", "validator", "exit", "--keystore", keystore}
+	args := []string{"a", "validator", "exit", "--keystore", keystore, "--testnet-dir", ctx.String(flags.TestnetDirFlag)}
+	rpc := ctx.String(flags.RpcAddressFlag)
+	if rpc != "" {
+		args = append(args, "--beacon-node", rpc)
+	}
 
 	exitCommand := exec.Command(Lighthouse.CommandName(), args...)
 
