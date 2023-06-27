@@ -182,7 +182,7 @@ func installPrysmctl() (err error) {
 		return utils.Exit(fmt.Sprintf("❌  There was an error while getting prysm version: %v", err), 1)
 	}
 
-	versionOutput := string(buf.Bytes())
+	versionOutput := buf.String()
 	version := strings.Split(versionOutput, "/")[1]
 
 	url := prysmctlBin.ParseUrl(version, "")
