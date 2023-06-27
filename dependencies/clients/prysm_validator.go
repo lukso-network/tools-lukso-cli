@@ -3,14 +3,15 @@ package clients
 import (
 	"bytes"
 	"fmt"
-	"github.com/lukso-network/tools-lukso-cli/common/system"
-	log "github.com/sirupsen/logrus"
-	"github.com/urfave/cli/v2"
 	"os"
 	"os/exec"
 	"strings"
 
+	log "github.com/sirupsen/logrus"
+	"github.com/urfave/cli/v2"
+
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
+	"github.com/lukso-network/tools-lukso-cli/common/system"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
 	"github.com/lukso-network/tools-lukso-cli/flags"
 )
