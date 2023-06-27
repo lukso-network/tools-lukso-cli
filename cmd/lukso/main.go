@@ -133,7 +133,7 @@ REPO: https://github.com/lukso-network/tools-lukso-cli
 				},
 				{
 					Name:            "exit",
-					Usage:           "",
+					Usage:           "Issue an exit for your validator",
 					Flags:           flags.ValidatorExitFlags,
 					Action:          commands.SelectNetworkFor(commands.ExitValidator),
 					HideHelpCommand: true,
