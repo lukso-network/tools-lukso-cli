@@ -163,10 +163,13 @@ func (l *LighthouseValidatorClient) Exit(ctx *cli.Context) (err error) {
 	}
 
 	args := []string{"a", "validator", "exit", "--keystore", keystore, "--testnet-dir", ctx.String(flags.TestnetDirFlag)}
+
 	rpc := ctx.String(flags.RpcAddressFlag)
-	if rpc != "" {
-		args = append(args, "--beacon-node", rpc)
+	if rpc == "" {
+		rpc = "http://localhost:4000" // because we use 4000 in configs we don't want users to use default 5052
 	}
+
+	args = append(args, "--beacon-node", rpc)
 
 	exitCommand := exec.Command(Lighthouse.CommandName(), args...)
 
