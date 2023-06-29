@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.0](https://github.com/lukso-network/tools-lukso-cli/compare/v0.7.1...v0.8.0) (2023-06-29)
+
+
+### Features
+
+* add ETH1 withdrawal notice ([63275dd](https://github.com/lukso-network/tools-lukso-cli/commit/63275ddfc42399bd96756934dd239990bf4ea51a))
+
 ## [0.8.0](https://github.com/lukso-network/tools-lukso-cli/compare/v0.7.0...v0.8.0) (2023-06-29)
 
 
