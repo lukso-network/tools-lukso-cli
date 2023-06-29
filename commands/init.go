@@ -2,13 +2,13 @@ package commands
 
 import (
 	"fmt"
-	"github.com/spf13/viper"
 	"io"
 	"net/http"
 	"os"
 	"strings"
 
 	log "github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
 	"github.com/urfave/cli/v2"
 
 	"github.com/lukso-network/tools-lukso-cli/common"
