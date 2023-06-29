@@ -23,6 +23,7 @@ type networkConfig struct {
 	configPath           string
 	keysPath             string
 	walletPath           string
+	testnetDirPath       string // for lighthouse
 }
 
 // SelectNetworkFor accepts a CLI func as an argument, and adjusts all values that need to be changed depending on
@@ -55,6 +56,7 @@ func SelectNetworkFor(f func(*cli.Context) error) func(*cli.Context) error {
 			configPath:           configs.MainnetConfig,
 			keysPath:             configs.MainnetKeystore,
 			walletPath:           configs.MainnetKeystore,
+			testnetDirPath:       configs.MainnetConfig + "/shared",
 		}
 
 		if devnetEnabled {
@@ -70,6 +72,7 @@ func SelectNetworkFor(f func(*cli.Context) error) func(*cli.Context) error {
 				configPath:           configs.TestnetConfig,
 				keysPath:             configs.TestnetKeystore,
 				walletPath:           configs.TestnetKeystore,
+				testnetDirPath:       configs.TestnetConfig + "/shared",
 			}
 		}
 
@@ -124,6 +127,7 @@ func updateValues(ctx *cli.Context, config networkConfig) (err error) {
 		flags.ValidatorChainConfigFileFlag:      configYaml,
 		flags.GenesisStateFlag:                  genesisState,
 		flags.ValidatorWalletDirFlag:            config.walletPath,
+		flags.TestnetDirFlag:                    config.testnetDirPath,
 	}
 
 	if len(os.Args) < 2 {

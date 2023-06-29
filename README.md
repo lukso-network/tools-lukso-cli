@@ -117,7 +117,7 @@ lukso-node
 ## Available Commands
 
 | Command                                     | Description                                                                              |
-| ------------------------------------------- | ---------------------------------------------------------------------------------------- |
+|---------------------------------------------|------------------------------------------------------------------------------------------|
 | [`install` ](#install)                      | Installs choosen clients (Execution, Consensus, Validator) and their binary dependencies |
 | [`init`](#initialise-the-working-directory) | Initializes the working directory, it's structure, and network configuration             |
 | [`start`](#start)                           | Starts all or specific clients and connects to the specified network                     |
@@ -127,6 +127,7 @@ lukso-node
 | [`reset`](#reset)                           | Resets all or specific client data directories and logs excluding the validator keys     |
 | [`validator import`](#validator-import)     | Import the validator keys in the wallet                                                  |
 | [`validator list`](#validator-list)         | Display the imported validator keys                                                      |
+| [`validator exit`](#validator-exit)         | Issue an exit for your validator                                                         |
 | [`version`](#version)                       | Display the version of the LUKSO CLI that is currently installed                         |
 | [`help`, `h`](#help)                        | Shows the full list of commands, global options, and their usage                         |
 
@@ -419,6 +420,24 @@ lukso validator import --validator-keys "./myKeysDir" --validator-password "./my
 ### `validator list`
 
 List all imported keys from the validators keystore.
+
+### `validator exit`
+
+Issue an exit for your validator.  
+**IMPORTANT:** validator exit is an **irreversible** action. Before exiting your validator you need make sure you are mindful of what the exit process carries with itself.  
+
+Because different clients have different processes of exiting please make sure that **you are familiar with flags** provided by the `validator exit` command.
+
+| Option                          | Description                                                                                                                        |
+|---------------------------------|------------------------------------------------------------------------------------------------------------------------------------|
+| --keystore [string]             | Path to keystore-xxx.json file containing public key that you want to exit - this flag is required when using Lighthouse validator |
+| --validator-wallet-dir [string] | Path to wallet containing validators that you want to exit (default: "./mainnet-keystore" - is affected by the network flag)       |
+| --rpc-address [string]          | Address of node that is used to make an exit (defaults to the default RPC address provided by your selected client)                |
+| --testnet-dir value             | Path to network configuration folder (default: "./configs/mainnet/shared" - is affected by the network flag)                       |
+| **NETWORK**                     |                                                                                                                                    |
+| --mainnet                       | Will import the keys for mainnet [default] (Will use: "./mainnet-keystore")                                                        |
+| --testnet                       | Will import the keys for testnet (Will use: "./testnet-keystore")                                                                  |
+| --devnet                        | Will import the keys for devnet (Will use: "./devnet-keystore")                                                                    |
 
 #### How to import validator keys
 

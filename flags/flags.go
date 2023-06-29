@@ -51,6 +51,7 @@ func init() {
 
 	ValidatorImportFlags = append(ValidatorImportFlags, NetworkFlags...)
 	ValidatorListFlags = append(ValidatorListFlags, NetworkFlags...)
+	ValidatorExitFlags = append(ValidatorExitFlags, NetworkFlags...)
 }
 
 var (
@@ -115,9 +116,28 @@ var (
 	}
 
 	ValidatorListFlags = []cli.Flag{}
-	InstallFlags       []cli.Flag
-	UpdateFlags        []cli.Flag
-	StopFlags          = []cli.Flag{
+	ValidatorExitFlags = []cli.Flag{
+		&cli.StringFlag{
+			Name:  KeystoreFlag,
+			Usage: "Path to keystore containing public key that you want to exit - this flag is required when using Lighthouse validator",
+		},
+		&cli.StringFlag{
+			Name:  ValidatorWalletDirFlag,
+			Usage: "Path to wallet containing validators that you want to exit - this flag is required when using Prysm validator",
+		},
+		&cli.StringFlag{
+			Name:  RpcAddressFlag,
+			Usage: "Address of node that is used to make an exit (defaults to the default RPC address provided by your selected client)",
+		},
+		&cli.StringFlag{
+			Name:  TestnetDirFlag,
+			Usage: "Path to network configuration folder",
+			Value: configs.MainnetConfig + "/shared",
+		},
+	}
+	InstallFlags []cli.Flag
+	UpdateFlags  []cli.Flag
+	StopFlags    = []cli.Flag{
 		executionSelectedFlag,
 		consensusSelectedFlag,
 		validatorSelectedFlag,
@@ -158,7 +178,7 @@ var (
 		&cli.StringFlag{
 			Name:  GethTagFlag,
 			Usage: "A tag of geth you would like to run",
-			Value: "1.11.6",
+			Value: "1.12.0",
 		},
 		&cli.StringFlag{
 			Name:  GethCommitHashFlag,
@@ -171,7 +191,7 @@ var (
 		&cli.StringFlag{
 			Name:  GethTagFlag,
 			Usage: "A tag of geth you would like to run",
-			Value: "1.11.6",
+			Value: "1.12.0",
 		},
 	}
 
@@ -235,14 +255,14 @@ var (
 		&cli.StringFlag{
 			Name:  PrysmTagFlag,
 			Usage: "Tag for prysm",
-			Value: "v4.0.1",
+			Value: "v4.0.6",
 		},
 	}
 	PrysmUpdateFlags = []cli.Flag{
 		&cli.StringFlag{
 			Name:  PrysmTagFlag,
 			Usage: "Tag for prysm",
-			Value: "v4.0.1",
+			Value: "v4.0.6",
 		},
 	}
 	PrysmStartFlags = []cli.Flag{
@@ -289,7 +309,7 @@ var (
 		&cli.StringFlag{
 			Name:  LighthouseTagFlag,
 			Usage: "Tag for lighthouse",
-			Value: "v4.1.0",
+			Value: "v4.2.0",
 		},
 	}
 	LighthouseStartFlags = []cli.Flag{
@@ -314,14 +334,14 @@ var (
 		&cli.StringFlag{
 			Name:  ValidatorTagFlag,
 			Usage: "Tag for validator binary",
-			Value: "v4.0.1",
+			Value: "v4.0.6",
 		},
 	}
 	ValidatorUpdateFlags = []cli.Flag{
 		&cli.StringFlag{
 			Name:  ValidatorTagFlag,
 			Usage: "Tag for validator binary",
-			Value: "v4.0.1",
+			Value: "v4.0.6",
 		},
 	}
 	ValidatorStartFlags = []cli.Flag{

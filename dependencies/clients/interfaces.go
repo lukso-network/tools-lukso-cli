@@ -49,4 +49,5 @@ type ValidatorBinaryDependency interface {
 	ClientBinaryDependency
 	Import(ctx *cli.Context) error
 	List(ctx *cli.Context) error
+	Exit(ctx *cli.Context) error
 }

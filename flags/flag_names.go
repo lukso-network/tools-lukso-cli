@@ -22,6 +22,7 @@ const (
 	LighthouseConfigFileFlag          = "lighthouse-config"
 	LighthouseValidatorConfigFileFlag = "lighthouse-validator-config"
 	LighthouseDatadirFlag             = "lighthouse-datadir"
+	TestnetDirFlag                    = "testnet-dir"
 
 	ValidatorTagFlag                = "validator-tag"
 	ValidatorDatadirFlag            = "validator-datadir"
@@ -41,6 +42,8 @@ const (
 
 	ValidatorKeysFlag     = "validator-keys"
 	ValidatorPasswordFlag = "validator-password"
+	KeystoreFlag          = "keystore"
+	RpcAddressFlag        = "rpc-address"
 
 	TransactionFeeRecipientFlag = "transaction-fee-recipient"
 	AgreeTermsFlag              = "agree-terms"
