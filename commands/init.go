@@ -2,6 +2,9 @@ package commands
 
 import (
 	"fmt"
+	"github.com/spf13/viper"
+	"io"
+	"net/http"
 	"os"
 	"strings"
 
@@ -82,6 +85,17 @@ func InitializeDirectory(ctx *cli.Context) error {
 		log.Infof("✅  LUKSO configuration created under %s", config.Path)
 	}
 
+	log.Info("⚙️   LUKSO CLI can replace your p2p communication flags with your public IP for better connection (optional)")
+	message := "Do you want to proceed? [Y/n]\n> "
+
+	input := utils.RegisterInputWithMessage(message)
+	if strings.EqualFold(input, "y") || input == "" {
+		err = setIPInConfigs()
+		if err != nil {
+			return err
+		}
+	}
+
 	log.Info("✅  Working directory initialized! \n1. ⚙️  Use 'lukso install' to install clients. \n2. ▶️  Use 'lukso start' to start your node.")
 
 	return nil
@@ -97,4 +111,91 @@ func initConfigGroup(configDependencies map[string]configs.ClientConfigDependenc
 	}
 
 	return nil
+}
+
+func setIPInConfigs() (err error) {
+	ip, err := getPublicIP()
+	if err != nil {
+		return err
+	}
+
+	type tempConfig struct {
+		path          string
+		name          string
+		fileType      string
+		flagsToChange []string
+	}
+
+	prysmFlagsToChange := []string{"p2p-host-ip"}
+	lighthouseFlagsToChange := []string{"listen-address", "enr-address"}
+
+	configs := []tempConfig{
+		{
+			path:          "./configs/testnet/prysm",
+			name:          "prysm",
+			fileType:      "yaml",
+			flagsToChange: prysmFlagsToChange,
+		},
+		{
+			path:          "./configs/testnet/lighthouse",
+			name:          "lighthouse",
+			fileType:      "toml",
+			flagsToChange: lighthouseFlagsToChange,
+		},
+		{
+			path:          "./configs/mainnet/prysm",
+			name:          "prysm",
+			fileType:      "yaml",
+			flagsToChange: prysmFlagsToChange,
+		},
+		{
+			path:          "./configs/mainnet/lighthouse",
+			name:          "lighthouse",
+			fileType:      "toml",
+			flagsToChange: lighthouseFlagsToChange,
+		},
+	}
+
+	for _, cfg := range configs {
+		v := viper.New()
+
+		v.AddConfigPath(cfg.path)
+		v.SetConfigName(cfg.name)
+		v.SetConfigType(cfg.fileType)
+
+		err = v.ReadInConfig()
+		if err != nil {
+			return
+		}
+
+		for _, flag := range cfg.flagsToChange {
+			v.Set(flag, ip)
+		}
+
+		err = v.WriteConfig()
+		if err != nil {
+			return
+		}
+	}
+
+	log.Info("✅  IP Address updated!")
+
+	return
+}
+
+func getPublicIP() (ip string, err error) {
+	url := "https://ipv4.ident.me"
+	res, err := http.Get(url)
+	if err != nil {
+		return
+	}
+
+	respBody, err := io.ReadAll(res.Body)
+	if err != nil {
+		return
+	}
+
+	ip = string(respBody)
+
+	return
 }
