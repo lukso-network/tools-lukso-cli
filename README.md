@@ -117,7 +117,7 @@ lukso-node
 ## Available Commands
 
 | Command                                     | Description                                                                              |
-|---------------------------------------------|------------------------------------------------------------------------------------------|
+| ------------------------------------------- | ---------------------------------------------------------------------------------------- |
 | [`install` ](#install)                      | Installs choosen clients (Execution, Consensus, Validator) and their binary dependencies |
 | [`init`](#initialise-the-working-directory) | Initializes the working directory, it's structure, and network configuration             |
 | [`start`](#start)                           | Starts all or specific clients and connects to the specified network                     |
@@ -423,13 +423,34 @@ List all imported keys from the validators keystore.
 
 ### `validator exit`
 
-Issue an exit for your validator.  
-**IMPORTANT:** validator exit is an **irreversible** action. Before exiting your validator you need make sure you are mindful of what the exit process carries with itself.  
+Issue an exit for your validator.
+
+**IMPORTANT:** Validator exit is an **irreversible** action. Before exiting your validator you need make sure you are mindful of what the exit process carries with itself.
 
 Because different clients have different processes of exiting please make sure that **you are familiar with flags** provided by the `validator exit` command.
 
+#### How to exit validator keys
+
+Make sure your validator node is running before starting the exit command.
+
+```sh
+# Exit validator keys with Prysm for Mainnet
+sudo lukso validator exit
+
+# Exit validator keys with Prysm for Testnet
+sudo lukso validator exit --testnet
+
+# Exit a validator key with Lighthouse for Mainnet
+sudo lukso validator exit --keystore "./mainnet-keystore/keystore-xxx.json"
+
+# Exit a validator key with Lighthouse for Testnet
+sudo lukso validator exit --testnet --keystore "./testnet-keystore/keystore-xxx.json"
+```
+
+> The Lighthouse client only allows to exit one validator key at a time. In case you have plenty of keys, please generate a separate keyfolder in a different working directory using Prysm. The new keystore folder can then be used for the exit command, even if your node is running the Lighthouse consensus client.
+
 | Option                          | Description                                                                                                                        |
-|---------------------------------|------------------------------------------------------------------------------------------------------------------------------------|
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
 | --keystore [string]             | Path to keystore-xxx.json file containing public key that you want to exit - this flag is required when using Lighthouse validator |
 | --validator-wallet-dir [string] | Path to wallet containing validators that you want to exit (default: "./mainnet-keystore" - is affected by the network flag)       |
 | --rpc-address [string]          | Address of node that is used to make an exit (defaults to the default RPC address provided by your selected client)                |
