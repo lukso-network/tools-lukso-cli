@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.0](https://github.com/lukso-network/tools-lukso-cli/compare/v0.7.0...v0.8.0) (2023-06-29)
+
+
+### Features
+
+* Add Validator Exit Documentation ([ce09dea](https://github.com/lukso-network/tools-lukso-cli/commit/ce09deaad8e1c19d64bc3d164a40bcbe3e0d98e7))
+
 ## [0.6.4](https://github.com/lukso-network/tools-lukso-cli/compare/v0.6.3...v0.6.4) (2023-06-26)
 
 
