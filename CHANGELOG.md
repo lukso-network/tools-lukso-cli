@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.2](https://github.com/lukso-network/tools-lukso-cli/compare/v0.7.1...v0.7.2) (2023-06-30)
+
+
+### Bug Fixes
+
+* Version tagging ([359d734](https://github.com/lukso-network/tools-lukso-cli/commit/359d734f0d0960b371546136c0b1835fcfe5ae82))
+
 ## [0.8.0](https://github.com/lukso-network/tools-lukso-cli/compare/v0.7.1...v0.8.0) (2023-06-29)
 
 
