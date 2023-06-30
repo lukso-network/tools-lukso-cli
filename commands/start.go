@@ -60,7 +60,7 @@ func StartClients(ctx *cli.Context) (err error) {
 	}
 	err = consensusClient.Start(ctx, consArgs)
 	if err != nil {
-		return utils.Exit(fmt.Sprintf("❌  There was an error while starting %s: %v", executionClient.Name(), err), 1)
+		return utils.Exit(fmt.Sprintf("❌  There was an error while starting %s: %v", consensusClient.Name(), err), 1)
 	}
 
 	if ctx.Bool(flags.ValidatorFlag) {
