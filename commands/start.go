@@ -6,6 +6,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/lukso-network/tools-lukso-cli/config"
+
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 
@@ -52,6 +54,20 @@ func StartClients(ctx *cli.Context) (err error) {
 	consArgs, err := consensusClient.PrepareStartFlags(ctx)
 	if err != nil {
 		return utils.Exit(fmt.Sprintf("❌  There was an error while preparing %s flags: %v", consensusClient.Name(), err), 1)
+	}
+
+	if ctx.Bool(flags.CheckpointSyncFlag) && !ctx.Bool(flags.DevnetFlag) {
+		log.Info("⚙️   Checkpoint sync feature enabled")
+
+		checkpointURL := config.MainnetCheckpointSyncUrl
+		if ctx.Bool(flags.TestnetFlag) {
+			checkpointURL = config.TestnetCheckpointSyncUrl
+		}
+
+		consArgs = append(consArgs, "--checkpoint-sync-url="+checkpointURL)
+	}
+	if ctx.Bool(flags.DevnetFlag) {
+		log.Info("️️⚠️  This network doesn't have a checkpoint sync setup, starting without checkpoint sync...")
 	}
 
 	err = executionClient.Start(ctx, execArgs)

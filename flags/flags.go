@@ -163,6 +163,10 @@ var (
 			Usage: "Directory to output logs into",
 			Value: configs.MainnetLogs,
 		},
+		&cli.BoolFlag{
+			Name:  CheckpointSyncFlag,
+			Usage: "Run a node with checkpoint sync feature",
+		},
 	}
 	LogsFlags  []cli.Flag
 	ResetFlags []cli.Flag
@@ -178,12 +182,12 @@ var (
 		&cli.StringFlag{
 			Name:  GethTagFlag,
 			Usage: "A tag of geth you would like to run",
-			Value: "1.12.0",
+			Value: "1.11.6",
 		},
 		&cli.StringFlag{
 			Name:  GethCommitHashFlag,
 			Usage: "A hash of commit that is bound to given release tag",
-			Value: "e501b3b0",
+			Value: "ea9e62ca",
 		},
 	}
 
@@ -191,7 +195,7 @@ var (
 		&cli.StringFlag{
 			Name:  GethTagFlag,
 			Usage: "A tag of geth you would like to run",
-			Value: "1.12.0",
+			Value: "1.11.6",
 		},
 	}
 
