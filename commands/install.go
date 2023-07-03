@@ -91,13 +91,13 @@ func InstallBinaries(ctx *cli.Context) (err error) {
 	log.Infof("⬇️  Downloading %s...", selectedExecution.Name())
 	err = selectedExecution.Install(selectedExecution.ParseUrl(executionTag, commitHash), false)
 	if err != nil {
-		return utils.Exit(fmt.Sprintf("❌  There was an error while downloading %s: %v", selectedExecution, err), 1)
+		return utils.Exit(fmt.Sprintf("❌  There was an error while downloading %s: %v", selectedExecution.Name(), err), 1)
 	}
 
 	log.Infof("⬇️  Downloading %s...", selectedConsensus.Name())
 	err = selectedConsensus.Install(selectedConsensus.ParseUrl(consensusTag, commitHash), false)
 	if err != nil {
-		return utils.Exit(fmt.Sprintf("❌  There was an error while downloading %s: %v", selectedConsensus, err), 1)
+		return utils.Exit(fmt.Sprintf("❌  There was an error while downloading %s: %v", selectedConsensus.Name(), err), 1)
 	}
 
 	var selectedValidator clients.ValidatorBinaryDependency = clients.LighthouseValidator
