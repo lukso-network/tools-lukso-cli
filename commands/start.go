@@ -2,6 +2,7 @@ package commands
 
 import (
 	"fmt"
+	"github.com/lukso-network/tools-lukso-cli/config"
 	"os"
 	"strings"
 	"time"
@@ -57,9 +58,9 @@ func StartClients(ctx *cli.Context) (err error) {
 	if ctx.Bool(flags.CheckpointSyncFlag) && !ctx.Bool(flags.DevnetFlag) {
 		log.Info("⚙️   Checkpoint sync feature enabled")
 
-		checkpointURL := "https://checkpoints.mainnet.lukso.network/"
+		checkpointURL := config.MainnetCheckpointSyncUrl
 		if ctx.Bool(flags.TestnetFlag) {
-			checkpointURL = "https://checkpoints.testnet.lukso.network/"
+			checkpointURL = config.TestnetCheckpointSyncUrl
 		}
 
 		consArgs = append(consArgs, "--checkpoint-sync-url="+checkpointURL)
