@@ -1,7 +1,9 @@
 package clients
 
 import (
+	"bytes"
 	"fmt"
+	"os/exec"
 	"strings"
 
 	log "github.com/sirupsen/logrus"
@@ -50,29 +52,45 @@ func (l *LighthouseClient) Update() (err error) {
 
 func (l *LighthouseClient) ParseUrl(tag, commitHash string) (url string) {
 	var (
-		systemName      string
-		urlSystem       = system.Os
-		alternativeArch string
+		systemName string
+		urlSystem  = system.Os
+		arch       string
 	)
+
+	fallback := func() {
+		log.Info("⚠️  Unknown OS detected: proceeding with x86_64 as a default arch")
+		arch = "x86_64"
+	}
+
 	switch system.Os {
 	case system.Ubuntu:
 		systemName = "unknown"
 		urlSystem += "-gnu"
-		alternativeArch = "x86_64"
-		if system.Arch == "aarch64" {
-			alternativeArch = system.Arch
-		}
-
 	case system.Macos:
 		systemName = "apple"
-		alternativeArch = "x86_64"
 	default:
 		systemName = "unknown"
 		urlSystem += "-gnu"
-		alternativeArch = "x86_64"
-		if system.Arch == "aarch64" {
-			alternativeArch = system.Arch
+	}
+
+	switch system.Os {
+	case system.Ubuntu, system.Macos:
+		buf := new(bytes.Buffer)
+
+		uname := exec.Command("uname", "-m")
+		uname.Stdout = buf
+
+		err := uname.Start()
+		if err != nil {
+			fallback()
+
+			break
 		}
+
+		arch = buf.String()
+
+	default:
+		fallback()
 	}
 
 	url = l.baseUrl
@@ -80,7 +98,7 @@ func (l *LighthouseClient) ParseUrl(tag, commitHash string) (url string) {
 	url = strings.Replace(url, "|OS|", urlSystem, -1)
 	url = strings.Replace(url, "|OS-NAME|", systemName, -1) // for lighthouse
 	url = strings.Replace(url, "|COMMIT|", commitHash, -1)
-	url = strings.Replace(url, "|ARCH|", alternativeArch, -1)
+	url = strings.Replace(url, "|ARCH|", arch, -1)
 
 	return
 }
