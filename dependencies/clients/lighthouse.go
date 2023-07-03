@@ -80,14 +80,14 @@ func (l *LighthouseClient) ParseUrl(tag, commitHash string) (url string) {
 		uname := exec.Command("uname", "-m")
 		uname.Stdout = buf
 
-		err := uname.Start()
+		err := uname.Run()
 		if err != nil {
 			fallback()
 
 			break
 		}
 
-		arch = buf.String()
+		arch = strings.Trim(buf.String(), "\n\t ")
 
 	default:
 		fallback()
