@@ -2,10 +2,11 @@ package commands
 
 import (
 	"fmt"
-	"github.com/lukso-network/tools-lukso-cli/config"
 	"os"
 	"strings"
 	"time"
+
+	"github.com/lukso-network/tools-lukso-cli/config"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
