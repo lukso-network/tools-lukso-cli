@@ -49,28 +49,38 @@ func (l *LighthouseClient) Update() (err error) {
 }
 
 func (l *LighthouseClient) ParseUrl(tag, commitHash string) (url string) {
-	// for lighthouse
 	var (
-		systemName string
-		urlSystem  = system.Os
+		systemName      string
+		urlSystem       = system.Os
+		alternativeArch = system.Arch
 	)
 	switch system.Os {
 	case system.Ubuntu:
 		systemName = "unknown"
 		urlSystem += "-gnu"
+		alternativeArch = "x86_64"
+		if system.Arch == "aarch64" {
+			alternativeArch = system.Arch
+		}
+
 	case system.Macos:
 		systemName = "apple"
+		alternativeArch = "x86_64"
 	default:
 		systemName = "unknown"
 		urlSystem += "-gnu"
+		alternativeArch = "x86_64"
+		if system.Arch == "aarch64" {
+			alternativeArch = system.Arch
+		}
 	}
 
 	url = l.baseUrl
 	url = strings.Replace(url, "|TAG|", tag, -1)
 	url = strings.Replace(url, "|OS|", urlSystem, -1)
-	url = strings.Replace(url, "|OS-NAME|", systemName, -1)
+	url = strings.Replace(url, "|OS-NAME|", systemName, -1) // for lighthouse
 	url = strings.Replace(url, "|COMMIT|", commitHash, -1)
-	url = strings.Replace(url, "|ARCH|", system.Arch, -1)
+	url = strings.Replace(url, "|ARCH|", alternativeArch, -1)
 
 	return
 }
