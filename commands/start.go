@@ -61,6 +61,9 @@ func StartClients(ctx *cli.Context) (err error) {
 		if ctx.Bool(flags.TestnetFlag) {
 			checkpointURL = "https://checkpoints.testnet.lukso.network/"
 		}
+		if ctx.Bool(flags.DevnetFlag) {
+			checkpointURL = "https://checkpoints.devnet.lukso.dev/"
+		}
 
 		consArgs = append(consArgs, "--checkpoint-sync-url="+checkpointURL)
 	}
