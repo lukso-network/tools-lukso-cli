@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.3](https://github.com/lukso-network/tools-lukso-cli/compare/v0.7.2...v0.7.3) (2023-07-03)
+
+
+### Bug Fixes
+
+* Disable all caching ([2d8f2fa](https://github.com/lukso-network/tools-lukso-cli/commit/2d8f2fa59811b9761cb96b6894909d1a4d4bdc89))
+
 ## [0.7.2](https://github.com/lukso-network/tools-lukso-cli/compare/v0.7.1...v0.7.2) (2023-06-30)
 
 
