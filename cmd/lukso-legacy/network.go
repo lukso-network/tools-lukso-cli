@@ -17,6 +17,7 @@ type networkConfig struct {
 	configPath           string
 	keysPath             string
 	walletPath           string
+	checkpointURL        string
 }
 
 // selectNetwork accepts a CLI func as an argument, and adjusts all values that need to be changed depending on

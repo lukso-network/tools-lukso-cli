@@ -54,6 +54,17 @@ func StartClients(ctx *cli.Context) (err error) {
 		return utils.Exit(fmt.Sprintf("❌  There was an error while preparing %s flags: %v", consensusClient.Name(), err), 1)
 	}
 
+	if ctx.Bool(flags.CheckpointSyncFlag) {
+		log.Info("⚙️   Checkpoint sync feature enabled")
+
+		checkpointURL := "https://checkpoints.mainnet.lukso.network/"
+		if ctx.Bool(flags.TestnetFlag) {
+			checkpointURL = "https://checkpoints.testnet.lukso.network/"
+		}
+
+		consArgs = append(consArgs, "--checkpoint-sync-url", checkpointURL)
+	}
+
 	err = executionClient.Start(ctx, execArgs)
 	if err != nil {
 		return utils.Exit(fmt.Sprintf("❌  There was an error while starting %s: %v", executionClient.Name(), err), 1)
