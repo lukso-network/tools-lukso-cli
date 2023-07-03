@@ -62,7 +62,7 @@ func StartClients(ctx *cli.Context) (err error) {
 			checkpointURL = "https://checkpoints.testnet.lukso.network/"
 		}
 
-		consArgs = append(consArgs, "--checkpoint-sync-url", checkpointURL)
+		consArgs = append(consArgs, "--checkpoint-sync-url="+checkpointURL)
 	}
 
 	err = executionClient.Start(ctx, execArgs)
