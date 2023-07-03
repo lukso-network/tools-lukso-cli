@@ -183,7 +183,7 @@ var (
 		&cli.StringFlag{
 			Name:  GethCommitHashFlag,
 			Usage: "A hash of commit that is bound to given release tag",
-			Value: "ea9e62ca",
+			Value: "e501b3b0",
 		},
 	}
 
