@@ -67,7 +67,7 @@ func StartClients(ctx *cli.Context) (err error) {
 		consArgs = append(consArgs, "--checkpoint-sync-url="+checkpointURL)
 	}
 	if ctx.Bool(flags.DevnetFlag) {
-		log.Info("️️⚠️  This network doesn't have a checkpoint sync setup")
+		log.Info("️️⚠️  This network doesn't have a checkpoint sync setup, starting without checkpoint sync...")
 	}
 
 	err = executionClient.Start(ctx, execArgs)
