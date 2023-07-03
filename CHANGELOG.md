@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.8.0](https://github.com/lukso-network/tools-lukso-cli/compare/v0.7.3...v0.8.0) (2023-07-03)
+
+
+### Features
+
+* deposit fix ([#186](https://github.com/lukso-network/tools-lukso-cli/issues/186)) ([2368308](https://github.com/lukso-network/tools-lukso-cli/commit/23683080e54e23434be689df339f33d350cd6d18))
+
+
+### Bug Fixes
+
+* Update cache to be for 600s with revalidate for install.lukso.network ([55fdfdf](https://github.com/lukso-network/tools-lukso-cli/commit/55fdfdfc794d42a2d3ce6f3a22557773505615d5))
+
 ## [0.7.3](https://github.com/lukso-network/tools-lukso-cli/compare/v0.7.2...v0.7.3) (2023-07-03)
 
 
