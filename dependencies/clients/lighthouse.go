@@ -52,7 +52,7 @@ func (l *LighthouseClient) ParseUrl(tag, commitHash string) (url string) {
 	var (
 		systemName      string
 		urlSystem       = system.Os
-		alternativeArch = system.Arch
+		alternativeArch string
 	)
 	switch system.Os {
 	case system.Ubuntu:
