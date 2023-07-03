@@ -219,23 +219,17 @@ $ lukso start --logs-folder "[folder_path]"
 Checkpoint synchronization is a feature that significantly speeds up the initial sync time of the consensus client. If enabled, your node will begin syncing from a recently finalized consensus checkpoint instead of genesis. The shortcut makes installation, validator migration, or recovery much faster.
 
 ```sh
-# Mainnet Checkpoint for Prysm Consensus Client
-$ lukso start --prysm-checkpoint-sync-url=https://checkpoints.mainnet.lukso.network
+# Mainnet Checkpoint Sync for Consensus Client
+$ lukso start --checkpoint-sync
 
-# Mainnet Checkpoint for Lighthouse Consensus Client
-$ lukso start --lighthouse-checkpoint-sync-url=https://checkpoints.mainnet.lukso.network
-
-# Testnet Checkpoint for Prysm Consensus Client
-$ lukso start --testnet --prysm-checkpoint-sync-url=https://checkpoints.testnet.lukso.network
-
-# Testnet Checkpoint for Lighthouse Consensus Client
-$ lukso start --testnet --lighthouse-checkpoint-sync-url=https://checkpoints.testnet.lukso.network
+# Testnet Checkpoint Sync for Consensus Client
+$ lukso start --testnet --checkpoint-sync
 ```
 
 #### Options for `start`
 
 | Option                               | Description                                                                                                                                           |
-| ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+|--------------------------------------| ----------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **NETWORK**                          |                                                                                                                                                       |
 | --mainnet                            | Starts the LUKSO node with mainnet data [default] (./configs/mainnet)                                                                                 |
 | --testnet                            | Starts the LUKSO node with testnet data (./configs/tesnet)                                                                                            |
@@ -249,6 +243,7 @@ $ lukso start --testnet --lighthouse-checkpoint-sync-url=https://checkpoints.tes
 | --genesis-json [string]              | The path to genesis JSON file                                                                                                                         |
 | --genesis-ssz [string]               | The path to genesis SSZ file                                                                                                                          |
 | --no-slasher                         | Disables slasher                                                                                                                                      |
+| --checkpoint-sync                    | Run a node with checkpoint sync feature                                                                                                               |
 | **CLIENT OPTIONS**                   |                                                                                                                                                       |
 | --logs-folder [string]               | Sets up a custom logs directory (default: "./\[network_type\]-logs")                                                                                  |
 | --geth-config [string]               | Defines the path to geth TOML config file                                                                                                             |

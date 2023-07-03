@@ -40,11 +40,11 @@ const (
 
 	LogFolderFlag = "logs-folder"
 
-	ValidatorKeysFlag     = "validator-keys"
-	ValidatorPasswordFlag = "validator-password"
-	KeystoreFlag          = "keystore"
-	RpcAddressFlag        = "rpc-address"
-
+	ValidatorKeysFlag           = "validator-keys"
+	ValidatorPasswordFlag       = "validator-password"
+	KeystoreFlag                = "keystore"
+	RpcAddressFlag              = "rpc-address"
+	CheckpointSyncFlag          = "checkpoint-sync"
 	TransactionFeeRecipientFlag = "transaction-fee-recipient"
 	AgreeTermsFlag              = "agree-terms"
 )

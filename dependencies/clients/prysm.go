@@ -44,6 +44,7 @@ func (p *PrysmClient) PrepareStartFlags(ctx *cli.Context) (startFlags []string, 
 	// terms of use already accepted during installation
 	startFlags = append(startFlags, "--accept-terms-of-use")
 	startFlags = append(startFlags, fmt.Sprintf("--config-file=%s", ctx.String(flags.PrysmConfigFileFlag)))
+	startFlags = append(startFlags, "--contract-deployment-block=0")
 
 	if ctx.String(flags.TransactionFeeRecipientFlag) != "" {
 		startFlags = append(startFlags, fmt.Sprintf("--suggested-fee-recipient=%s", ctx.String(flags.TransactionFeeRecipientFlag)))
