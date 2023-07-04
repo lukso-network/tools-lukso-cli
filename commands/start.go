@@ -128,7 +128,7 @@ func startValidator(ctx *cli.Context) (err error) {
 	if validatorPasswordPath == "" {
 		passwordPipe, err = utils.ReadValidatorPassword(ctx)
 		if err != nil {
-			err = utils.Exit(fmt.Sprintf("❌  There was an error while reading password: %v", err), 1)
+			return utils.Exit(fmt.Sprintf("❌  There was an error while reading password: %v", err), 1)
 		}
 		err = ctx.Set(flags.ValidatorWalletPasswordFileFlag, passwordPipe.Name())
 		if err != nil {
