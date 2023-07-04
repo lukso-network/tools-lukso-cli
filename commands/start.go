@@ -130,19 +130,14 @@ func startValidator(ctx *cli.Context) (err error) {
 		if err != nil {
 			err = utils.Exit(fmt.Sprintf("❌  There was an error while reading password: %v", err), 1)
 		}
+		err = ctx.Set(flags.ValidatorWalletPasswordFileFlag, passwordPipe.Name())
+		if err != nil {
+			return
+		}
+		defer func() {
+			os.Remove(passwordPipe.Name())
+		}()
 	}
-	if err != nil {
-		return
-	}
-
-	err = ctx.Set(flags.ValidatorWalletPasswordFileFlag, passwordPipe.Name())
-	if err != nil {
-		return
-	}
-
-	defer func() {
-		os.Remove(passwordPipe.Name())
-	}()
 
 	args, err := validatorClient.PrepareStartFlags(ctx)
 	if err != nil {
@@ -153,8 +148,6 @@ func startValidator(ctx *cli.Context) (err error) {
 	if err != nil {
 		err = utils.Exit(fmt.Sprintf("❌  There was an error while starting %s: %v", validatorClient.Name(), err), 1)
 	}
-
-	os.Remove(passwordPipe.Name())
 
 	log.Info("⚙️  Please wait a few seconds while your password is being validated...")
 	time.Sleep(time.Second * 10) // should be enough
