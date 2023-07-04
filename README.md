@@ -216,7 +216,9 @@ $ lukso start --logs-folder "[folder_path]"
 
 #### Using Checkpoint Syncing
 
-Checkpoint synchronization is a feature that significantly speeds up the initial sync time of the consensus client. If enabled, your node will begin syncing from a recently finalized consensus checkpoint instead of genesis. The shortcut makes installation, validator migration, or recovery much faster.
+Checkpoint synchronization is a feature that significantly speeds up the initial sync time of the consensus client. If enabled, your node will begin syncing from a recently finalized consensus checkpoint instead of genesis. It will then download the rest of the blockchain data while your consensus is already running.
+
+> After the synchronization is finalized, you will end up with the equal blockchain data. You can use the flag on every startup. However, it shows the most significant effect when synchronizing from scratch or after an extended downtime. The shortcut is ideal for fresh installations, validator migration, or recovery.
 
 ##### Checkpoints with LUKSO CLI version 0.8
 
