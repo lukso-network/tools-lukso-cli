@@ -127,7 +127,7 @@ func setIPInConfigs() (err error) {
 	}
 
 	prysmFlagsToChange := []string{"p2p-host-ip"}
-	lighthouseFlagsToChange := []string{"listen-address", "enr-address"}
+	lighthouseFlagsToChange := []string{"enr-address"}
 
 	configs := []tempConfig{
 		{
