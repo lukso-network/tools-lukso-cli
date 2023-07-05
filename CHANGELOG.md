@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.8.1](https://github.com/lukso-network/tools-lukso-cli/compare/v0.8.0...v0.8.1) (2023-07-05)
+
+
+### Bug Fixes
+
+* add old checkpoint sync option ([330ce75](https://github.com/lukso-network/tools-lukso-cli/commit/330ce751f40f6cb12fd6cff2123dde6a0942f1a0))
+* Dont inject IP during init to listen-address ([b529104](https://github.com/lukso-network/tools-lukso-cli/commit/b529104ce5561c9501e4a32a17f8dd13203f975a))
+* Initial fix for password runtime panic ([119ed4a](https://github.com/lukso-network/tools-lukso-cli/commit/119ed4a6de773f369be325238758364073290d16))
+* Move the defer into the outer scope. ([534294e](https://github.com/lukso-network/tools-lukso-cli/commit/534294eaab904da2869db81c5745e77c726eaa43))
+* Must return the error. Put the defer even earlier. ([9a848c1](https://github.com/lukso-network/tools-lukso-cli/commit/9a848c11b967a2a458f2b696d7172a17a8c44b24))
+
 ## [0.8.0](https://github.com/lukso-network/tools-lukso-cli/compare/v0.7.3...v0.8.0) (2023-07-03)
 
 
