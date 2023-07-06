@@ -267,7 +267,6 @@ $ lukso start --testnet --lighthouse-checkpoint-sync-url=https://checkpoints.tes
 | --genesis-json [string]              | The path to genesis JSON file                                                                                                                         |
 | --genesis-ssz [string]               | The path to genesis SSZ file                                                                                                                          |
 | --no-slasher                         | Disables slasher                                                                                                                                      |
-| --checkpoint-sync                    | Run a node with checkpoint sync feature                                                                                                               |
 | **CLIENT OPTIONS**                   |                                                                                                                                                       |
 | --logs-folder [string]               | Sets up a custom logs directory (default: "./\[network_type\]-logs")                                                                                  |
 | --geth-config [string]               | Defines the path to geth TOML config file                                                                                                             |
@@ -277,6 +276,7 @@ $ lukso start --testnet --lighthouse-checkpoint-sync-url=https://checkpoints.tes
 | --prysm-[command]                    | The `command` will be passed to the Prysm client. [See the client docs for details](https://docs.prylabs.network/docs/prysm-usage/parameters)         |
 | --lighhouse-[command]                | The `command` will be passed to the Lighthouse client. [See the client docs for details](https://lighthouse-book.sigmaprime.io/advanced-datadir.html) |
 | --erigon-[command]                   | The `command` will be passed to the Erigon client. [See the client docs for details](https://github.com/ledgerwatch/erigon)                           |
+| --checkpoint-sync                    | Run a node with checkpoint sync feature                                                                                                               |
 
 ### `stop`
 
