@@ -229,6 +229,10 @@ $ lukso start --checkpoint-sync
 # Testnet Checkpoint Sync for Consensus Client
 $ lukso start --testnet --checkpoint-sync
 ```
+LUKSO CLI takes advantage of a weak subjectivity checkpoint flag (varies across different clients) that allows you to specify a weak subjectivity checkpoint.
+With this flag specified, your beacon node will ensure that it reconstructs a historical chain that matches the checkpoint root at the given epoch.
+This can offer the same level of weak subjectivity protection that checkpoint sync offers.
+The CLI will automatically retrieve the latest finalized values to use with this feature.
 
 ##### Checkpoints with LUKSO CLI version 0.7 or below
 
