@@ -9,3 +9,17 @@ type GithubApiCommitResponse struct {
 		Sha string `json:"sha"`
 	} `json:"object"`
 }
+
+type CheckpointFinalizedBlockResponse struct {
+	Data struct {
+		Message struct {
+			Slot string `json:"slot"`
+		} `json:"message"`
+	} `json:"data"`
+}
+
+type CheckpointFinalizedBlockRootResponse struct {
+	Data struct {
+		Root string `json:"root"`
+	} `json:"data"`
+}
