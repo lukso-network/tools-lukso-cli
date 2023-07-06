@@ -1,8 +1,13 @@
 package commands
 
 import (
+	"encoding/json"
 	"fmt"
+	"github.com/lukso-network/tools-lukso-cli/dependencies/apitypes"
+	"io"
+	"net/http"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
@@ -64,7 +69,27 @@ func StartClients(ctx *cli.Context) (err error) {
 			checkpointURL = config.TestnetCheckpointSyncUrl
 		}
 
-		consArgs = append(consArgs, "--checkpoint-sync-url="+checkpointURL)
+		var (
+			root  string
+			epoch int
+		)
+
+		root, epoch, err = getWeakSubjectivityCheckpoint(checkpointURL)
+		if err != nil {
+			return utils.Exit(fmt.Sprintf("❌  There was an error while getting weak subjectivity checkpoint: %v", err), 1)
+		}
+
+		switch consensusClient {
+		case clients.Prysm:
+			consArgs = append(consArgs, fmt.Sprintf("--checkpoint-sync-url=%s", checkpointURL))
+			consArgs = append(consArgs, fmt.Sprintf("--genesis-beacon-api-url=%s", checkpointURL))
+			consArgs = append(consArgs, fmt.Sprintf("--weak-subjectivity-checkpoint=%s:%d", root, epoch))
+		case clients.Lighthouse:
+			consArgs = append(consArgs, fmt.Sprintf("--checkpoint-sync-url=%s", checkpointURL))
+			consArgs = append(consArgs, fmt.Sprintf("--wss-checkpoint=%s:%d", root, epoch))
+		default:
+			log.Warnf("️⚠️  Checkpoint sync not configured for %s: continuing without checkpoint sync", consensusClient.Name())
+		}
 	}
 	if ctx.Bool(flags.DevnetFlag) {
 		log.Info("️️⚠️  This network doesn't have a checkpoint sync setup, starting without checkpoint sync...")
@@ -169,6 +194,57 @@ func startValidator(ctx *cli.Context) (err error) {
 	if strings.Contains(string(logs), errors.WrongPassword) {
 		return utils.Exit("❌  Incorrect password, please restart and try again", 1)
 	}
+
+	return
+}
+
+func getWeakSubjectivityCheckpoint(checkpointURL string) (finalizedRoot string, epoch int, err error) {
+	checkpointURL = strings.TrimRight(checkpointURL, "/")
+
+	var (
+		res     *http.Response
+		resByte []byte
+
+		slotResp apitypes.CheckpointFinalizedBlockResponse
+		rootResp apitypes.CheckpointFinalizedBlockRootResponse
+	)
+
+	res, err = http.Get(fmt.Sprintf("%s/eth/v2/beacon/blocks/finalized", checkpointURL))
+	if err != nil {
+		return
+	}
+
+	resByte, err = io.ReadAll(res.Body)
+	if err != nil {
+		return
+	}
+
+	err = json.Unmarshal(resByte, &slotResp)
+	if err != nil {
+		return
+	}
+
+	finalizedSlot := slotResp.Data.Message.Slot
+	res, err = http.Get(fmt.Sprintf("%s/eth/v1/beacon/blocks/%s/root", checkpointURL, finalizedSlot))
+	if err != nil {
+		return
+	}
+
+	resByte, err = io.ReadAll(res.Body)
+	if err != nil {
+		return
+	}
+
+	err = json.Unmarshal(resByte, &rootResp)
+	if err != nil {
+		return
+	}
+
+	var finalizedSlotInt int
+	finalizedSlotInt, err = strconv.Atoi(finalizedSlot)
+
+	finalizedRoot = "0x" + rootResp.Data.Root
+	epoch = finalizedSlotInt / 32
 
 	return
 }
