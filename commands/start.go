@@ -13,6 +13,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 
+	"github.com/lukso-network/tools-lukso-cli/common"
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
 	"github.com/lukso-network/tools-lukso-cli/config"
@@ -243,7 +244,7 @@ func getWeakSubjectivityCheckpoint(checkpointURL string) (finalizedRoot string, 
 	finalizedSlotInt, err = strconv.Atoi(finalizedSlot)
 
 	finalizedRoot = "0x" + rootResp.Data.Root
-	epoch = finalizedSlotInt / 32
+	epoch = finalizedSlotInt / common.SlotsPerEpoch
 
 	return
 }
