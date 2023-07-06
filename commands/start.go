@@ -3,7 +3,6 @@ package commands
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/lukso-network/tools-lukso-cli/dependencies/apitypes"
 	"io"
 	"net/http"
 	"os"
@@ -11,13 +10,13 @@ import (
 	"strings"
 	"time"
 
-	"github.com/lukso-network/tools-lukso-cli/config"
-
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
+	"github.com/lukso-network/tools-lukso-cli/config"
+	"github.com/lukso-network/tools-lukso-cli/dependencies/apitypes"
 	"github.com/lukso-network/tools-lukso-cli/dependencies/clients"
 	"github.com/lukso-network/tools-lukso-cli/flags"
 )
