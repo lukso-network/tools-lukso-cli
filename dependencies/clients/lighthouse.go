@@ -119,6 +119,15 @@ func (l *LighthouseClient) PrepareStartFlags(ctx *cli.Context) (startFlags []str
 
 	startFlags = append([]string{"bn"}, startFlags...)
 
+	isSlasher := !ctx.Bool(flags.NoSlasherFlag)
+	isValidator := ctx.Bool(flags.ValidatorFlag)
+	if isSlasher && isValidator {
+		startFlags = append(startFlags, "--slasher")
+		startFlags = append(startFlags, "--slasher-max-db-size=16")
+		startFlags = append(startFlags, "--slasher-history-length=256")
+		startFlags = append(startFlags, fmt.Sprintf("--slasher-dir=%s", ctx.String(flags.LighthouseDatadirFlag)))
+	}
+
 	return
 }
 
