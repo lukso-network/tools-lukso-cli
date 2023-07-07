@@ -313,7 +313,7 @@ var (
 		&cli.StringFlag{
 			Name:  LighthouseTagFlag,
 			Usage: "Tag for lighthouse",
-			Value: "v4.2.0",
+			Value: "v4.3.0",
 		},
 	}
 	LighthouseStartFlags = []cli.Flag{
