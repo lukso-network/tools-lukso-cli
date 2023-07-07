@@ -114,6 +114,7 @@ func updateValues(ctx *cli.Context, config networkConfig) (err error) {
 		flags.ErigonDatadirFlag:                 config.executionDatadirPath,
 		flags.PrysmDatadirFlag:                  config.consensusDatadirPath,
 		flags.ValidatorDatadirFlag:              config.validatorDatadirPath,
+		flags.LighthouseDatadirFlag:             config.consensusDatadirPath,
 		flags.LogFolderFlag:                     config.logPath,
 		flags.ValidatorKeysFlag:                 config.keysPath,
 		flags.GethConfigFileFlag:                gethToml,
