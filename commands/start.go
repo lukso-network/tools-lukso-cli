@@ -161,7 +161,7 @@ func startValidator(ctx *cli.Context) (err error) {
 	}()
 
 	validatorPasswordPath := ctx.String(flags.ValidatorWalletPasswordFileFlag)
-	if validatorPasswordPath == "" {
+	if validatorPasswordPath == "" && validatorClient == clients.PrysmValidator {
 		passwordPipe, err = utils.ReadValidatorPassword(ctx)
 		if err != nil {
 			return utils.Exit(fmt.Sprintf("❌  There was an error while reading password: %v", err), 1)
