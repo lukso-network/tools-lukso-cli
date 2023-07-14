@@ -74,8 +74,6 @@ func (client *clientBinary) Start(ctx *cli.Context, arguments []string) (err err
 	command := exec.Command(client.CommandName(), arguments...)
 
 	if client.Name() == gethDependencyName || client.Name() == erigonDependencyName {
-		log.Infof("⚙️  Running %s init...", client.Name())
-
 		err = initClient(ctx, client)
 		if err != nil && err != errors.ErrAlreadyRunning { // if it is already running it will be caught during start
 			log.Errorf("❌  There was an error while initalizing %s. Error: %v", client.Name(), err)
@@ -315,6 +313,14 @@ func (client *clientBinary) IsRunning() bool {
 }
 
 func initClient(ctx *cli.Context, client ClientBinaryDependency) (err error) {
+	if utils.FileExists(ctx.String(flags.GethDatadirFlag)) { // geth datadir is the same as erigon - no matter which client we use
+		log.Info("⚙️  Database already exists - continuing...")
+
+		return
+	}
+
+	log.Infof("⚙️  Running %s init...", client.Name())
+
 	if client.IsRunning() {
 		return errors.ErrAlreadyRunning
 	}
