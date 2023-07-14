@@ -6,17 +6,14 @@ import (
 	"io"
 	"net/http"
 	"os"
-	"strconv"
 	"strings"
 	"time"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 
-	"github.com/lukso-network/tools-lukso-cli/common"
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
-	"github.com/lukso-network/tools-lukso-cli/config"
 	"github.com/lukso-network/tools-lukso-cli/dependencies/apitypes"
 	"github.com/lukso-network/tools-lukso-cli/dependencies/clients"
 	"github.com/lukso-network/tools-lukso-cli/flags"
@@ -64,31 +61,38 @@ func StartClients(ctx *cli.Context) (err error) {
 	if ctx.Bool(flags.CheckpointSyncFlag) && !ctx.Bool(flags.DevnetFlag) {
 		log.Info("⚙️   Checkpoint sync feature enabled")
 
-		checkpointURL := config.MainnetCheckpointSyncUrl
+		network := "mainnet"
 		if ctx.Bool(flags.TestnetFlag) {
-			checkpointURL = config.TestnetCheckpointSyncUrl
+			network = "testnet"
 		}
+
+		checkpointURL := fmt.Sprintf("https://checkpoints.%s.lukso.network", network)
+		explorerURL := fmt.Sprintf("https://explorer.consensus.%s.lukso.network", network)
 
 		var (
 			root  string
 			epoch int
 		)
 
-		root, epoch, err = getWeakSubjectivityCheckpoint(checkpointURL)
+		root, epoch, err = getWeakSubjectivityCheckpoint(explorerURL)
 		if err != nil {
 			return utils.Exit(fmt.Sprintf("❌  There was an error while getting weak subjectivity checkpoint: %v", err), 1)
 		}
 
-		switch consensusClient {
-		case clients.Prysm:
-			consArgs = append(consArgs, fmt.Sprintf("--checkpoint-sync-url=%s", checkpointURL))
-			consArgs = append(consArgs, fmt.Sprintf("--genesis-beacon-api-url=%s", checkpointURL))
-			consArgs = append(consArgs, fmt.Sprintf("--weak-subjectivity-checkpoint=%s:%d", root, epoch))
-		case clients.Lighthouse:
-			consArgs = append(consArgs, fmt.Sprintf("--checkpoint-sync-url=%s", checkpointURL))
-			consArgs = append(consArgs, fmt.Sprintf("--wss-checkpoint=%s:%d", root, epoch))
-		default:
-			log.Warnf("️⚠️  Checkpoint sync not configured for %s: continuing without checkpoint sync", consensusClient.Name())
+		if root != "0x01" {
+			switch consensusClient {
+			case clients.Prysm:
+				consArgs = append(consArgs, fmt.Sprintf("--checkpoint-sync-url=%s", checkpointURL))
+				consArgs = append(consArgs, fmt.Sprintf("--genesis-beacon-api-url=%s", checkpointURL))
+				consArgs = append(consArgs, fmt.Sprintf("--weak-subjectivity-checkpoint=%s:%d", root, epoch))
+			case clients.Lighthouse:
+				consArgs = append(consArgs, fmt.Sprintf("--checkpoint-sync-url=%s", checkpointURL))
+				consArgs = append(consArgs, fmt.Sprintf("--wss-checkpoint=%s:%d", root, epoch))
+			default:
+				log.Warnf("️⚠️  Checkpoint sync not configured for %s: continuing without checkpoint sync", consensusClient.Name())
+			}
+		} else {
+			log.Warn("️⚠️  Incorrect block root fetched - continuing without checkpoint sync")
 		}
 	}
 	if ctx.Bool(flags.DevnetFlag) {
@@ -205,11 +209,10 @@ func getWeakSubjectivityCheckpoint(checkpointURL string) (finalizedRoot string, 
 		res     *http.Response
 		resByte []byte
 
-		slotResp apitypes.CheckpointFinalizedBlockResponse
-		rootResp apitypes.CheckpointFinalizedBlockRootResponse
+		apiResp apitypes.ExplorerFinalizedSlotsResponse
 	)
 
-	res, err = http.Get(fmt.Sprintf("%s/eth/v2/beacon/blocks/finalized", checkpointURL))
+	res, err = http.Get(fmt.Sprintf("%s/api/v1/epoch/finalized/slots", checkpointURL))
 	if err != nil {
 		return
 	}
@@ -219,32 +222,14 @@ func getWeakSubjectivityCheckpoint(checkpointURL string) (finalizedRoot string, 
 		return
 	}
 
-	err = json.Unmarshal(resByte, &slotResp)
+	err = json.Unmarshal(resByte, &apiResp)
 	if err != nil {
 		return
 	}
 
-	finalizedSlot := slotResp.Data.Message.Slot
-	res, err = http.Get(fmt.Sprintf("%s/eth/v1/beacon/blocks/%s/root", checkpointURL, finalizedSlot))
-	if err != nil {
-		return
-	}
-
-	resByte, err = io.ReadAll(res.Body)
-	if err != nil {
-		return
-	}
-
-	err = json.Unmarshal(resByte, &rootResp)
-	if err != nil {
-		return
-	}
-
-	var finalizedSlotInt int
-	finalizedSlotInt, err = strconv.Atoi(finalizedSlot)
-
-	finalizedRoot = "0x" + rootResp.Data.Root
-	epoch = finalizedSlotInt / common.SlotsPerEpoch
+	firstEpochSlot := apiResp.Data[0]
+	epoch = firstEpochSlot.Epoch
+	finalizedRoot = firstEpochSlot.BlockRoot
 
 	return
 }

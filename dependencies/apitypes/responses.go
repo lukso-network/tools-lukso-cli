@@ -23,3 +23,10 @@ type CheckpointFinalizedBlockRootResponse struct {
 		Root string `json:"root"`
 	} `json:"data"`
 }
+
+type ExplorerFinalizedSlotsResponse struct {
+	Data []struct {
+		Epoch     int    `json:"epoch"`
+		BlockRoot string `json:"blockroot"`
+	} `json:"data"`
+}
