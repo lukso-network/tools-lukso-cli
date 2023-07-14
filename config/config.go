@@ -14,9 +14,7 @@ import (
 )
 
 const (
-	Path                     = "./cli-config.yaml"
-	MainnetCheckpointSyncUrl = "https://checkpoints.mainnet.lukso.network/"
-	TestnetCheckpointSyncUrl = "https://checkpoints.testnet.lukso.network/"
+	Path = "./cli-config.yaml"
 )
 
 // parsePath returns a path to file, excluding file, and the file name itself.
