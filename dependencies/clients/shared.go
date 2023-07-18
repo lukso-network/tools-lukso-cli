@@ -314,7 +314,7 @@ func (client *clientBinary) IsRunning() bool {
 
 func initClient(ctx *cli.Context, client ClientBinaryDependency) (err error) {
 	if utils.FileExists(ctx.String(flags.GethDatadirFlag)) { // geth datadir is the same as erigon - no matter which client we use
-		log.Info("⚙️  Database already exists - continuing...")
+		log.Info("⚙️  Execution database already exists - continuing...")
 
 		return
 	}
