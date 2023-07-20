@@ -259,14 +259,14 @@ var (
 		&cli.StringFlag{
 			Name:  PrysmTagFlag,
 			Usage: "Tag for prysm",
-			Value: "v4.0.6",
+			Value: "v4.0.7",
 		},
 	}
 	PrysmUpdateFlags = []cli.Flag{
 		&cli.StringFlag{
 			Name:  PrysmTagFlag,
 			Usage: "Tag for prysm",
-			Value: "v4.0.6",
+			Value: "v4.0.7",
 		},
 	}
 	PrysmStartFlags = []cli.Flag{
@@ -338,14 +338,14 @@ var (
 		&cli.StringFlag{
 			Name:  ValidatorTagFlag,
 			Usage: "Tag for validator binary",
-			Value: "v4.0.6",
+			Value: "v4.0.7",
 		},
 	}
 	ValidatorUpdateFlags = []cli.Flag{
 		&cli.StringFlag{
 			Name:  ValidatorTagFlag,
 			Usage: "Tag for validator binary",
-			Value: "v4.0.6",
+			Value: "v4.0.7",
 		},
 	}
 	ValidatorStartFlags = []cli.Flag{
