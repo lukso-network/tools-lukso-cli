@@ -31,6 +31,8 @@ const (
 	ValidatorConfigFileFlag         = "validator-config"
 	ValidatorChainConfigFileFlag    = "validator-chain-config"
 
+	TekuTagFlag = "teku-tag"
+
 	MainnetFlag   = "mainnet"
 	TestnetFlag   = "testnet"
 	DevnetFlag    = "devnet"

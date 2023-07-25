@@ -32,11 +32,13 @@ const (
 	lighthouseDependencyName          = "Lighthouse"
 	lighthouseValidatorDependencyName = "Lighthouse Validator"
 	erigonDependencyName              = "Erigon"
+	tekuDependencyName                = "Teku"
 
 	gethGithubLocation          = "ethereum/go-ethereum"
 	prysmaticLabsGithubLocation = "prysmaticlabs/prysm"
 	lighthouseGithubLocation    = "sigp/lighthouse"
 	erigonGithubLocation        = "ledgerwatch/erigon"
+	tekuGithubLocation          = "Consensys/teku"
 )
 
 var (
@@ -47,6 +49,7 @@ var (
 		lighthouseDependencyName:          Lighthouse,
 		prysmValidatorDependencyName:      PrysmValidator,
 		lighthouseValidatorDependencyName: LighthouseValidator,
+		tekuDependencyName:                Teku,
 	}
 )
 
@@ -280,7 +283,7 @@ func (client *clientBinary) Install(url string, isUpdate bool) (err error) {
 
 	switch isUpdate {
 	case true:
-		log.Infof("✅  %s upadted!\n\n", client.Name())
+		log.Infof("✅  %s updated!\n\n", client.Name())
 	case false:
 		log.Infof("✅  %s downloaded!\n\n", client.Name())
 	}

@@ -41,13 +41,13 @@ func InstallBinaries(ctx *cli.Context) (err error) {
 	)
 
 	consensusMessage := "\nWhich consensus client do you want to install?\n" +
-		"1: prysm\n2: lighthouse\n> "
+		"1: prysm\n2: lighthouse\n3: teku\n> "
 
 	executionMessage := "\nWhich execution client do you want to install?\n" +
 		"1: geth\n2: erigon\n> "
 
 	consensusInput = utils.RegisterInputWithMessage(consensusMessage)
-	for consensusInput != "1" && consensusInput != "2" {
+	for consensusInput != "1" && consensusInput != "2" && consensusInput != "3" {
 		consensusInput = utils.RegisterInputWithMessage("Please provide a valid option\n> ")
 	}
 
@@ -58,7 +58,12 @@ func InstallBinaries(ctx *cli.Context) (err error) {
 	case "2":
 		selectedConsensus = clients.Lighthouse
 		consensusTag = ctx.String(flags.LighthouseTagFlag)
+	case "3":
+		selectedConsensus = clients.Teku
+		consensusTag = ctx.String(flags.TekuTagFlag)
 	}
+
+	fmt.Println(consensusTag)
 
 	executionInput = utils.RegisterInputWithMessage(executionMessage)
 	for executionInput != "1" && executionInput != "2" {
@@ -104,11 +109,15 @@ func InstallBinaries(ctx *cli.Context) (err error) {
 
 	if selectedConsensus == clients.Prysm {
 		selectedValidator = clients.PrysmValidator
-		log.Infof("⬇️  Downloading %s...", clients.PrysmValidator.Name())
-		err = clients.PrysmValidator.Install(clients.PrysmValidator.ParseUrl(consensusTag, ""), false)
+		log.Infof("⬇️  Downloading %s...", selectedValidator.Name())
+		err = selectedValidator.Install(selectedValidator.ParseUrl(consensusTag, ""), false)
 		if err != nil {
 			return utils.Exit(fmt.Sprintf("❌  There was an error while downloading validator: %v", err), 1)
 		}
+	}
+	if selectedConsensus == clients.Teku {
+		//selectedValidator = clients.TekuValidator
+		log.Infof("⬇️  Teku installation stub")
 	}
 
 	err = cfg.Create(selectedExecution.Name(), selectedConsensus.Name(), selectedValidator.Name())

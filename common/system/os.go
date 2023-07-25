@@ -12,6 +12,8 @@ const (
 	Windows = "windows"
 
 	UnixBinDir = "/usr/local/bin"
+
+	JavaHomeEnv = "JAVA_HOME"
 )
 
 var (

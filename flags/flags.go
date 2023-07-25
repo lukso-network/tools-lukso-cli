@@ -13,6 +13,7 @@ func init() {
 	InstallFlags = append(InstallFlags, PrysmDownloadFlags...)
 	InstallFlags = append(InstallFlags, ErigonDownloadFlags...)
 	InstallFlags = append(InstallFlags, LighthouseDownloadFlags...)
+	InstallFlags = append(InstallFlags, TekuDownloadFlags...)
 	InstallFlags = append(InstallFlags, AppFlags...)
 
 	UpdateFlags = append(UpdateFlags, GethUpdateFlags...)
@@ -390,6 +391,13 @@ var (
 			Usage:  "Validator datadir",
 			Value:  configs.ValidatorMainnetDatadir,
 			Hidden: true,
+		},
+	}
+	TekuDownloadFlags = []cli.Flag{
+		&cli.StringFlag{
+			Name:  TekuTagFlag,
+			Usage: "Tag for teku client",
+			Value: "23.6.2",
 		},
 	}
 )
