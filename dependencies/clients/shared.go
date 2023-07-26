@@ -33,6 +33,7 @@ const (
 	lighthouseValidatorDependencyName = "Lighthouse Validator"
 	erigonDependencyName              = "Erigon"
 	tekuDependencyName                = "Teku"
+	tekuValidatorDependencyName       = "Teku Validator"
 
 	gethGithubLocation          = "ethereum/go-ethereum"
 	prysmaticLabsGithubLocation = "prysmaticlabs/prysm"
@@ -50,6 +51,7 @@ var (
 		prysmValidatorDependencyName:      PrysmValidator,
 		lighthouseValidatorDependencyName: LighthouseValidator,
 		tekuDependencyName:                Teku,
+		tekuValidatorDependencyName:       TekuValidator,
 	}
 )
 

@@ -116,8 +116,7 @@ func InstallBinaries(ctx *cli.Context) (err error) {
 		}
 	}
 	if selectedConsensus == clients.Teku {
-		//selectedValidator = clients.TekuValidator
-		log.Infof("⬇️  Teku installation stub")
+		selectedValidator = clients.TekuValidator
 	}
 
 	err = cfg.Create(selectedExecution.Name(), selectedConsensus.Name(), selectedValidator.Name())
