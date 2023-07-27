@@ -25,6 +25,7 @@ func init() {
 	StartFlags = append(StartFlags, PrysmStartFlags...)
 	StartFlags = append(StartFlags, LighthouseStartFlags...)
 	StartFlags = append(StartFlags, ValidatorStartFlags...)
+	StartFlags = append(StartFlags, TekuStartFlags...)
 	StartFlags = append(StartFlags, NetworkFlags...)
 
 	LogsFlags = append(LogsFlags, GethLogsFlags...)
@@ -398,6 +399,13 @@ var (
 			Name:  TekuTagFlag,
 			Usage: "Tag for teku client",
 			Value: "23.6.2",
+		},
+	}
+	TekuStartFlags = []cli.Flag{
+		&cli.StringFlag{
+			Name:  TekuConfigFileFlag,
+			Usage: "Path to teku.yaml config file",
+			Value: configs.MainnetConfig + configs.TekuYamlPath,
 		},
 	}
 )

@@ -4,21 +4,26 @@ import (
 	"archive/tar"
 	"compress/gzip"
 	"fmt"
+	"github.com/lukso-network/tools-lukso-cli/common/errors"
 	"github.com/lukso-network/tools-lukso-cli/common/system"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
+	"github.com/lukso-network/tools-lukso-cli/flags"
+	"github.com/lukso-network/tools-lukso-cli/pid"
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 	"io"
 	"net/http"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
+	"time"
 )
 
 const (
-	tekuDepsFolder = "teku"        // folder in which both teku and JDK are stored
-	tekuFolder     = "teku-23.6.2" // folder in which teku is stored (in tekuDepsFolder)
-	jdkFolder      = "jdk.20.0.2"  // folder in which JDK is stored (in tekuDepsFolder)
+	tekuDepsFolder = "teku" // folder in which both teku and JDK are stored
+	tekuFolder     = "teku" // folder in which teku is stored (in tekuDepsFolder)
+	jdkFolder      = "jdk"  // folder in which JDK is stored (in tekuDepsFolder)
 	jdkInstallURL  = "https://download.java.net/java/GA/jdk20.0.2/6e380f22cbe7469fa75fb448bd903d8e/9/GPL/openjdk-20.0.2_linux-x64_bin.tar.gz"
 )
 
@@ -42,6 +47,7 @@ var Teku = NewTekuClient()
 var _ ClientBinaryDependency = &TekuClient{}
 
 func (t *TekuClient) PrepareStartFlags(ctx *cli.Context) (startFlags []string, err error) {
+	startFlags = append(startFlags, fmt.Sprintf("--config-file=%s", ctx.String(flags.TekuConfigFileFlag)))
 
 	return
 }
@@ -113,6 +119,64 @@ func (t *TekuClient) FilePath() string {
 	return tekuDepsFolder
 }
 
+func (t *TekuClient) Start(ctx *cli.Context, arguments []string) (err error) {
+	if t.IsRunning() {
+		log.Infof("🔄️  %s is already running - stopping first...", t.Name())
+
+		err = t.Stop()
+		if err != nil {
+			return
+		}
+
+		log.Infof("🛑  Stopped %s", t.Name())
+	}
+
+	command := exec.Command(fmt.Sprintf("./%s/%s/bin/teku", tekuDepsFolder, tekuFolder), arguments...)
+
+	var (
+		logFile  *os.File
+		fullPath string
+	)
+
+	logFolder := ctx.String(flags.LogFolderFlag)
+	if logFolder == "" {
+		return utils.Exit(fmt.Sprintf("%v- %s", errors.ErrFlagMissing, flags.LogFolderFlag), 1)
+	}
+
+	fullPath, err = utils.PrepareTimestampedFile(logFolder, t.CommandName())
+	if err != nil {
+		return
+	}
+
+	err = os.WriteFile(fullPath, []byte{}, 0750)
+	if err != nil {
+		return
+	}
+
+	logFile, err = os.OpenFile(fullPath, os.O_RDWR, 0750)
+	if err != nil {
+		return
+	}
+
+	command.Stdout = logFile
+	command.Stderr = logFile
+
+	log.Infof("🔄  Starting %s", t.Name())
+	err = command.Start()
+	if err != nil {
+		return
+	}
+
+	pidLocation := fmt.Sprintf("%s/%s.pid", pid.FileDir, t.CommandName())
+	err = pid.Create(pidLocation, command.Process.Pid)
+
+	time.Sleep(1 * time.Second)
+
+	log.Infof("✅  %s started!", t.Name())
+
+	return
+}
+
 func untarDir(dst string, t *tar.Reader) error {
 	for {
 		header, err := t.Next()
@@ -124,6 +188,18 @@ func untarDir(dst string, t *tar.Reader) error {
 		}
 
 		path := filepath.Join(dst, header.Name)
+
+		// for the sake of compatibility with updated versions remove the tag from the tarred file - teku/teku-xx.x.x => teku/teku, same with jdk
+		switch {
+		case strings.Contains(header.Name, tekuFolder):
+			newHeader := replaceRootFolderName(header.Name, tekuFolder)
+			path = filepath.Join(dst, newHeader)
+
+		case strings.Contains(header.Name, jdkFolder):
+			newHeader := replaceRootFolderName(header.Name, jdkFolder)
+			path = filepath.Join(dst, newHeader)
+		}
+
 		info := header.FileInfo()
 		if info.IsDir() {
 			err = os.MkdirAll(path, info.Mode())
@@ -220,4 +296,22 @@ func installAndUntarFromURL(url string) (err error) {
 	}
 
 	return
+}
+
+func replaceRootFolderName(folder, targetRootName string) (path string) {
+	splitHeader := strings.Split(folder, "/") //this assumes no / at the beginning of folder - not the case in tarred files we are interested in
+
+	switch len(splitHeader) {
+	case 0:
+		return
+	case 1:
+		return targetRootName
+	default:
+		break
+	}
+
+	strippedHeader := splitHeader[1:]
+	splitResolvedPath := append([]string{targetRootName}, strippedHeader...)
+
+	return strings.Join(splitResolvedPath, "/")
 }
