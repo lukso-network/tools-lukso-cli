@@ -63,8 +63,6 @@ func InstallBinaries(ctx *cli.Context) (err error) {
 		consensusTag = ctx.String(flags.TekuTagFlag)
 	}
 
-	fmt.Println(consensusTag)
-
 	executionInput = utils.RegisterInputWithMessage(executionMessage)
 	for executionInput != "1" && executionInput != "2" {
 		executionInput = utils.RegisterInputWithMessage("Please provide a valid option\n> ")

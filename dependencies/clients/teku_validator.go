@@ -10,8 +10,8 @@ func NewTekuValidatorClient() *TekuValidatorClient {
 	return &TekuValidatorClient{
 		&clientBinary{
 			name:           tekuValidatorDependencyName,
-			commandName:    "teku",
-			baseUrl:        "https://artifacts.consensys.net/public/teku/raw/names/teku.tar.gz/versions/|TAG|/teku-|TAG|.tar.gz",
+			commandName:    "validator_tk",
+			baseUrl:        "",
 			githubLocation: tekuGithubLocation,
 		},
 	}

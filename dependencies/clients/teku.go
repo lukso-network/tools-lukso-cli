@@ -5,6 +5,7 @@ import (
 	"compress/gzip"
 	"fmt"
 	"io"
+	"io/fs"
 	"net/http"
 	"os"
 	"os/exec"
@@ -86,7 +87,7 @@ func (t *TekuClient) Install(url string, isUpdate bool) (err error) {
 
 		input := utils.RegisterInputWithMessage(message)
 		if !strings.EqualFold(input, "y") && input != "" {
-			log.Info("❌  Aborting...")
+			log.Info("⏭️  Skipping installation...")
 
 			return
 		}
@@ -95,6 +96,17 @@ func (t *TekuClient) Install(url string, isUpdate bool) (err error) {
 		if err != nil {
 			return
 		}
+	}
+
+	permFunc := func(path string, d fs.DirEntry, err error) error {
+		err = os.Chmod(path, fs.ModePerm)
+
+		return err
+	}
+
+	err = filepath.WalkDir(tekuDepsFolder, permFunc)
+	if err != nil {
+		return
 	}
 
 	return
