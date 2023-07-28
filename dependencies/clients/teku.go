@@ -99,9 +99,7 @@ func (t *TekuClient) Install(url string, isUpdate bool) (err error) {
 	}
 
 	permFunc := func(path string, d fs.DirEntry, err error) error {
-		err = os.Chmod(path, fs.ModePerm)
-
-		return err
+		return os.Chmod(path, fs.ModePerm)
 	}
 
 	err = filepath.WalkDir(tekuDepsFolder, permFunc)
