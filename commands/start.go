@@ -108,11 +108,14 @@ func StartClients(ctx *cli.Context) (err error) {
 		return utils.Exit(fmt.Sprintf("❌  There was an error while starting %s: %v", consensusClient.Name(), err), 1)
 	}
 
-	if ctx.Bool(flags.ValidatorFlag) {
+	if ctx.Bool(flags.ValidatorFlag) && consensusClient != clients.Teku { // TODO: fully implement teku validator
 		err = startValidator(ctx)
 	}
 	if err != nil {
 		return utils.Exit(fmt.Sprintf("❌  There was an error while starting validator: %v", err), 1)
+	}
+	if ctx.Bool(flags.ValidatorFlag) && consensusClient == clients.Teku {
+		log.Warn("️⚠️  Teku validator is not supported - skipping...")
 	}
 
 	log.Info("🎉  Clients have been started. Checking status:")
