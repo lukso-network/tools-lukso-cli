@@ -82,7 +82,7 @@ func (t *TekuClient) Install(url string, isUpdate bool) (err error) {
 	if !isInstalled {
 		message := "Teku is written in Java. This means that to use it you need to have:\n" +
 			"- JDK installed on your computer\n" +
-			"- JAVA_HOME environmental variable set\n" +
+			"- JAVA_HOME environment variable set\n" +
 			"Do you want to install and set up JDK along with Teku? [Y/n]\n>"
 
 		input := utils.RegisterInputWithMessage(message)
@@ -259,7 +259,7 @@ func setupJava(jdkURL string) (err error) {
 
 	javaHomeVal := fmt.Sprintf("%s/%s/%s", luksoNodeDir, tekuDepsFolder, jdkFolder)
 
-	log.Infof("⚙️  To continue working with Teku please export the JAVA_HOME environmental variable.\n"+
+	log.Infof("⚙️  To continue working with Teku please export the JAVA_HOME environment variable.\n"+
 		"The recommended way is to add the following line:\n\n"+
 		"export JAVA_HOME=%s\n\n"+
 		"To the bash startup file of your choosing (like .bashrc)", javaHomeVal)
@@ -285,7 +285,7 @@ func installAndUntarFromURL(url string) (err error) {
 
 	if http.StatusOK != response.StatusCode {
 		return fmt.Errorf(
-			"❌  Invalid response when downloading on file URL: %s. Response code: %s",
+			"❌  Invalid response when downloading file at URL: %s. Response code: %s",
 			url,
 			response.Status,
 		)

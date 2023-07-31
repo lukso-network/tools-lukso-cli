@@ -63,7 +63,7 @@ func InitializeDirectory(ctx *cli.Context) error {
 
 	log.Info("⬇️  Downloading teku configuration files...")
 	_ = initConfigGroup(configs.TekuConfigDependencies)
-	log.Info("✅  Prysm validator configuration files downloaded!\n\n")
+	log.Info("✅  Teku configuration files downloaded!\n\n")
 
 	err := utils.CreateJwtSecret(jwtSecretPath)
 	if err != nil {
