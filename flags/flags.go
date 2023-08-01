@@ -117,7 +117,12 @@ var (
 		},
 	}
 
-	ValidatorListFlags = []cli.Flag{}
+	ValidatorListFlags = []cli.Flag{
+		&cli.StringFlag{
+			Name:  ValidatorWalletDirFlag,
+			Usage: "Path to wallet containing validators that you want to exit - this flag is required when using Prysm validator",
+		},
+	}
 	ValidatorExitFlags = []cli.Flag{
 		&cli.StringFlag{
 			Name:  KeystoreFlag,

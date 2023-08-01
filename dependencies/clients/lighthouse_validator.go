@@ -153,7 +153,19 @@ func (l *LighthouseValidatorClient) Import(ctx *cli.Context) (err error) {
 }
 
 func (l *LighthouseValidatorClient) List(ctx *cli.Context) (err error) {
-	return
+	walletDir := ctx.String(flags.ValidatorWalletDirFlag)
+	cmd := exec.Command(l.commandName, "am", "validator", "list", "--datadir", walletDir)
+
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	err = cmd.Run()
+	if err != nil {
+		return fmt.Errorf("Could not fetch imported keys within the validator wallet: %v ", err)
+	}
+
+	return nil
 }
 
 func (l *LighthouseValidatorClient) Exit(ctx *cli.Context) (err error) {
