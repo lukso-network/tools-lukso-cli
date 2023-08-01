@@ -3,8 +3,6 @@ package clients
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/lukso-network/tools-lukso-cli/common/errors"
-	"github.com/lukso-network/tools-lukso-cli/pid"
 	"golang.org/x/term"
 	"io"
 	"io/fs"
@@ -17,8 +15,10 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 
+	"github.com/lukso-network/tools-lukso-cli/common/errors"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
 	"github.com/lukso-network/tools-lukso-cli/flags"
+	"github.com/lukso-network/tools-lukso-cli/pid"
 )
 
 type TekuValidatorClient struct {
