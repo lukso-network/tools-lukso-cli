@@ -3,7 +3,6 @@ package clients
 import (
 	"encoding/json"
 	"fmt"
-	"golang.org/x/term"
 	"io"
 	"io/fs"
 	"os"
@@ -14,6 +13,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
+	"golang.org/x/term"
 
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"

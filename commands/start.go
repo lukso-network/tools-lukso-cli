@@ -151,7 +151,7 @@ func startValidator(ctx *cli.Context) (err error) {
 		}
 		validatorClient = clients.LighthouseValidator
 	case clients.Teku:
-		if !utils.FileExists(fmt.Sprintf("%s", ctx.String(flags.ValidatorKeysFlag))) { // path to imported keys
+		if !utils.FileExists(ctx.String(flags.ValidatorKeysFlag)) { // path to imported keys
 			return utils.Exit("⚠️  Validator is not initialized. Run lukso validator import to initialize your validator.", 1)
 		}
 		validatorClient = clients.TekuValidator
