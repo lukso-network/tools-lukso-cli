@@ -108,14 +108,11 @@ func StartClients(ctx *cli.Context) (err error) {
 		return utils.Exit(fmt.Sprintf("❌  There was an error while starting %s: %v", consensusClient.Name(), err), 1)
 	}
 
-	if ctx.Bool(flags.ValidatorFlag) && consensusClient != clients.Teku { // TODO: fully implement teku validator
+	if ctx.Bool(flags.ValidatorFlag) {
 		err = startValidator(ctx)
 	}
 	if err != nil {
 		return utils.Exit(fmt.Sprintf("❌  There was an error while starting validator: %v", err), 1)
-	}
-	if ctx.Bool(flags.ValidatorFlag) && consensusClient == clients.Teku {
-		log.Warn("️⚠️  Teku validator is not supported - skipping...")
 	}
 
 	log.Info("🎉  Clients have been started. Checking status:")
@@ -190,21 +187,23 @@ func startValidator(ctx *cli.Context) (err error) {
 		return utils.Exit(fmt.Sprintf("❌  There was an error while starting %s: %v", validatorClient.Name(), err), 1)
 	}
 
-	log.Info("⚙️  Please wait a few seconds while your password is being validated...")
-	time.Sleep(time.Second * 10) // should be enough
+	if validatorClient == clients.PrysmValidator {
+		log.Info("⚙️  Please wait a few seconds while your password is being validated...")
+		time.Sleep(time.Second * 10) // should be enough
 
-	logFile, err := utils.GetLastFile(ctx.String(flags.LogFolderFlag), validatorClient.CommandName())
-	if err != nil {
-		return utils.Exit(fmt.Sprintf("❌  There was an error while getting latest log file: %v", err), 1)
-	}
+		logFile, err := utils.GetLastFile(ctx.String(flags.LogFolderFlag), validatorClient.CommandName())
+		if err != nil {
+			return utils.Exit(fmt.Sprintf("❌  There was an error while getting latest log file: %v", err), 1)
+		}
 
-	logs, err := os.ReadFile(ctx.String(flags.LogFolderFlag) + "/" + logFile)
-	if err != nil {
-		return utils.Exit(fmt.Sprintf("❌  There was an error while reading log file: %v", err), 1)
-	}
+		logs, err := os.ReadFile(ctx.String(flags.LogFolderFlag) + "/" + logFile)
+		if err != nil {
+			return utils.Exit(fmt.Sprintf("❌  There was an error while reading log file: %v", err), 1)
+		}
 
-	if strings.Contains(string(logs), errors.WrongPassword) {
-		return utils.Exit("❌  Incorrect password, please restart and try again", 1)
+		if strings.Contains(string(logs), errors.WrongPassword) {
+			return utils.Exit("❌  Incorrect password, please restart and try again", 1)
+		}
 	}
 
 	return

@@ -3,12 +3,16 @@ package clients
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/lukso-network/tools-lukso-cli/common/errors"
+	"github.com/lukso-network/tools-lukso-cli/pid"
 	"golang.org/x/term"
 	"io"
 	"io/fs"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
+	"time"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
@@ -35,6 +39,71 @@ func NewTekuValidatorClient() *TekuValidatorClient {
 var TekuValidator = NewTekuValidatorClient()
 
 var _ ValidatorBinaryDependency = &TekuValidatorClient{}
+
+func (t *TekuValidatorClient) PrepareStartFlags(ctx *cli.Context) (startFlags []string, err error) {
+	startFlags = append(startFlags, fmt.Sprintf("--config-file=%s", ctx.String(flags.TekuValidatorConfigFileFlag)))
+
+	return
+}
+
+func (t *TekuValidatorClient) Start(ctx *cli.Context, arguments []string) (err error) {
+	if t.IsRunning() {
+		log.Infof("🔄️  %s is already running - stopping first...", t.Name())
+
+		err = t.Stop()
+		if err != nil {
+			return
+		}
+
+		log.Infof("🛑  Stopped %s", t.Name())
+	}
+
+	arguments = append([]string{"vc"}, arguments...)
+	command := exec.Command(fmt.Sprintf("./%s/%s/bin/teku", tekuDepsFolder, tekuFolder), arguments...)
+
+	var (
+		logFile  *os.File
+		fullPath string
+	)
+
+	logFolder := ctx.String(flags.LogFolderFlag)
+	if logFolder == "" {
+		return utils.Exit(fmt.Sprintf("%v- %s", errors.ErrFlagMissing, flags.LogFolderFlag), 1)
+	}
+
+	fullPath, err = utils.PrepareTimestampedFile(logFolder, t.CommandName())
+	if err != nil {
+		return
+	}
+
+	err = os.WriteFile(fullPath, []byte{}, 0750)
+	if err != nil {
+		return
+	}
+
+	logFile, err = os.OpenFile(fullPath, os.O_RDWR, 0750)
+	if err != nil {
+		return
+	}
+
+	command.Stdout = logFile
+	command.Stderr = logFile
+
+	log.Infof("🔄  Starting %s", t.Name())
+	err = command.Start()
+	if err != nil {
+		return
+	}
+
+	pidLocation := fmt.Sprintf("%s/%s.pid", pid.FileDir, t.CommandName())
+	err = pid.Create(pidLocation, command.Process.Pid)
+
+	time.Sleep(1 * time.Second)
+
+	log.Infof("✅  %s started!", t.Name())
+
+	return
+}
 
 func (t *TekuValidatorClient) Import(ctx *cli.Context) (err error) {
 	walletDir := ctx.String(flags.ValidatorWalletDirFlag)

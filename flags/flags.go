@@ -412,5 +412,10 @@ var (
 			Usage: "Path to teku.yaml config file",
 			Value: configs.MainnetConfig + configs.TekuYamlPath,
 		},
+		&cli.StringFlag{
+			Name:  TekuValidatorConfigFileFlag,
+			Usage: "Path to validator.yaml config file",
+			Value: configs.MainnetConfig + configs.TekuValidatorYamlPath,
+		},
 	}
 )

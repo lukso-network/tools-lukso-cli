@@ -31,15 +31,15 @@ const (
 	ValidatorConfigFileFlag         = "validator-config"
 	ValidatorChainConfigFileFlag    = "validator-chain-config"
 
-	TekuTagFlag        = "teku-tag"
-	TekuConfigFileFlag = "teku-config"
-
-	MainnetFlag   = "mainnet"
-	TestnetFlag   = "testnet"
-	DevnetFlag    = "devnet"
-	ValidatorFlag = "validator"
-	ConsensusFlag = "consensus"
-	ExecutionFlag = "execution"
+	TekuTagFlag                 = "teku-tag"
+	TekuConfigFileFlag          = "teku-config"
+	TekuValidatorConfigFileFlag = "teku-validator-config"
+	MainnetFlag                 = "mainnet"
+	TestnetFlag                 = "testnet"
+	DevnetFlag                  = "devnet"
+	ValidatorFlag               = "validator"
+	ConsensusFlag               = "consensus"
+	ExecutionFlag               = "execution"
 
 	LogFolderFlag = "logs-folder"
 
