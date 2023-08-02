@@ -2,11 +2,12 @@ package system
 
 import (
 	"bytes"
-	log "github.com/sirupsen/logrus"
 	"os/exec"
 	"runtime"
 	"strconv"
 	"strings"
+
+	log "github.com/sirupsen/logrus"
 )
 
 const (
