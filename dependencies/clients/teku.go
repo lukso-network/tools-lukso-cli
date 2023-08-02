@@ -261,7 +261,7 @@ func setupJava() (err error) {
 	}
 
 	jdkURL := strings.Replace(jdkInstallURL, "|OS|", systemOs, -1)
-	jdkURL = strings.Replace(jdkInstallURL, "|ARCH|", arch, -1)
+	jdkURL = strings.Replace(jdkURL, "|ARCH|", arch, -1)
 
 	err = installAndUntarFromURL(jdkURL)
 	if err != nil {
