@@ -227,6 +227,10 @@ func (t *TekuValidatorClient) Import(ctx *cli.Context) (err error) {
 
 func (t *TekuValidatorClient) List(ctx *cli.Context) (err error) {
 	walletDir := ctx.String(flags.ValidatorWalletDirFlag)
+	if walletDir == "" {
+		return utils.Exit("❌  Wallet directory not provided - please provide a --validator-wallet-dir flag containing your keys directory", 1)
+	}
+
 	validatorIndex := 0
 
 	walkFunc := func(path string, d fs.DirEntry, entryError error) (err error) {
@@ -268,7 +272,28 @@ func (t *TekuValidatorClient) List(ctx *cli.Context) (err error) {
 	return
 }
 
-func (t *TekuValidatorClient) Exit(ctx *cli.Context) error {
-	//TODO implement me
-	panic("implement me")
+func (t *TekuValidatorClient) Exit(ctx *cli.Context) (err error) {
+	wallet := ctx.String(flags.ValidatorWalletDirFlag)
+	if wallet == "" {
+		return utils.Exit("❌  Wallet directory not provided - please provide a --validator-wallet-dir flag containing your keys directory", 1)
+	}
+
+	if !utils.FileExists(wallet) {
+		return utils.Exit("❌  Wallet directory missing - please provide a --validator-wallet-dir flag containing your keys directory or use a network flag", 1)
+	}
+
+	args := []string{"voluntary-exit", "--validator-keys", fmt.Sprintf("%s:%s", wallet, wallet)}
+
+	exitCommand := exec.Command(fmt.Sprintf("./%s/%s/bin/teku", tekuDepsFolder, tekuFolder), args...)
+
+	exitCommand.Stdout = os.Stdout
+	exitCommand.Stderr = os.Stderr
+	exitCommand.Stdin = os.Stdin
+
+	err = exitCommand.Run()
+	if err != nil {
+		return utils.Exit(fmt.Sprintf("❌  There was an error while exiting validator: %v", err), 1)
+	}
+
+	return
 }

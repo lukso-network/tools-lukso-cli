@@ -27,7 +27,7 @@ const (
 	tekuDepsFolder = "teku" // folder in which both teku and JDK are stored
 	tekuFolder     = "teku" // folder in which teku is stored (in tekuDepsFolder)
 	jdkFolder      = "jdk"  // folder in which JDK is stored (in tekuDepsFolder)
-	jdkInstallURL  = "https://download.java.net/java/GA/jdk20.0.2/6e380f22cbe7469fa75fb448bd903d8e/9/GPL/openjdk-20.0.2_linux-x64_bin.tar.gz"
+	jdkInstallURL  = "https://download.java.net/java/GA/jdk20.0.2/6e380f22cbe7469fa75fb448bd903d8e/9/GPL/openjdk-20.0.2_|OS|-|ARCH|_bin.tar.gz"
 )
 
 type TekuClient struct {
@@ -92,7 +92,7 @@ func (t *TekuClient) Install(url string, isUpdate bool) (err error) {
 			return
 		}
 
-		err = setupJava(jdkInstallURL)
+		err = setupJava()
 		if err != nil {
 			return
 		}
@@ -242,8 +242,26 @@ func untarDir(dst string, t *tar.Reader) error {
 	return nil
 }
 
-func setupJava(jdkURL string) (err error) {
+func setupJava() (err error) {
 	log.Info("⬇️  Downloading JDK...")
+
+	var systemOs, arch string
+	switch system.Os {
+	case system.Ubuntu:
+		systemOs = "linux"
+	case system.Macos:
+		systemOs = "macos"
+	}
+
+	switch system.Arch {
+	case "x86_64":
+		arch = "x64"
+	case "aarch64":
+		arch = "aarch64"
+	}
+
+	jdkURL := strings.Replace(jdkInstallURL, "|OS|", systemOs, -1)
+	jdkURL = strings.Replace(jdkInstallURL, "|ARCH|", arch, -1)
 
 	err = installAndUntarFromURL(jdkURL)
 	if err != nil {
