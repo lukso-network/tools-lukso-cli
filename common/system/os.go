@@ -1,9 +1,12 @@
 package system
 
 import (
+	"bytes"
+	log "github.com/sirupsen/logrus"
 	"os/exec"
 	"runtime"
 	"strconv"
+	"strings"
 )
 
 const (
@@ -39,4 +42,33 @@ func IsRoot() (isRoot bool, err error) {
 	}
 
 	return false, nil
+}
+
+func GetArch() (arch string) {
+	fallback := func() {
+		log.Info("⚠️  Unknown OS detected: proceeding with x86_64 as a default arch")
+		arch = "x86_64"
+	}
+
+	switch Os {
+	case Ubuntu, Macos:
+		buf := new(bytes.Buffer)
+
+		uname := exec.Command("uname", "-m")
+		uname.Stdout = buf
+
+		err := uname.Run()
+		if err != nil {
+			fallback()
+
+			break
+		}
+
+		arch = strings.Trim(buf.String(), "\n\t ")
+
+	default:
+		fallback()
+	}
+
+	return
 }

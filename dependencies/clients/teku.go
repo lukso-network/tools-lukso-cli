@@ -253,11 +253,11 @@ func setupJava() (err error) {
 		systemOs = "macos"
 	}
 
-	switch system.Arch {
-	case "x86_64":
-		arch = "x64"
-	case "aarch64":
-		arch = "aarch64"
+	arch = system.GetArch()
+	if arch != "aarch64" && arch != "x86_64" {
+		log.Warnf("⚠️  x86_64 or aarch64 architecture is required to continue - skipping installation...")
+
+		return
 	}
 
 	jdkURL := strings.Replace(jdkInstallURL, "|OS|", systemOs, -1)
