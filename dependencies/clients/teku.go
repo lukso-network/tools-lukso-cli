@@ -27,6 +27,8 @@ const (
 	tekuDepsFolder = "teku" // folder in which both teku and JDK are stored
 	tekuFolder     = "teku" // folder in which teku is stored (in tekuDepsFolder)
 	jdkFolder      = "jdk"  // folder in which JDK is stored (in tekuDepsFolder)
+
+	tekuInstallURL = "https://artifacts.consensys.net/public/teku/raw/names/teku.tar.gz/versions/|TAG|/teku-|TAG|.tar.gz"
 	jdkInstallURL  = "https://download.java.net/java/GA/jdk20.0.2/6e380f22cbe7469fa75fb448bd903d8e/9/GPL/openjdk-20.0.2_|OS|-|ARCH|_bin.tar.gz"
 )
 
@@ -39,7 +41,7 @@ func NewTekuClient() *TekuClient {
 		&clientBinary{
 			name:           tekuDependencyName,
 			commandName:    "teku",
-			baseUrl:        "https://artifacts.consensys.net/public/teku/raw/names/teku.tar.gz/versions/|TAG|/teku-|TAG|.tar.gz",
+			baseUrl:        tekuInstallURL,
 			githubLocation: tekuGithubLocation,
 		},
 	}

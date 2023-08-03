@@ -473,6 +473,11 @@ sudo lukso validator exit --keystore "./mainnet-keystore/keystore-xxx.json"
 sudo lukso validator exit --testnet --keystore "./testnet-keystore/keystore-xxx.json"
 ```
 
+Note that each client that you use may have different exit process - you can read more about those on client's official documentation:  
+- Prysm: https://docs.prylabs.network/docs/wallet/exiting-a-validator
+- Lighthouse: https://lighthouse-book.sigmaprime.io/voluntary-exit.html
+- Teku: https://docs.teku.consensys.net/how-to/voluntarily-exit
+
 > The Lighthouse client only allows to exit one validator key at a time. In case you have plenty of keys, please generate a separate keyfolder in a different working directory using Prysm. The new keystore folder can then be used for the exit command, even if your node is running the Lighthouse consensus client.
 
 | Option                          | Description                                                                                                                        |
