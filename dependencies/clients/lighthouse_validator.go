@@ -154,7 +154,7 @@ func (l *LighthouseValidatorClient) Import(ctx *cli.Context) (err error) {
 
 func (l *LighthouseValidatorClient) List(ctx *cli.Context) (err error) {
 	walletDir := ctx.String(flags.ValidatorWalletDirFlag)
-	cmd := exec.Command(l.commandName, "am", "validator", "list", "--datadir", walletDir)
+	cmd := exec.Command(Lighthouse.CommandName(), "am", "validator", "list", "--datadir", walletDir)
 
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
