@@ -22,5 +22,15 @@ var (
 			name:     tekuTestnetChainConfigDependencyName,
 			filePath: TestnetConfig + "/" + TekuYamlPath,
 		},
+		tekuValidatorMainnetConfigDependencyName: &clientConfig{
+			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/teku/validator.toml",
+			name:     tekuValidatorMainnetConfigDependencyName,
+			filePath: MainnetConfig + "/" + TekuValidatorYamlPath,
+		},
+		tekuValidatorTestnetConfigDependencyName: &clientConfig{
+			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/teku/validator.toml",
+			name:     tekuValidatorTestnetConfigDependencyName,
+			filePath: TestnetConfig + "/" + TekuValidatorYamlPath,
+		},
 	}
 )

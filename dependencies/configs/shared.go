@@ -91,6 +91,8 @@ const (
 	validatorTestnetConfigDependencyName           = "validator testnet config"
 	lighthouseValidatorMainnetConfigDependencyName = "lighthouse validator mainnet config"
 	lighthouseValidatorTestnetConfigDependencyName = "lighthouse validator testnet config"
+	tekuValidatorMainnetConfigDependencyName       = "teku validator mainnet config"
+	tekuValidatorTestnetConfigDependencyName       = "teku validator testnet config"
 
 	tekuMainnetConfigDependencyName      = "teku mainnet config"
 	tekuTestnetConfigDependencyName      = "teku testnet config"
