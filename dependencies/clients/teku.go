@@ -50,6 +50,8 @@ var Teku = NewTekuClient()
 var _ ClientBinaryDependency = &TekuClient{}
 
 func (t *TekuClient) PrepareStartFlags(ctx *cli.Context) (startFlags []string, err error) {
+	startFlags = t.ParseUserFlags(ctx)
+
 	startFlags = append(startFlags, fmt.Sprintf("--config-file=%s", ctx.String(flags.TekuConfigFileFlag)))
 
 	return
