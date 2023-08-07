@@ -70,16 +70,9 @@ func (t *TekuClient) Install(url string, isUpdate bool) (err error) {
 		}
 	}
 
-	err = installAndUntarFromURL(url)
+	err = installAndUntarFromURL(url, t.name, isUpdate)
 	if err != nil {
 		return
-	}
-
-	switch isUpdate {
-	case true:
-		log.Infof("✅  %s updated!\n\n", t.Name())
-	case false:
-		log.Infof("✅  %s downloaded!\n\n", t.Name())
 	}
 
 	_, isInstalled := os.LookupEnv(system.JavaHomeEnv) // means that JDk is not set up
@@ -96,7 +89,7 @@ func (t *TekuClient) Install(url string, isUpdate bool) (err error) {
 			return
 		}
 
-		err = setupJava()
+		err = setupJava(isUpdate)
 		if err != nil {
 			return
 		}
@@ -246,7 +239,7 @@ func untarDir(dst string, t *tar.Reader) error {
 	return nil
 }
 
-func setupJava() (err error) {
+func setupJava(isUpdate bool) (err error) {
 	log.Info("⬇️  Downloading JDK...")
 
 	var systemOs, arch string
@@ -258,8 +251,12 @@ func setupJava() (err error) {
 	}
 
 	arch = system.GetArch()
-	if arch != "aarch64" && arch != "x86_64" {
-		log.Warnf("⚠️  x86_64 or aarch64 architecture is required to continue - skipping installation...")
+
+	if arch == "x86_64" {
+		arch = "x64"
+	}
+	if arch != "aarch64" && arch != "x64" {
+		log.Warnf("⚠️  x64 or aarch64 architecture is required to continue - defaulting ...")
 
 		return
 	}
@@ -267,7 +264,7 @@ func setupJava() (err error) {
 	jdkURL := strings.Replace(jdkInstallURL, "|OS|", systemOs, -1)
 	jdkURL = strings.Replace(jdkURL, "|ARCH|", arch, -1)
 
-	err = installAndUntarFromURL(jdkURL)
+	err = installAndUntarFromURL(jdkURL, "JDK", isUpdate)
 	if err != nil {
 		return err
 	}
@@ -289,7 +286,7 @@ func setupJava() (err error) {
 	return
 }
 
-func installAndUntarFromURL(url string) (err error) {
+func installAndUntarFromURL(url, name string, isUpdate bool) (err error) {
 	response, err := http.Get(url)
 	if nil != err {
 		return
@@ -327,6 +324,13 @@ func installAndUntarFromURL(url string) (err error) {
 	err = untarDir(Teku.FilePath(), tarReader)
 	if err != nil {
 		return
+	}
+
+	switch isUpdate {
+	case true:
+		log.Infof("✅  %s updated!\n\n", name)
+	case false:
+		log.Infof("✅  %s downloaded!\n\n", name)
 	}
 
 	return
