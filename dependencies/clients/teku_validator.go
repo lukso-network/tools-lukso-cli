@@ -110,8 +110,8 @@ func (t *TekuValidatorClient) Start(ctx *cli.Context, arguments []string) (err e
 
 func (t *TekuValidatorClient) Import(ctx *cli.Context) (err error) {
 	walletDir := ctx.String(flags.ValidatorWalletDirFlag)
-	message := fmt.Sprintf("To run Teku validator LUKSO CLI needs to prepare password file for each one of your keystores. "+
-		"Please be aware that this process will produce a lot of unencrypted password files in %s folder.\n"+
+	message := fmt.Sprintf("To run a Teku validator the LUKSO CLI needs to prepare a separate password file for each of your validator key files."+
+		"Please be aware that this process will create a lot of unencrypted password files in %s folder.\n"+
 		"Do you want to continue? [y/N]\n>", walletDir)
 
 	input := utils.RegisterInputWithMessage(message)

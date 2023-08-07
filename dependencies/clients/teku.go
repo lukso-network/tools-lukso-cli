@@ -256,7 +256,7 @@ func setupJava(isUpdate bool) (err error) {
 		arch = "x64"
 	}
 	if arch != "aarch64" && arch != "x64" {
-		log.Warnf("⚠️  x64 or aarch64 architecture is required to continue - defaulting ...")
+		log.Warnf("⚠️  x64 or aarch64 architecture is required to continue - skipping ...")
 
 		return
 	}
@@ -268,8 +268,6 @@ func setupJava(isUpdate bool) (err error) {
 	if err != nil {
 		return err
 	}
-
-	log.Info("✅  JDK downloaded!\n\n")
 
 	luksoNodeDir, err := os.Getwd()
 	if err != nil {

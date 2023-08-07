@@ -84,7 +84,7 @@ func GetLastFile(dir string, dependency string) (string, error) {
 
 	err := command.Run()
 	if err != nil {
-		log.Errorf("❌  There was an error while executing command: %s. Error: %v", commandName, err)
+		log.Error("❌  No logs for specified network. Please make sure to run lukso logs command for a correct network with --[network] flag.")
 
 		return "", err
 	}
