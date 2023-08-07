@@ -236,6 +236,10 @@ func (t *TekuValidatorClient) List(ctx *cli.Context) (err error) {
 	validatorIndex := 0
 
 	walkFunc := func(path string, d fs.DirEntry, entryError error) (err error) {
+		if d == nil {
+			return nil
+		}
+
 		if !strings.Contains(d.Name(), "json") {
 			return nil
 		}
@@ -269,6 +273,10 @@ func (t *TekuValidatorClient) List(ctx *cli.Context) (err error) {
 	err = filepath.WalkDir(walletDir, walkFunc)
 	if err != nil {
 		return
+	}
+
+	if validatorIndex == 0 {
+		log.Info("No validator keys listed. To import your validator keys run lukso validator import")
 	}
 
 	return
