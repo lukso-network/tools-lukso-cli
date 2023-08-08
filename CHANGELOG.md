@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.9.0](https://github.com/lukso-network/tools-lukso-cli/compare/v0.8.1...v0.9.0) (2023-08-08)
+
+
+### Features
+
+* disable password input when using Lighthouse ([#198](https://github.com/lukso-network/tools-lukso-cli/issues/198)) ([7ed33d3](https://github.com/lukso-network/tools-lukso-cli/commit/7ed33d398dc1c370576b1a3d19b6a154ea65c80f))
+* teku integration ([#201](https://github.com/lukso-network/tools-lukso-cli/issues/201)) ([bb65315](https://github.com/lukso-network/tools-lukso-cli/commit/bb653155f51621d39ee3805430578cf6b76fd157))
+
+
+### Bug Fixes
+
+* Implement more secure checkpointing system ([7123f4a](https://github.com/lukso-network/tools-lukso-cli/commit/7123f4a2de355c14c2f11a4e611dd9b71502b4b2))
+* Include Lighthouse to run default slasher ([9bd6550](https://github.com/lukso-network/tools-lukso-cli/commit/9bd6550097db1fd0187578e498430b7a8d4e0ec9))
+
 ## [0.8.1](https://github.com/lukso-network/tools-lukso-cli/compare/v0.8.0...v0.8.1) (2023-07-05)
 
 
