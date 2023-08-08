@@ -132,7 +132,7 @@ func setIPInConfigs() (err error) {
 
 	prysmFlagsToChange := []string{"p2p-host-ip"}
 	lighthouseFlagsToChange := []string{"enr-address"}
-
+	tekuFlagsToChange := []string{"p2p-advertised-ip"}
 	configs := []tempConfig{
 		{
 			path:          "./configs/testnet/prysm",
@@ -147,6 +147,12 @@ func setIPInConfigs() (err error) {
 			flagsToChange: lighthouseFlagsToChange,
 		},
 		{
+			path:          "./configs/testnet/teku",
+			name:          "teku",
+			fileType:      "yaml",
+			flagsToChange: tekuFlagsToChange,
+		},
+		{
 			path:          "./configs/mainnet/prysm",
 			name:          "prysm",
 			fileType:      "yaml",
@@ -157,6 +163,12 @@ func setIPInConfigs() (err error) {
 			name:          "lighthouse",
 			fileType:      "toml",
 			flagsToChange: lighthouseFlagsToChange,
+		},
+		{
+			path:          "./configs/mainnet/teku",
+			name:          "teku",
+			fileType:      "yaml",
+			flagsToChange: tekuFlagsToChange,
 		},
 	}
 
