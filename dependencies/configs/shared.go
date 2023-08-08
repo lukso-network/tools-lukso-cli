@@ -91,15 +91,25 @@ const (
 	validatorTestnetConfigDependencyName           = "validator testnet config"
 	lighthouseValidatorMainnetConfigDependencyName = "lighthouse validator mainnet config"
 	lighthouseValidatorTestnetConfigDependencyName = "lighthouse validator testnet config"
+	tekuValidatorMainnetConfigDependencyName       = "teku validator mainnet config"
+	tekuValidatorTestnetConfigDependencyName       = "teku validator testnet config"
+
+	tekuMainnetConfigDependencyName      = "teku mainnet config"
+	tekuTestnetConfigDependencyName      = "teku testnet config"
+	tekuMainnetChainConfigDependencyName = "teku mainnet chain config"
+	tekuTestnetChainConfigDependencyName = "teku testnet chain config"
 
 	ChainConfigYamlPath         = "shared/config.yaml"
+	DeployBlockPath             = "shared/deploy_block.txt"
 	GethTomlPath                = "geth/geth.toml"
 	ErigonTomlPath              = "erigon/erigon.toml"
 	PrysmYamlPath               = "prysm/prysm.yaml"
+	ValidatorYamlPath           = "prysm/validator.yaml"
 	LighthouseTomlPath          = "lighthouse/lighthouse.toml"
 	LighthouseValidatorTomlPath = "lighthouse/validator.toml"
-	DeployBlockPath             = "shared/deploy_block.txt"
-	ValidatorYamlPath           = "prysm/validator.yaml"
+	TekuYamlPath                = "teku/teku.yaml"
+	TekuValidatorYamlPath       = "teku/validator.yaml"
+	TekuChainConfigYamlPath     = "teku/config.yaml"
 )
 
 var (

@@ -114,7 +114,19 @@ func (p *PrysmValidatorClient) Import(ctx *cli.Context) (err error) {
 }
 
 func (p *PrysmValidatorClient) List(ctx *cli.Context) (err error) {
-	return
+	walletDir := ctx.String(flags.ValidatorWalletDirFlag)
+	cmd := exec.Command("validator", "accounts", "list", "--wallet-dir", walletDir)
+
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	err = cmd.Run()
+	if err != nil {
+		return fmt.Errorf("Could not fetch imported keys within the validator wallet: %v ", err)
+	}
+
+	return nil
 }
 
 func (p *PrysmValidatorClient) Exit(ctx *cli.Context) (err error) {

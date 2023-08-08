@@ -84,7 +84,7 @@ func GetLastFile(dir string, dependency string) (string, error) {
 
 	err := command.Run()
 	if err != nil {
-		log.Errorf("❌  There was an error while executing command: %s. Error: %v", commandName, err)
+		log.Error("❌  Unable to retrieve logs for specified network. Did you forget to add network flag? i.e. --testnet")
 
 		return "", err
 	}

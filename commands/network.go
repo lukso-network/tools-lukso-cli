@@ -95,6 +95,8 @@ func updateValues(ctx *cli.Context, config networkConfig) (err error) {
 		lighthouseToml          = config.configPath + "/" + configs.LighthouseTomlPath
 		lighthouseValidatorToml = config.configPath + "/" + configs.LighthouseValidatorTomlPath
 		validatorYaml           = config.configPath + "/" + configs.ValidatorYamlPath
+		tekuYaml                = config.configPath + "/" + configs.TekuYamlPath
+		tekuValidatorYaml       = config.configPath + "/" + configs.TekuValidatorYamlPath
 		gethGenesis             = config.configPath + "/" + configs.GenesisJsonPath
 		genesisState            = config.configPath + "/" + configs.GenesisStateFilePath
 		configYaml              = config.configPath + "/" + configs.ChainConfigYamlPath
@@ -123,6 +125,8 @@ func updateValues(ctx *cli.Context, config networkConfig) (err error) {
 		flags.LighthouseConfigFileFlag:          lighthouseToml,
 		flags.LighthouseValidatorConfigFileFlag: lighthouseValidatorToml,
 		flags.ValidatorConfigFileFlag:           validatorYaml,
+		flags.TekuConfigFileFlag:                tekuYaml,
+		flags.TekuValidatorConfigFileFlag:       tekuValidatorYaml,
 		flags.GenesisJsonFlag:                   gethGenesis,
 		flags.PrysmChainConfigFileFlag:          configYaml,
 		flags.ValidatorChainConfigFileFlag:      configYaml,

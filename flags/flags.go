@@ -13,6 +13,7 @@ func init() {
 	InstallFlags = append(InstallFlags, PrysmDownloadFlags...)
 	InstallFlags = append(InstallFlags, ErigonDownloadFlags...)
 	InstallFlags = append(InstallFlags, LighthouseDownloadFlags...)
+	InstallFlags = append(InstallFlags, TekuDownloadFlags...)
 	InstallFlags = append(InstallFlags, AppFlags...)
 
 	UpdateFlags = append(UpdateFlags, GethUpdateFlags...)
@@ -24,6 +25,7 @@ func init() {
 	StartFlags = append(StartFlags, PrysmStartFlags...)
 	StartFlags = append(StartFlags, LighthouseStartFlags...)
 	StartFlags = append(StartFlags, ValidatorStartFlags...)
+	StartFlags = append(StartFlags, TekuStartFlags...)
 	StartFlags = append(StartFlags, NetworkFlags...)
 
 	LogsFlags = append(LogsFlags, GethLogsFlags...)
@@ -115,7 +117,12 @@ var (
 		},
 	}
 
-	ValidatorListFlags = []cli.Flag{}
+	ValidatorListFlags = []cli.Flag{
+		&cli.StringFlag{
+			Name:  ValidatorWalletDirFlag,
+			Usage: "Path to wallet containing validators that you want to exit - this flag is required when using Prysm validator",
+		},
+	}
 	ValidatorExitFlags = []cli.Flag{
 		&cli.StringFlag{
 			Name:  KeystoreFlag,
@@ -390,6 +397,25 @@ var (
 			Usage:  "Validator datadir",
 			Value:  configs.ValidatorMainnetDatadir,
 			Hidden: true,
+		},
+	}
+	TekuDownloadFlags = []cli.Flag{
+		&cli.StringFlag{
+			Name:  TekuTagFlag,
+			Usage: "Tag for teku client",
+			Value: "23.6.2",
+		},
+	}
+	TekuStartFlags = []cli.Flag{
+		&cli.StringFlag{
+			Name:  TekuConfigFileFlag,
+			Usage: "Path to teku.yaml config file",
+			Value: configs.MainnetConfig + configs.TekuYamlPath,
+		},
+		&cli.StringFlag{
+			Name:  TekuValidatorConfigFileFlag,
+			Usage: "Path to validator.yaml config file",
+			Value: configs.MainnetConfig + configs.TekuValidatorYamlPath,
 		},
 	}
 )

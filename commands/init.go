@@ -61,6 +61,10 @@ func InitializeDirectory(ctx *cli.Context) error {
 	_ = initConfigGroup(configs.PrysmValidatorConfigDependencies)
 	log.Info("✅  Prysm validator configuration files downloaded!\n\n")
 
+	log.Info("⬇️  Downloading teku configuration files...")
+	_ = initConfigGroup(configs.TekuConfigDependencies)
+	log.Info("✅  Teku configuration files downloaded!\n\n")
+
 	err := utils.CreateJwtSecret(jwtSecretPath)
 	if err != nil {
 		return utils.Exit(fmt.Sprintf("❌  There was an error while creating JWT secret file: %v", err), 1)
