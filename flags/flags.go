@@ -189,12 +189,12 @@ var (
 		&cli.StringFlag{
 			Name:  GethTagFlag,
 			Usage: "A tag of geth you would like to run",
-			Value: "1.11.6",
+			Value: "1.12.2",
 		},
 		&cli.StringFlag{
 			Name:  GethCommitHashFlag,
 			Usage: "A hash of commit that is bound to given release tag",
-			Value: "ea9e62ca",
+			Value: "bed84606",
 		},
 	}
 
@@ -202,7 +202,7 @@ var (
 		&cli.StringFlag{
 			Name:  GethTagFlag,
 			Usage: "A tag of geth you would like to run",
-			Value: "1.11.6",
+			Value: "1.12.2",
 		},
 	}
 
@@ -246,7 +246,7 @@ var (
 		&cli.StringFlag{
 			Name:  ErigonTagFlag,
 			Usage: "Tag for erigon",
-			Value: "2.45.3",
+			Value: "2.48.1",
 		},
 	}
 	ErigonStartFlags = []cli.Flag{
@@ -266,14 +266,14 @@ var (
 		&cli.StringFlag{
 			Name:  PrysmTagFlag,
 			Usage: "Tag for prysm",
-			Value: "v4.0.7",
+			Value: "v4.0.8",
 		},
 	}
 	PrysmUpdateFlags = []cli.Flag{
 		&cli.StringFlag{
 			Name:  PrysmTagFlag,
 			Usage: "Tag for prysm",
-			Value: "v4.0.7",
+			Value: "v4.0.8",
 		},
 	}
 	PrysmStartFlags = []cli.Flag{
@@ -345,14 +345,14 @@ var (
 		&cli.StringFlag{
 			Name:  ValidatorTagFlag,
 			Usage: "Tag for validator binary",
-			Value: "v4.0.7",
+			Value: "v4.0.8",
 		},
 	}
 	ValidatorUpdateFlags = []cli.Flag{
 		&cli.StringFlag{
 			Name:  ValidatorTagFlag,
 			Usage: "Tag for validator binary",
-			Value: "v4.0.7",
+			Value: "v4.0.8",
 		},
 	}
 	ValidatorStartFlags = []cli.Flag{
@@ -403,7 +403,7 @@ var (
 		&cli.StringFlag{
 			Name:  TekuTagFlag,
 			Usage: "Tag for teku client",
-			Value: "23.6.2",
+			Value: "23.8.0",
 		},
 	}
 	TekuStartFlags = []cli.Flag{
