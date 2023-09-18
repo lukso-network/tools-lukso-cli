@@ -246,7 +246,7 @@ var (
 		&cli.StringFlag{
 			Name:  ErigonTagFlag,
 			Usage: "Tag for erigon",
-			Value: "2.48.1",
+			Value: "2.49.2",
 		},
 	}
 	ErigonStartFlags = []cli.Flag{
@@ -320,7 +320,7 @@ var (
 		&cli.StringFlag{
 			Name:  LighthouseTagFlag,
 			Usage: "Tag for lighthouse",
-			Value: "v4.3.0",
+			Value: "v4.4.1",
 		},
 	}
 	LighthouseStartFlags = []cli.Flag{
