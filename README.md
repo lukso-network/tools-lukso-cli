@@ -16,6 +16,16 @@ The LUKSO CLI is able to install multiple clients for running the node.
 - Consensus Clients: [Prysm](https://github.com/prysmaticlabs/prysm), [Lighthouse](https://github.com/sigp/lighthouse), [Teku](https://github.com/Consensys/teku)
 - Validator Staking Clients: [Prysm](https://docs.prylabs.network/docs/how-prysm-works/prysm-validator-client), [Lighthouse](https://github.com/sigp/lighthouse), [Teku](https://github.com/Consensys/teku)
 
+### Client versions
+
+| Client     | Version | Release                                                      |
+|------------|---------|--------------------------------------------------------------|
+| Geth       | v1.12.2 | https://github.com/ethereum/go-ethereum/releases/tag/v1.12.2 |
+| Erigon     | v2.48.1 | https://github.com/ledgerwatch/erigon/releases/tag/v2.48.1   |
+| Prysm      | v4.0.8  | https://github.com/prysmaticlabs/prysm/releases/tag/v4.0.8   |
+| Lighthouse | v4.3.0  | https://github.com/sigp/lighthouse/releases/tag/v4.3.0       |
+| Teku       | v23.8.0 | https://github.com/Consensys/teku/releases/tag/23.8.0        |
+
 > More clients will be added in the future.
 
 ## Supported Platforms
