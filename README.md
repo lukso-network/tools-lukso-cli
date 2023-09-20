@@ -24,7 +24,7 @@ The LUKSO CLI is able to install multiple clients for running the node.
 | Erigon     | v2.49.2 | https://github.com/ledgerwatch/erigon/releases/tag/v2.49.2   |
 | Prysm      | v4.0.8  | https://github.com/prysmaticlabs/prysm/releases/tag/v4.0.8   |
 | Lighthouse | v4.4.1  | https://github.com/sigp/lighthouse/releases/tag/v4.4.1       |
-| Teku       | v23.8.0 | https://github.com/Consensys/teku/releases/tag/23.8.0        |
+| Teku       | v23.9.0 | https://github.com/Consensys/teku/releases/tag/23.9.0        |
 
 > More clients will be added in the future.
 

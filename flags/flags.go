@@ -403,7 +403,7 @@ var (
 		&cli.StringFlag{
 			Name:  TekuTagFlag,
 			Usage: "Tag for teku client",
-			Value: "23.8.0",
+			Value: "23.9.0",
 		},
 	}
 	TekuStartFlags = []cli.Flag{
