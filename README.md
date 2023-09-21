@@ -78,6 +78,9 @@ $ lukso init
 $ lukso install
 ```
 
+DISCLAIMER: If your selected clients are Erigon+Teku you may experience difficulties with keeping your Erigon client running.
+In this case we suggest to switch from one of those clients to another one from the selection. 
+
 ### Starting the Clients
 
 Please refer to the `start` command below for more information.
