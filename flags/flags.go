@@ -189,12 +189,12 @@ var (
 		&cli.StringFlag{
 			Name:  GethTagFlag,
 			Usage: "A tag of geth you would like to run",
-			Value: "1.12.2",
+			Value: "1.13.1",
 		},
 		&cli.StringFlag{
 			Name:  GethCommitHashFlag,
 			Usage: "A hash of commit that is bound to given release tag",
-			Value: "bed84606",
+			Value: "3f40e65c",
 		},
 	}
 
@@ -202,7 +202,7 @@ var (
 		&cli.StringFlag{
 			Name:  GethTagFlag,
 			Usage: "A tag of geth you would like to run",
-			Value: "1.12.2",
+			Value: "1.13.1",
 		},
 	}
 
@@ -246,7 +246,7 @@ var (
 		&cli.StringFlag{
 			Name:  ErigonTagFlag,
 			Usage: "Tag for erigon",
-			Value: "2.48.1",
+			Value: "2.49.2",
 		},
 	}
 	ErigonStartFlags = []cli.Flag{
@@ -320,7 +320,7 @@ var (
 		&cli.StringFlag{
 			Name:  LighthouseTagFlag,
 			Usage: "Tag for lighthouse",
-			Value: "v4.3.0",
+			Value: "v4.4.1",
 		},
 	}
 	LighthouseStartFlags = []cli.Flag{
@@ -403,7 +403,7 @@ var (
 		&cli.StringFlag{
 			Name:  TekuTagFlag,
 			Usage: "Tag for teku client",
-			Value: "23.8.0",
+			Value: "23.9.0",
 		},
 	}
 	TekuStartFlags = []cli.Flag{
