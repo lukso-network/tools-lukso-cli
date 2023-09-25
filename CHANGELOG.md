@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.10.0](https://github.com/lukso-network/tools-lukso-cli/compare/v0.9.0...v0.10.0) (2023-09-25)
+
+
+### Features
+
+* Teku IP injection ([#203](https://github.com/lukso-network/tools-lukso-cli/issues/203)) ([20c0e19](https://github.com/lukso-network/tools-lukso-cli/commit/20c0e19a8ff7f48ee6823306162e431884bf87cb))
+* update client versions ([#206](https://github.com/lukso-network/tools-lukso-cli/issues/206)) ([5e9cd99](https://github.com/lukso-network/tools-lukso-cli/commit/5e9cd99473e3a26b0d45d0768bdd41f674c1bdbc))
+* Update clients ([#208](https://github.com/lukso-network/tools-lukso-cli/issues/208)) ([7894c11](https://github.com/lukso-network/tools-lukso-cli/commit/7894c111a1e4e3a5274296ec881b59eaeeda4cad))
+
+
+### Bug Fixes
+
+* Upgrade wrangler. ([#205](https://github.com/lukso-network/tools-lukso-cli/issues/205)) ([27ad3b6](https://github.com/lukso-network/tools-lukso-cli/commit/27ad3b64ddefdfcade2de478a6893b3d42263f66))
+
 ## [0.9.0](https://github.com/lukso-network/tools-lukso-cli/compare/v0.8.1...v0.9.0) (2023-08-08)
 
 
