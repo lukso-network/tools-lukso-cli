@@ -30,3 +30,7 @@ type ExplorerFinalizedSlotsResponse struct {
 		BlockRoot string `json:"blockroot"`
 	} `json:"data"`
 }
+
+type PeersJsonRpcResponse struct {
+	Result []interface{} `json:"result"` // we don't really care about what do we get from the response, number of elems is more important
+}

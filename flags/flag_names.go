@@ -50,4 +50,11 @@ const (
 	CheckpointSyncFlag          = "checkpoint-sync"
 	TransactionFeeRecipientFlag = "transaction-fee-recipient"
 	AgreeTermsFlag              = "agree-terms"
+
+	ExecutionClientHost = "execution-client-host"
+	ConsensusClientHost = "consensus-client-host"
+	ValidatorClientHost = "validator-client-host"
+	ExecutionClientPort = "execution-client-port"
+	ConsensusClientPort = "consensus-client-port"
+	ValidatorClientPort = "validator-client-port"
 )

@@ -84,3 +84,7 @@ func statClient(dependencyName, layer string) func(*cli.Context) error {
 		return nil
 	}
 }
+
+func DisplayPeers(ctx *cli.Context) (err error) {
+	return
+}

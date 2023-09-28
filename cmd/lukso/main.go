@@ -103,6 +103,14 @@ REPO: https://github.com/lukso-network/tools-lukso-cli
 			Usage:           "Shows the client processes that are currently running",
 			Action:          commands.StatClients,
 			HideHelpCommand: true,
+			Subcommands: []*cli.Command{
+				{
+					Name:   "peers",
+					Usage:  "Displays number of peers that your clients have",
+					Flags:  flags.StatusPeersFlags,
+					Action: commands.DisplayPeers,
+				},
+			},
 		},
 		{
 			Name:            "reset",

@@ -473,6 +473,12 @@ func (client *clientBinary) PrepareStartFlags(ctx *cli.Context) (startFlags []st
 	return
 }
 
+func (client *clientBinary) Peers(ctx *cli.Context) (outbound, inbound int, err error) {
+	_ = utils.Exit(fmt.Sprintf("FATAL: STATUS PEERS NOT CONFIGURED FOR %s CLIENT - PLEASE MARK THIS ISSUE TO THE LUKSO TEAM", client.Name()), 1)
+
+	return
+}
+
 func removePrefix(arg, name string) string {
 	prefix := fmt.Sprintf("--%s-", name)
 
