@@ -40,6 +40,10 @@ const (
 	lighthouseGithubLocation    = "sigp/lighthouse"
 	erigonGithubLocation        = "ledgerwatch/erigon"
 	tekuGithubLocation          = "Consensys/teku"
+
+	peerDirectionInbound  = "inbound"
+	peerDirectionOutbound = "outbound"
+	peerStateConnected    = "connected"
 )
 
 var (

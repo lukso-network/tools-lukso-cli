@@ -32,5 +32,17 @@ type ExplorerFinalizedSlotsResponse struct {
 }
 
 type PeersJsonRpcResponse struct {
-	Result []interface{} `json:"result"` // we don't really care about what do we get from the response, number of elems is more important
+	Result []struct {
+		Network struct {
+			Inbound bool `json:"inbound"`
+		} `json:"network"`
+	} `json:"result"`
+	Error interface{} `json:"error,omitempty"`
+}
+
+type PeersBeaconAPIResponse struct {
+	Data []struct {
+		State     string `json:"state"`
+		Direction string `json:"direction"`
+	} `json:"data"`
 }

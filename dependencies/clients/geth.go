@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/lukso-network/tools-lukso-cli/dependencies/apitypes"
 	"io"
 	"net/http"
 	"strings"
@@ -15,6 +14,7 @@ import (
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
 	"github.com/lukso-network/tools-lukso-cli/common/system"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
+	"github.com/lukso-network/tools-lukso-cli/dependencies/apitypes"
 	"github.com/lukso-network/tools-lukso-cli/flags"
 )
 
@@ -114,6 +114,8 @@ func (g *GethClient) Peers(ctx *cli.Context) (outbound, inbound int, err error) 
 		return
 	}
 
+	req.Header.Add("Content-Type", "application/json")
+
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return
@@ -126,8 +128,23 @@ func (g *GethClient) Peers(ctx *cli.Context) (outbound, inbound int, err error) 
 
 	peersResp := &apitypes.PeersJsonRpcResponse{}
 	err = json.Unmarshal(respBodyBytes, peersResp)
-	
-	outbound = len(peersResp.Result)
+	if err != nil {
+		return
+	}
+	if peersResp.Error != nil {
+		err = errors.ErrRpcError
+
+		return
+	}
+
+	for _, peer := range peersResp.Result {
+		switch peer.Network.Inbound {
+		case true:
+			inbound++
+		case false:
+			outbound++
+		}
+	}
 
 	return
 }

@@ -1,7 +1,11 @@
 package clients
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
+	"io"
+	"net/http"
 	"strings"
 
 	log "github.com/sirupsen/logrus"
@@ -9,6 +13,7 @@ import (
 
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
+	"github.com/lukso-network/tools-lukso-cli/dependencies/apitypes"
 	"github.com/lukso-network/tools-lukso-cli/flags"
 )
 
@@ -60,6 +65,52 @@ func (e *ErigonClient) PrepareStartFlags(ctx *cli.Context) (startFlags []string,
 
 	startFlags = e.ParseUserFlags(ctx)
 	startFlags = append(startFlags, fmt.Sprintf("--config=%s", ctx.String(flags.ErigonConfigFileFlag)))
+
+	return
+}
+
+func (e *ErigonClient) Peers(ctx *cli.Context) (outbound, inbound int, err error) {
+	host := ctx.String(flags.ExecutionClientHost)
+	port := ctx.Int(flags.ExecutionClientPort)
+	if port == 0 {
+		port = 8545 // default for LUKSO erigon config
+	}
+
+	url := fmt.Sprintf("http://%s:%d", host, port)
+
+	reqBodyBytes, err := json.Marshal(apitypes.JsonRpcRequest{
+		JsonRPC: "2.0",
+		ID:      1,
+		Method:  "admin_peers",
+		Params:  []string{},
+	})
+	if err != nil {
+		return
+	}
+
+	reqBody := bytes.NewReader(reqBodyBytes)
+
+	req, err := http.NewRequest(http.MethodGet, url, reqBody)
+	if err != nil {
+		return
+	}
+
+	req.Header.Add("Content-Type", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return
+	}
+
+	respBodyBytes, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return
+	}
+
+	peersResp := &apitypes.PeersJsonRpcResponse{}
+	err = json.Unmarshal(respBodyBytes, peersResp)
+
+	outbound = len(peersResp.Result)
 
 	return
 }
