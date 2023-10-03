@@ -109,8 +109,23 @@ func (e *ErigonClient) Peers(ctx *cli.Context) (outbound, inbound int, err error
 
 	peersResp := &apitypes.PeersJsonRpcResponse{}
 	err = json.Unmarshal(respBodyBytes, peersResp)
+	if err != nil {
+		return
+	}
+	if peersResp.Error != nil {
+		err = errors.ErrRpcError
 
-	outbound = len(peersResp.Result)
+		return
+	}
+
+	for _, peer := range peersResp.Result {
+		switch peer.Network.Inbound {
+		case true:
+			inbound++
+		case false:
+			outbound++
+		}
+	}
 
 	return
 }

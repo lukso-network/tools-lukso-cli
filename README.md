@@ -126,20 +126,21 @@ lukso-node
 
 ## Available Commands
 
-| Command                                     | Description                                                                              |
-|---------------------------------------------|------------------------------------------------------------------------------------------|
-| [`install` ](#install)                      | Installs choosen clients (Execution, Consensus, Validator) and their binary dependencies |
-| [`init`](#initialise-the-working-directory) | Initializes the working directory, it's structure, and network configuration             |
-| [`start`](#start)                           | Starts all or specific clients and connects to the specified network                     |
-| [`stop`](#stop)                             | Stops all or specific clients that are currently running                                 |
-| [`logs`](#logs)                             | Listens to and logs all events from a specific client in the current terminal window     |
-| [`status`](#status)                         | Shows the client processes that are currently running                                    |
-| [`reset`](#reset)                           | Resets all or specific client data directories and logs excluding the validator keys     |
-| [`validator import`](#validator-import)     | Import the validator keys in the wallet                                                  |
-| [`validator list`](#validator-list)         | Display the imported validator keys                                                      |
-| [`validator exit`](#validator-exit)         | Issue an exit for your validator                                                         |
-| [`version`](#version)                       | Display the version of the LUKSO CLI that is currently installed                         |
-| [`help`, `h`](#help)                        | Shows the full list of commands, global options, and their usage                         |
+| Command                                      | Description                                                                              |
+|----------------------------------------------|------------------------------------------------------------------------------------------|
+| [`install` ](#install)                       | Installs choosen clients (Execution, Consensus, Validator) and their binary dependencies |
+| [`init`](#initialise-the-working-directory)  | Initializes the working directory, it's structure, and network configuration             |
+| [`start`](#start)                            | Starts all or specific clients and connects to the specified network                     |
+| [`stop`](#stop)                              | Stops all or specific clients that are currently running                                 |
+| [`logs`](#logs)                              | Listens to and logs all events from a specific client in the current terminal window     |
+| [`status`](#status)                          | Shows the client processes that are currently running                                    |
+| [`status peers`](#status-peers)              | Shows the peer count of your node                                                        |
+| [`reset`](#reset)                            | Resets all or specific client data directories and logs excluding the validator keys     |
+| [`validator import`](#validator-import)      | Import the validator keys in the wallet                                                  |
+| [`validator list`](#validator-list)          | Display the imported validator keys                                                      |
+| [`validator exit`](#validator-exit)          | Issue an exit for your validator                                                         |
+| [`version`](#version)                        | Display the version of the LUKSO CLI that is currently installed                         |
+| [`help`, `h`](#help)                         | Shows the full list of commands, global options, and their usage                         |
 
 ## Global Help Flag
 
@@ -348,6 +349,23 @@ $ lukso logs validator --testnet
 # Shows which client processes are currently running
 $ lukso status
 ```
+
+### `status peers`
+
+#### How to get your peer count
+
+```sh
+# Shows the peer count of your node
+$ lukso status peers
+```
+
+It is important to keep in mind that the API provided by clients may not enable the peers query by default.
+Make sure that you have the right API enabled for your client when starting. For more information about each client's way of getting peers visit those links:
+- [Geth](https://geth.ethereum.org/docs/interacting-with-geth/rpc/ns-admin)
+- [Erigon](https://github.com/ledgerwatch/erigon/blob/devel/cmd/rpcdaemon/README.md#rpc-implementation-status)
+- [Consensus clients following the Beacon API standard](https://ethereum.github.io/beacon-APIs/#/Node/getPeers)
+
+Currently all consensus clients supported by the CLI follow this standard
 
 ### `reset`
 
