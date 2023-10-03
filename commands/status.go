@@ -2,12 +2,12 @@ package commands
 
 import (
 	"fmt"
-	"github.com/lukso-network/tools-lukso-cli/common/utils"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
+	"github.com/lukso-network/tools-lukso-cli/common/utils"
 	"github.com/lukso-network/tools-lukso-cli/dependencies/clients"
 	"github.com/lukso-network/tools-lukso-cli/pid"
 )
@@ -133,6 +133,4 @@ func clientPeers(ctx *cli.Context, clientName, layer string) {
 	}
 
 	log.Infof("%s (%s): Outbound: %d | Inbound: %d 🟢", layer, client.Name(), outbound, inbound)
-
-	return
 }
