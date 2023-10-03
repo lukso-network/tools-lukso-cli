@@ -365,7 +365,7 @@ Make sure that you have the right API enabled for your client when starting. For
 - [Erigon](https://github.com/ledgerwatch/erigon/blob/devel/cmd/rpcdaemon/README.md#rpc-implementation-status)
 - [Consensus clients following the Beacon API standard](https://ethereum.github.io/beacon-APIs/#/Node/getPeers)
 
-Currently all consensus clients supported by the CLI follow this standard
+Currently, all consensus clients supported by the CLI follow this standard
 
 ### `reset`
 
