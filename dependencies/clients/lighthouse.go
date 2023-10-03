@@ -2,10 +2,7 @@ package clients
 
 import (
 	"bytes"
-	"encoding/json"
 	"fmt"
-	"io"
-	"net/http"
 	"os/exec"
 	"strings"
 
@@ -14,7 +11,6 @@ import (
 
 	"github.com/lukso-network/tools-lukso-cli/common/system"
 	"github.com/lukso-network/tools-lukso-cli/config"
-	"github.com/lukso-network/tools-lukso-cli/dependencies/apitypes"
 	"github.com/lukso-network/tools-lukso-cli/flags"
 )
 
@@ -136,54 +132,7 @@ func (l *LighthouseClient) PrepareStartFlags(ctx *cli.Context) (startFlags []str
 }
 
 func (l *LighthouseClient) Peers(ctx *cli.Context) (outbound, inbound int, err error) {
-	host := ctx.String(flags.ConsensusClientHost)
-	port := ctx.Int(flags.ConsensusClientPort)
-	if port == 0 {
-		port = 4000 // default for LUKSO geth config
-	}
-
-	url := fmt.Sprintf("http://%s:%d/eth/v1/node/peers", host, port)
-	if err != nil {
-		return
-	}
-
-	req, err := http.NewRequest(http.MethodGet, url, nil)
-	if err != nil {
-		return
-	}
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return
-	}
-
-	respBodyBytes, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return
-	}
-
-	peersResp := &apitypes.PeersBeaconAPIResponse{}
-	err = json.Unmarshal(respBodyBytes, peersResp)
-	if err != nil {
-		return
-	}
-
-	for _, peer := range peersResp.Data {
-		if peer.State != peerStateConnected {
-			continue
-		}
-
-		switch peer.Direction {
-		case peerDirectionInbound:
-			inbound++
-		case peerDirectionOutbound:
-			outbound++
-		default:
-			log.Errorf("Unknown direction for %s peer", l.name)
-		}
-	}
-
-	return
+	return defaultConsensusPeers(ctx, 4000)
 }
 
 // mergeFlags takes 2 arrays of flag sets, and replaces all flags present in both with user input. Appends default otherwise

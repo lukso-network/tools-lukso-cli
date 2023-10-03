@@ -564,3 +564,113 @@ func fetchTagAndCommitHash(githubLocation string) (releaseTag, commitHash string
 
 	return
 }
+
+func defaultExecutionPeers(ctx *cli.Context, defaultPort int) (outbound, inbound int, err error) {
+	host := ctx.String(flags.ExecutionClientHost)
+	port := ctx.Int(flags.ExecutionClientPort)
+	if port == 0 {
+		port = defaultPort
+	}
+
+	url := fmt.Sprintf("http://%s:%d", host, port)
+
+	reqBodyBytes, err := json.Marshal(apitypes.JsonRpcRequest{
+		JsonRPC: "2.0",
+		ID:      1,
+		Method:  "admin_peers",
+		Params:  []string{},
+	})
+	if err != nil {
+		return
+	}
+
+	reqBody := bytes.NewReader(reqBodyBytes)
+
+	req, err := http.NewRequest(http.MethodGet, url, reqBody)
+	if err != nil {
+		return
+	}
+
+	req.Header.Add("Content-Type", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return
+	}
+
+	respBodyBytes, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return
+	}
+
+	peersResp := &apitypes.PeersJsonRpcResponse{}
+	err = json.Unmarshal(respBodyBytes, peersResp)
+	if err != nil {
+		return
+	}
+	if peersResp.Error != nil {
+		err = errors.ErrRpcError
+
+		return
+	}
+
+	for _, peer := range peersResp.Result {
+		switch peer.Network.Inbound {
+		case true:
+			inbound++
+		case false:
+			outbound++
+		}
+	}
+
+	return
+}
+
+func defaultConsensusPeers(ctx *cli.Context, defaultPort int) (outbound, inbound int, err error) {
+	host := ctx.String(flags.ConsensusClientHost)
+	port := ctx.Int(flags.ConsensusClientPort)
+	if port == 0 {
+		port = defaultPort
+	}
+
+	url := fmt.Sprintf("http://%s:%d/eth/v1/node/peers", host, port)
+	if err != nil {
+		return
+	}
+
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		return
+	}
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return
+	}
+
+	respBodyBytes, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return
+	}
+
+	peersResp := &apitypes.PeersBeaconAPIResponse{}
+	err = json.Unmarshal(respBodyBytes, peersResp)
+	if err != nil {
+		return
+	}
+
+	for _, peer := range peersResp.Data {
+		if peer.State != peerStateConnected {
+			continue
+		}
+
+		switch peer.Direction {
+		case peerDirectionInbound:
+			inbound++
+		case peerDirectionOutbound:
+			outbound++
+		}
+	}
+
+	return
+}

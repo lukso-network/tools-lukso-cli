@@ -3,7 +3,6 @@ package clients
 import (
 	"archive/tar"
 	"compress/gzip"
-	"encoding/json"
 	"fmt"
 	"io"
 	"io/fs"
@@ -20,7 +19,6 @@ import (
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
 	"github.com/lukso-network/tools-lukso-cli/common/system"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
-	"github.com/lukso-network/tools-lukso-cli/dependencies/apitypes"
 	"github.com/lukso-network/tools-lukso-cli/flags"
 	"github.com/lukso-network/tools-lukso-cli/pid"
 )
@@ -189,54 +187,7 @@ func (t *TekuClient) Start(ctx *cli.Context, arguments []string) (err error) {
 }
 
 func (t *TekuClient) Peers(ctx *cli.Context) (outbound, inbound int, err error) {
-	host := ctx.String(flags.ConsensusClientHost)
-	port := ctx.Int(flags.ConsensusClientPort)
-	if port == 0 {
-		port = 5051 // default for LUKSO teku config
-	}
-
-	url := fmt.Sprintf("http://%s:%d/eth/v1/node/peers", host, port)
-	if err != nil {
-		return
-	}
-
-	req, err := http.NewRequest(http.MethodGet, url, nil)
-	if err != nil {
-		return
-	}
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return
-	}
-
-	respBodyBytes, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return
-	}
-
-	peersResp := &apitypes.PeersBeaconAPIResponse{}
-	err = json.Unmarshal(respBodyBytes, peersResp)
-	if err != nil {
-		return
-	}
-
-	for _, peer := range peersResp.Data {
-		if peer.State != peerStateConnected {
-			continue
-		}
-
-		switch peer.Direction {
-		case peerDirectionInbound:
-			inbound++
-		case peerDirectionOutbound:
-			outbound++
-		default:
-			log.Errorf("Unknown direction for %s peer", t.name)
-		}
-	}
-
-	return
+	return defaultConsensusPeers(ctx, 5051)
 }
 
 func untarDir(dst string, t *tar.Reader) error {
