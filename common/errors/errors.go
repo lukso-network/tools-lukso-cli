@@ -13,6 +13,7 @@ var (
 	ErrValidatorNotImported = errors.New("Validator has not been initialized - use 'lukso validator import' to initialize your validator ")
 	ErrClientNotSupported   = errors.New("❌  Client found in LUKSO configuration file is not supported - if you think it is please contact LUKSO team")
 	ErrGenesisNotFound      = errors.New("❌  Genesis JSON not found")
+	ErrRpcError             = errors.New("❌  RPC returned error")
 	ErrOlderFolderDetected  = errors.New(`❌  This node directory is not supported by your CLI version. To continue working with the CLI do the following:
 
 1. 🪦  If your node clients are still running, please stop the related processes by executing 'sudo pkill geth' (Geth), 'sudo pkill prysm' (Prysm), 'sudo pkill validator' (Prysm Validator), 'sudo pkill erigon' (Erigon), or 'sudo pkill lighthouse' (Lighthouse).

@@ -186,6 +186,10 @@ func (t *TekuClient) Start(ctx *cli.Context, arguments []string) (err error) {
 	return
 }
 
+func (t *TekuClient) Peers(ctx *cli.Context) (outbound, inbound int, err error) {
+	return defaultConsensusPeers(ctx, 5051)
+}
+
 func untarDir(dst string, t *tar.Reader) error {
 	for {
 		header, err := t.Next()

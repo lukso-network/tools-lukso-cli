@@ -82,3 +82,7 @@ func (g *GethClient) PrepareStartFlags(ctx *cli.Context) (startFlags []string, e
 
 	return
 }
+
+func (g *GethClient) Peers(ctx *cli.Context) (outbound, inbound int, err error) {
+	return defaultExecutionPeers(ctx, 8545)
+}

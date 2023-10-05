@@ -43,6 +43,9 @@ type ClientBinaryDependency interface {
 
 	// FilePath returns path to installed binary
 	FilePath() string
+
+	// Peers prints to console how many peers does the client have
+	Peers(ctx *cli.Context) (outbound int, inbound int, err error)
 }
 
 type ValidatorBinaryDependency interface {

@@ -131,6 +131,10 @@ func (l *LighthouseClient) PrepareStartFlags(ctx *cli.Context) (startFlags []str
 	return
 }
 
+func (l *LighthouseClient) Peers(ctx *cli.Context) (outbound, inbound int, err error) {
+	return defaultConsensusPeers(ctx, 4000)
+}
+
 // mergeFlags takes 2 arrays of flag sets, and replaces all flags present in both with user input. Appends default otherwise
 func mergeFlags(userFlags, configFlags []string) (startFlags []string) {
 	for cfgI, configArg := range configFlags {

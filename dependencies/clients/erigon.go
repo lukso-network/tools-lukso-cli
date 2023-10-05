@@ -63,3 +63,7 @@ func (e *ErigonClient) PrepareStartFlags(ctx *cli.Context) (startFlags []string,
 
 	return
 }
+
+func (e *ErigonClient) Peers(ctx *cli.Context) (outbound, inbound int, err error) {
+	return defaultExecutionPeers(ctx, 8545)
+}

@@ -64,3 +64,7 @@ func (p *PrysmClient) PrepareStartFlags(ctx *cli.Context) (startFlags []string, 
 
 	return
 }
+
+func (p *PrysmClient) Peers(ctx *cli.Context) (outbound, inbound int, err error) {
+	return defaultConsensusPeers(ctx, 3500)
+}

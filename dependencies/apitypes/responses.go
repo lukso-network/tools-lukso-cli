@@ -30,3 +30,19 @@ type ExplorerFinalizedSlotsResponse struct {
 		BlockRoot string `json:"blockroot"`
 	} `json:"data"`
 }
+
+type PeersJsonRpcResponse struct {
+	Result []struct {
+		Network struct {
+			Inbound bool `json:"inbound"`
+		} `json:"network"`
+	} `json:"result"`
+	Error interface{} `json:"error,omitempty"`
+}
+
+type PeersBeaconAPIResponse struct {
+	Data []struct {
+		State     string `json:"state"`
+		Direction string `json:"direction"`
+	} `json:"data"`
+}
