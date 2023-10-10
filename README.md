@@ -359,13 +359,11 @@ $ lukso status
 $ lukso status peers
 ```
 
-It is important to keep in mind that the API provided by clients may not enable the peers query by default.
-Make sure that you have the right API enabled for your client when starting. For more information about each client's way of getting peers visit those links:
-- [Geth](https://geth.ethereum.org/docs/interacting-with-geth/rpc/ns-admin)
-- [Erigon](https://github.com/ledgerwatch/erigon/blob/devel/cmd/rpcdaemon/README.md#rpc-implementation-status)
-- [Consensus clients following the Beacon API standard](https://ethereum.github.io/beacon-APIs/#/Node/getPeers)
+Ensure that the appropriate API is enabled when starting the node, as not all clients enable peer querying by default. For specific information about each client's peers queries, visit their documentation:
+- [Geth Peer Interaction](https://geth.ethereum.org/docs/interacting-with-geth/rpc/ns-admin)
+- [Erigon Peer Commands](https://github.com/ledgerwatch/erigon/blob/devel/cmd/rpcdaemon/README.md#rpc-implementation-status)
 
-Currently, all consensus clients supported by the CLI follow this standard
+All supported consensus clients follow the [Beacon API](https://ethereum.github.io/beacon-APIs/#/Node/getPeers) standardization.
 
 ### `reset`
 
