@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.11.0](https://github.com/lukso-network/tools-lukso-cli/compare/v0.10.0...v0.11.0) (2023-10-10)
+
+
+### Features
+
+* peers command ([#209](https://github.com/lukso-network/tools-lukso-cli/issues/209)) ([322ddaf](https://github.com/lukso-network/tools-lukso-cli/commit/322ddaf57608c32c27568f6091576e4f4009f372))
+
 ## [0.10.0](https://github.com/lukso-network/tools-lukso-cli/compare/v0.9.0...v0.10.0) (2023-09-25)
 
 
