@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.12.0](https://github.com/lukso-network/tools-lukso-cli/compare/v0.11.0...v0.12.0) (2023-10-10)
+
+
+### Features
+
+* peers command ([#209](https://github.com/lukso-network/tools-lukso-cli/issues/209)) ([322ddaf](https://github.com/lukso-network/tools-lukso-cli/commit/322ddaf57608c32c27568f6091576e4f4009f372))
+
+
+### Bug Fixes
+
+* Create empty commit to kick off release ([#213](https://github.com/lukso-network/tools-lukso-cli/issues/213)) ([d53660d](https://github.com/lukso-network/tools-lukso-cli/commit/d53660d3a4b733bbf9bd5ad813478f1abbf34858))
+* empty commit ([#217](https://github.com/lukso-network/tools-lukso-cli/issues/217)) ([83d6124](https://github.com/lukso-network/tools-lukso-cli/commit/83d61240eb11e905590ab12426e902d17d13fa38))
+
 ## [0.10.0](https://github.com/lukso-network/tools-lukso-cli/compare/v0.9.0...v0.10.0) (2023-09-25)
 
 
