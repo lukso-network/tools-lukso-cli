@@ -1,10 +1,7 @@
 package commands
 
 import (
-	"encoding/json"
 	"fmt"
-	"io"
-	"net/http"
 	"os"
 	"strings"
 	"time"
@@ -14,7 +11,6 @@ import (
 
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
-	"github.com/lukso-network/tools-lukso-cli/dependencies/apitypes"
 	"github.com/lukso-network/tools-lukso-cli/dependencies/clients"
 	"github.com/lukso-network/tools-lukso-cli/flags"
 )
@@ -67,32 +63,15 @@ func StartClients(ctx *cli.Context) (err error) {
 		}
 
 		checkpointURL := fmt.Sprintf("https://checkpoints.%s.lukso.network", network)
-		explorerURL := fmt.Sprintf("https://explorer.consensus.%s.lukso.network", network)
 
-		var (
-			root  string
-			epoch int
-		)
-
-		root, epoch, err = getWeakSubjectivityCheckpoint(explorerURL)
-		if err != nil {
-			return utils.Exit(fmt.Sprintf("❌  There was an error while getting weak subjectivity checkpoint: %v", err), 1)
-		}
-
-		if root != "0x01" {
-			switch consensusClient {
-			case clients.Prysm:
-				consArgs = append(consArgs, fmt.Sprintf("--checkpoint-sync-url=%s", checkpointURL))
-				consArgs = append(consArgs, fmt.Sprintf("--genesis-beacon-api-url=%s", checkpointURL))
-				consArgs = append(consArgs, fmt.Sprintf("--weak-subjectivity-checkpoint=%s:%d", root, epoch))
-			case clients.Lighthouse:
-				consArgs = append(consArgs, fmt.Sprintf("--checkpoint-sync-url=%s", checkpointURL))
-				consArgs = append(consArgs, fmt.Sprintf("--wss-checkpoint=%s:%d", root, epoch))
-			default:
-				log.Warnf("️⚠️  Checkpoint sync not configured for %s: continuing without checkpoint sync", consensusClient.Name())
-			}
-		} else {
-			log.Warn("️⚠️  Incorrect block root fetched - continuing without checkpoint sync")
+		switch consensusClient {
+		case clients.Prysm:
+			consArgs = append(consArgs, fmt.Sprintf("--checkpoint-sync-url=%s", checkpointURL))
+			consArgs = append(consArgs, fmt.Sprintf("--genesis-beacon-api-url=%s", checkpointURL))
+		case clients.Lighthouse:
+			consArgs = append(consArgs, fmt.Sprintf("--checkpoint-sync-url=%s", checkpointURL))
+		default:
+			log.Warnf("️⚠️  Checkpoint sync not configured for %s: continuing without checkpoint sync", consensusClient.Name())
 		}
 	}
 	if ctx.Bool(flags.DevnetFlag) {
@@ -205,38 +184,6 @@ func startValidator(ctx *cli.Context) (err error) {
 			return utils.Exit("❌  Incorrect password, please restart and try again", 1)
 		}
 	}
-
-	return
-}
-
-func getWeakSubjectivityCheckpoint(checkpointURL string) (finalizedRoot string, epoch int, err error) {
-	checkpointURL = strings.TrimRight(checkpointURL, "/")
-
-	var (
-		res     *http.Response
-		resByte []byte
-
-		apiResp apitypes.ExplorerFinalizedSlotsResponse
-	)
-
-	res, err = http.Get(fmt.Sprintf("%s/api/v1/epoch/finalized/slots", checkpointURL))
-	if err != nil {
-		return
-	}
-
-	resByte, err = io.ReadAll(res.Body)
-	if err != nil {
-		return
-	}
-
-	err = json.Unmarshal(resByte, &apiResp)
-	if err != nil {
-		return
-	}
-
-	firstEpochSlot := apiResp.Data[0]
-	epoch = firstEpochSlot.Epoch
-	finalizedRoot = firstEpochSlot.BlockRoot
 
 	return
 }
