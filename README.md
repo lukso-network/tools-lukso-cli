@@ -19,7 +19,7 @@ The LUKSO CLI is able to install multiple clients for running the node.
 ### Client versions
 
 | Client     | Version | Release                                                      |
-|------------|---------|--------------------------------------------------------------|
+| ---------- | ------- | ------------------------------------------------------------ |
 | Geth       | v1.13.1 | https://github.com/ethereum/go-ethereum/releases/tag/v1.13.1 |
 | Erigon     | v2.49.2 | https://github.com/ledgerwatch/erigon/releases/tag/v2.49.2   |
 | Prysm      | v4.0.8  | https://github.com/prysmaticlabs/prysm/releases/tag/v4.0.8   |
@@ -126,27 +126,27 @@ lukso-node
 
 ## Available Commands
 
-| Command                                      | Description                                                                              |
-|----------------------------------------------|------------------------------------------------------------------------------------------|
-| [`install` ](#install)                       | Installs choosen clients (Execution, Consensus, Validator) and their binary dependencies |
-| [`init`](#initialise-the-working-directory)  | Initializes the working directory, it's structure, and network configuration             |
-| [`start`](#start)                            | Starts all or specific clients and connects to the specified network                     |
-| [`stop`](#stop)                              | Stops all or specific clients that are currently running                                 |
-| [`logs`](#logs)                              | Listens to and logs all events from a specific client in the current terminal window     |
-| [`status`](#status)                          | Shows the client processes that are currently running                                    |
-| [`status peers`](#status-peers)              | Shows the peer count of your node                                                        |
-| [`reset`](#reset)                            | Resets all or specific client data directories and logs excluding the validator keys     |
-| [`validator import`](#validator-import)      | Import the validator keys in the wallet                                                  |
-| [`validator list`](#validator-list)          | Display the imported validator keys                                                      |
-| [`validator exit`](#validator-exit)          | Issue an exit for your validator                                                         |
-| [`version`](#version)                        | Display the version of the LUKSO CLI that is currently installed                         |
-| [`help`, `h`](#help)                         | Shows the full list of commands, global options, and their usage                         |
+| Command                                     | Description                                                                              |
+| ------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| [`install` ](#install)                      | Installs choosen clients (Execution, Consensus, Validator) and their binary dependencies |
+| [`init`](#initialise-the-working-directory) | Initializes the working directory, it's structure, and network configuration             |
+| [`start`](#start)                           | Starts all or specific clients and connects to the specified network                     |
+| [`stop`](#stop)                             | Stops all or specific clients that are currently running                                 |
+| [`logs`](#logs)                             | Listens to and logs all events from a specific client in the current terminal window     |
+| [`status`](#status)                         | Shows the client processes that are currently running                                    |
+| [`status peers`](#status-peers)             | Shows the peer count of your node                                                        |
+| [`reset`](#reset)                           | Resets all or specific client data directories and logs excluding the validator keys     |
+| [`validator import`](#validator-import)     | Import the validator keys in the wallet                                                  |
+| [`validator list`](#validator-list)         | Display the imported validator keys                                                      |
+| [`validator exit`](#validator-exit)         | Issue an exit for your validator                                                         |
+| [`version`](#version)                       | Display the version of the LUKSO CLI that is currently installed                         |
+| [`help`, `h`](#help)                        | Shows the full list of commands, global options, and their usage                         |
 
 ## Global Help Flag
 
-| Flag         | Description                                                   |
-|--------------| ------------------------------------------------------------- |
-| --help, -h   | Can be added before or after a command to show it's help page |
+| Flag       | Description                                                   |
+| ---------- | ------------------------------------------------------------- |
+| --help, -h | Can be added before or after a command to show it's help page |
 
 ## Examples and Explanations
 
@@ -240,6 +240,7 @@ $ lukso start --checkpoint-sync
 # Testnet Checkpoint Sync for Consensus Client
 $ lukso start --testnet --checkpoint-sync
 ```
+
 LUKSO CLI takes advantage of a weak subjectivity checkpoint flag (varies across different clients) that allows you to specify a weak subjectivity checkpoint.
 With this flag specified, your beacon node will ensure that it reconstructs a historical chain that matches the checkpoint root at the given epoch.
 This can offer the same level of weak subjectivity protection that checkpoint sync offers.
@@ -247,12 +248,18 @@ The CLI will automatically retrieve the latest finalized values to use with this
 
 ##### Checkpoints with LUKSO CLI version 0.7 or below
 
+Visit the [Mainnet Checkpoint Explorer](https://checkpoints.mainnet.lukso.network/) and get the latest block root and epoch. Then input both values into the flags below.
+
 ```sh
 # Mainnet Checkpoint for Prysm Consensus Client
-$ lukso start --prysm-checkpoint-sync-url=https://checkpoints.mainnet.lukso.network
+$ lukso start --prysm-checkpoint-sync-url=https://checkpoints.mainnet.lukso.network \
+--prysm-genesis-beacon-api-url=https://checkpoints.mainnet.lukso.network/ \
+--prysm-weak-subjectivity-checkpoint=$<BLOCK_ROOT>:$<EPOCH>
 
 # Mainnet Checkpoint for Lighthouse Consensus Client
-$ lukso start --lighthouse-checkpoint-sync-url=https://checkpoints.mainnet.lukso.network
+$ lukso start --lighthouse-checkpoint-sync-url=https://checkpoints.mainnet.lukso.network \
+--lighthouse-genesis-beacon-api-url=https://checkpoints.mainnet.lukso.network/ \
+--lighthouse-weak-subjectivity-checkpoint=$<BLOCK_ROOT>:$<EPOCH>
 
 # Testnet Checkpoint for Prysm Consensus Client
 $ lukso start --testnet --prysm-checkpoint-sync-url=https://checkpoints.testnet.lukso.network
@@ -263,34 +270,34 @@ $ lukso start --testnet --lighthouse-checkpoint-sync-url=https://checkpoints.tes
 
 #### Options for `start`
 
-| Option                                   | Description                                                                                                                                           |
-|------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **NETWORK**                              |                                                                                                                                                       |
-| --mainnet                                | Starts the LUKSO node with mainnet data [default] (./configs/mainnet)                                                                                 |
-| --testnet                                | Starts the LUKSO node with testnet data (./configs/tesnet)                                                                                            |
-| --devnet                                 | Starts the LUKSO node with devnet data (./configs/devnet)                                                                                             |
-| **VALIDATOR**                            |                                                                                                                                                       |
-| --validator                              | Starts the validator client                                                                                                                           |
-| --validator-keys [string]                | Directory of the validator keys (default: "./\[network_type\]-keystore")                                                                              |
-| --validator-wallet-password [string]     | Location of password file that you used for generated validator keys                                                                                  |
-| --validator-config [string]              | Path to prysms validator.yaml config file                                                                                                             |
-| --transaction-fee-recipient [string]     | The address that receives block reward from transactions (required for --validator flag)                                                              |
-| --genesis-json [string]                  | The path to genesis JSON file                                                                                                                         |
-| --genesis-ssz [string]                   | The path to genesis SSZ file                                                                                                                          |
-| --no-slasher                             | Disables slasher                                                                                                                                      |
-| **CLIENT OPTIONS**                       |                                                                                                                                                       |
-| --logs-folder [string]                   | Sets up a custom logs directory (default: "./\[network_type\]-logs")                                                                                  |
-| --geth-config [string]                   | Defines the path to geth TOML config file                                                                                                             |
-| --prysm-config [string]                  | Defines the path to prysm YAML config file                                                                                                            |
-| --erigon-config [string]                 | Defines the path to erigon TOML config file                                                                                                           |
-| --teku-config [string]                   | Defines the path to teku YAML config file                                                                                                             |
-| --validator-config [string]              | Defines the path to teku validator YAML config file                                                                                                   |
-| --geth-[command]                         | The `command` will be passed to the Geth client. [See the client docs for details](https://geth.ethereum.org/docs/fundamentals/command-line-options)  |
-| --prysm-[command]                        | The `command` will be passed to the Prysm client. [See the client docs for details](https://docs.prylabs.network/docs/prysm-usage/parameters)         |
-| --lighhouse-[command]                    | The `command` will be passed to the Lighthouse client. [See the client docs for details](https://lighthouse-book.sigmaprime.io/advanced-datadir.html) |
-| --erigon-[command]                       | The `command` will be passed to the Erigon client. [See the client docs for details](https://github.com/ledgerwatch/erigon)                           |
-| --teku-[command]                         | The `command` will be passed to the Teku client. [See the client docs for details](https://github.com/ledgerwatch/erigon)                             |
-| --checkpoint-sync                        | Run a node with checkpoint sync feature                                                                                                               |
+| Option                               | Description                                                                                                                                           |
+| ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **NETWORK**                          |                                                                                                                                                       |
+| --mainnet                            | Starts the LUKSO node with mainnet data [default] (./configs/mainnet)                                                                                 |
+| --testnet                            | Starts the LUKSO node with testnet data (./configs/tesnet)                                                                                            |
+| --devnet                             | Starts the LUKSO node with devnet data (./configs/devnet)                                                                                             |
+| **VALIDATOR**                        |                                                                                                                                                       |
+| --validator                          | Starts the validator client                                                                                                                           |
+| --validator-keys [string]            | Directory of the validator keys (default: "./\[network_type\]-keystore")                                                                              |
+| --validator-wallet-password [string] | Location of password file that you used for generated validator keys                                                                                  |
+| --validator-config [string]          | Path to prysms validator.yaml config file                                                                                                             |
+| --transaction-fee-recipient [string] | The address that receives block reward from transactions (required for --validator flag)                                                              |
+| --genesis-json [string]              | The path to genesis JSON file                                                                                                                         |
+| --genesis-ssz [string]               | The path to genesis SSZ file                                                                                                                          |
+| --no-slasher                         | Disables slasher                                                                                                                                      |
+| **CLIENT OPTIONS**                   |                                                                                                                                                       |
+| --logs-folder [string]               | Sets up a custom logs directory (default: "./\[network_type\]-logs")                                                                                  |
+| --geth-config [string]               | Defines the path to geth TOML config file                                                                                                             |
+| --prysm-config [string]              | Defines the path to prysm YAML config file                                                                                                            |
+| --erigon-config [string]             | Defines the path to erigon TOML config file                                                                                                           |
+| --teku-config [string]               | Defines the path to teku YAML config file                                                                                                             |
+| --validator-config [string]          | Defines the path to teku validator YAML config file                                                                                                   |
+| --geth-[command]                     | The `command` will be passed to the Geth client. [See the client docs for details](https://geth.ethereum.org/docs/fundamentals/command-line-options)  |
+| --prysm-[command]                    | The `command` will be passed to the Prysm client. [See the client docs for details](https://docs.prylabs.network/docs/prysm-usage/parameters)         |
+| --lighhouse-[command]                | The `command` will be passed to the Lighthouse client. [See the client docs for details](https://lighthouse-book.sigmaprime.io/advanced-datadir.html) |
+| --erigon-[command]                   | The `command` will be passed to the Erigon client. [See the client docs for details](https://github.com/ledgerwatch/erigon)                           |
+| --teku-[command]                     | The `command` will be passed to the Teku client. [See the client docs for details](https://github.com/ledgerwatch/erigon)                             |
+| --checkpoint-sync                    | Run a node with checkpoint sync feature                                                                                                               |
 
 ### `stop`
 
@@ -360,6 +367,7 @@ $ lukso status peers
 ```
 
 Ensure that the appropriate API is enabled when starting the node, as not all clients enable peer querying by default. For specific information about each client's peers queries, visit their documentation:
+
 - [Geth Peer Interaction](https://geth.ethereum.org/docs/interacting-with-geth/rpc/ns-admin)
 - [Erigon Peer Commands](https://github.com/ledgerwatch/erigon/blob/devel/cmd/rpcdaemon/README.md#rpc-implementation-status)
 
@@ -499,7 +507,8 @@ sudo lukso validator exit --keystore "./mainnet-keystore/keystore-xxx.json"
 sudo lukso validator exit --testnet --keystore "./testnet-keystore/keystore-xxx.json"
 ```
 
-Note that each client that you use may have different exit process - you can read more about those on client's official documentation:  
+Note that each client that you use may have different exit process - you can read more about those on client's official documentation:
+
 - Prysm: https://docs.prylabs.network/docs/wallet/exiting-a-validator
 - Lighthouse: https://lighthouse-book.sigmaprime.io/voluntary-exit.html
 - Teku: https://docs.teku.consensys.net/how-to/voluntarily-exit
