@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.13.0](https://github.com/lukso-network/tools-lukso-cli/compare/v0.12.0...v0.13.0) (2023-11-06)
+
+
+### Features
+
+* prettier + updated checkpoint commands ([733f9d9](https://github.com/lukso-network/tools-lukso-cli/commit/733f9d91e409c16fefea5b02d596120b3b5dc5c6))
+
+
+### Bug Fixes
+
+* Add fee recipient to teku consensus ([#223](https://github.com/lukso-network/tools-lukso-cli/issues/223)) ([acfafd8](https://github.com/lukso-network/tools-lukso-cli/commit/acfafd819a3f2a578ec7affc77366307646c9bcc))
+* remove wss flags ([#222](https://github.com/lukso-network/tools-lukso-cli/issues/222)) ([82656cf](https://github.com/lukso-network/tools-lukso-cli/commit/82656cf8c7042bf0bb345d7e97ab9f46da1b15ac))
+
 ## [0.12.0](https://github.com/lukso-network/tools-lukso-cli/compare/v0.11.0...v0.12.0) (2023-10-10)
 
 
