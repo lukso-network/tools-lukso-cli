@@ -55,6 +55,9 @@ func (t *TekuClient) PrepareStartFlags(ctx *cli.Context) (startFlags []string, e
 	startFlags = t.ParseUserFlags(ctx)
 
 	startFlags = append(startFlags, fmt.Sprintf("--config-file=%s", ctx.String(flags.TekuConfigFileFlag)))
+	if ctx.String(flags.TransactionFeeRecipientFlag) != "" {
+		startFlags = append(startFlags, fmt.Sprintf("--validators-proposer-default-fee-recipient=%s", ctx.String(flags.TransactionFeeRecipientFlag)))
+	}
 
 	return
 }
