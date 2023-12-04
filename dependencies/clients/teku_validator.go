@@ -240,7 +240,8 @@ func (t *TekuValidatorClient) List(ctx *cli.Context) (err error) {
 			return nil
 		}
 
-		if !strings.Contains(d.Name(), "json") {
+		keystoreExt := filepath.Ext(d.Name())
+		if !strings.Contains(keystoreExt, "json") {
 			return nil
 		}
 
