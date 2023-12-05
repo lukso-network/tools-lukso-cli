@@ -59,7 +59,7 @@ func init() {
 const (
 	gethTag        = "1.13.5"
 	erigonTag      = "2.55.0"
-	prysmTag       = "v4.1.1"
+	prysmTag       = "v4.0.8"
 	lighthouseTag  = "v4.5.0"
 	tekuTag        = "23.11.0"
 	gethCommitHash = "916d6a44"
