@@ -56,6 +56,15 @@ func init() {
 	ValidatorExitFlags = append(ValidatorExitFlags, NetworkFlags...)
 }
 
+const (
+	gethTag        = "1.13.5"
+	erigonTag      = "2.55.0"
+	prysmTag       = "v4.1.1"
+	lighthouseTag  = "v4.5.0"
+	tekuTag        = "23.11.0"
+	gethCommitHash = "916d6a44"
+)
+
 var (
 	mainnetEnabledFlag = &cli.BoolFlag{
 		Name:  MainnetFlag,
@@ -218,12 +227,12 @@ var (
 		&cli.StringFlag{
 			Name:  GethTagFlag,
 			Usage: "A tag of geth you would like to run",
-			Value: "1.13.1",
+			Value: gethTag,
 		},
 		&cli.StringFlag{
 			Name:  GethCommitHashFlag,
 			Usage: "A hash of commit that is bound to given release tag",
-			Value: "3f40e65c",
+			Value: gethCommitHash,
 		},
 	}
 
@@ -231,7 +240,7 @@ var (
 		&cli.StringFlag{
 			Name:  GethTagFlag,
 			Usage: "A tag of geth you would like to run",
-			Value: "1.13.1",
+			Value: gethTag,
 		},
 	}
 
@@ -275,7 +284,7 @@ var (
 		&cli.StringFlag{
 			Name:  ErigonTagFlag,
 			Usage: "Tag for erigon",
-			Value: "2.49.2",
+			Value: erigonTag,
 		},
 	}
 	ErigonStartFlags = []cli.Flag{
@@ -295,14 +304,14 @@ var (
 		&cli.StringFlag{
 			Name:  PrysmTagFlag,
 			Usage: "Tag for prysm",
-			Value: "v4.0.8",
+			Value: prysmTag,
 		},
 	}
 	PrysmUpdateFlags = []cli.Flag{
 		&cli.StringFlag{
 			Name:  PrysmTagFlag,
 			Usage: "Tag for prysm",
-			Value: "v4.0.8",
+			Value: prysmTag,
 		},
 	}
 	PrysmStartFlags = []cli.Flag{
@@ -349,7 +358,7 @@ var (
 		&cli.StringFlag{
 			Name:  LighthouseTagFlag,
 			Usage: "Tag for lighthouse",
-			Value: "v4.4.1",
+			Value: lighthouseTag,
 		},
 	}
 	LighthouseStartFlags = []cli.Flag{
@@ -374,14 +383,14 @@ var (
 		&cli.StringFlag{
 			Name:  ValidatorTagFlag,
 			Usage: "Tag for validator binary",
-			Value: "v4.0.8",
+			Value: prysmTag,
 		},
 	}
 	ValidatorUpdateFlags = []cli.Flag{
 		&cli.StringFlag{
 			Name:  ValidatorTagFlag,
 			Usage: "Tag for validator binary",
-			Value: "v4.0.8",
+			Value: prysmTag,
 		},
 	}
 	ValidatorStartFlags = []cli.Flag{
@@ -432,7 +441,7 @@ var (
 		&cli.StringFlag{
 			Name:  TekuTagFlag,
 			Usage: "Tag for teku client",
-			Value: "23.9.0",
+			Value: tekuTag,
 		},
 	}
 	TekuStartFlags = []cli.Flag{
