@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.14.0](https://github.com/lukso-network/tools-lukso-cli/compare/v0.13.0...v0.14.0) (2023-12-06)
+
+
+### Features
+
+* fix teku validator list ([#224](https://github.com/lukso-network/tools-lukso-cli/issues/224)) ([29fefa3](https://github.com/lukso-network/tools-lukso-cli/commit/29fefa3523ae4c067fbc6c346274597cb89dd124))
+* Update clients ([#227](https://github.com/lukso-network/tools-lukso-cli/issues/227)) ([d95b873](https://github.com/lukso-network/tools-lukso-cli/commit/d95b873e58d438b9f69a189805e84b6036891816))
+
 ## [0.13.0](https://github.com/lukso-network/tools-lukso-cli/compare/v0.12.0...v0.13.0) (2023-11-06)
 
 
