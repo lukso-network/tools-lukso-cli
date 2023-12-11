@@ -33,6 +33,15 @@ var Lighthouse = NewLighthouseClient()
 
 var _ ClientBinaryDependency = &LighthouseClient{}
 
+func (l *LighthouseClient) Update() (err error) {
+	tag := ClientVersions[l.Name()]
+	log.WithField("dependencyTag", tag).Infof("⬇️  Updating %s", l.name)
+
+	url := l.ParseUrl(tag, "")
+
+	return l.Install(url, true)
+}
+
 func (l *LighthouseClient) ParseUrl(tag, commitHash string) (url string) {
 	var (
 		systemName string
