@@ -1,9 +1,9 @@
 package flags
 
 import (
-	"github.com/lukso-network/tools-lukso-cli/common"
 	"github.com/urfave/cli/v2"
 
+	"github.com/lukso-network/tools-lukso-cli/common"
 	"github.com/lukso-network/tools-lukso-cli/dependencies/configs"
 )
 

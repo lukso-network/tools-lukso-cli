@@ -2,12 +2,12 @@ package commands
 
 import (
 	"fmt"
-	"github.com/lukso-network/tools-lukso-cli/common/system"
-	"github.com/lukso-network/tools-lukso-cli/common/utils"
 
 	"github.com/urfave/cli/v2"
 
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
+	"github.com/lukso-network/tools-lukso-cli/common/system"
+	"github.com/lukso-network/tools-lukso-cli/common/utils"
 	"github.com/lukso-network/tools-lukso-cli/dependencies/clients"
 )
 

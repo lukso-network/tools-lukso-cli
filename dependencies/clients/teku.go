@@ -110,23 +110,6 @@ func (t *TekuClient) Install(url string, isUpdate bool) (err error) {
 	return
 }
 
-func (t *TekuClient) Update() (err error) {
-	log.Infof("⬇️  Fetching latest release for %s", t.name)
-
-	latestTag, err := fetchTag(t.githubLocation)
-	if err != nil {
-		return err
-	}
-
-	log.Infof("✅  Fetched latest release: %s", latestTag)
-
-	log.WithField("dependencyTag", latestTag).Infof("⬇️  Updating %s", t.name)
-
-	url := t.ParseUrl(latestTag, "")
-
-	return t.Install(url, true)
-}
-
 func (t *TekuClient) FilePath() string {
 	return tekuDepsFolder
 }
