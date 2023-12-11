@@ -2,6 +2,8 @@ package commands
 
 import (
 	"fmt"
+	"github.com/lukso-network/tools-lukso-cli/common/system"
+	"github.com/lukso-network/tools-lukso-cli/common/utils"
 
 	"github.com/urfave/cli/v2"
 
@@ -10,6 +12,14 @@ import (
 )
 
 func UpdateClients(ctx *cli.Context) (err error) {
+	isRoot, err := system.IsRoot()
+	if err != nil {
+		return utils.Exit(fmt.Sprintf("There was an error while checking user privileges: %v", err), 1)
+	}
+	if !isRoot {
+		return utils.Exit(errors.ErrNeedRoot.Error(), 1)
+	}
+
 	if clients.IsAnyRunning() {
 		return
 	}
@@ -17,7 +27,6 @@ func UpdateClients(ctx *cli.Context) (err error) {
 	if !cfg.Exists() {
 		return cli.Exit(errors.FolderNotInitialized, 1)
 	}
-
 	err = cfg.Read()
 	if err != nil {
 		return cli.Exit(fmt.Sprintf("There was an error reading config file: %v", err), 1)

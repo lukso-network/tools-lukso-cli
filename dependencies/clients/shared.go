@@ -6,6 +6,7 @@ import (
 	"compress/gzip"
 	"encoding/json"
 	"fmt"
+	"github.com/lukso-network/tools-lukso-cli/common"
 	"io"
 	"net/http"
 	"os"
@@ -56,6 +57,16 @@ var (
 		lighthouseValidatorDependencyName: LighthouseValidator,
 		tekuDependencyName:                Teku,
 		tekuValidatorDependencyName:       TekuValidator,
+	}
+
+	ClientVersions = map[string]string{
+		gethDependencyName:                common.GethTag,
+		erigonDependencyName:              common.ErigonTag,
+		prysmDependencyName:               common.PrysmTag,
+		lighthouseDependencyName:          common.LighthouseTag,
+		prysmValidatorDependencyName:      common.PrysmTag,
+		lighthouseValidatorDependencyName: common.LighthouseTag,
+		tekuDependencyName:                common.TekuTag,
 	}
 )
 
@@ -299,18 +310,11 @@ func (client *clientBinary) Install(url string, isUpdate bool) (err error) {
 }
 
 func (client *clientBinary) Update() (err error) {
-	log.Infof("⬇️  Fetching latest release for %s", client.name)
+	tag := client.getVersion()
 
-	latestTag, err := fetchTag(client.githubLocation)
-	if err != nil {
-		return err
-	}
+	log.WithField("dependencyTag", tag).Infof("⬇️  Updating %s", client.name)
 
-	log.Infof("✅  Fetched latest release: %s", latestTag)
-
-	log.WithField("dependencyTag", latestTag).Infof("⬇️  Updating %s", client.name)
-
-	url := client.ParseUrl(latestTag, "")
+	url := client.ParseUrl(tag, "")
 
 	return client.Install(url, true)
 }
@@ -481,6 +485,10 @@ func (client *clientBinary) Peers(ctx *cli.Context) (outbound, inbound int, err 
 	_ = utils.Exit(fmt.Sprintf("FATAL: STATUS PEERS NOT CONFIGURED FOR %s CLIENT - PLEASE MARK THIS ISSUE TO THE LUKSO TEAM", client.Name()), 1)
 
 	return
+}
+
+func (client *clientBinary) getVersion() string {
+	return ClientVersions[client.Name()]
 }
 
 func removePrefix(arg, name string) string {
