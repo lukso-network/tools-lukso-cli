@@ -85,6 +85,10 @@ func (l *LighthouseClient) ParseUrl(tag, commitHash string) (url string) {
 		fallback()
 	}
 
+	if arch != "x86_64" && arch != "aarch64" {
+		fallback()
+	}
+
 	url = l.baseUrl
 	url = strings.Replace(url, "|TAG|", tag, -1)
 	url = strings.Replace(url, "|OS|", urlSystem, -1)
