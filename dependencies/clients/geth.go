@@ -7,6 +7,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 
+	"github.com/lukso-network/tools-lukso-cli/common"
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
 	"github.com/lukso-network/tools-lukso-cli/common/system"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
@@ -48,24 +49,13 @@ func (g *GethClient) ParseUrl(tag, commitHash string) (url string) {
 }
 
 func (g *GethClient) Update() (err error) {
-	log.Info("⬇️  Fetching latest release for Geth")
+	tag := g.getVersion()
 
-	latestGethTag, latestGethCommitHash, err := fetchTagAndCommitHash(g.githubLocation)
-	if err != nil {
-		return err
-	}
+	log.WithField("dependencyTag", tag).Infof("⬇️  Updating %s", g.name)
 
-	log.Infof("✅  Fetched latest release: %s", latestGethTag)
-
-	// since geth needs standard x.y.z semantic version to download (without "v" at the beginning) we need to strip it
-	strippedTag := strings.TrimPrefix(latestGethTag, "v")
-	// and we need to take only 8 first characters from commit hash
-	chars := []rune(latestGethCommitHash)[:8]
-	latestGethCommitHash = string(chars)
-
-	log.WithField("dependencyTag", latestGethTag).Info("⬇️  Updating Geth")
-
-	url := g.ParseUrl(strippedTag, latestGethCommitHash)
+	// this commit hash is hardcoded, but since update should only be responsible for updating the client to
+	// LUKSO supported version this is fine.
+	url := g.ParseUrl(tag, common.GethCommitHash)
 
 	return g.Install(url, true)
 }

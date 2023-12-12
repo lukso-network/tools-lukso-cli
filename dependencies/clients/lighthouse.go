@@ -34,18 +34,10 @@ var Lighthouse = NewLighthouseClient()
 var _ ClientBinaryDependency = &LighthouseClient{}
 
 func (l *LighthouseClient) Update() (err error) {
-	log.Infof("⬇️  Fetching latest release for %s", l.name)
+	tag := ClientVersions[l.Name()]
+	log.WithField("dependencyTag", tag).Infof("⬇️  Updating %s", l.name)
 
-	latestTag, err := fetchTag(l.githubLocation)
-	if err != nil {
-		return err
-	}
-
-	log.Infof("✅  Fetched latest release: %s", latestTag)
-
-	log.WithField("dependencyTag", latestTag).Infof("⬇️  Updating %s", l.name)
-
-	url := l.ParseUrl(latestTag, "")
+	url := l.ParseUrl(tag, "")
 
 	return l.Install(url, true)
 }
@@ -90,6 +82,10 @@ func (l *LighthouseClient) ParseUrl(tag, commitHash string) (url string) {
 		arch = strings.Trim(buf.String(), "\n\t ")
 
 	default:
+		fallback()
+	}
+
+	if arch != "x86_64" && arch != "aarch64" {
 		fallback()
 	}
 

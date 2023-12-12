@@ -16,6 +16,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 
+	"github.com/lukso-network/tools-lukso-cli/common"
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
 	"github.com/lukso-network/tools-lukso-cli/common/system"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
@@ -56,6 +57,16 @@ var (
 		lighthouseValidatorDependencyName: LighthouseValidator,
 		tekuDependencyName:                Teku,
 		tekuValidatorDependencyName:       TekuValidator,
+	}
+
+	ClientVersions = map[string]string{
+		gethDependencyName:                common.GethTag,
+		erigonDependencyName:              common.ErigonTag,
+		prysmDependencyName:               common.PrysmTag,
+		lighthouseDependencyName:          common.LighthouseTag,
+		prysmValidatorDependencyName:      common.PrysmTag,
+		lighthouseValidatorDependencyName: common.LighthouseTag,
+		tekuDependencyName:                common.TekuTag,
 	}
 )
 
@@ -299,18 +310,11 @@ func (client *clientBinary) Install(url string, isUpdate bool) (err error) {
 }
 
 func (client *clientBinary) Update() (err error) {
-	log.Infof("⬇️  Fetching latest release for %s", client.name)
+	tag := client.getVersion()
 
-	latestTag, err := fetchTag(client.githubLocation)
-	if err != nil {
-		return err
-	}
+	log.WithField("dependencyTag", tag).Infof("⬇️  Updating %s", client.name)
 
-	log.Infof("✅  Fetched latest release: %s", latestTag)
-
-	log.WithField("dependencyTag", latestTag).Infof("⬇️  Updating %s", client.name)
-
-	url := client.ParseUrl(latestTag, "")
+	url := client.ParseUrl(tag, "")
 
 	return client.Install(url, true)
 }
@@ -483,6 +487,10 @@ func (client *clientBinary) Peers(ctx *cli.Context) (outbound, inbound int, err 
 	return
 }
 
+func (client *clientBinary) getVersion() string {
+	return ClientVersions[client.Name()]
+}
+
 func removePrefix(arg, name string) string {
 	prefix := fmt.Sprintf("--%s-", name)
 
@@ -506,63 +514,6 @@ func IsAnyRunning() bool {
 	log.Warnf("⚠️  Please stop the following clients before continuing: \n%s", runningClients)
 
 	return true
-}
-
-// fetchTag fetches the newest release tag for given dependency from GitHub API
-func fetchTag(githubLocation string) (string, error) {
-	latestReleaseUrl := fmt.Sprintf("https://api.github.com/repos/%s/releases/latest", githubLocation)
-
-	response, err := http.Get(latestReleaseUrl)
-	if err != nil {
-		return "", err
-	}
-
-	respBytes, err := io.ReadAll(response.Body)
-	if err != nil {
-		return "", err
-	}
-
-	var latestReleaseResponse apitypes.GithubApiReleaseResponse
-
-	err = json.Unmarshal(respBytes, &latestReleaseResponse)
-	if err != nil {
-		return "", err
-	}
-
-	return latestReleaseResponse.TagName, nil
-}
-
-// fetchTagAndCommitHash fetches both release and latest commit hash from GitHub API
-func fetchTagAndCommitHash(githubLocation string) (releaseTag, commitHash string, err error) {
-	latestTag, err := fetchTag(githubLocation)
-	if err != nil {
-		return
-	}
-
-	releaseTag = latestTag
-
-	latestCommitUrl := fmt.Sprintf("https://api.github.com/repos/%s/git/ref/tags/%s", githubLocation, latestTag)
-
-	response, err := http.Get(latestCommitUrl)
-	if err != nil {
-		return
-	}
-
-	respBytes, err := io.ReadAll(response.Body)
-	if err != nil {
-		return
-	}
-
-	var latestCommitResponse apitypes.GithubApiCommitResponse
-
-	err = json.Unmarshal(respBytes, &latestCommitResponse)
-	if err != nil {
-		return
-	}
-
-	commitHash = latestCommitResponse.Object.Sha
-
-	return
 }
 
 func defaultExecutionPeers(ctx *cli.Context, defaultPort int) (outbound, inbound int, err error) {

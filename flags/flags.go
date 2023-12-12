@@ -3,6 +3,7 @@ package flags
 import (
 	"github.com/urfave/cli/v2"
 
+	"github.com/lukso-network/tools-lukso-cli/common"
 	"github.com/lukso-network/tools-lukso-cli/dependencies/configs"
 )
 
@@ -15,10 +16,6 @@ func init() {
 	InstallFlags = append(InstallFlags, LighthouseDownloadFlags...)
 	InstallFlags = append(InstallFlags, TekuDownloadFlags...)
 	InstallFlags = append(InstallFlags, AppFlags...)
-
-	UpdateFlags = append(UpdateFlags, GethUpdateFlags...)
-	UpdateFlags = append(UpdateFlags, PrysmUpdateFlags...)
-	UpdateFlags = append(UpdateFlags, ValidatorUpdateFlags...)
 
 	StartFlags = append(StartFlags, GethStartFlags...)
 	StartFlags = append(StartFlags, ErigonStartFlags...)
@@ -55,15 +52,6 @@ func init() {
 	ValidatorListFlags = append(ValidatorListFlags, NetworkFlags...)
 	ValidatorExitFlags = append(ValidatorExitFlags, NetworkFlags...)
 }
-
-const (
-	gethTag        = "1.13.5"
-	erigonTag      = "2.55.0"
-	prysmTag       = "v4.0.8"
-	lighthouseTag  = "v4.5.0"
-	tekuTag        = "23.11.0"
-	gethCommitHash = "916d6a44"
-)
 
 var (
 	mainnetEnabledFlag = &cli.BoolFlag{
@@ -152,7 +140,6 @@ var (
 		},
 	}
 	InstallFlags []cli.Flag
-	UpdateFlags  []cli.Flag
 	StopFlags    = []cli.Flag{
 		executionSelectedFlag,
 		consensusSelectedFlag,
@@ -184,15 +171,9 @@ var (
 			Usage: "Run a node with checkpoint sync feature",
 		},
 	}
-	LogsFlags  []cli.Flag
-	ResetFlags []cli.Flag
-	AppFlags   = []cli.Flag{
-		&cli.BoolFlag{
-			Name:  AgreeTermsFlag,
-			Usage: "Accept terms of use. Default: false",
-			Value: false,
-		},
-	}
+	LogsFlags        []cli.Flag
+	ResetFlags       []cli.Flag
+	AppFlags         []cli.Flag
 	StatusPeersFlags = []cli.Flag{
 		&cli.StringFlag{
 			Name:  ExecutionClientHost,
@@ -227,20 +208,12 @@ var (
 		&cli.StringFlag{
 			Name:  GethTagFlag,
 			Usage: "A tag of geth you would like to run",
-			Value: gethTag,
+			Value: common.GethTag,
 		},
 		&cli.StringFlag{
 			Name:  GethCommitHashFlag,
 			Usage: "A hash of commit that is bound to given release tag",
-			Value: gethCommitHash,
-		},
-	}
-
-	GethUpdateFlags = []cli.Flag{
-		&cli.StringFlag{
-			Name:  GethTagFlag,
-			Usage: "A tag of geth you would like to run",
-			Value: gethTag,
+			Value: common.GethCommitHash,
 		},
 	}
 
@@ -284,7 +257,7 @@ var (
 		&cli.StringFlag{
 			Name:  ErigonTagFlag,
 			Usage: "Tag for erigon",
-			Value: erigonTag,
+			Value: common.ErigonTag,
 		},
 	}
 	ErigonStartFlags = []cli.Flag{
@@ -304,14 +277,7 @@ var (
 		&cli.StringFlag{
 			Name:  PrysmTagFlag,
 			Usage: "Tag for prysm",
-			Value: prysmTag,
-		},
-	}
-	PrysmUpdateFlags = []cli.Flag{
-		&cli.StringFlag{
-			Name:  PrysmTagFlag,
-			Usage: "Tag for prysm",
-			Value: prysmTag,
+			Value: common.PrysmTag,
 		},
 	}
 	PrysmStartFlags = []cli.Flag{
@@ -358,7 +324,7 @@ var (
 		&cli.StringFlag{
 			Name:  LighthouseTagFlag,
 			Usage: "Tag for lighthouse",
-			Value: lighthouseTag,
+			Value: common.LighthouseTag,
 		},
 	}
 	LighthouseStartFlags = []cli.Flag{
@@ -383,14 +349,7 @@ var (
 		&cli.StringFlag{
 			Name:  ValidatorTagFlag,
 			Usage: "Tag for validator binary",
-			Value: prysmTag,
-		},
-	}
-	ValidatorUpdateFlags = []cli.Flag{
-		&cli.StringFlag{
-			Name:  ValidatorTagFlag,
-			Usage: "Tag for validator binary",
-			Value: prysmTag,
+			Value: common.PrysmTag,
 		},
 	}
 	ValidatorStartFlags = []cli.Flag{
@@ -441,7 +400,7 @@ var (
 		&cli.StringFlag{
 			Name:  TekuTagFlag,
 			Usage: "Tag for teku client",
-			Value: tekuTag,
+			Value: common.TekuTag,
 		},
 	}
 	TekuStartFlags = []cli.Flag{
