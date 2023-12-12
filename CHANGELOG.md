@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.15.0](https://github.com/lukso-network/tools-lukso-cli/compare/v0.14.0...v0.15.0) (2023-12-12)
+
+
+### Features
+
+* cap update versions ([#230](https://github.com/lukso-network/tools-lukso-cli/issues/230)) ([add35e6](https://github.com/lukso-network/tools-lukso-cli/commit/add35e6f92656b90c5e34c0d3fa676987ae4ccdb))
+
 ## [0.14.0](https://github.com/lukso-network/tools-lukso-cli/compare/v0.13.0...v0.14.0) (2023-12-06)
 
 
