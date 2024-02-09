@@ -89,17 +89,17 @@ func SelectNetworkFor(f func(*cli.Context) error) func(*cli.Context) error {
 func updateValues(ctx *cli.Context, config networkConfig) (err error) {
 	var (
 		//genesisJson  = config.configPath + "/" + genesisJsonPath
-		gethToml                = config.configPath + "/" + configs.GethTomlPath
-		erigonToml              = config.configPath + "/" + configs.ErigonTomlPath
-		prysmYaml               = config.configPath + "/" + configs.PrysmYamlPath
-		lighthouseToml          = config.configPath + "/" + configs.LighthouseTomlPath
-		lighthouseValidatorToml = config.configPath + "/" + configs.LighthouseValidatorTomlPath
-		validatorYaml           = config.configPath + "/" + configs.ValidatorYamlPath
-		tekuYaml                = config.configPath + "/" + configs.TekuYamlPath
-		tekuValidatorYaml       = config.configPath + "/" + configs.TekuValidatorYamlPath
-		gethGenesis             = config.configPath + "/" + configs.GenesisJsonPath
-		genesisState            = config.configPath + "/" + configs.GenesisStateFilePath
-		configYaml              = config.configPath + "/" + configs.ChainConfigYamlPath
+		gethTomlPath                = config.configPath + "/" + configs.GethTomlPath
+		erigonTomlPath              = config.configPath + "/" + configs.ErigonTomlPath
+		prysmYamlPath               = config.configPath + "/" + configs.PrysmYamlPath
+		lighthouseTomlPath          = config.configPath + "/" + configs.LighthouseTomlPath
+		lighthouseValidatorTomlPath = config.configPath + "/" + configs.LighthouseValidatorTomlPath
+		validatorYamlPath           = config.configPath + "/" + configs.ValidatorYamlPath
+		tekuYamlPath                = config.configPath + "/" + configs.TekuYamlPath
+		tekuValidatorYamlPath       = config.configPath + "/" + configs.TekuValidatorYamlPath
+		gethGenesisPath             = config.configPath + "/" + configs.GenesisJsonPath
+		genesisStatePath            = config.configPath + "/" + configs.GenesisStateFilePath
+		configYamlPath              = config.configPath + "/" + configs.ChainConfigYamlPath
 	)
 
 	passedArgs := make([]string, 0)
@@ -119,18 +119,18 @@ func updateValues(ctx *cli.Context, config networkConfig) (err error) {
 		flags.LighthouseDatadirFlag:             config.consensusDatadirPath,
 		flags.LogFolderFlag:                     config.logPath,
 		flags.ValidatorKeysFlag:                 config.keysPath,
-		flags.GethConfigFileFlag:                gethToml,
-		flags.ErigonConfigFileFlag:              erigonToml,
-		flags.PrysmConfigFileFlag:               prysmYaml,
-		flags.LighthouseConfigFileFlag:          lighthouseToml,
-		flags.LighthouseValidatorConfigFileFlag: lighthouseValidatorToml,
-		flags.ValidatorConfigFileFlag:           validatorYaml,
-		flags.TekuConfigFileFlag:                tekuYaml,
-		flags.TekuValidatorConfigFileFlag:       tekuValidatorYaml,
-		flags.GenesisJsonFlag:                   gethGenesis,
-		flags.PrysmChainConfigFileFlag:          configYaml,
-		flags.ValidatorChainConfigFileFlag:      configYaml,
-		flags.GenesisStateFlag:                  genesisState,
+		flags.GethConfigFileFlag:                gethTomlPath,
+		flags.ErigonConfigFileFlag:              erigonTomlPath,
+		flags.PrysmConfigFileFlag:               prysmYamlPath,
+		flags.LighthouseConfigFileFlag:          lighthouseTomlPath,
+		flags.LighthouseValidatorConfigFileFlag: lighthouseValidatorTomlPath,
+		flags.ValidatorConfigFileFlag:           validatorYamlPath,
+		flags.TekuConfigFileFlag:                tekuYamlPath,
+		flags.TekuValidatorConfigFileFlag:       tekuValidatorYamlPath,
+		flags.GenesisJsonFlag:                   gethGenesisPath,
+		flags.PrysmChainConfigFileFlag:          configYamlPath,
+		flags.ValidatorChainConfigFileFlag:      configYamlPath,
+		flags.GenesisStateFlag:                  genesisStatePath,
 		flags.ValidatorWalletDirFlag:            config.walletPath,
 		flags.TestnetDirFlag:                    config.testnetDirPath,
 	}
