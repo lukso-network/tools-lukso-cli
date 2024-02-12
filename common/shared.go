@@ -5,9 +5,9 @@ const (
 	SlotsPerEpoch = 32
 
 	GethTag        = "1.13.12"
-	ErigonTag      = "2.55.0"
-	PrysmTag       = "v4.0.8"
-	LighthouseTag  = "v4.5.0"
-	TekuTag        = "23.11.0"
+	ErigonTag      = "2.57.3"
+	PrysmTag       = "v4.2.1"
+	LighthouseTag  = "v4.6.0"
+	TekuTag        = "24.1.1"
 	GethCommitHash = "02eb36af"
 )
