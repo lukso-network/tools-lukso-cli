@@ -120,40 +120,10 @@ var (
 			name:     mainnetGenesisDependencyName,
 			filePath: MainnetConfig + "/" + GenesisJsonPath,
 		},
-		mainnetGenesis35DependencyName: &clientConfig{
-			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/genesis_35.json",
-			name:     mainnetGenesis35DependencyName,
-			filePath: MainnetConfig + "/" + Genesis35JsonPath,
-		},
-		mainnetGenesis42DependencyName: &clientConfig{
-			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/genesis_42.json",
-			name:     mainnetGenesis42DependencyName,
-			filePath: MainnetConfig + "/" + Genesis42JsonPath,
-		},
-		mainnetGenesis100DependencyName: &clientConfig{
-			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/genesis_100.json",
-			name:     mainnetGenesis100DependencyName,
-			filePath: MainnetConfig + "/" + Genesis100JsonPath,
-		},
 		mainnetGenesisStateDependencyName: &clientConfig{
 			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/genesis.ssz",
 			name:     mainnetGenesisStateDependencyName,
 			filePath: MainnetConfig + "/" + GenesisStateFilePath,
-		},
-		mainnetGenesisState35DependencyName: &clientConfig{
-			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/genesis_35.ssz",
-			name:     mainnetGenesisState35DependencyName,
-			filePath: MainnetConfig + "/" + GenesisState35FilePath,
-		},
-		mainnetGenesisState42DependencyName: &clientConfig{
-			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/genesis_42.ssz",
-			name:     mainnetGenesisState42DependencyName,
-			filePath: MainnetConfig + "/" + GenesisState42FilePath,
-		},
-		mainnetGenesisState100DependencyName: &clientConfig{
-			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/genesis_100.ssz",
-			name:     mainnetGenesisState100DependencyName,
-			filePath: MainnetConfig + "/" + GenesisState100FilePath,
 		},
 		mainnetChainConfigDependencyName: &clientConfig{
 			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/config.yaml",
