@@ -196,13 +196,13 @@ type clientConfig struct {
 
 var _ ClientConfigDependency = &clientConfig{}
 
-func (c *clientConfig) Install() (err error) {
+func (c *clientConfig) Install(isUpdate bool) (err error) {
 	err = c.createDir()
 	if err != nil {
 		return
 	}
 
-	if utils.FileExists(c.filePath) {
+	if utils.FileExists(c.filePath) && !isUpdate {
 		log.Infof("  ⏩️  Skipping file %s: the file already exists", c.filePath)
 
 		return
