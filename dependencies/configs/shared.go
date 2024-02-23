@@ -156,6 +156,59 @@ var (
 			filePath: TestnetConfig + "/" + DeployBlockPath,
 		},
 	}
+	UpdateConfigDependencies = map[string]ClientConfigDependency{
+		// same as SharedConfigDependencies but with added Teku chain configs
+		mainnetGenesisDependencyName: &clientConfig{
+			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/genesis.json",
+			name:     mainnetGenesisDependencyName,
+			filePath: MainnetConfig + "/" + GenesisJsonPath,
+		},
+		mainnetGenesisStateDependencyName: &clientConfig{
+			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/genesis.ssz",
+			name:     mainnetGenesisStateDependencyName,
+			filePath: MainnetConfig + "/" + GenesisStateFilePath,
+		},
+		mainnetChainConfigDependencyName: &clientConfig{
+			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/config.yaml",
+			name:     mainnetChainConfigDependencyName,
+			filePath: MainnetConfig + "/" + ChainConfigYamlPath,
+		},
+		deployBlockMainnetConfigDependencyName: &clientConfig{
+			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/lighthouse/deploy_block.txt",
+			name:     deployBlockMainnetConfigDependencyName,
+			filePath: MainnetConfig + "/" + DeployBlockPath,
+		},
+		testnetGenesisDependencyName: &clientConfig{
+			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/shared/genesis.json",
+			name:     testnetGenesisDependencyName,
+			filePath: TestnetConfig + "/" + GenesisJsonPath,
+		},
+		testnetGenesisStateDependencyName: &clientConfig{
+			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/shared/genesis.ssz",
+			name:     testnetGenesisStateDependencyName,
+			filePath: TestnetConfig + "/" + GenesisStateFilePath,
+		},
+		testnetChainConfigDependencyName: &clientConfig{
+			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/shared/config.yaml",
+			name:     testnetChainConfigDependencyName,
+			filePath: TestnetConfig + "/" + ChainConfigYamlPath,
+		},
+		deployBlockTestnetConfigDependencyName: &clientConfig{
+			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/lighthouse/deploy_block.txt",
+			name:     deployBlockTestnetConfigDependencyName,
+			filePath: TestnetConfig + "/" + DeployBlockPath,
+		},
+		tekuMainnetChainConfigDependencyName: &clientConfig{
+			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/teku/config.yaml",
+			name:     tekuMainnetChainConfigDependencyName,
+			filePath: MainnetConfig + "/" + TekuChainConfigYamlPath,
+		},
+		tekuTestnetChainConfigDependencyName: &clientConfig{
+			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/teku/config.yaml",
+			name:     tekuTestnetChainConfigDependencyName,
+			filePath: TestnetConfig + "/" + TekuChainConfigYamlPath,
+		},
+	}
 )
 
 type clientConfig struct {

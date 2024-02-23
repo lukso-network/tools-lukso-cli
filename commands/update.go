@@ -68,7 +68,7 @@ func UpdateConfigs(_ *cli.Context) (err error) {
 	}
 
 	log.Info("⬇️  Updating shared configuration files...")
-	_ = installConfigGroup(configs.SharedConfigDependencies, true)
+	_ = installConfigGroup(configs.UpdateConfigDependencies, true)
 	log.Info("✅  Shared configuration files updated!")
 
 	return
