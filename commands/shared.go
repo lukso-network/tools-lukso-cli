@@ -2,6 +2,7 @@ package commands
 
 import (
 	"fmt"
+
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
 	"github.com/lukso-network/tools-lukso-cli/config"
 	"github.com/lukso-network/tools-lukso-cli/dependencies/configs"
