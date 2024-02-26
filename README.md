@@ -622,6 +622,11 @@ $ rm -rf /usr/local/bin/erigon
 $ rm -rf ~/myNodeFolder
 ```
 
+## Known Issues
+- [Minor] With the v0.16.0 update, LUKSO CLI clients support the Cancun hardfork. To avoid uncontrolled forking, the LUKSO team
+have updated the chain config files, which can cause config unmarshalling errors for Prysm <=4.0.8.
+Client is still functioning as intended.
+
 ## Contributing
 
 If you want to contribute to this repository, please check [`CONTRIBUTING.md`](./CONTRIBUTING.md).
