@@ -126,22 +126,23 @@ lukso-node
 
 ## Available Commands
 
-| Command                                                                                                                    | Description                                                                              |
-|----------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------|
-| [`install` ](#install)                                                                                                     | Installs choosen clients (Execution, Consensus, Validator) and their binary dependencies |
-| [`update` ](#update)                                                                                                       | Update all currently selected clients to their newest versions                           |
-| [`init`](#initialise-the-working-directory)                                                                                | Initializes the working directory, it's structure, and network configuration             |
-| [`start`](#start)                                                                                                          | Starts all or specific clients and connects to the specified network                     |
-| [`stop`](#stop)                                                                                                            | Stops all or specific clients that are currently running                                 |
-| [`logs`](#logs)                                                                                                            | Listens to and logs all events from a specific client in the current terminal window     |
-| [`status`](#status)                                                                                                        | Shows the client processes that are currently running                                    |
-| [`status peers`](#status-peers)                                                                                            | Shows the peer count of your node                                                        |
-| [`reset`](#reset)                                                                                                          | Resets all or specific client data directories and logs excluding the validator keys     |
-| [`validator import`](#validator-import)                                                                                    | Import the validator keys in the wallet                                                  |
-| [`validator list`](#validator-list)                                                                                        | Display the imported validator keys                                                      |
-| [`validator exit`](#validator-exit)                                                                                        | Issue an exit for your validator                                                         |
-| [`version`](#version)                                                                                                      | Display the version of the LUKSO CLI that is currently installed                         |
-| [`help`, `h`](#help)                                                                                                       | Shows the full list of commands, global options, and their usage                         |
+| Command                                     | Description                                                                                                     |
+|---------------------------------------------|-----------------------------------------------------------------------------------------------------------------|
+| [`install` ](#install)                      | Installs choosen clients (Execution, Consensus, Validator) and their binary dependencies                        |
+| [`update` ](#update)                        | Update all currently selected clients to their newest versions                                                  |
+| [`update configs` ](#update-configs)        | Update chain configuration files. This commands overwrites your oldchain configs, but keeps your client configs |
+| [`init`](#initialise-the-working-directory) | Initializes the working directory, it's structure, and network configuration                                    |
+| [`start`](#start)                           | Starts all or specific clients and connects to the specified network                                            |
+| [`stop`](#stop)                             | Stops all or specific clients that are currently running                                                        |
+| [`logs`](#logs)                             | Listens to and logs all events from a specific client in the current terminal window                            |
+| [`status`](#status)                         | Shows the client processes that are currently running                                                           |
+| [`status peers`](#status-peers)             | Shows the peer count of your node                                                                               |
+| [`reset`](#reset)                           | Resets all or specific client data directories and logs excluding the validator keys                            |
+| [`validator import`](#validator-import)     | Import the validator keys in the wallet                                                                         |
+| [`validator list`](#validator-list)         | Display the imported validator keys                                                                             |
+| [`validator exit`](#validator-exit)         | Issue an exit for your validator                                                                                |
+| [`version`](#version)                       | Display the version of the LUKSO CLI that is currently installed                                                |
+| [`help`, `h`](#help)                        | Shows the full list of commands, global options, and their usage                                                |
 
 ## Global Help Flag
 
@@ -184,6 +185,16 @@ $ lukso install --agree-terms
 ```sh
 # starts an update of your selected clients - note that your node must be STOPPED before proceeding with update
 $ lukso update
+
+```
+
+### `update configs`
+`update configs` Update chain configuration files. This commands overwrites your oldchain configs, but keeps your client configs.
+
+#### How to update chain config files
+```sh
+# starts an update of chain config files. 
+$ lukso update configs
 
 ```
 
