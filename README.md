@@ -623,9 +623,16 @@ $ rm -rf ~/myNodeFolder
 ```
 
 ## Known Issues
-- [Minor] With the v0.16.0 update, LUKSO CLI clients support the Cancun hardfork. To avoid uncontrolled forking, the LUKSO team
+- [Minor] With the [v0.16.0](https://github.com/lukso-network/network-configs/pull/131) update, LUKSO CLI clients support the Cancun hardfork. To avoid uncontrolled forking, the LUKSO team
 have updated the chain config files, which can cause config unmarshalling errors for Prysm <=4.0.8.
-Client is still functioning as intended.
+Client is still functioning as intended.  
+Example Prysm Error log:
+```
+time="2024-02-27 11:32:55" level=error msg="There were some issues parsing the config from a yaml file" error="yaml: unmarshal errors:
+  line 113: field DENEB_FORK_VERSION not found in type params.BeaconChainConfig
+  line 119: field DENEB_FORK_EPOCH not found in type params.BeaconChainConfig"
+```
+
 
 ## Contributing
 
