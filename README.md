@@ -189,7 +189,10 @@ $ lukso update
 ```
 
 ### `update configs`
-`update configs` Update chain configuration files. This commands overwrites your oldchain configs, but keeps your client configs.
+`update configs` Update chain configuration files. This commands overwrites your oldchain configs, but keeps your client configs.  
+In order to update your configs, you need to: 
+1) Have your node stopped
+2) Be in the LUKSO CLI initialized directory
 
 #### How to update chain config files
 ```sh
