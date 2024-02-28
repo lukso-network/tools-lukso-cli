@@ -279,6 +279,15 @@ $ lukso start --testnet --prysm-checkpoint-sync-url=https://checkpoints.testnet.
 $ lukso start --testnet --lighthouse-checkpoint-sync-url=https://checkpoints.testnet.lukso.network
 ```
 
+#### Possible issues
+- When starting prysm <=v4.0.8 after the [v0.16.0](https://github.com/lukso-network/network-configs/pull/131) CLI update, you may encounter some configuration issues:
+```
+time="2024-02-27 11:32:55" level=error msg="There were some issues parsing the config from a yaml file" error="yaml: unmarshal errors:
+  line 113: field DENEB_FORK_VERSION not found in type params.BeaconChainConfig
+  line 119: field DENEB_FORK_EPOCH not found in type params.BeaconChainConfig"
+```
+Please note that this won't affect your node in any way.
+
 #### Options for `start`
 
 | Option                               | Description                                                                                                                                           |
