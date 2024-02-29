@@ -18,13 +18,13 @@ The LUKSO CLI is able to install multiple clients for running the node.
 
 ### Client versions
 
-| Client     | Version  | Release                                                      |
-| ---------- |----------|--------------------------------------------------------------|
-| Geth       | v1.13.5  | https://github.com/ethereum/go-ethereum/releases/tag/v1.13.5 |
-| Erigon     | v2.55.0  | https://github.com/ledgerwatch/erigon/releases/tag/v2.55.0   |
-| Prysm      | v4.0.8   | https://github.com/prysmaticlabs/prysm/releases/tag/v4.0.8   |
-| Lighthouse | v4.5.0   | https://github.com/sigp/lighthouse/releases/tag/v4.5.0       |
-| Teku       | v23.11.0 | https://github.com/Consensys/teku/releases/tag/23.11.0       |
+| Client     | Version  | Release                                                       |
+|------------|----------|---------------------------------------------------------------|
+| Geth       | v1.13.12 | https://github.com/ethereum/go-ethereum/releases/tag/v1.13.12 |
+| Erigon     | v2.57.3  | https://github.com/ledgerwatch/erigon/releases/tag/v2.57.3    |
+| Prysm      | v4.2.1   | https://github.com/prysmaticlabs/prysm/releases/tag/v4.2.1    |
+| Lighthouse | v4.6.0   | https://github.com/sigp/lighthouse/releases/tag/v4.6.0        |
+| Teku       | v24.1.1  | https://github.com/Consensys/teku/releases/tag/24.1.1         |
 
 > More clients will be added in the future.
 
@@ -292,6 +292,15 @@ $ lukso start --testnet --prysm-checkpoint-sync-url=https://checkpoints.testnet.
 # Testnet Checkpoint for Lighthouse Consensus Client
 $ lukso start --testnet --lighthouse-checkpoint-sync-url=https://checkpoints.testnet.lukso.network
 ```
+
+#### Possible issues
+- When starting prysm <=v4.0.8 after the [v0.16.0](https://github.com/lukso-network/network-configs/pull/131) CLI update, you may encounter some configuration issues:
+```
+time="2024-02-27 11:32:55" level=error msg="There were some issues parsing the config from a yaml file" error="yaml: unmarshal errors:
+  line 113: field DENEB_FORK_VERSION not found in type params.BeaconChainConfig
+  line 119: field DENEB_FORK_EPOCH not found in type params.BeaconChainConfig"
+```
+Please note that this won't affect your node in any way.
 
 #### Options for `start`
 
@@ -635,6 +644,18 @@ $ rm -rf /usr/local/bin/erigon
 # Make sure to backup your keys first
 $ rm -rf ~/myNodeFolder
 ```
+
+## Known Issues
+- [Minor] With the [v0.16.0](https://github.com/lukso-network/network-configs/pull/131) update, LUKSO CLI clients support the Cancun hardfork. To avoid uncontrolled forking, the LUKSO team
+have updated the chain config files, which can cause config unmarshalling errors for Prysm <=4.0.8.
+Client is still functioning as intended.  
+Example Prysm Error log:
+```
+time="2024-02-27 11:32:55" level=error msg="There were some issues parsing the config from a yaml file" error="yaml: unmarshal errors:
+  line 113: field DENEB_FORK_VERSION not found in type params.BeaconChainConfig
+  line 119: field DENEB_FORK_EPOCH not found in type params.BeaconChainConfig"
+```
+
 
 ## Contributing
 
