@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.16.0](https://github.com/lukso-network/tools-lukso-cli/compare/v0.15.0...v0.16.0) (2024-02-29)
+
+
+### Features
+
+* update clients ([#232](https://github.com/lukso-network/tools-lukso-cli/issues/232)) ([5818821](https://github.com/lukso-network/tools-lukso-cli/commit/5818821dfd18dcec6f4d3c94ae5b47c0fefdb637))
+* Update config command ([#233](https://github.com/lukso-network/tools-lukso-cli/issues/233)) ([fb46018](https://github.com/lukso-network/tools-lukso-cli/commit/fb460186b1de279f494f723b38a438bda7c25bb8))
+
 ## [0.15.0](https://github.com/lukso-network/tools-lukso-cli/compare/v0.14.0...v0.15.0) (2023-12-12)
 
 
