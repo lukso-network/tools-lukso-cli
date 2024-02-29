@@ -139,8 +139,9 @@ var (
 			Value: configs.MainnetConfig + "/shared",
 		},
 	}
-	InstallFlags []cli.Flag
-	StopFlags    = []cli.Flag{
+	InstallFlags      []cli.Flag
+	UpdateConfigFlags []cli.Flag
+	StopFlags         = []cli.Flag{
 		executionSelectedFlag,
 		consensusSelectedFlag,
 		validatorSelectedFlag,

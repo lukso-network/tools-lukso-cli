@@ -1,6 +1,6 @@
 package configs
 
 type ClientConfigDependency interface {
-	Install() error
+	Install(isUpdate bool) error
 	Name() string
 }

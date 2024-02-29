@@ -3,12 +3,14 @@ package commands
 import (
 	"fmt"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
 	"github.com/lukso-network/tools-lukso-cli/common/system"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
 	"github.com/lukso-network/tools-lukso-cli/dependencies/clients"
+	"github.com/lukso-network/tools-lukso-cli/dependencies/configs"
 )
 
 func UpdateClients(ctx *cli.Context) (err error) {
@@ -52,6 +54,22 @@ func UpdateClients(ctx *cli.Context) (err error) {
 			return cli.Exit(fmt.Sprintf("There was an error while updating %s: %v", client.Name(), err), 1)
 		}
 	}
+
+	return
+}
+
+func UpdateConfigs(_ *cli.Context) (err error) {
+	if clients.IsAnyRunning() {
+		return
+	}
+
+	if !cfg.Exists() {
+		return cli.Exit(errors.FolderNotInitialized, 1)
+	}
+
+	log.Info("⬇️  Updating shared configuration files...")
+	_ = installConfigGroup(configs.UpdateConfigDependencies, true)
+	log.Info("✅  Shared configuration files updated!")
 
 	return
 }

@@ -53,6 +53,15 @@ REPO: https://github.com/lukso-network/tools-lukso-cli
 			Action:          commands.UpdateClients,
 			Flags:           flags.InstallFlags,
 			HideHelpCommand: true,
+			Subcommands: cli.Commands{
+				&cli.Command{
+					Name:            "configs",
+					Usage:           "Updates chain configuration files, without overwriting client configuration files",
+					Flags:           flags.UpdateConfigFlags,
+					Action:          commands.UpdateConfigs,
+					HideHelpCommand: true,
+				},
+			},
 		},
 		{
 			Name:            "start",
