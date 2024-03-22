@@ -7,7 +7,7 @@ const (
 	GethTag        = "1.13.14"
 	ErigonTag      = "2.59.0"
 	PrysmTag       = "v5.0.1"
-	LighthouseTag  = "v5.1.1"
+	LighthouseTag  = "v5.1.2"
 	TekuTag        = "24.3.0"
 	GethCommitHash = "2bd6bd01"
 )
