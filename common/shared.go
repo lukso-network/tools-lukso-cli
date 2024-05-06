@@ -9,5 +9,5 @@ const (
 	PrysmTag       = "v5.0.3"
 	LighthouseTag  = "v5.1.3"
 	TekuTag        = "24.4.0"
-	GethCommitHash = "c5ba367e"
+	GethCommitHash = "87246f3c"
 )
