@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.17.0](https://github.com/lukso-network/tools-lukso-cli/compare/v0.16.0...v0.17.0) (2024-05-06)
+
+
+### Features
+
+* trigger release ([#238](https://github.com/lukso-network/tools-lukso-cli/issues/238)) ([485e110](https://github.com/lukso-network/tools-lukso-cli/commit/485e110759f237bf7067257cf9df2a7e8b2d785d))
+
 ## [0.16.0](https://github.com/lukso-network/tools-lukso-cli/compare/v0.15.0...v0.16.0) (2024-02-29)
 
 
