@@ -48,7 +48,7 @@ Process of setting up the node using the LUKSO CLI.
 - Installation directory: `/usr/local/bin/lukso`
 
 ```sh
-# Might need admin access by typing `sudo` in front of the command
+# Might need admin access by typing `sudo` in front of the sh command
 $ curl https://install.lukso.network | sh
 ```
 
