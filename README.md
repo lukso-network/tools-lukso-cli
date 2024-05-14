@@ -172,11 +172,36 @@ $ lukso install
 $ lukso install --agree-terms
 ```
 
+#### Rollback clients to specific version
+
+`install` command allows you to install a specific version of a client. This means that you can easily roll back any client
+to a version of your choice.
+
+```sh
+# To roll back a client to specific version, you need to specify which version do you want to install.
+# Format of a flag is --<client>-tag, e.g. for Prysm:
+$ lukso install --prysm-tag v4.2.1
+# or Erigon:
+$ lukso install --erigon-tag 2.55.0
+
+# When rolling back Geth, please make sure to also provide first 8 characters of release commit hash.
+# You can find those on Geth's download page: https://geth.ethereum.org/downloads
+$ lukso install --geth-tag 1.14.0 --geth-commit-hash 87246f3c
+```
+
 #### Options for `install`
 
-| Option        | Description                               |
-| ------------- | ----------------------------------------- |
-| --agree-terms | Automatically accept Terms and Conditions |
+| Option                   | Description                                         | Default     |
+|--------------------------|-----------------------------------------------------|-------------|
+| --agree-terms            | Automatically accept Terms and Conditions           | false       |
+| --geth-tag value         | Tag for Geth                                        | "1.14.0"    |
+| --geth-commit-hash value | A hash of commit that is bound to given release tag | "87246f3c"  |
+| --validator-tag value    | Tag for validator binary                            | "v5.0.3"    |
+| --prysm-tag value        | Tag for Prysm                                       | "v5.0.3"    |
+| --erigon-tag value       | Tag for Erigon                                      | "2.59.3"    |
+| --lighthouse-tag value   | Tag for Lighthouse                                  | "v5.1.3"    |
+| --teku-tag value         | Tag for Teku                                        | "24.4.0"    |
+| --help, -h               | show  help                                          | false       |
 
 ### `update`
 `update` will install the newest verions of the clients that you selected duing installation process.  

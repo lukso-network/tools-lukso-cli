@@ -8,14 +8,12 @@ import (
 )
 
 func init() {
-	InstallFlags = make([]cli.Flag, 0)
 	InstallFlags = append(InstallFlags, GethDownloadFlags...)
 	InstallFlags = append(InstallFlags, ValidatorDownloadFlags...)
 	InstallFlags = append(InstallFlags, PrysmDownloadFlags...)
 	InstallFlags = append(InstallFlags, ErigonDownloadFlags...)
 	InstallFlags = append(InstallFlags, LighthouseDownloadFlags...)
 	InstallFlags = append(InstallFlags, TekuDownloadFlags...)
-	InstallFlags = append(InstallFlags, AppFlags...)
 
 	StartFlags = append(StartFlags, GethStartFlags...)
 	StartFlags = append(StartFlags, ErigonStartFlags...)
@@ -139,7 +137,13 @@ var (
 			Value: configs.MainnetConfig + "/shared",
 		},
 	}
-	InstallFlags      []cli.Flag
+	InstallFlags = []cli.Flag{
+		&cli.BoolFlag{
+			Name:  AgreeTermsFlag,
+			Usage: "Automatically accept Terms and Conditions",
+			Value: false,
+		},
+	}
 	UpdateConfigFlags []cli.Flag
 	StopFlags         = []cli.Flag{
 		executionSelectedFlag,
