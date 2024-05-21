@@ -72,7 +72,7 @@ This repository has a CI/CD pipeline set up that will automatically build a scri
 - Should only be used for testing
 - Will overwrite the LUKSO CLI that is currently installed
 
-> For PR builds please use the separate PR's GH 
+> For PR builds please use the separate PR's GH deployment
 
 ### Merging PRs
 
