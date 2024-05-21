@@ -72,7 +72,12 @@ This repository has a CI/CD pipeline set up that will automatically build a scri
 - Should only be used for testing
 - Will overwrite the LUKSO CLI that is currently installed
 
-> For PR builds please use the separate PR's GH deployment
+> For PR builds please use the separate PR's GH 
+
+### Merging PRs
+
+When the fix/feature is done and approved, please make sure to merge your PR in a way so that your latest commit's message contains either
+`fix:` or `feat:` prefix. This ensures that CI/CD will add your changes to a new GitHub release. 
 
 #### Using the LUKSO CLI URL
 
