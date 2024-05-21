@@ -18,13 +18,13 @@ The LUKSO CLI is able to install multiple clients for running the node.
 
 ### Client versions
 
-| Client     | Version | Release                                                      |
-|------------|---------|--------------------------------------------------------------|
-| Geth       | v1.14.0 | https://github.com/ethereum/go-ethereum/releases/tag/v1.14.0 |
-| Erigon     | v2.59.3 | https://github.com/ledgerwatch/erigon/releases/tag/v2.59.3   |
-| Prysm      | v5.0.3  | https://github.com/prysmaticlabs/prysm/releases/tag/v5.0.3   |
-| Lighthouse | v5.1.3  | https://github.com/sigp/lighthouse/releases/tag/v5.1.3       |
-| Teku       | v24.4.0 | https://github.com/Consensys/teku/releases/tag/24.4.0        |
+| Client     | Version  | Release                                                       |
+|------------|----------|---------------------------------------------------------------|
+| Geth       | v1.13.15 | https://github.com/ethereum/go-ethereum/releases/tag/v1.13.15 |
+| Erigon     | v2.59.3  | https://github.com/ledgerwatch/erigon/releases/tag/v2.59.3    |
+| Prysm      | v4.2.1   | https://github.com/prysmaticlabs/prysm/releases/tag/v4.2.1    |
+| Lighthouse | v5.1.3   | https://github.com/sigp/lighthouse/releases/tag/v5.1.3        |
+| Teku       | v24.4.0  | https://github.com/Consensys/teku/releases/tag/24.4.0         |
 
 > More clients will be added in the future.
 
@@ -186,22 +186,22 @@ $ lukso install --erigon-tag 2.55.0
 
 # When rolling back Geth, please make sure to also provide first 8 characters of release commit hash.
 # You can find those on Geth's download page: https://geth.ethereum.org/downloads
-$ lukso install --geth-tag 1.14.0 --geth-commit-hash 87246f3c
+$ lukso install --geth-tag 1.13.15 --geth-commit-hash c5ba367e
 ```
 
 #### Options for `install`
 
-| Option                   | Description                                         | Default     |
-|--------------------------|-----------------------------------------------------|-------------|
-| --agree-terms            | Automatically accept Terms and Conditions           | false       |
-| --geth-tag value         | Tag for Geth                                        | "1.14.0"    |
-| --geth-commit-hash value | A hash of commit that is bound to given release tag | "87246f3c"  |
-| --validator-tag value    | Tag for validator binary                            | "v5.0.3"    |
-| --prysm-tag value        | Tag for Prysm                                       | "v5.0.3"    |
-| --erigon-tag value       | Tag for Erigon                                      | "2.59.3"    |
-| --lighthouse-tag value   | Tag for Lighthouse                                  | "v5.1.3"    |
-| --teku-tag value         | Tag for Teku                                        | "24.4.0"    |
-| --help, -h               | show  help                                          | false       |
+| Option                   | Description                                         | Default    |
+|--------------------------|-----------------------------------------------------|------------|
+| --agree-terms            | Automatically accept Terms and Conditions           | false      |
+| --geth-tag value         | Tag for Geth                                        | "1.13.15"  |
+| --geth-commit-hash value | A hash of commit that is bound to given release tag | "c5ba367e" |
+| --validator-tag value    | Tag for validator binary                            | "v4.2.1"   |
+| --prysm-tag value        | Tag for Prysm                                       | "v4.2.1"   |
+| --erigon-tag value       | Tag for Erigon                                      | "2.59.3"   |
+| --lighthouse-tag value   | Tag for Lighthouse                                  | "v5.1.3"   |
+| --teku-tag value         | Tag for Teku                                        | "24.4.0"   |
+| --help, -h               | show  help                                          | false      |
 
 ### `update`
 `update` will install the newest verions of the clients that you selected duing installation process.  
