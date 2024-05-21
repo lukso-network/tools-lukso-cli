@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.17.2](https://github.com/lukso-network/tools-lukso-cli/compare/v0.17.1...v0.17.2) (2024-05-21)
+
+
+### Bug Fixes
+
+* Add brief information about PR merging ([#244](https://github.com/lukso-network/tools-lukso-cli/issues/244)) ([ae9ec51](https://github.com/lukso-network/tools-lukso-cli/commit/ae9ec51e0a4d272a210e5871a2e6b342ad4a22fd))
+
 ## [0.17.1](https://github.com/lukso-network/tools-lukso-cli/compare/v0.17.0...v0.17.1) (2024-05-15)
 
 
