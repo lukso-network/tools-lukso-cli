@@ -20,7 +20,7 @@ The LUKSO CLI is able to install multiple clients for running the node.
 
 | Client         | Version    | Release                                                       |
 |------------    |---------   |-------------------------------------------------------------- |
-| Geth           | v1.14.15   | https://github.com/ethereum/go-ethereum/releases/tag/v1.14.15 |
+| Geth           | v1.14.5    | https://github.com/ethereum/go-ethereum/releases/tag/v1.14.5  |
 | Erigon         | v2.59.3    | https://github.com/ledgerwatch/erigon/releases/tag/v2.59.3    |
 | Prysm          | v4.2.1     | https://github.com/prysmaticlabs/prysm/releases/tag/v4.2.1    |
 | Lighthouse     | v5.2.0     | https://github.com/sigp/lighthouse/releases/tag/v5.2.0        |
@@ -194,7 +194,7 @@ $ lukso install --geth-tag 1.13.15 --geth-commit-hash c5ba367e
 | Option                   | Description                                         | Default    |
 |--------------------------|-----------------------------------------------------|------------|
 | --agree-terms            | Automatically accept Terms and Conditions           | false      |
-| --geth-tag value         | Tag for Geth                                        | "1.14.15"  |
+| --geth-tag value         | Tag for Geth                                        | "1.14.5"   |
 | --geth-commit-hash value | A hash of commit that is bound to given release tag | "c5ba367e" |
 | --validator-tag value    | Tag for validator binary                            | "v4.2.1"   |
 | --prysm-tag value        | Tag for Prysm                                       | "v4.2.1"   |
