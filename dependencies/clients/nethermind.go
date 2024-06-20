@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"io/fs"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
+	"time"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
@@ -15,6 +17,7 @@ import (
 	"github.com/lukso-network/tools-lukso-cli/common/system"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
 	"github.com/lukso-network/tools-lukso-cli/flags"
+	"github.com/lukso-network/tools-lukso-cli/pid"
 )
 
 const (
@@ -68,6 +71,64 @@ func (n *NethermindClient) Install(url string, isUpdate bool) (err error) {
 	return
 }
 
+func (n *NethermindClient) Start(ctx *cli.Context, arguments []string) (err error) {
+	if n.IsRunning() {
+		log.Infof("🔄️  %s is already running - stopping first...", n.Name())
+
+		err = n.Stop()
+		if err != nil {
+			return
+		}
+
+		log.Infof("🛑  Stopped %s", n.Name())
+	}
+
+	command := exec.Command(fmt.Sprintf("./%s/nethermind", n.FilePath()), arguments...)
+
+	var (
+		logFile  *os.File
+		fullPath string
+	)
+
+	logFolder := ctx.String(flags.LogFolderFlag)
+	if logFolder == "" {
+		return utils.Exit(fmt.Sprintf("%v- %s", errors.ErrFlagMissing, flags.LogFolderFlag), 1)
+	}
+
+	fullPath, err = utils.PrepareTimestampedFile(logFolder, n.CommandName())
+	if err != nil {
+		return
+	}
+
+	err = os.WriteFile(fullPath, []byte{}, 0750)
+	if err != nil {
+		return
+	}
+
+	logFile, err = os.OpenFile(fullPath, os.O_RDWR, 0750)
+	if err != nil {
+		return
+	}
+
+	command.Stdout = logFile
+	command.Stderr = logFile
+
+	log.Infof("🔄  Starting %s", n.Name())
+	err = command.Start()
+	if err != nil {
+		return
+	}
+
+	pidLocation := fmt.Sprintf("%s/%s.pid", pid.FileDir, n.CommandName())
+	err = pid.Create(pidLocation, command.Process.Pid)
+
+	time.Sleep(1 * time.Second)
+
+	log.Infof("✅  %s started!", n.Name())
+
+	return
+}
+
 func (n *NethermindClient) ParseUrl(tag, commitHash string) (url string) {
 	url = n.baseUrl
 	osName := system.Os
@@ -106,14 +167,14 @@ func (n *NethermindClient) Update() (err error) {
 }
 
 func (n *NethermindClient) PrepareStartFlags(ctx *cli.Context) (startFlags []string, err error) {
-	if !utils.FlagFileExists(ctx, flags.GethConfigFileFlag) {
+	if !utils.FlagFileExists(ctx, flags.NethermindConfigFileFlag) {
 		err = errors.ErrFlagMissing
 
 		return
 	}
 
 	startFlags = n.ParseUserFlags(ctx)
-	startFlags = append(startFlags, fmt.Sprintf("--config=%s", ctx.String(flags.GethConfigFileFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--config=%s", ctx.String(flags.NethermindConfigFileFlag)))
 
 	return
 }

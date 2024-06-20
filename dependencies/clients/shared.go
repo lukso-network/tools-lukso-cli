@@ -427,7 +427,7 @@ func (client *clientBinary) ParseUrl(tag, commitHash string) (url string) {
 }
 
 func (client *clientBinary) FilePath() string {
-	return system.UnixBinDir + "/" + client.CommandName()
+	return nethermindDepsFolder
 }
 
 func (client *clientBinary) Name() string {
