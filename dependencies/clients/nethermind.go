@@ -182,3 +182,7 @@ func (n *NethermindClient) PrepareStartFlags(ctx *cli.Context) (startFlags []str
 func (n *NethermindClient) Peers(ctx *cli.Context) (outbound, inbound int, err error) {
 	return defaultExecutionPeers(ctx, 8545)
 }
+
+func (n *NethermindClient) FilePath() string {
+	return nethermindDepsFolder
+}

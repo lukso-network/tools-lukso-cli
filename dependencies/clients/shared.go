@@ -427,7 +427,7 @@ func (client *clientBinary) ParseUrl(tag, commitHash string) (url string) {
 }
 
 func (client *clientBinary) FilePath() string {
-	return nethermindDepsFolder
+	return system.UnixBinDir + "/" + client.CommandName()
 }
 
 func (client *clientBinary) Name() string {
@@ -689,7 +689,6 @@ func untarDir(dst string, t *tar.Reader) error {
 }
 
 func installAndExtractFromURL(url, name, dst, format string, isUpdate bool) (err error) {
-	fmt.Println("nethermind url:", url)
 	response, err := http.Get(url)
 	if nil != err {
 		return
