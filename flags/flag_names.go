@@ -11,6 +11,11 @@ const (
 	ErigonConfigFileFlag = "erigon-config"
 	ErigonDatadirFlag    = "erigon-datadir"
 
+	NethermindTagFlag        = "nethermind-tag"
+	NethermindCommitHashFlag = "nethermind-commit-hash"
+	NethermindConfigFileFlag = "nethermind-config"
+	NethermindDatadirFlag    = "nethermind-datadir"
+
 	PrysmTagFlag             = "prysm-tag"
 	GenesisStateFlag         = "genesis-ssz"
 	PrysmChainConfigFileFlag = "prysm-chain-config"

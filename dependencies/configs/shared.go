@@ -79,6 +79,9 @@ const (
 	erigonMainnetConfigName = "erigon mainnet config"
 	erigonTestnetConfigName = "erigon testnet config"
 
+	nethermindMainnetConfigName = "nethermind mainnet config"
+	nethermindTestnetConfigName = "nethermind testnet config"
+
 	prysmMainnetConfigDependencyName = "prysm mainnet config"
 	prysmTestnetConfigDependencyName = "prysm testnet config"
 
@@ -103,6 +106,7 @@ const (
 	DeployBlockPath             = "shared/deploy_block.txt"
 	GethTomlPath                = "geth/geth.toml"
 	ErigonTomlPath              = "erigon/erigon.toml"
+	NethermindCfgPath           = "nethermind/nethermind.cfg"
 	PrysmYamlPath               = "prysm/prysm.yaml"
 	ValidatorYamlPath           = "prysm/validator.yaml"
 	LighthouseTomlPath          = "lighthouse/lighthouse.toml"

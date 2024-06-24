@@ -14,6 +14,7 @@ func init() {
 	InstallFlags = append(InstallFlags, ErigonDownloadFlags...)
 	InstallFlags = append(InstallFlags, LighthouseDownloadFlags...)
 	InstallFlags = append(InstallFlags, TekuDownloadFlags...)
+	InstallFlags = append(InstallFlags, NethermindDownloadFlags...)
 
 	StartFlags = append(StartFlags, GethStartFlags...)
 	StartFlags = append(StartFlags, ErigonStartFlags...)
@@ -22,6 +23,7 @@ func init() {
 	StartFlags = append(StartFlags, ValidatorStartFlags...)
 	StartFlags = append(StartFlags, TekuStartFlags...)
 	StartFlags = append(StartFlags, NetworkFlags...)
+	StartFlags = append(StartFlags, NethermindStartFlags...)
 
 	LogsFlags = append(LogsFlags, GethLogsFlags...)
 	LogsFlags = append(LogsFlags, PrysmLogsFlags...)
@@ -274,6 +276,31 @@ var (
 		&cli.StringFlag{
 			Name:  ErigonDatadirFlag,
 			Usage: "Erigon datadir",
+			Value: configs.ExecutionMainnetDatadir,
+		},
+	}
+
+	NethermindDownloadFlags = []cli.Flag{
+		&cli.StringFlag{
+			Name:  NethermindTagFlag,
+			Usage: "Tag for nethermind",
+			Value: common.NethermindTag,
+		},
+		&cli.StringFlag{
+			Name:  NethermindCommitHashFlag,
+			Usage: "A hash of commit that is bound to given release tag",
+			Value: common.NethermindCommitHash,
+		},
+	}
+	NethermindStartFlags = []cli.Flag{
+		&cli.StringFlag{
+			Name:  NethermindConfigFileFlag,
+			Usage: "Path to nethermind.cfg config file",
+			Value: configs.MainnetConfig + "/" + configs.NethermindCfgPath,
+		},
+		&cli.StringFlag{
+			Name:  NethermindDatadirFlag,
+			Usage: "Nethermind datadir",
 			Value: configs.ExecutionMainnetDatadir,
 		},
 	}
