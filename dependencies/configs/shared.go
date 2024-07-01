@@ -19,27 +19,7 @@ const (
 	BinaryPerms   = os.ModePerm
 	ConfigRootDir = "./configs"
 
-	MainnetConfig = ConfigRootDir + "/mainnet"
-	TestnetConfig = ConfigRootDir + "/testnet"
-
-	MainnetLogs = "./mainnet-logs"
-	TestnetLogs = "./testnet-logs"
-
-	MainnetKeystore = "./mainnet-keystore"
-	TestnetKeystore = "./testnet-keystore"
-
-	MainnetDatadir = "./mainnet-data"
-	TestnetDatadir = "./testnet-data"
-
-	ExecutionMainnetDatadir = MainnetDatadir + "/execution"
-	ExecutionTestnetDatadir = TestnetDatadir + "/execution"
-
-	ConsensusMainnetDatadir = MainnetDatadir + "/consensus"
-	ConsensusTestnetDatadir = TestnetDatadir + "/consensus"
-
-	ValidatorMainnetDatadir = MainnetDatadir + "/validator"
-	ValidatorTestnetDatadir = TestnetDatadir + "/validator"
-
+	// NAMES
 	ExecutionLayer = "execution"
 	ConsensusLayer = "consensus"
 	ValidatorLayer = "validator"
@@ -51,22 +31,16 @@ const (
 	mainnetGenesis42DependencyName  = "mainnet genesis (42M)"
 	mainnetGenesis100DependencyName = "mainnet genesis (100M)"
 
+	// nethermind chainspec
+	mainnetGenesisChainspecDependencyName = "mainnet genesis chainspec"
+	testnetGenesisChainspecDependencyName = "testnet genesis chainspec"
+
 	// genesis state file names
 	mainnetGenesisStateDependencyName    = "mainnet genesis state"
 	testnetGenesisStateDependencyName    = "testnet genesis state"
 	mainnetGenesisState35DependencyName  = "mainnet genesis state (35M)"
 	mainnetGenesisState42DependencyName  = "mainnet genesis state (42M)"
 	mainnetGenesisState100DependencyName = "mainnet genesis state (100M)"
-
-	GenesisJsonPath    = "shared/genesis.json"
-	Genesis35JsonPath  = "shared/genesis_35.json"
-	Genesis42JsonPath  = "shared/genesis_42.json"
-	Genesis100JsonPath = "shared/genesis_100.json"
-
-	GenesisStateFilePath    = "shared/genesis.ssz"
-	GenesisState35FilePath  = "shared/genesis_35.ssz"
-	GenesisState42FilePath  = "shared/genesis_42.ssz"
-	GenesisState100FilePath = "shared/genesis_100.ssz"
 
 	// chain configurations
 	mainnetChainConfigDependencyName = "mainnet chain config"
@@ -102,6 +76,40 @@ const (
 	tekuMainnetChainConfigDependencyName = "teku mainnet chain config"
 	tekuTestnetChainConfigDependencyName = "teku testnet chain config"
 
+	// PATHS
+	GenesisJsonPath    = "shared/genesis.json"
+	Genesis35JsonPath  = "shared/genesis_35.json"
+	Genesis42JsonPath  = "shared/genesis_42.json"
+	Genesis100JsonPath = "shared/genesis_100.json"
+
+	GenesisStateFilePath    = "shared/genesis.ssz"
+	GenesisState35FilePath  = "shared/genesis_35.ssz"
+	GenesisState42FilePath  = "shared/genesis_42.ssz"
+	GenesisState100FilePath = "shared/genesis_100.ssz"
+
+	GenesisChainspecPath = "shared/chainspec.json"
+
+	MainnetConfig = ConfigRootDir + "/mainnet"
+	TestnetConfig = ConfigRootDir + "/testnet"
+
+	MainnetLogs = "./mainnet-logs"
+	TestnetLogs = "./testnet-logs"
+
+	MainnetKeystore = "./mainnet-keystore"
+	TestnetKeystore = "./testnet-keystore"
+
+	MainnetDatadir = "./mainnet-data"
+	TestnetDatadir = "./testnet-data"
+
+	ExecutionMainnetDatadir = MainnetDatadir + "/execution"
+	ExecutionTestnetDatadir = TestnetDatadir + "/execution"
+
+	ConsensusMainnetDatadir = MainnetDatadir + "/consensus"
+	ConsensusTestnetDatadir = TestnetDatadir + "/consensus"
+
+	ValidatorMainnetDatadir = MainnetDatadir + "/validator"
+	ValidatorTestnetDatadir = TestnetDatadir + "/validator"
+
 	ChainConfigYamlPath         = "shared/config.yaml"
 	DeployBlockPath             = "shared/deploy_block.txt"
 	GethTomlPath                = "geth/geth.toml"
@@ -134,6 +142,11 @@ var (
 			name:     mainnetChainConfigDependencyName,
 			filePath: MainnetConfig + "/" + ChainConfigYamlPath,
 		},
+		mainnetGenesisChainspecDependencyName: &clientConfig{
+			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/chainspec.json",
+			name:     mainnetGenesisChainspecDependencyName,
+			filePath: MainnetConfig + "/" + GenesisChainspecPath,
+		},
 		deployBlockMainnetConfigDependencyName: &clientConfig{
 			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/lighthouse/deploy_block.txt",
 			name:     deployBlockMainnetConfigDependencyName,
@@ -153,6 +166,11 @@ var (
 			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/shared/config.yaml",
 			name:     testnetChainConfigDependencyName,
 			filePath: TestnetConfig + "/" + ChainConfigYamlPath,
+		},
+		testnetGenesisChainspecDependencyName: &clientConfig{
+			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/shared/chainspec.json",
+			name:     mainnetGenesisChainspecDependencyName,
+			filePath: TestnetConfig + "/" + GenesisChainspecPath,
 		},
 		deployBlockTestnetConfigDependencyName: &clientConfig{
 			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/lighthouse/deploy_block.txt",
@@ -162,46 +180,16 @@ var (
 	}
 	UpdateConfigDependencies = map[string]ClientConfigDependency{
 		// same as SharedConfigDependencies but with added Teku chain configs
-		mainnetGenesisDependencyName: &clientConfig{
-			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/genesis.json",
-			name:     mainnetGenesisDependencyName,
-			filePath: MainnetConfig + "/" + GenesisJsonPath,
-		},
-		mainnetGenesisStateDependencyName: &clientConfig{
-			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/genesis.ssz",
-			name:     mainnetGenesisStateDependencyName,
-			filePath: MainnetConfig + "/" + GenesisStateFilePath,
-		},
-		mainnetChainConfigDependencyName: &clientConfig{
-			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/config.yaml",
-			name:     mainnetChainConfigDependencyName,
-			filePath: MainnetConfig + "/" + ChainConfigYamlPath,
-		},
-		deployBlockMainnetConfigDependencyName: &clientConfig{
-			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/lighthouse/deploy_block.txt",
-			name:     deployBlockMainnetConfigDependencyName,
-			filePath: MainnetConfig + "/" + DeployBlockPath,
-		},
-		testnetGenesisDependencyName: &clientConfig{
-			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/shared/genesis.json",
-			name:     testnetGenesisDependencyName,
-			filePath: TestnetConfig + "/" + GenesisJsonPath,
-		},
-		testnetGenesisStateDependencyName: &clientConfig{
-			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/shared/genesis.ssz",
-			name:     testnetGenesisStateDependencyName,
-			filePath: TestnetConfig + "/" + GenesisStateFilePath,
-		},
-		testnetChainConfigDependencyName: &clientConfig{
-			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/shared/config.yaml",
-			name:     testnetChainConfigDependencyName,
-			filePath: TestnetConfig + "/" + ChainConfigYamlPath,
-		},
-		deployBlockTestnetConfigDependencyName: &clientConfig{
-			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/lighthouse/deploy_block.txt",
-			name:     deployBlockTestnetConfigDependencyName,
-			filePath: TestnetConfig + "/" + DeployBlockPath,
-		},
+		mainnetGenesisDependencyName:           SharedConfigDependencies[mainnetGenesisDependencyName],
+		mainnetGenesisStateDependencyName:      SharedConfigDependencies[mainnetGenesisStateDependencyName],
+		mainnetChainConfigDependencyName:       SharedConfigDependencies[mainnetChainConfigDependencyName],
+		mainnetGenesisChainspecDependencyName:  SharedConfigDependencies[mainnetGenesisChainspecDependencyName],
+		deployBlockMainnetConfigDependencyName: SharedConfigDependencies[deployBlockMainnetConfigDependencyName],
+		testnetGenesisDependencyName:           SharedConfigDependencies[testnetGenesisDependencyName],
+		testnetGenesisStateDependencyName:      SharedConfigDependencies[testnetGenesisStateDependencyName],
+		testnetChainConfigDependencyName:       SharedConfigDependencies[testnetChainConfigDependencyName],
+		testnetGenesisChainspecDependencyName:  SharedConfigDependencies[testnetGenesisChainspecDependencyName],
+		deployBlockTestnetConfigDependencyName: SharedConfigDependencies[deployBlockTestnetConfigDependencyName],
 		tekuMainnetChainConfigDependencyName: &clientConfig{
 			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/teku/config.yaml",
 			name:     tekuMainnetChainConfigDependencyName,
