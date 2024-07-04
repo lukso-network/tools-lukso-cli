@@ -87,7 +87,7 @@ const (
 	GenesisState42FilePath  = "shared/genesis_42.ssz"
 	GenesisState100FilePath = "shared/genesis_100.ssz"
 
-	GenesisChainspecPath = "shared/chainspec.json"
+	GenesisChainspecPath = "nethermind/chainspec.json"
 
 	MainnetConfig = ConfigRootDir + "/mainnet"
 	TestnetConfig = ConfigRootDir + "/testnet"
@@ -143,7 +143,7 @@ var (
 			filePath: MainnetConfig + "/" + ChainConfigYamlPath,
 		},
 		mainnetGenesisChainspecDependencyName: &clientConfig{
-			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/chainspec.json",
+			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/nethermind/chainspec.json",
 			name:     mainnetGenesisChainspecDependencyName,
 			filePath: MainnetConfig + "/" + GenesisChainspecPath,
 		},
@@ -168,7 +168,7 @@ var (
 			filePath: TestnetConfig + "/" + ChainConfigYamlPath,
 		},
 		testnetGenesisChainspecDependencyName: &clientConfig{
-			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/shared/chainspec.json",
+			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/nethermind/chainspec.json",
 			name:     mainnetGenesisChainspecDependencyName,
 			filePath: TestnetConfig + "/" + GenesisChainspecPath,
 		},
