@@ -92,15 +92,15 @@ func (t *TekuClient) Install(url string, isUpdate bool) (err error) {
 		if err != nil {
 			return
 		}
-	}
 
-	permFunc := func(path string, d fs.DirEntry, err error) error {
-		return os.Chmod(path, fs.ModePerm)
-	}
+		permFunc := func(path string, d fs.DirEntry, err error) error {
+			return os.Chmod(path, fs.ModePerm)
+		}
 
-	err = filepath.WalkDir(tekuDepsFolder, permFunc)
-	if err != nil {
-		return
+		err = filepath.WalkDir(tekuDepsFolder, permFunc)
+		if err != nil {
+			return
+		}
 	}
 
 	return
@@ -209,7 +209,7 @@ func setupJava(isUpdate bool) (err error) {
 
 	javaHomeVal := fmt.Sprintf("%s/%s/%s", luksoNodeDir, Teku.FilePath(), jdkFolder)
 
-	log.Infof("⚙️  To continue working with Teku please export the JAVA_HOME environment variable.\n"+
+	log.Infof("⚙️  To continue working with Java clients please export the JAVA_HOME environment variable.\n"+
 		"The recommended way is to add the following line:\n\n"+
 		"export JAVA_HOME=%s\n\n"+
 		"To the bash startup file of your choosing (like .bashrc)", javaHomeVal)

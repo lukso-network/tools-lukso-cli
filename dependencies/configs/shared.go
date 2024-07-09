@@ -56,6 +56,9 @@ const (
 	nethermindMainnetConfigName = "nethermind mainnet config"
 	nethermindTestnetConfigName = "nethermind testnet config"
 
+	besuMainnetConfigName = "besu mainnet config"
+	besuTestnetConfigName = "besu testnet config"
+
 	prysmMainnetConfigDependencyName = "prysm mainnet config"
 	prysmTestnetConfigDependencyName = "prysm testnet config"
 
@@ -115,6 +118,7 @@ const (
 	GethTomlPath                = "geth/geth.toml"
 	ErigonTomlPath              = "erigon/erigon.toml"
 	NethermindCfgPath           = "nethermind/nethermind.cfg"
+	BesuYamlPath                = "besu/besu.yaml"
 	PrysmYamlPath               = "prysm/prysm.yaml"
 	ValidatorYamlPath           = "prysm/validator.yaml"
 	LighthouseTomlPath          = "lighthouse/lighthouse.toml"

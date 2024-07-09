@@ -38,6 +38,7 @@ const (
 	tekuDependencyName                = "Teku"
 	tekuValidatorDependencyName       = "Teku Validator"
 	nethermindDependencyName          = "Nethermind"
+	besuDependencyName                = "Besu"
 
 	gethGithubLocation          = "ethereum/go-ethereum"
 	prysmaticLabsGithubLocation = "prysmaticlabs/prysm"
@@ -45,6 +46,7 @@ const (
 	erigonGithubLocation        = "ledgerwatch/erigon"
 	tekuGithubLocation          = "Consensys/teku"
 	nethermindGithubLocation    = "NethermindEth/nethermind"
+	besuGithubLocation          = "hyperledger/besu"
 
 	peerDirectionInbound  = "inbound"
 	peerDirectionOutbound = "outbound"
@@ -66,6 +68,7 @@ var (
 		tekuDependencyName:                Teku,
 		tekuValidatorDependencyName:       TekuValidator,
 		nethermindDependencyName:          Nethermind,
+		besuDependencyName:                Besu,
 	}
 
 	ClientVersions = map[string]string{
@@ -77,6 +80,7 @@ var (
 		prysmValidatorDependencyName:      common.PrysmTag,
 		lighthouseValidatorDependencyName: common.LighthouseTag,
 		tekuDependencyName:                common.TekuTag,
+		besuDependencyName:                common.BesuTag,
 	}
 )
 
@@ -833,4 +837,19 @@ func getUnameArch() (arch string) {
 	}
 
 	return
+}
+
+func isJdkInstalled() bool {
+	// JDK installed outside of the CLI
+	_, isInstalled := os.LookupEnv(system.JavaHomeEnv)
+	if isInstalled {
+		return true
+	}
+
+	_, err := os.Stat(jdkFolder)
+	if err == nil {
+		return true
+	}
+
+	return false
 }
