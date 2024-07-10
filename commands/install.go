@@ -44,7 +44,7 @@ func InstallBinaries(ctx *cli.Context) (err error) {
 		"1: prysm\n2: lighthouse\n3: teku\n> "
 
 	executionMessage := "\nWhich execution client do you want to install?\n" +
-		"1: geth\n2: erigon\n> "
+		"1: geth\n2: erigon\n3: nethermind\n> "
 
 	consensusInput = utils.RegisterInputWithMessage(consensusMessage)
 	for consensusInput != "1" && consensusInput != "2" && consensusInput != "3" {
@@ -64,7 +64,7 @@ func InstallBinaries(ctx *cli.Context) (err error) {
 	}
 
 	executionInput = utils.RegisterInputWithMessage(executionMessage)
-	for executionInput != "1" && executionInput != "2" {
+	for executionInput != "1" && executionInput != "2" && executionInput != "3" {
 		executionInput = utils.RegisterInputWithMessage("Please provide a valid option\n> ")
 	}
 
@@ -76,6 +76,10 @@ func InstallBinaries(ctx *cli.Context) (err error) {
 	case "2":
 		selectedExecution = clients.Erigon
 		executionTag = ctx.String(flags.ErigonTagFlag)
+	case "3":
+		selectedExecution = clients.Nethermind
+		executionTag = ctx.String(flags.NethermindTagFlag)
+		commitHash = ctx.String(flags.NethermindCommitHashFlag)
 	}
 
 	if selectedConsensus == clients.Prysm {

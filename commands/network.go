@@ -88,9 +88,10 @@ func SelectNetworkFor(f func(*cli.Context) error) func(*cli.Context) error {
 // updateValues is responsible for overriding values for data and logs directories etc.
 func updateValues(ctx *cli.Context, config networkConfig) (err error) {
 	var (
-		//genesisJson  = config.configPath + "/" + genesisJsonPath
+		// genesisJson  = config.configPath + "/" + genesisJsonPath
 		gethTomlPath                = config.configPath + "/" + configs.GethTomlPath
 		erigonTomlPath              = config.configPath + "/" + configs.ErigonTomlPath
+		nethermindCfgPath           = config.configPath + "/" + configs.NethermindCfgPath
 		prysmYamlPath               = config.configPath + "/" + configs.PrysmYamlPath
 		lighthouseTomlPath          = config.configPath + "/" + configs.LighthouseTomlPath
 		lighthouseValidatorTomlPath = config.configPath + "/" + configs.LighthouseValidatorTomlPath
@@ -121,6 +122,7 @@ func updateValues(ctx *cli.Context, config networkConfig) (err error) {
 		flags.ValidatorKeysFlag:                 config.keysPath,
 		flags.GethConfigFileFlag:                gethTomlPath,
 		flags.ErigonConfigFileFlag:              erigonTomlPath,
+		flags.NethermindConfigFileFlag:          nethermindCfgPath,
 		flags.PrysmConfigFileFlag:               prysmYamlPath,
 		flags.LighthouseConfigFileFlag:          lighthouseTomlPath,
 		flags.LighthouseValidatorConfigFileFlag: lighthouseValidatorTomlPath,

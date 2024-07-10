@@ -2,6 +2,7 @@ package clients
 
 import (
 	"archive/tar"
+	"archive/zip"
 	"bytes"
 	"compress/gzip"
 	"encoding/json"
@@ -10,6 +11,7 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -35,16 +37,22 @@ const (
 	erigonDependencyName              = "Erigon"
 	tekuDependencyName                = "Teku"
 	tekuValidatorDependencyName       = "Teku Validator"
+	nethermindDependencyName          = "Nethermind"
 
 	gethGithubLocation          = "ethereum/go-ethereum"
 	prysmaticLabsGithubLocation = "prysmaticlabs/prysm"
 	lighthouseGithubLocation    = "sigp/lighthouse"
 	erigonGithubLocation        = "ledgerwatch/erigon"
 	tekuGithubLocation          = "Consensys/teku"
+	nethermindGithubLocation    = "NethermindEth/nethermind"
 
 	peerDirectionInbound  = "inbound"
 	peerDirectionOutbound = "outbound"
 	peerStateConnected    = "connected"
+
+	// distinct between zip and tar archives
+	zipFormat = "zip"
+	tarFormat = "tar"
 )
 
 var (
@@ -57,11 +65,13 @@ var (
 		lighthouseValidatorDependencyName: LighthouseValidator,
 		tekuDependencyName:                Teku,
 		tekuValidatorDependencyName:       TekuValidator,
+		nethermindDependencyName:          Nethermind,
 	}
 
 	ClientVersions = map[string]string{
 		gethDependencyName:                common.GethTag,
 		erigonDependencyName:              common.ErigonTag,
+		nethermindDependencyName:          common.NethermindTag,
 		prysmDependencyName:               common.PrysmTag,
 		lighthouseDependencyName:          common.LighthouseTag,
 		prysmValidatorDependencyName:      common.PrysmTag,
@@ -306,7 +316,6 @@ func (client *clientBinary) Install(url string, isUpdate bool) (err error) {
 	}
 
 	return
-
 }
 
 func (client *clientBinary) Update() (err error) {
@@ -621,6 +630,206 @@ func defaultConsensusPeers(ctx *cli.Context, defaultPort int) (outbound, inbound
 		case peerDirectionOutbound:
 			outbound++
 		}
+	}
+
+	return
+}
+
+func untarDir(dst string, t *tar.Reader) error {
+	for {
+		header, err := t.Next()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return err
+		}
+
+		path := filepath.Join(dst, header.Name)
+
+		// for the sake of compatibility with updated versions remove the tag from the tarred file - teku/teku-xx.x.x => teku/teku, same with jdk
+		switch {
+		case strings.Contains(header.Name, tekuFolder):
+			newHeader := replaceRootFolderName(header.Name, tekuFolder)
+			path = filepath.Join(dst, newHeader)
+
+		case strings.Contains(header.Name, jdkFolder):
+			newHeader := replaceRootFolderName(header.Name, jdkFolder)
+			path = filepath.Join(dst, newHeader)
+		}
+
+		info := header.FileInfo()
+		if info.IsDir() {
+			err = os.MkdirAll(path, info.Mode())
+			if err != nil {
+				return err
+			}
+
+			continue
+		}
+
+		dir := filepath.Dir(path)
+		err = os.MkdirAll(dir, info.Mode())
+		if err != nil {
+			return err
+		}
+
+		file, err := os.OpenFile(path, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, info.Mode())
+		if err != nil {
+			return err
+		}
+		defer file.Close()
+		_, err = io.Copy(file, t)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func installAndExtractFromURL(url, name, dst, format string, isUpdate bool) (err error) {
+	response, err := http.Get(url)
+	if nil != err {
+		return
+	}
+
+	defer func() {
+		_ = response.Body.Close()
+	}()
+
+	if response.StatusCode == http.StatusNotFound {
+		log.Warnf("⚠️  File under URL %s not found - skipping...", url)
+
+		return nil
+	}
+
+	if http.StatusOK != response.StatusCode {
+		return fmt.Errorf(
+			"❌  Invalid response when downloading file at URL: %s. Response code: %s",
+			url,
+			response.Status,
+		)
+	}
+
+	switch format {
+	case tarFormat:
+		var g *gzip.Reader
+		g, err = gzip.NewReader(response.Body)
+		if err != nil {
+			return
+		}
+
+		defer func() {
+			_ = g.Close()
+		}()
+
+		tarReader := tar.NewReader(g)
+
+		err = untarDir(dst, tarReader)
+		if err != nil {
+			return
+		}
+
+	case zipFormat:
+		b, err := io.ReadAll(response.Body)
+		if err != nil {
+			return err
+		}
+
+		buf := bytes.NewReader(b)
+		var r *zip.Reader
+
+		r, err = zip.NewReader(buf, int64(buf.Len()))
+		if err != nil {
+			return err
+		}
+
+		err = unzipDir(dst, r)
+		if err != nil {
+			return err
+		}
+	}
+
+	switch isUpdate {
+	case true:
+		log.Infof("✅  %s updated!\n\n", name)
+	case false:
+		log.Infof("✅  %s downloaded!\n\n", name)
+	}
+
+	return
+}
+
+func unzipDir(dst string, r *zip.Reader) (err error) {
+	for _, header := range r.File {
+		path := filepath.Join(dst, header.Name)
+
+		info := header.FileInfo()
+		if info.IsDir() {
+			err = os.MkdirAll(path, info.Mode())
+			if err != nil {
+				return err
+			}
+
+			continue
+		}
+
+		dir := filepath.Dir(path)
+		err = os.MkdirAll(dir, info.Mode())
+		if err != nil {
+			return err
+		}
+
+		file, err := os.OpenFile(path, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, info.Mode())
+		if err != nil {
+			return err
+		}
+
+		defer file.Close()
+
+		readFile, err := header.Open()
+		if err != nil {
+			return err
+		}
+
+		_, err = io.Copy(file, readFile)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func getUnameArch() (arch string) {
+	fallback := func() {
+		log.Info("⚠️  Unknown OS detected: proceeding with x86_64 as a default arch")
+		arch = "x86_64"
+	}
+
+	switch system.Os {
+	case system.Ubuntu, system.Macos:
+		buf := new(bytes.Buffer)
+
+		uname := exec.Command("uname", "-m")
+		uname.Stdout = buf
+
+		err := uname.Run()
+		if err != nil {
+			fallback()
+
+			break
+		}
+
+		arch = strings.Trim(buf.String(), "\n\t ")
+
+	default:
+		fallback()
+	}
+
+	if arch != "x86_64" && arch != "aarch64" {
+		fallback()
 	}
 
 	return

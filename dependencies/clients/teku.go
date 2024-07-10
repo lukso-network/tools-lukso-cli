@@ -1,12 +1,8 @@
 package clients
 
 import (
-	"archive/tar"
-	"compress/gzip"
 	"fmt"
-	"io"
 	"io/fs"
-	"net/http"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -73,7 +69,7 @@ func (t *TekuClient) Install(url string, isUpdate bool) (err error) {
 		}
 	}
 
-	err = installAndUntarFromURL(url, t.name, isUpdate)
+	err = installAndExtractFromURL(url, t.name, t.FilePath(), tarFormat, isUpdate)
 	if err != nil {
 		return
 	}
@@ -126,7 +122,7 @@ func (t *TekuClient) Start(ctx *cli.Context, arguments []string) (err error) {
 		log.Infof("🛑  Stopped %s", t.Name())
 	}
 
-	command := exec.Command(fmt.Sprintf("./%s/%s/bin/teku", tekuDepsFolder, tekuFolder), arguments...)
+	command := exec.Command(fmt.Sprintf("./%s/%s/bin/teku", t.FilePath(), tekuFolder), arguments...)
 
 	var (
 		logFile  *os.File
@@ -176,59 +172,6 @@ func (t *TekuClient) Peers(ctx *cli.Context) (outbound, inbound int, err error) 
 	return defaultConsensusPeers(ctx, 5051)
 }
 
-func untarDir(dst string, t *tar.Reader) error {
-	for {
-		header, err := t.Next()
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			return err
-		}
-
-		path := filepath.Join(dst, header.Name)
-
-		// for the sake of compatibility with updated versions remove the tag from the tarred file - teku/teku-xx.x.x => teku/teku, same with jdk
-		switch {
-		case strings.Contains(header.Name, tekuFolder):
-			newHeader := replaceRootFolderName(header.Name, tekuFolder)
-			path = filepath.Join(dst, newHeader)
-
-		case strings.Contains(header.Name, jdkFolder):
-			newHeader := replaceRootFolderName(header.Name, jdkFolder)
-			path = filepath.Join(dst, newHeader)
-		}
-
-		info := header.FileInfo()
-		if info.IsDir() {
-			err = os.MkdirAll(path, info.Mode())
-			if err != nil {
-				return err
-			}
-
-			continue
-		}
-
-		dir := filepath.Dir(path)
-		err = os.MkdirAll(dir, info.Mode())
-		if err != nil {
-			return err
-		}
-
-		file, err := os.OpenFile(path, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, info.Mode())
-		if err != nil {
-			return err
-		}
-		defer file.Close()
-		_, err = io.Copy(file, t)
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
 func setupJava(isUpdate bool) (err error) {
 	log.Info("⬇️  Downloading JDK...")
 
@@ -254,7 +197,7 @@ func setupJava(isUpdate bool) (err error) {
 	jdkURL := strings.Replace(jdkInstallURL, "|OS|", systemOs, -1)
 	jdkURL = strings.Replace(jdkURL, "|ARCH|", arch, -1)
 
-	err = installAndUntarFromURL(jdkURL, "JDK", isUpdate)
+	err = installAndExtractFromURL(jdkURL, "JDK", Teku.FilePath(), tarFormat, isUpdate)
 	if err != nil {
 		return err
 	}
@@ -264,7 +207,7 @@ func setupJava(isUpdate bool) (err error) {
 		return
 	}
 
-	javaHomeVal := fmt.Sprintf("%s/%s/%s", luksoNodeDir, tekuDepsFolder, jdkFolder)
+	javaHomeVal := fmt.Sprintf("%s/%s/%s", luksoNodeDir, Teku.FilePath(), jdkFolder)
 
 	log.Infof("⚙️  To continue working with Teku please export the JAVA_HOME environment variable.\n"+
 		"The recommended way is to add the following line:\n\n"+
@@ -274,58 +217,8 @@ func setupJava(isUpdate bool) (err error) {
 	return
 }
 
-func installAndUntarFromURL(url, name string, isUpdate bool) (err error) {
-	response, err := http.Get(url)
-	if nil != err {
-		return
-	}
-
-	defer func() {
-		_ = response.Body.Close()
-	}()
-
-	if response.StatusCode == http.StatusNotFound {
-		log.Warnf("⚠️  File under URL %s not found - skipping...", url)
-
-		return nil
-	}
-
-	if http.StatusOK != response.StatusCode {
-		return fmt.Errorf(
-			"❌  Invalid response when downloading file at URL: %s. Response code: %s",
-			url,
-			response.Status,
-		)
-	}
-
-	g, err := gzip.NewReader(response.Body)
-	if err != nil {
-		return err
-	}
-
-	defer func() {
-		_ = g.Close()
-	}()
-
-	tarReader := tar.NewReader(g)
-
-	err = untarDir(Teku.FilePath(), tarReader)
-	if err != nil {
-		return
-	}
-
-	switch isUpdate {
-	case true:
-		log.Infof("✅  %s updated!\n\n", name)
-	case false:
-		log.Infof("✅  %s downloaded!\n\n", name)
-	}
-
-	return
-}
-
 func replaceRootFolderName(folder, targetRootName string) (path string) {
-	splitHeader := strings.Split(folder, "/") //this assumes no / at the beginning of folder - not the case in tarred files we are interested in
+	splitHeader := strings.Split(folder, "/") // this assumes no / at the beginning of folder - not the case in tarred files we are interested in
 
 	switch len(splitHeader) {
 	case 0:

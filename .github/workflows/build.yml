@@ -111,13 +111,13 @@ jobs:
             goarch: arm
 
           - target: x86_64-apple-darwin
-            os: macOS-11
+            os: macOS-latest
             name: lukso-x86_64-apple-darwin.tar.gz
             goos: darwin
             goarch: amd64
 
           - target: aarch64-apple-darwin
-            os: macOS-11
+            os: macOS-latest
             name: lukso-aarch64-apple-darwin.tar.gz
             goos: darwin
             goarch: arm64

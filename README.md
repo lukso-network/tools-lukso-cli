@@ -12,19 +12,20 @@ The LUKSO CLI is a command line tool to install, manage and set up validators of
 
 The LUKSO CLI is able to install multiple clients for running the node.
 
-- Execution Clients: [Geth](https://geth.ethereum.org/), [Erigon](https://github.com/ledgerwatch/erigon)
+- Execution Clients: [Geth](https://geth.ethereum.org/), [Erigon](https://github.com/ledgerwatch/erigon), [Nethermind](https://github.com/NethermindEth/nethermind)
 - Consensus Clients: [Prysm](https://github.com/prysmaticlabs/prysm), [Lighthouse](https://github.com/sigp/lighthouse), [Teku](https://github.com/Consensys/teku)
 - Validator Staking Clients: [Prysm](https://docs.prylabs.network/docs/how-prysm-works/prysm-validator-client), [Lighthouse](https://github.com/sigp/lighthouse), [Teku](https://github.com/Consensys/teku)
 
 ### Client versions
 
-| Client     | Version  | Release                                                       |
-|------------|----------|---------------------------------------------------------------|
-| Geth       | v1.13.15 | https://github.com/ethereum/go-ethereum/releases/tag/v1.13.15 |
-| Erigon     | v2.59.3  | https://github.com/ledgerwatch/erigon/releases/tag/v2.59.3    |
-| Prysm      | v4.2.1   | https://github.com/prysmaticlabs/prysm/releases/tag/v4.2.1    |
-| Lighthouse | v5.1.3   | https://github.com/sigp/lighthouse/releases/tag/v5.1.3        |
-| Teku       | v24.4.0  | https://github.com/Consensys/teku/releases/tag/24.4.0         |
+| Client     | Version  | Release                                                            |
+|------------|----------|---------------------------------------------------------------     |
+| Geth       | v1.13.15 | https://github.com/ethereum/go-ethereum/releases/tag/v1.13.15      |
+| Erigon     | v2.59.3  | https://github.com/ledgerwatch/erigon/releases/tag/v2.59.3         |
+| Nethermind | v1.26.0  | https://github.com/NethermindEth/nethermind/releases/tag/1.26.0    |
+| Prysm      | v4.2.1   | https://github.com/prysmaticlabs/prysm/releases/tag/v4.2.1         |
+| Lighthouse | v5.1.3   | https://github.com/sigp/lighthouse/releases/tag/v5.1.3             |
+| Teku       | v24.4.0  | https://github.com/Consensys/teku/releases/tag/24.4.0              |
 
 > More clients will be added in the future.
 
