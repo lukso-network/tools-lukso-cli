@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.18.0](https://github.com/lukso-network/tools-lukso-cli/compare/v0.17.2...v0.18.0) (2024-07-10)
+
+
+### Features
+
+* Nethermind support ([#247](https://github.com/lukso-network/tools-lukso-cli/issues/247)) ([f85110a](https://github.com/lukso-network/tools-lukso-cli/commit/f85110a9eabf36d68602a061708039206dcdff37))
+
 ## [0.17.2](https://github.com/lukso-network/tools-lukso-cli/compare/v0.17.1...v0.17.2) (2024-05-21)
 
 
