@@ -16,6 +16,10 @@ const (
 	NethermindConfigFileFlag = "nethermind-config"
 	NethermindDatadirFlag    = "nethermind-datadir"
 
+	BesuTagFlag        = "besu-tag"
+	BesuConfigFileFlag = "besu-config"
+	BesuDatadirFlag    = "besu-datadir"
+
 	PrysmTagFlag             = "prysm-tag"
 	GenesisStateFlag         = "genesis-ssz"
 	PrysmChainConfigFileFlag = "prysm-chain-config"

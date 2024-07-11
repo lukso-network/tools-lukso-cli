@@ -55,6 +55,9 @@ const (
 	// distinct between zip and tar archives
 	zipFormat = "zip"
 	tarFormat = "tar"
+
+	clientDepsFolder = "clients" // folder in which client dependencies are stored
+	jdkFolder        = clientDepsFolder + "/jdk"
 )
 
 var (
@@ -653,13 +656,21 @@ func untarDir(dst string, t *tar.Reader) error {
 
 		// for the sake of compatibility with updated versions remove the tag from the tarred file - teku/teku-xx.x.x => teku/teku, same with jdk
 		switch {
-		case strings.Contains(header.Name, tekuFolder):
-			newHeader := replaceRootFolderName(header.Name, tekuFolder)
+		case strings.Contains(header.Name, "teku-"):
+			newHeader := replaceRootFolderName(header.Name, "teku")
 			path = filepath.Join(dst, newHeader)
+			break
 
-		case strings.Contains(header.Name, jdkFolder):
-			newHeader := replaceRootFolderName(header.Name, jdkFolder)
+		case strings.Contains(header.Name, "jdk-"):
+			newHeader := replaceRootFolderName(header.Name, "jdk")
 			path = filepath.Join(dst, newHeader)
+			break
+
+		case strings.Contains(header.Name, "besu-"):
+			newHeader := replaceRootFolderName(header.Name, "besu")
+			path = filepath.Join(dst, newHeader)
+			break
+
 		}
 
 		info := header.FileInfo()

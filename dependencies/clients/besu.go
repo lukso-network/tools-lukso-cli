@@ -13,13 +13,12 @@ import (
 	"github.com/urfave/cli/v2"
 
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
-	"github.com/lukso-network/tools-lukso-cli/common/system"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
 	"github.com/lukso-network/tools-lukso-cli/flags"
 	"github.com/lukso-network/tools-lukso-cli/pid"
 )
 
-const besuDepsFolder = "besu"
+const besuFolder = clientDepsFolder + "/besu"
 
 type BesuClient struct {
 	*clientBinary
@@ -59,12 +58,12 @@ func (b *BesuClient) Install(url string, isUpdate bool) (err error) {
 		}
 	}
 
-	err = installAndExtractFromURL(url, b.name, b.FilePath(), tarFormat, isUpdate)
+	err = installAndExtractFromURL(url, b.name, clientDepsFolder, tarFormat, isUpdate)
 	if err != nil {
 		return
 	}
 
-	_, isInstalled := os.LookupEnv(system.JavaHomeEnv) // means that JDk is not set up
+	isInstalled := isJdkInstalled()
 	if !isInstalled {
 		message := "Besu is written in Java. This means that to use it you need to have:\n" +
 			"- JDK installed on your computer\n" +
@@ -87,7 +86,7 @@ func (b *BesuClient) Install(url string, isUpdate bool) (err error) {
 			return os.Chmod(path, fs.ModePerm)
 		}
 
-		err = filepath.WalkDir(tekuDepsFolder, permFunc)
+		err = filepath.WalkDir(b.FilePath(), permFunc)
 		if err != nil {
 			return
 		}
@@ -97,7 +96,7 @@ func (b *BesuClient) Install(url string, isUpdate bool) (err error) {
 }
 
 func (b *BesuClient) FilePath() string {
-	return besuDepsFolder
+	return besuFolder
 }
 
 func (b *BesuClient) Start(ctx *cli.Context, arguments []string) (err error) {
@@ -112,7 +111,7 @@ func (b *BesuClient) Start(ctx *cli.Context, arguments []string) (err error) {
 		log.Infof("🛑  Stopped %s", b.Name())
 	}
 
-	command := exec.Command(fmt.Sprintf("./%s/bin/teku", b.FilePath(), tekuFolder), arguments...)
+	command := exec.Command(fmt.Sprintf("./%s/bin/teku", b.FilePath()), arguments...)
 
 	var (
 		logFile  *os.File

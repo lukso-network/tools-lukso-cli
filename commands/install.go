@@ -88,9 +88,8 @@ func InstallBinaries(ctx *cli.Context) (err error) {
 		executionTag = ctx.String(flags.NethermindTagFlag)
 		commitHash = ctx.String(flags.NethermindCommitHashFlag)
 	case "4":
-		selectedExecution = clients.Nethermind
-		executionTag = ctx.String(flags.NethermindTagFlag)
-		commitHash = ctx.String(flags.NethermindCommitHashFlag)
+		selectedExecution = clients.Besu
+		executionTag = ctx.String(flags.BesuTagFlag)
 	}
 
 	if selectedConsensus == clients.Prysm {
