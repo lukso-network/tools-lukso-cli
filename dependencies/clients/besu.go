@@ -63,6 +63,15 @@ func (b *BesuClient) Install(url string, isUpdate bool) (err error) {
 		return
 	}
 
+	permFunc := func(path string, d fs.DirEntry, err error) error {
+		return os.Chmod(path, fs.ModePerm)
+	}
+
+	err = filepath.WalkDir(b.FilePath(), permFunc)
+	if err != nil {
+		return
+	}
+
 	isInstalled := isJdkInstalled()
 	if !isInstalled {
 		message := "Besu is written in Java. This means that to use it you need to have:\n" +
@@ -78,15 +87,6 @@ func (b *BesuClient) Install(url string, isUpdate bool) (err error) {
 		}
 
 		err = setupJava(isUpdate)
-		if err != nil {
-			return
-		}
-
-		permFunc := func(path string, d fs.DirEntry, err error) error {
-			return os.Chmod(path, fs.ModePerm)
-		}
-
-		err = filepath.WalkDir(b.FilePath(), permFunc)
 		if err != nil {
 			return
 		}
