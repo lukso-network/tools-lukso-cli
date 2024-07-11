@@ -111,7 +111,7 @@ func (b *BesuClient) Start(ctx *cli.Context, arguments []string) (err error) {
 		log.Infof("🛑  Stopped %s", b.Name())
 	}
 
-	command := exec.Command(fmt.Sprintf("./%s/bin/teku", b.FilePath()), arguments...)
+	command := exec.Command(fmt.Sprintf("./%s/bin/besu", b.FilePath()), arguments...)
 
 	var (
 		logFile  *os.File
