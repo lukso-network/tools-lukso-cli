@@ -118,7 +118,7 @@ const (
 	GethTomlPath                = "geth/geth.toml"
 	ErigonTomlPath              = "erigon/erigon.toml"
 	NethermindCfgPath           = "nethermind/nethermind.cfg"
-	BesuYamlPath                = "besu/besu.yaml"
+	BesuTomlPath                = "besu/besu.toml"
 	PrysmYamlPath               = "prysm/prysm.yaml"
 	ValidatorYamlPath           = "prysm/validator.yaml"
 	LighthouseTomlPath          = "lighthouse/lighthouse.toml"

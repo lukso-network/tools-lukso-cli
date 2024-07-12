@@ -317,8 +317,8 @@ var (
 	BesuStartFlags = []cli.Flag{
 		&cli.StringFlag{
 			Name:  BesuConfigFileFlag,
-			Usage: "Path to besu.yaml config file",
-			Value: configs.MainnetConfig + "/" + configs.BesuYamlPath,
+			Usage: "Path to besu.toml config file",
+			Value: configs.MainnetConfig + "/" + configs.BesuTomlPath,
 		},
 		&cli.StringFlag{
 			Name:  BesuDatadirFlag,

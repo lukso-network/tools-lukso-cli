@@ -42,7 +42,7 @@ var _ ClientBinaryDependency = &BesuClient{}
 func (b *BesuClient) PrepareStartFlags(ctx *cli.Context) (startFlags []string, err error) {
 	startFlags = b.ParseUserFlags(ctx)
 
-	startFlags = append(startFlags, fmt.Sprintf("--config-file=%s", ctx.String(flags.TekuConfigFileFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--config-file=%s", ctx.String(flags.BesuConfigFileFlag)))
 
 	return
 }
