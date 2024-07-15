@@ -659,17 +659,14 @@ func untarDir(dst string, t *tar.Reader) error {
 		case strings.Contains(header.Name, "teku-"):
 			newHeader := replaceRootFolderName(header.Name, "teku")
 			path = filepath.Join(dst, newHeader)
-			break
 
 		case strings.Contains(header.Name, "jdk-"):
 			newHeader := replaceRootFolderName(header.Name, "jdk")
 			path = filepath.Join(dst, newHeader)
-			break
 
 		case strings.Contains(header.Name, "besu-"):
 			newHeader := replaceRootFolderName(header.Name, "besu")
 			path = filepath.Join(dst, newHeader)
-			break
 
 		}
 
@@ -858,9 +855,6 @@ func isJdkInstalled() bool {
 	}
 
 	_, err := os.Stat(jdkFolder)
-	if err == nil {
-		return true
-	}
 
-	return false
+	return err == nil
 }

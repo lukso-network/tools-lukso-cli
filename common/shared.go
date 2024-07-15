@@ -10,7 +10,7 @@ const (
 	PrysmTag             = "v4.2.1"
 	LighthouseTag        = "v5.1.3"
 	TekuTag              = "24.4.0"
-	BesuTag              = "24.5.4"
+	BesuTag              = "24.7.0"
 	GethCommitHash       = "c5ba367e"
 	NethermindCommitHash = "0068729c"
 )
