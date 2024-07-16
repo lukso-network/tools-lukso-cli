@@ -53,6 +53,10 @@ func InitializeDirectory(ctx *cli.Context) error {
 	_ = installConfigGroup(configs.NethermindConfigDependencies, false)
 	log.Info("✅  Nethermind configuration files downloaded!\n\n")
 
+	log.Info("⬇️  Downloading besu configuration files...")
+	_ = installConfigGroup(configs.BesuConfigDependencies, false)
+	log.Info("✅  Besu configuration files downloaded!\n\n")
+
 	log.Info("⬇️  Downloading prysm configuration files...")
 	_ = installConfigGroup(configs.PrysmConfigDependencies, false)
 	log.Info("✅  Prysm configuration files downloaded!\n\n")
