@@ -12,20 +12,21 @@ The LUKSO CLI is a command line tool to install, manage and set up validators of
 
 The LUKSO CLI is able to install multiple clients for running the node.
 
-- Execution Clients: [Geth](https://geth.ethereum.org/), [Erigon](https://github.com/ledgerwatch/erigon), [Nethermind](https://github.com/NethermindEth/nethermind)
+- Execution Clients: [Geth](https://geth.ethereum.org/), [Erigon](https://github.com/ledgerwatch/erigon), [Nethermind](https://github.com/NethermindEth/nethermind), [Besu](https://www.hyperledger.org/projects/besu)
 - Consensus Clients: [Prysm](https://github.com/prysmaticlabs/prysm), [Lighthouse](https://github.com/sigp/lighthouse), [Teku](https://github.com/Consensys/teku)
 - Validator Staking Clients: [Prysm](https://docs.prylabs.network/docs/how-prysm-works/prysm-validator-client), [Lighthouse](https://github.com/sigp/lighthouse), [Teku](https://github.com/Consensys/teku)
 
 ### Client versions
 
-| Client     | Version  | Release                                                            |
-|------------|----------|---------------------------------------------------------------     |
-| Geth       | v1.13.15 | https://github.com/ethereum/go-ethereum/releases/tag/v1.13.15      |
-| Erigon     | v2.59.3  | https://github.com/ledgerwatch/erigon/releases/tag/v2.59.3         |
-| Nethermind | v1.26.0  | https://github.com/NethermindEth/nethermind/releases/tag/1.26.0    |
-| Prysm      | v4.2.1   | https://github.com/prysmaticlabs/prysm/releases/tag/v4.2.1         |
-| Lighthouse | v5.1.3   | https://github.com/sigp/lighthouse/releases/tag/v5.1.3             |
-| Teku       | v24.4.0  | https://github.com/Consensys/teku/releases/tag/24.4.0              |
+| Client     | Version  | Release                                                         |
+|------------|----------|-----------------------------------------------------------------|
+| Geth       | v1.13.15 | https://github.com/ethereum/go-ethereum/releases/tag/v1.13.15   |
+| Erigon     | v2.59.3  | https://github.com/ledgerwatch/erigon/releases/tag/v2.59.3      |
+| Nethermind | v1.26.0  | https://github.com/NethermindEth/nethermind/releases/tag/1.26.0 |
+| Besu       | v24.7.0  | https://github.com/hyperledger/besu/releases/tag/24.7.0         |
+| Prysm      | v4.2.1   | https://github.com/prysmaticlabs/prysm/releases/tag/v4.2.1      |
+| Lighthouse | v5.1.3   | https://github.com/sigp/lighthouse/releases/tag/v5.1.3          |
+| Teku       | v24.4.0  | https://github.com/Consensys/teku/releases/tag/24.4.0           |
 
 > More clients will be added in the future.
 
@@ -106,6 +107,9 @@ lukso-node
 │       ├───geth                            // Config for Geth Client
 │       ├───prysm                           // Config for Prysm Client
 │       ├───erigon                          // Config for Erigon Client
+│       ├───nethermind                      // Config for Nethermind Client
+│       ├───besu                            // Config for Besu Client
+│       ├───teku                            // Config for Teku Client
 │       └───lighthouse                      // Config for Lighthouse Client
 │
 ├───[network_type]-keystore                 // Network's Validator Wallet
@@ -192,17 +196,20 @@ $ lukso install --geth-tag 1.13.15 --geth-commit-hash c5ba367e
 
 #### Options for `install`
 
-| Option                   | Description                                         | Default    |
-|--------------------------|-----------------------------------------------------|------------|
-| --agree-terms            | Automatically accept Terms and Conditions           | false      |
-| --geth-tag value         | Tag for Geth                                        | "1.13.15"  |
-| --geth-commit-hash value | A hash of commit that is bound to given release tag | "c5ba367e" |
-| --validator-tag value    | Tag for validator binary                            | "v4.2.1"   |
-| --prysm-tag value        | Tag for Prysm                                       | "v4.2.1"   |
-| --erigon-tag value       | Tag for Erigon                                      | "2.59.3"   |
-| --lighthouse-tag value   | Tag for Lighthouse                                  | "v5.1.3"   |
-| --teku-tag value         | Tag for Teku                                        | "24.4.0"   |
-| --help, -h               | show  help                                          | false      |
+| Option                         | Description                                         | Default    |
+|--------------------------------|-----------------------------------------------------|------------|
+| --agree-terms                  | Automatically accept Terms and Conditions           | false      |
+| --geth-tag value               | Tag for Geth                                        | "1.13.15"  |
+| --geth-commit-hash value       | A hash of commit that is bound to given release tag | "c5ba367e" |
+| --validator-tag value          | Tag for validator binary                            | "v4.2.1"   |
+| --prysm-tag value              | Tag for Prysm                                       | "v4.2.1"   |
+| --erigon-tag value             | Tag for Erigon                                      | "2.59.3"   |
+| --lighthouse-tag value         | Tag for Lighthouse                                  | "v5.1.3"   |
+| --teku-tag value               | Tag for Teku                                        | "24.4.0"   |
+| --besu-tag value               | Tag for Besu                                        | "24.7.0"   |
+| --nethermind-tag value         | Tag for Teku                                        | "1.26.0"   |
+| --nethermind-commit-hash value | A hash of commit that is bound to given release tag | "0068729c" |
+| --help, -h                     | show  help                                          | false      |
 
 ### `update`
 `update` will install the newest verions of the clients that you selected duing installation process.  
@@ -330,34 +337,38 @@ Please note that this won't affect your node in any way.
 
 #### Options for `start`
 
-| Option                               | Description                                                                                                                                           |
-| ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **NETWORK**                          |                                                                                                                                                       |
-| --mainnet                            | Starts the LUKSO node with mainnet data [default] (./configs/mainnet)                                                                                 |
-| --testnet                            | Starts the LUKSO node with testnet data (./configs/tesnet)                                                                                            |
-| --devnet                             | Starts the LUKSO node with devnet data (./configs/devnet)                                                                                             |
-| **VALIDATOR**                        |                                                                                                                                                       |
-| --validator                          | Starts the validator client                                                                                                                           |
-| --validator-keys [string]            | Directory of the validator keys (default: "./\[network_type\]-keystore")                                                                              |
-| --validator-wallet-password [string] | Location of password file that you used for generated validator keys                                                                                  |
-| --validator-config [string]          | Path to prysms validator.yaml config file                                                                                                             |
-| --transaction-fee-recipient [string] | The address that receives block reward from transactions (required for --validator flag)                                                              |
-| --genesis-json [string]              | The path to genesis JSON file                                                                                                                         |
-| --genesis-ssz [string]               | The path to genesis SSZ file                                                                                                                          |
-| --no-slasher                         | Disables slasher                                                                                                                                      |
-| **CLIENT OPTIONS**                   |                                                                                                                                                       |
-| --logs-folder [string]               | Sets up a custom logs directory (default: "./\[network_type\]-logs")                                                                                  |
-| --geth-config [string]               | Defines the path to geth TOML config file                                                                                                             |
-| --prysm-config [string]              | Defines the path to prysm YAML config file                                                                                                            |
-| --erigon-config [string]             | Defines the path to erigon TOML config file                                                                                                           |
-| --teku-config [string]               | Defines the path to teku YAML config file                                                                                                             |
-| --validator-config [string]          | Defines the path to teku validator YAML config file                                                                                                   |
-| --geth-[command]                     | The `command` will be passed to the Geth client. [See the client docs for details](https://geth.ethereum.org/docs/fundamentals/command-line-options)  |
-| --prysm-[command]                    | The `command` will be passed to the Prysm client. [See the client docs for details](https://docs.prylabs.network/docs/prysm-usage/parameters)         |
-| --lighhouse-[command]                | The `command` will be passed to the Lighthouse client. [See the client docs for details](https://lighthouse-book.sigmaprime.io/advanced-datadir.html) |
-| --erigon-[command]                   | The `command` will be passed to the Erigon client. [See the client docs for details](https://github.com/ledgerwatch/erigon)                           |
-| --teku-[command]                     | The `command` will be passed to the Teku client. [See the client docs for details](https://github.com/ledgerwatch/erigon)                             |
-| --checkpoint-sync                    | Run a node with checkpoint sync feature                                                                                                               |
+| Option                                | Description                                                                                                                                           |
+|---------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **NETWORK**                           |                                                                                                                                                       |
+| --mainnet                             | Starts the LUKSO node with mainnet data [default] (./configs/mainnet)                                                                                 |
+| --testnet                             | Starts the LUKSO node with testnet data (./configs/tesnet)                                                                                            |
+| --devnet                              | Starts the LUKSO node with devnet data (./configs/devnet)                                                                                             |
+| **VALIDATOR**                         |                                                                                                                                                       |
+| --validator                           | Starts the validator client                                                                                                                           |
+| --validator-keys [string]             | Directory of the validator keys (default: "./\[network_type\]-keystore")                                                                              |
+| --validator-wallet-password [string]  | Location of password file that you used for generated validator keys                                                                                  |
+| --validator-config [string]           | Path to prysms validator.yaml config file                                                                                                             |
+| --transaction-fee-recipient [string]  | The address that receives block reward from transactions (required for --validator flag)                                                              |
+| --genesis-json [string]               | The path to genesis JSON file                                                                                                                         |
+| --genesis-ssz [string]                |  The path to genesis SSZ file                                                                                                                         |
+| --no-slasher                          | Disables slasher                                                                                                                                      |
+| **CLIENT OPTIONS**                    |                                                                                                                                                       |
+| --logs-folder [string]                | Sets up a custom logs directory (default: "./\[network_type\]-logs")                                                                                  |
+| --geth-config [string]                | Defines the path to geth TOML config file                                                                                                             |
+| --prysm-config [string]               | Defines the path to prysm YAML config file                                                                                                            |
+| --erigon-config [string]              | Defines the path to erigon TOML config file                                                                                                           |
+| --nethermind-config [string]          | Defines the path to nethermind CFG config file                                                                                                        |
+| --besu-config [string]                | Defines the path to besu TOML config file                                                                                                             |
+| --teku-config [string]                | Defines the path to teku YAML config file                                                                                                             | 
+| --validator-config [string]           | Defines the path to teku validator YAML config file                                                                                                   |
+| --geth-[command]                      | The `command` will be passed to the Geth client. [See the client docs for details](https://geth.ethereum.org/docs/fundamentals/command-line-options)  |
+| --prysm-[command]                     | The `command` will be passed to the Prysm client. [See the client docs for details](https://docs.prylabs.network/docs/prysm-usage/parameters)         |
+| --lighhouse-[command]                 | The `command` will be passed to the Lighthouse client. [See the client docs for details](https://lighthouse-book.sigmaprime.io/advanced-datadir.html) |
+| --erigon-[command]                    | The `command` will be passed to the Erigon client. [See the client docs for details](https://github.com/ledgerwatch/erigon)                           |
+| --teku-[command]                      | The `command` will be passed to the Teku client. [See the client docs for details](https://github.com/ledgerwatch/erigon)                             |
+| --besu-[command]                      | The `command` will be passed to the Besu client. [See the client docs for details](https://github.com/hyperledger/besu)                               |
+| --nethermind-[command]                | The `command` will be passed to the Nethermind client. [See the client docs for details](https://github.com/NethermindEth/nethermind)                 |
+| --checkpoint-sync                     | Run a node with checkpoint sync feature                                                                                                               |
 
 ### `stop`
 
