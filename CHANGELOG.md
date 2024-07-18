@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.19.1](https://github.com/lukso-network/tools-lukso-cli/compare/v0.19.0...v0.19.1) (2024-07-18)
+
+
+### Bug Fixes
+
+* nethermind installation destination ([#252](https://github.com/lukso-network/tools-lukso-cli/issues/252)) ([fc40bd3](https://github.com/lukso-network/tools-lukso-cli/commit/fc40bd3f5769e493c518fa8814a2867016a40250))
+
 ## [0.19.0](https://github.com/lukso-network/tools-lukso-cli/compare/v0.18.0...v0.19.0) (2024-07-18)
 
 
