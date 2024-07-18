@@ -38,6 +38,7 @@ const (
 	tekuDependencyName                = "Teku"
 	tekuValidatorDependencyName       = "Teku Validator"
 	nethermindDependencyName          = "Nethermind"
+	besuDependencyName                = "Besu"
 
 	gethGithubLocation          = "ethereum/go-ethereum"
 	prysmaticLabsGithubLocation = "prysmaticlabs/prysm"
@@ -45,6 +46,7 @@ const (
 	erigonGithubLocation        = "ledgerwatch/erigon"
 	tekuGithubLocation          = "Consensys/teku"
 	nethermindGithubLocation    = "NethermindEth/nethermind"
+	besuGithubLocation          = "hyperledger/besu"
 
 	peerDirectionInbound  = "inbound"
 	peerDirectionOutbound = "outbound"
@@ -53,6 +55,9 @@ const (
 	// distinct between zip and tar archives
 	zipFormat = "zip"
 	tarFormat = "tar"
+
+	clientDepsFolder = "clients" // folder in which client dependencies are stored
+	jdkFolder        = clientDepsFolder + "/jdk"
 )
 
 var (
@@ -66,6 +71,7 @@ var (
 		tekuDependencyName:                Teku,
 		tekuValidatorDependencyName:       TekuValidator,
 		nethermindDependencyName:          Nethermind,
+		besuDependencyName:                Besu,
 	}
 
 	ClientVersions = map[string]string{
@@ -77,6 +83,7 @@ var (
 		prysmValidatorDependencyName:      common.PrysmTag,
 		lighthouseValidatorDependencyName: common.LighthouseTag,
 		tekuDependencyName:                common.TekuTag,
+		besuDependencyName:                common.BesuTag,
 	}
 )
 
@@ -649,13 +656,18 @@ func untarDir(dst string, t *tar.Reader) error {
 
 		// for the sake of compatibility with updated versions remove the tag from the tarred file - teku/teku-xx.x.x => teku/teku, same with jdk
 		switch {
-		case strings.Contains(header.Name, tekuFolder):
-			newHeader := replaceRootFolderName(header.Name, tekuFolder)
+		case strings.Contains(header.Name, "teku-"):
+			newHeader := replaceRootFolderName(header.Name, "teku")
 			path = filepath.Join(dst, newHeader)
 
-		case strings.Contains(header.Name, jdkFolder):
-			newHeader := replaceRootFolderName(header.Name, jdkFolder)
+		case strings.Contains(header.Name, "jdk-"):
+			newHeader := replaceRootFolderName(header.Name, "jdk")
 			path = filepath.Join(dst, newHeader)
+
+		case strings.Contains(header.Name, "besu-"):
+			newHeader := replaceRootFolderName(header.Name, "besu")
+			path = filepath.Join(dst, newHeader)
+
 		}
 
 		info := header.FileInfo()
@@ -833,4 +845,16 @@ func getUnameArch() (arch string) {
 	}
 
 	return
+}
+
+func isJdkInstalled() bool {
+	// JDK installed outside of the CLI
+	_, isInstalled := os.LookupEnv(system.JavaHomeEnv)
+	if isInstalled {
+		return true
+	}
+
+	_, err := os.Stat(jdkFolder)
+
+	return err == nil
 }

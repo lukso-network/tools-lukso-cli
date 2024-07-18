@@ -15,6 +15,7 @@ func init() {
 	InstallFlags = append(InstallFlags, LighthouseDownloadFlags...)
 	InstallFlags = append(InstallFlags, TekuDownloadFlags...)
 	InstallFlags = append(InstallFlags, NethermindDownloadFlags...)
+	InstallFlags = append(InstallFlags, BesuDownloadFlags...)
 
 	StartFlags = append(StartFlags, GethStartFlags...)
 	StartFlags = append(StartFlags, ErigonStartFlags...)
@@ -24,6 +25,7 @@ func init() {
 	StartFlags = append(StartFlags, TekuStartFlags...)
 	StartFlags = append(StartFlags, NetworkFlags...)
 	StartFlags = append(StartFlags, NethermindStartFlags...)
+	StartFlags = append(StartFlags, BesuStartFlags...)
 
 	LogsFlags = append(LogsFlags, GethLogsFlags...)
 	LogsFlags = append(LogsFlags, PrysmLogsFlags...)
@@ -301,6 +303,26 @@ var (
 		&cli.StringFlag{
 			Name:  NethermindDatadirFlag,
 			Usage: "Nethermind datadir",
+			Value: configs.ExecutionMainnetDatadir,
+		},
+	}
+
+	BesuDownloadFlags = []cli.Flag{
+		&cli.StringFlag{
+			Name:  BesuTagFlag,
+			Usage: "Tag for besu",
+			Value: common.BesuTag,
+		},
+	}
+	BesuStartFlags = []cli.Flag{
+		&cli.StringFlag{
+			Name:  BesuConfigFileFlag,
+			Usage: "Path to besu.toml config file",
+			Value: configs.MainnetConfig + "/" + configs.BesuTomlPath,
+		},
+		&cli.StringFlag{
+			Name:  BesuDatadirFlag,
+			Usage: "Besu datadir",
 			Value: configs.ExecutionMainnetDatadir,
 		},
 	}

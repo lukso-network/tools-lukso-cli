@@ -62,7 +62,7 @@ func (t *TekuValidatorClient) Start(ctx *cli.Context, arguments []string) (err e
 	}
 
 	arguments = append([]string{"vc"}, arguments...)
-	command := exec.Command(fmt.Sprintf("./%s/%s/bin/teku", tekuDepsFolder, tekuFolder), arguments...)
+	command := exec.Command(fmt.Sprintf("./%s/bin/teku", tekuFolder), arguments...)
 
 	var (
 		logFile  *os.File
@@ -295,7 +295,7 @@ func (t *TekuValidatorClient) Exit(ctx *cli.Context) (err error) {
 
 	args := []string{"voluntary-exit", "--validator-keys", fmt.Sprintf("%s:%s", wallet, wallet)}
 
-	exitCommand := exec.Command(fmt.Sprintf("./%s/%s/bin/teku", tekuDepsFolder, tekuFolder), args...)
+	exitCommand := exec.Command(fmt.Sprintf("./%s/bin/teku", tekuFolder), args...)
 
 	exitCommand.Stdout = os.Stdout
 	exitCommand.Stderr = os.Stderr

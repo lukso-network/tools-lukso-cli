@@ -20,12 +20,10 @@ import (
 )
 
 const (
-	tekuDepsFolder = "teku" // folder in which both teku and JDK are stored
-	tekuFolder     = "teku" // folder in which teku is stored (in tekuDepsFolder)
-	jdkFolder      = "jdk"  // folder in which JDK is stored (in tekuDepsFolder)
+	tekuFolder = clientDepsFolder + "/teku" // folder in which teku is stored (in tekuDepsFolder)
 
 	tekuInstallURL = "https://artifacts.consensys.net/public/teku/raw/names/teku.tar.gz/versions/|TAG|/teku-|TAG|.tar.gz"
-	jdkInstallURL  = "https://download.java.net/java/GA/jdk20.0.2/6e380f22cbe7469fa75fb448bd903d8e/9/GPL/openjdk-20.0.2_|OS|-|ARCH|_bin.tar.gz"
+	jdkInstallURL  = "https://download.java.net/java/GA/jdk22.0.1/c7ec1332f7bb44aeba2eb341ae18aca4/8/GPL/openjdk-22.0.1_|OS|-|ARCH|_bin.tar.gz"
 )
 
 type TekuClient struct {
@@ -69,12 +67,21 @@ func (t *TekuClient) Install(url string, isUpdate bool) (err error) {
 		}
 	}
 
-	err = installAndExtractFromURL(url, t.name, t.FilePath(), tarFormat, isUpdate)
+	err = installAndExtractFromURL(url, t.name, clientDepsFolder, tarFormat, isUpdate)
 	if err != nil {
 		return
 	}
 
-	_, isInstalled := os.LookupEnv(system.JavaHomeEnv) // means that JDk is not set up
+	permFunc := func(path string, d fs.DirEntry, err error) error {
+		return os.Chmod(path, fs.ModePerm)
+	}
+
+	err = filepath.WalkDir(t.FilePath(), permFunc)
+	if err != nil {
+		return
+	}
+
+	isInstalled := isJdkInstalled()
 	if !isInstalled {
 		message := "Teku is written in Java. This means that to use it you need to have:\n" +
 			"- JDK installed on your computer\n" +
@@ -94,20 +101,11 @@ func (t *TekuClient) Install(url string, isUpdate bool) (err error) {
 		}
 	}
 
-	permFunc := func(path string, d fs.DirEntry, err error) error {
-		return os.Chmod(path, fs.ModePerm)
-	}
-
-	err = filepath.WalkDir(tekuDepsFolder, permFunc)
-	if err != nil {
-		return
-	}
-
 	return
 }
 
 func (t *TekuClient) FilePath() string {
-	return tekuDepsFolder
+	return tekuFolder
 }
 
 func (t *TekuClient) Start(ctx *cli.Context, arguments []string) (err error) {
@@ -122,7 +120,7 @@ func (t *TekuClient) Start(ctx *cli.Context, arguments []string) (err error) {
 		log.Infof("🛑  Stopped %s", t.Name())
 	}
 
-	command := exec.Command(fmt.Sprintf("./%s/%s/bin/teku", t.FilePath(), tekuFolder), arguments...)
+	command := exec.Command(fmt.Sprintf("./%s/bin/teku", t.FilePath()), arguments...)
 
 	var (
 		logFile  *os.File
@@ -197,7 +195,7 @@ func setupJava(isUpdate bool) (err error) {
 	jdkURL := strings.Replace(jdkInstallURL, "|OS|", systemOs, -1)
 	jdkURL = strings.Replace(jdkURL, "|ARCH|", arch, -1)
 
-	err = installAndExtractFromURL(jdkURL, "JDK", Teku.FilePath(), tarFormat, isUpdate)
+	err = installAndExtractFromURL(jdkURL, "JDK", clientDepsFolder, tarFormat, isUpdate)
 	if err != nil {
 		return err
 	}
@@ -207,9 +205,18 @@ func setupJava(isUpdate bool) (err error) {
 		return
 	}
 
-	javaHomeVal := fmt.Sprintf("%s/%s/%s", luksoNodeDir, Teku.FilePath(), jdkFolder)
+	javaHomeVal := fmt.Sprintf("%s/%s", luksoNodeDir, jdkFolder)
 
-	log.Infof("⚙️  To continue working with Teku please export the JAVA_HOME environment variable.\n"+
+	permFunc := func(path string, d fs.DirEntry, err error) error {
+		return os.Chmod(path, fs.ModePerm)
+	}
+
+	err = filepath.WalkDir(jdkFolder, permFunc)
+	if err != nil {
+		return
+	}
+
+	log.Infof("⚙️  To continue working with Java clients please export the JAVA_HOME environment variable.\n"+
 		"The recommended way is to add the following line:\n\n"+
 		"export JAVA_HOME=%s\n\n"+
 		"To the bash startup file of your choosing (like .bashrc)", javaHomeVal)

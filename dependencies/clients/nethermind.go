@@ -21,7 +21,7 @@ import (
 )
 
 const (
-	nethermindDepsFolder = "nethermind"
+	nethermindFolder = clientDepsFolder + "/nethermind"
 )
 
 type NethermindClient struct {
@@ -54,7 +54,7 @@ func (n *NethermindClient) Install(url string, isUpdate bool) (err error) {
 		}
 	}
 
-	err = installAndExtractFromURL(url, n.name, n.FilePath(), zipFormat, isUpdate)
+	err = installAndExtractFromURL(url, n.name, clientDepsFolder, zipFormat, isUpdate)
 	if err != nil {
 		return
 	}
@@ -184,5 +184,5 @@ func (n *NethermindClient) Peers(ctx *cli.Context) (outbound, inbound int, err e
 }
 
 func (n *NethermindClient) FilePath() string {
-	return nethermindDepsFolder
+	return nethermindFolder
 }
