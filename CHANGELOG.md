@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.19.0](https://github.com/lukso-network/tools-lukso-cli/compare/v0.18.0...v0.19.0) (2024-07-18)
+
+
+### Features
+
+* Besu support ([#248](https://github.com/lukso-network/tools-lukso-cli/issues/248)) ([7ee9be2](https://github.com/lukso-network/tools-lukso-cli/commit/7ee9be2c50b598fea9dc0d01d5b2cd92e8047e0c))
+
 ## [0.18.0](https://github.com/lukso-network/tools-lukso-cli/compare/v0.17.2...v0.18.0) (2024-07-10)
 
 
