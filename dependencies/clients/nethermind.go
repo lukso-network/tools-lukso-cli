@@ -54,7 +54,7 @@ func (n *NethermindClient) Install(url string, isUpdate bool) (err error) {
 		}
 	}
 
-	err = installAndExtractFromURL(url, n.name, clientDepsFolder, zipFormat, isUpdate)
+	err = installAndExtractFromURL(url, n.name, nethermindFolder, zipFormat, isUpdate)
 	if err != nil {
 		return
 	}
