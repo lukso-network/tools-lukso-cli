@@ -191,7 +191,7 @@ $ lukso install --erigon-tag 2.55.0
 
 # When rolling back Geth, please make sure to also provide first 8 characters of release commit hash.
 # You can find those on Geth's download page: https://geth.ethereum.org/downloads
-$ lukso install --geth-tag 1.14.7 --geth-commit-hash c5ba367e
+$ lukso install --geth-tag 1.14.7 --geth-commit-hash aa55f5ea
 ```
 
 #### Options for `install`
