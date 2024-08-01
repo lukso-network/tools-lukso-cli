@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.20.0](https://github.com/lukso-network/tools-lukso-cli/compare/v0.19.1...v0.20.0) (2024-08-01)
+
+
+### Features
+
+* Update client versions ([#251](https://github.com/lukso-network/tools-lukso-cli/issues/251)) ([8220fe3](https://github.com/lukso-network/tools-lukso-cli/commit/8220fe32d56089060539c9dbe6bb679f0eedca01))
+
 ## [0.19.1](https://github.com/lukso-network/tools-lukso-cli/compare/v0.19.0...v0.19.1) (2024-07-18)
 
 
