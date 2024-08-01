@@ -117,7 +117,7 @@ const (
 
 	ChainConfigYamlPath         = "shared/config.yaml"
 	DeployBlockPath             = "shared/deploy_block.txt"
-	DepositContractBlockPath    = "shared/deposit_contract.txt"
+	DepositContractBlockPath    = "shared/deposit_contract_block.txt"
 	GethTomlPath                = "geth/geth.toml"
 	ErigonTomlPath              = "erigon/erigon.toml"
 	NethermindCfgPath           = "nethermind/nethermind.cfg"
