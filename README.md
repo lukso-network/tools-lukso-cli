@@ -20,13 +20,13 @@ The LUKSO CLI is able to install multiple clients for running the node.
 
 | Client     | Version  | Release                                                         |
 |------------|----------|-----------------------------------------------------------------|
-| Geth       | v1.13.15 | https://github.com/ethereum/go-ethereum/releases/tag/v1.13.15   |
-| Erigon     | v2.59.3  | https://github.com/ledgerwatch/erigon/releases/tag/v2.59.3      |
-| Nethermind | v1.26.0  | https://github.com/NethermindEth/nethermind/releases/tag/1.26.0 |
+| Geth       | v1.14.7  | https://github.com/ethereum/go-ethereum/releases/tag/v1.14.7    |
+| Erigon     | v2.60.4  | https://github.com/ledgerwatch/erigon/releases/tag/v2.60.4      |
+| Nethermind | v1.27.0  | https://github.com/NethermindEth/nethermind/releases/tag/1.27.0 |
 | Besu       | v24.7.0  | https://github.com/hyperledger/besu/releases/tag/24.7.0         |
-| Prysm      | v4.2.1   | https://github.com/prysmaticlabs/prysm/releases/tag/v4.2.1      |
-| Lighthouse | v5.1.3   | https://github.com/sigp/lighthouse/releases/tag/v5.1.3          |
-| Teku       | v24.4.0  | https://github.com/Consensys/teku/releases/tag/24.4.0           |
+| Prysm      | v5.0.4   | https://github.com/prysmaticlabs/prysm/releases/tag/v5.0.4      |
+| Lighthouse | v5.2.1   | https://github.com/sigp/lighthouse/releases/tag/v5.2.1          |
+| Teku       | v24.6.1  | https://github.com/Consensys/teku/releases/tag/24.6.1           |
 
 > More clients will be added in the future.
 
@@ -185,13 +185,13 @@ to a version of your choice.
 ```sh
 # To roll back a client to specific version, you need to specify which version do you want to install.
 # Format of a flag is --<client>-tag, e.g. for Prysm:
-$ lukso install --prysm-tag v4.2.1
+$ lukso install --prysm-tag v5.0.4
 # or Erigon:
 $ lukso install --erigon-tag 2.55.0
 
 # When rolling back Geth, please make sure to also provide first 8 characters of release commit hash.
 # You can find those on Geth's download page: https://geth.ethereum.org/downloads
-$ lukso install --geth-tag 1.13.15 --geth-commit-hash c5ba367e
+$ lukso install --geth-tag 1.14.7 --geth-commit-hash aa55f5ea
 ```
 
 #### Options for `install`
@@ -199,16 +199,16 @@ $ lukso install --geth-tag 1.13.15 --geth-commit-hash c5ba367e
 | Option                         | Description                                         | Default    |
 |--------------------------------|-----------------------------------------------------|------------|
 | --agree-terms                  | Automatically accept Terms and Conditions           | false      |
-| --geth-tag value               | Tag for Geth                                        | "1.13.15"  |
-| --geth-commit-hash value       | A hash of commit that is bound to given release tag | "c5ba367e" |
-| --validator-tag value          | Tag for validator binary                            | "v4.2.1"   |
-| --prysm-tag value              | Tag for Prysm                                       | "v4.2.1"   |
-| --erigon-tag value             | Tag for Erigon                                      | "2.59.3"   |
-| --lighthouse-tag value         | Tag for Lighthouse                                  | "v5.1.3"   |
-| --teku-tag value               | Tag for Teku                                        | "24.4.0"   |
+| --geth-tag value               | Tag for Geth                                        | "1.14.7"   |
+| --geth-commit-hash value       | A hash of commit that is bound to given release tag | "aa55f5ea" |
+| --validator-tag value          | Tag for validator binary                            | "v5.0.4"   |
+| --prysm-tag value              | Tag for Prysm                                       | "v5.0.4"   |
+| --erigon-tag value             | Tag for Erigon                                      | "2.60.4"   |
+| --lighthouse-tag value         | Tag for Lighthouse                                  | "v5.2.1"   |
+| --teku-tag value               | Tag for Teku                                        | "24.6.1"   |
 | --besu-tag value               | Tag for Besu                                        | "24.7.0"   |
-| --nethermind-tag value         | Tag for Teku                                        | "1.26.0"   |
-| --nethermind-commit-hash value | A hash of commit that is bound to given release tag | "0068729c" |
+| --nethermind-tag value         | Tag for Teku                                        | "1.27.0"   |
+| --nethermind-commit-hash value | A hash of commit that is bound to given release tag | "220b5b85" |
 | --help, -h                     | show  help                                          | false      |
 
 ### `update`

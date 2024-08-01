@@ -62,10 +62,12 @@ const (
 	prysmMainnetConfigDependencyName = "prysm mainnet config"
 	prysmTestnetConfigDependencyName = "prysm testnet config"
 
-	lighthouseMainnetConfigDependencyName  = "lighthouse mainnet config"
-	lighthouseTestnetConfigDependencyName  = "lighthouse testnet config"
-	deployBlockMainnetConfigDependencyName = "mainnet deploy block"
-	deployBlockTestnetConfigDependencyName = "testnet deploy block"
+	lighthouseMainnetConfigDependencyName           = "lighthouse mainnet config"
+	lighthouseTestnetConfigDependencyName           = "lighthouse testnet config"
+	deployBlockMainnetConfigDependencyName          = "mainnet deploy block"
+	deployBlockTestnetConfigDependencyName          = "testnet deploy block"
+	depositContractBlockMainnetConfigDependencyName = "mainnet deposit contract block"
+	depositContractBlockTestnetConfigDependencyName = "testnet deposit contract block"
 
 	validatorMainnetConfigDependencyName           = "validator mainnet config"
 	validatorTestnetConfigDependencyName           = "validator testnet config"
@@ -115,6 +117,7 @@ const (
 
 	ChainConfigYamlPath         = "shared/config.yaml"
 	DeployBlockPath             = "shared/deploy_block.txt"
+	DepositContractBlockPath    = "shared/deposit_contract_block.txt"
 	GethTomlPath                = "geth/geth.toml"
 	ErigonTomlPath              = "erigon/erigon.toml"
 	NethermindCfgPath           = "nethermind/nethermind.cfg"
@@ -156,6 +159,11 @@ var (
 			name:     deployBlockMainnetConfigDependencyName,
 			filePath: MainnetConfig + "/" + DeployBlockPath,
 		},
+		depositContractBlockMainnetConfigDependencyName: &clientConfig{
+			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/lighthouse/deposit_contract_block.txt",
+			name:     depositContractBlockMainnetConfigDependencyName,
+			filePath: MainnetConfig + "/" + DepositContractBlockPath,
+		},
 		testnetGenesisDependencyName: &clientConfig{
 			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/shared/genesis.json",
 			name:     testnetGenesisDependencyName,
@@ -181,19 +189,26 @@ var (
 			name:     deployBlockTestnetConfigDependencyName,
 			filePath: TestnetConfig + "/" + DeployBlockPath,
 		},
+		depositContractBlockTestnetConfigDependencyName: &clientConfig{
+			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/lighthouse/deposit_contract_block.txt",
+			name:     depositContractBlockTestnetConfigDependencyName,
+			filePath: TestnetConfig + "/" + DepositContractBlockPath,
+		},
 	}
 	UpdateConfigDependencies = map[string]ClientConfigDependency{
 		// same as SharedConfigDependencies but with added Teku chain configs
-		mainnetGenesisDependencyName:           SharedConfigDependencies[mainnetGenesisDependencyName],
-		mainnetGenesisStateDependencyName:      SharedConfigDependencies[mainnetGenesisStateDependencyName],
-		mainnetChainConfigDependencyName:       SharedConfigDependencies[mainnetChainConfigDependencyName],
-		mainnetGenesisChainspecDependencyName:  SharedConfigDependencies[mainnetGenesisChainspecDependencyName],
-		deployBlockMainnetConfigDependencyName: SharedConfigDependencies[deployBlockMainnetConfigDependencyName],
-		testnetGenesisDependencyName:           SharedConfigDependencies[testnetGenesisDependencyName],
-		testnetGenesisStateDependencyName:      SharedConfigDependencies[testnetGenesisStateDependencyName],
-		testnetChainConfigDependencyName:       SharedConfigDependencies[testnetChainConfigDependencyName],
-		testnetGenesisChainspecDependencyName:  SharedConfigDependencies[testnetGenesisChainspecDependencyName],
-		deployBlockTestnetConfigDependencyName: SharedConfigDependencies[deployBlockTestnetConfigDependencyName],
+		mainnetGenesisDependencyName:                    SharedConfigDependencies[mainnetGenesisDependencyName],
+		mainnetGenesisStateDependencyName:               SharedConfigDependencies[mainnetGenesisStateDependencyName],
+		mainnetChainConfigDependencyName:                SharedConfigDependencies[mainnetChainConfigDependencyName],
+		mainnetGenesisChainspecDependencyName:           SharedConfigDependencies[mainnetGenesisChainspecDependencyName],
+		deployBlockMainnetConfigDependencyName:          SharedConfigDependencies[deployBlockMainnetConfigDependencyName],
+		depositContractBlockMainnetConfigDependencyName: SharedConfigDependencies[depositContractBlockMainnetConfigDependencyName],
+		testnetGenesisDependencyName:                    SharedConfigDependencies[testnetGenesisDependencyName],
+		testnetGenesisStateDependencyName:               SharedConfigDependencies[testnetGenesisStateDependencyName],
+		testnetChainConfigDependencyName:                SharedConfigDependencies[testnetChainConfigDependencyName],
+		testnetGenesisChainspecDependencyName:           SharedConfigDependencies[testnetGenesisChainspecDependencyName],
+		deployBlockTestnetConfigDependencyName:          SharedConfigDependencies[deployBlockTestnetConfigDependencyName],
+		depositContractBlockTestnetConfigDependencyName: SharedConfigDependencies[depositContractBlockTestnetConfigDependencyName],
 		tekuMainnetChainConfigDependencyName: &clientConfig{
 			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/teku/config.yaml",
 			name:     tekuMainnetChainConfigDependencyName,
