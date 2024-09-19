@@ -12,6 +12,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 
+	"github.com/lukso-network/tools-lukso-cli/common"
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
 	"github.com/lukso-network/tools-lukso-cli/common/system"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
@@ -20,7 +21,7 @@ import (
 )
 
 const (
-	tekuFolder = clientDepsFolder + "/teku" // folder in which teku is stored (in tekuDepsFolder)
+	tekuFolder = common.ClientDepsFolder + "/teku" // folder in which teku is stored (in tekuDepsFolder)
 
 	tekuInstallURL = "https://artifacts.consensys.net/public/teku/raw/names/teku.tar.gz/versions/|TAG|/teku-|TAG|.tar.gz"
 	jdkInstallURL  = "https://download.java.net/java/GA/jdk22.0.1/c7ec1332f7bb44aeba2eb341ae18aca4/8/GPL/openjdk-22.0.1_|OS|-|ARCH|_bin.tar.gz"
@@ -67,7 +68,7 @@ func (t *TekuClient) Install(url string, isUpdate bool) (err error) {
 		}
 	}
 
-	err = installAndExtractFromURL(url, t.name, clientDepsFolder, tarFormat, isUpdate)
+	err = installAndExtractFromURL(url, t.name, common.ClientDepsFolder, tarFormat, isUpdate)
 	if err != nil {
 		return
 	}
@@ -195,7 +196,7 @@ func setupJava(isUpdate bool) (err error) {
 	jdkURL := strings.Replace(jdkInstallURL, "|OS|", systemOs, -1)
 	jdkURL = strings.Replace(jdkURL, "|ARCH|", arch, -1)
 
-	err = installAndExtractFromURL(jdkURL, "JDK", clientDepsFolder, tarFormat, isUpdate)
+	err = installAndExtractFromURL(jdkURL, "JDK", common.ClientDepsFolder, tarFormat, isUpdate)
 	if err != nil {
 		return err
 	}

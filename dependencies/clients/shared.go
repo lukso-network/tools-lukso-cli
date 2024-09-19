@@ -56,8 +56,7 @@ const (
 	zipFormat = "zip"
 	tarFormat = "tar"
 
-	clientDepsFolder = "clients" // folder in which client dependencies are stored
-	jdkFolder        = clientDepsFolder + "/jdk"
+	jdkFolder = common.ClientDepsFolder + "/jdk"
 )
 
 var (

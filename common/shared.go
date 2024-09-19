@@ -13,4 +13,6 @@ const (
 	BesuTag              = "24.7.0"
 	GethCommitHash       = "aa55f5ea"
 	NethermindCommitHash = "220b5b85"
+
+	ClientDepsFolder = "clients" // folder in which client dependencies are stored
 )

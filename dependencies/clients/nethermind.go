@@ -21,7 +21,7 @@ import (
 )
 
 const (
-	nethermindFolder = clientDepsFolder + "/nethermind"
+	nethermindFolder = common.ClientDepsFolder + "/nethermind"
 )
 
 type NethermindClient struct {
