@@ -2,10 +2,12 @@ package commands
 
 import (
 	"fmt"
+	"os"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 
+	"github.com/lukso-network/tools-lukso-cli/common"
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
 	"github.com/lukso-network/tools-lukso-cli/common/system"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
@@ -38,6 +40,7 @@ func InstallBinaries(ctx *cli.Context) (err error) {
 		consensusTag      string
 		executionTag      string
 		commitHash        string
+		isSetupClientsDir bool = false
 	)
 
 	consensusMessage := "\nWhich consensus client do you want to install?\n" +
@@ -68,6 +71,7 @@ func InstallBinaries(ctx *cli.Context) (err error) {
 	case "3":
 		selectedConsensus = clients.Teku
 		consensusTag = ctx.String(flags.TekuTagFlag)
+		isSetupClientsDir = true
 	}
 
 	executionInput = utils.RegisterInputWithMessage(executionMessage)
@@ -87,9 +91,11 @@ func InstallBinaries(ctx *cli.Context) (err error) {
 		selectedExecution = clients.Nethermind
 		executionTag = ctx.String(flags.NethermindTagFlag)
 		commitHash = ctx.String(flags.NethermindCommitHashFlag)
+		isSetupClientsDir = true
 	case "4":
 		selectedExecution = clients.Besu
 		executionTag = ctx.String(flags.BesuTagFlag)
+		isSetupClientsDir = true
 	}
 
 	if selectedConsensus == clients.Prysm {
@@ -102,6 +108,17 @@ func InstallBinaries(ctx *cli.Context) (err error) {
 			}
 		} else {
 			log.Info("✅  You accepted Prysm's Terms of Use: https://github.com/prysmaticlabs/prysm/blob/develop/TERMS_OF_SERVICE.md")
+		}
+	}
+
+	if isSetupClientsDir {
+		log.Infof("⚙️   Preparing clients directory")
+
+		err = setupClientsDir()
+		if err != nil {
+			log.Warnf("⚠️  There was an error while creating clients directory: %v", err)
+		} else {
+			log.Infof("✅  Clients directory prepared successfully")
 		}
 	}
 
@@ -139,6 +156,23 @@ func InstallBinaries(ctx *cli.Context) (err error) {
 	log.Info("✅  Configuration files created!")
 	log.Info("✅  Clients have been successfully installed.")
 	log.Info("➡️  Start your node using 'lukso start'")
+
+	return
+}
+
+func setupClientsDir() (err error) {
+	var f os.FileInfo
+
+	f, err = os.Stat(common.ClientDepsFolder)
+	if err != nil {
+		err = os.Mkdir(common.ClientDepsFolder, os.ModePerm)
+
+		return
+	}
+
+	if f.Mode() != os.ModePerm {
+		err = os.Chmod(common.ClientDepsFolder, os.ModePerm)
+	}
 
 	return
 }

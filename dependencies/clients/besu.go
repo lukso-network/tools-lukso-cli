@@ -12,13 +12,14 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 
+	"github.com/lukso-network/tools-lukso-cli/common"
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
 	"github.com/lukso-network/tools-lukso-cli/flags"
 	"github.com/lukso-network/tools-lukso-cli/pid"
 )
 
-const besuFolder = clientDepsFolder + "/besu"
+const besuFolder = common.ClientDepsFolder + "/besu"
 
 type BesuClient struct {
 	*clientBinary
@@ -58,7 +59,7 @@ func (b *BesuClient) Install(url string, isUpdate bool) (err error) {
 		}
 	}
 
-	err = installAndExtractFromURL(url, b.name, clientDepsFolder, tarFormat, isUpdate)
+	err = installAndExtractFromURL(url, b.name, common.ClientDepsFolder, tarFormat, isUpdate)
 	if err != nil {
 		return
 	}
