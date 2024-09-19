@@ -112,13 +112,13 @@ func InstallBinaries(ctx *cli.Context) (err error) {
 	}
 
 	if isSetupClientsDir {
-		log.Infof("Preparing clients directory")
+		log.Infof("⚙️   Preparing clients directory")
 
 		err = setupClientsDir()
 		if err != nil {
-			log.Warnf("There was an error while creating clients directory: %v", err)
+			log.Warnf("⚠️  There was an error while creating clients directory: %v", err)
 		} else {
-			log.Infof("Clients directory prepared successfully")
+			log.Infof("✅  Clients directory prepared successfully")
 		}
 	}
 
