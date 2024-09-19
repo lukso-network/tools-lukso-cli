@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.20.1](https://github.com/lukso-network/tools-lukso-cli/compare/v0.20.0...v0.20.1) (2024-09-19)
+
+
+### Bug Fixes
+
+* Permission errors when running certain clients ([#255](https://github.com/lukso-network/tools-lukso-cli/issues/255)) ([4440c19](https://github.com/lukso-network/tools-lukso-cli/commit/4440c194091e912b104ff398e9d5faa39cae8020))
+
 ## [0.20.0](https://github.com/lukso-network/tools-lukso-cli/compare/v0.19.1...v0.20.0) (2024-08-01)
 
 
