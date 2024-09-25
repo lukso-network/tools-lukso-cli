@@ -2,6 +2,7 @@ package commands
 
 import (
 	"fmt"
+	"github.com/lukso-network/tools-lukso-cli/common/network"
 	"io"
 	"net/http"
 	"os"
@@ -108,6 +109,9 @@ func InitializeDirectory(ctx *cli.Context) error {
 		}
 	}
 
+	_ = displayHardforkTimestamps("Mainnet", configs.MainnetConfig+"/"+configs.ChainConfigYamlPath, network.MainnetStartUnixTimestamp)
+	_ = displayHardforkTimestamps("Testnet", configs.TestnetConfig+"/"+configs.ChainConfigYamlPath, network.TestnetStartUnixTimestamp)
+
 	log.Info("✅  Working directory initialized! \n1. ⚙️  Use 'lukso install' to install clients. \n2. ▶️  Use 'lukso start' to start your node.")
 
 	return nil
@@ -190,7 +194,7 @@ func setIPInConfigs() (err error) {
 		}
 	}
 
-	log.Info("✅  IP Address updated!")
+	log.Info("✅  IP Address updated!\n\n")
 
 	return
 }
