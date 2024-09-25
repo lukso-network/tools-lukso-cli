@@ -1,11 +1,12 @@
 package utils
 
 import (
-	log "github.com/sirupsen/logrus"
 	"math"
 	"os"
 	"strings"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 )
 
 func Exit(message string, exitCode int) error {

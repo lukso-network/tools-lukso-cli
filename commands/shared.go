@@ -2,17 +2,17 @@ package commands
 
 import (
 	"fmt"
-	"github.com/lukso-network/tools-lukso-cli/common/network"
-	"github.com/lukso-network/tools-lukso-cli/dependencies/types"
-	"gopkg.in/yaml.v2"
 	"os"
 	"time"
 
 	log "github.com/sirupsen/logrus"
+	"gopkg.in/yaml.v2"
 
+	"github.com/lukso-network/tools-lukso-cli/common/network"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
 	"github.com/lukso-network/tools-lukso-cli/config"
 	"github.com/lukso-network/tools-lukso-cli/dependencies/configs"
+	"github.com/lukso-network/tools-lukso-cli/dependencies/types"
 )
 
 var cfg = config.NewConfig(config.Path)
@@ -84,6 +84,4 @@ func displayNetworksHardforkTimestamps() {
 	if err != nil {
 		log.Warnf("⚠️  There was an error while getting hardfork configs. Error: %v", err)
 	}
-
-	return
 }
