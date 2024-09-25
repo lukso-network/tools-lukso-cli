@@ -52,18 +52,30 @@ func displayHardforkTimestamps(network, srcConfig string, epochZeroTimestamp uin
 		return
 	}
 
-	shapellaTime, isValid = utils.EthEpochToTimestamp(clconfig.ShapellaEpoch, epochZeroTimestamp)
-	if !isValid {
-		shapellaMessage = "TBA"
+	if clconfig.ShapellaEpoch != nil {
+		shapellaTime, isValid = utils.EthEpochToTimestamp(*clconfig.ShapellaEpoch, epochZeroTimestamp)
+		switch {
+		case !isValid:
+			shapellaMessage = "TBA"
+
+		default:
+			shapellaMessage = shapellaTime.Format(time.RFC1123Z)
+		}
 	} else {
-		shapellaMessage = shapellaTime.Format(time.RFC1123Z)
+		shapellaMessage = "Date missing - please make sure that your configs are up to date by running 'lukso update configs' command"
 	}
 
-	dencunTime, isValid = utils.EthEpochToTimestamp(clconfig.DencunEpoch, epochZeroTimestamp)
-	if !isValid {
-		dencunMessage = "TBA"
+	if clconfig.DencunEpoch != nil {
+		dencunTime, isValid = utils.EthEpochToTimestamp(*clconfig.DencunEpoch, epochZeroTimestamp)
+		switch {
+		case !isValid:
+			dencunMessage = "TBA"
+
+		default:
+			dencunMessage = dencunTime.Format(time.RFC1123Z)
+		}
 	} else {
-		dencunMessage = dencunTime.Format(time.RFC1123Z)
+		dencunMessage = "Date missing - please make sure that your configs are up to date by running 'lukso update configs' command"
 	}
 
 	log.Infof("- Shapella: %v", shapellaMessage)
