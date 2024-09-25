@@ -2,6 +2,7 @@ package commands
 
 import (
 	"fmt"
+	"github.com/lukso-network/tools-lukso-cli/common/network"
 	"github.com/lukso-network/tools-lukso-cli/dependencies/types"
 	"gopkg.in/yaml.v2"
 	"os"
@@ -67,6 +68,22 @@ func displayHardforkTimestamps(network, srcConfig string, epochZeroTimestamp uin
 
 	log.Infof("- Shapella: %v", shapellaMessage)
 	log.Infof("- Dencun: %v\n\n", dencunMessage)
+
+	return
+}
+
+func displayNetworksHardforkTimestamps() {
+	var err error
+
+	err = displayHardforkTimestamps("Mainnet", configs.MainnetConfig+"/"+configs.ChainConfigYamlPath, network.MainnetStartUnixTimestamp)
+	if err != nil {
+		log.Warnf("⚠️  There was an error while getting hardfork configs. Error: %v", err)
+	}
+
+	err = displayHardforkTimestamps("Testnet", configs.TestnetConfig+"/"+configs.ChainConfigYamlPath, network.TestnetStartUnixTimestamp)
+	if err != nil {
+		log.Warnf("⚠️  There was an error while getting hardfork configs. Error: %v", err)
+	}
 
 	return
 }

@@ -1,6 +1,6 @@
 package network
 
 const (
-	MainnetStartUnixTimestamp = 1684858800
-	TestnetStartUnixTimestamp = 1683130800
+	MainnetStartUnixTimestamp = uint64(1684858800)
+	TestnetStartUnixTimestamp = uint64(1683130800)
 )

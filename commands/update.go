@@ -2,7 +2,6 @@ package commands
 
 import (
 	"fmt"
-
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 
@@ -69,7 +68,9 @@ func UpdateConfigs(_ *cli.Context) (err error) {
 
 	log.Info("⬇️  Updating shared configuration files...")
 	_ = installConfigGroup(configs.UpdateConfigDependencies, true)
-	log.Info("✅  Shared configuration files updated!")
+	log.Info("✅  Shared configuration files updated!\n\n")
+
+	displayNetworksHardforkTimestamps()
 
 	return
 }
