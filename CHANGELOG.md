@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.21.0](https://github.com/lukso-network/tools-lukso-cli/compare/v0.20.1...v0.21.0) (2024-10-02)
+
+
+### Features
+
+* Hardfork timestamp messages ([#257](https://github.com/lukso-network/tools-lukso-cli/issues/257)) ([036b4f3](https://github.com/lukso-network/tools-lukso-cli/commit/036b4f397bb842d7032a35606538cdd7f0fa1ed3))
+
 ## [0.20.1](https://github.com/lukso-network/tools-lukso-cli/compare/v0.20.0...v0.20.1) (2024-09-19)
 
 
