@@ -69,7 +69,9 @@ func UpdateConfigs(_ *cli.Context) (err error) {
 
 	log.Info("⬇️  Updating shared configuration files...")
 	_ = installConfigGroup(configs.UpdateConfigDependencies, true)
-	log.Info("✅  Shared configuration files updated!")
+	log.Info("✅  Shared configuration files updated!\n\n")
+
+	displayNetworksHardforkTimestamps()
 
 	return
 }

@@ -10,6 +10,7 @@ import (
 	"github.com/urfave/cli/v2"
 
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
+	"github.com/lukso-network/tools-lukso-cli/common/network"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
 	"github.com/lukso-network/tools-lukso-cli/dependencies/clients"
 	"github.com/lukso-network/tools-lukso-cli/flags"
@@ -30,6 +31,23 @@ func StartClients(ctx *cli.Context) (err error) {
 	selectedConsensus := cfg.Consensus()
 	if selectedExecution == "" || selectedConsensus == "" {
 		return utils.Exit(errors.SelectedClientsNotFound, 1)
+	}
+
+	// Hardfork message
+	var (
+		selectedNetwork    = "Mainnet"
+		startUnixTimestamp = network.MainnetStartUnixTimestamp
+		networkConfigPath  = ctx.String(flags.PrysmChainConfigFileFlag)
+	)
+
+	if ctx.Bool(flags.TestnetFlag) {
+		selectedNetwork = "Testnet"
+		startUnixTimestamp = network.TestnetStartUnixTimestamp
+	}
+
+	err = displayHardforkTimestamps(selectedNetwork, networkConfigPath, startUnixTimestamp)
+	if err != nil {
+		log.Warnf("⚠️  There was an error while getting hardfork configs. Error: %v", err)
 	}
 
 	log.Info("🔄  Starting all clients")

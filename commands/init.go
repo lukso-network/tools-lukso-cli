@@ -108,6 +108,8 @@ func InitializeDirectory(ctx *cli.Context) error {
 		}
 	}
 
+	displayNetworksHardforkTimestamps()
+
 	log.Info("✅  Working directory initialized! \n1. ⚙️  Use 'lukso install' to install clients. \n2. ▶️  Use 'lukso start' to start your node.")
 
 	return nil
@@ -190,7 +192,7 @@ func setIPInConfigs() (err error) {
 		}
 	}
 
-	log.Info("✅  IP Address updated!")
+	log.Info("✅  IP Address updated!\n\n")
 
 	return
 }

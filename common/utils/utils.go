@@ -1,8 +1,10 @@
 package utils
 
 import (
+	"math"
 	"os"
 	"strings"
+	"time"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -35,4 +37,21 @@ func AcceptTermsInteractive() bool {
 	}
 
 	return true
+}
+
+// EthEpochToTimestamp converts given Ethereum Epoch to a timestamp of its occurence,
+// assuming the chain started at given epochZeroTimestamp (in unix epoch format).
+// It returns the converted time and bool, which is false when the time is invalid or too large.
+func EthEpochToTimestamp(ethEpoch, epochZeroTimestamp uint64) (t time.Time, isValid bool) {
+	if ethEpoch > math.MaxUint64-10 { // safety margin for any small shifts like -1 or -5
+		isValid = false
+
+		return
+	}
+
+	unixEpoch := ethEpoch * 32 * 12 // slots per epoch * seconds per slot
+	t = time.Unix(int64(epochZeroTimestamp+unixEpoch), 0)
+	isValid = true
+
+	return
 }
