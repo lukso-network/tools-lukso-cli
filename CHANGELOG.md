@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.21.1](https://github.com/lukso-network/tools-lukso-cli/compare/v0.21.0...v0.21.1) (2024-10-02)
+
+
+### Bug Fixes
+
+* Hardfork typo ([#259](https://github.com/lukso-network/tools-lukso-cli/issues/259)) ([cbfa50b](https://github.com/lukso-network/tools-lukso-cli/commit/cbfa50b1769e845670fcfc95110a382652841404))
+
 ## [0.21.0](https://github.com/lukso-network/tools-lukso-cli/compare/v0.20.1...v0.21.0) (2024-10-02)
 
 
