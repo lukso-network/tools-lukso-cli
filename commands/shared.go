@@ -30,7 +30,7 @@ func installConfigGroup(configDependencies map[string]configs.ClientConfigDepend
 }
 
 func displayHardforkTimestamps(network, srcConfig string, epochZeroTimestamp uint64) (err error) {
-	log.Infof("Your LUKSO Node has configs installed to run %s Hardforks on the following dates:", network)
+	log.Infof("Your LUKSO Node has configs installed to run %s Hard Forks on the following dates:", network)
 
 	f, err := os.ReadFile(srcConfig)
 	if err != nil {
