@@ -97,3 +97,37 @@ func displayNetworksHardforkTimestamps() {
 		log.Warnf("⚠️  There was an error while getting hardfork configs. Error: %v", err)
 	}
 }
+
+func installClientConfigFiles(override bool) {
+	log.Info("⬇️  Downloading geth configuration files...")
+	_ = installConfigGroup(configs.GethConfigDependencies, override)
+	log.Info("✅  Geth configuration files downloaded!\n\n")
+
+	log.Info("⬇️  Downloading erigon configuration files...")
+	_ = installConfigGroup(configs.ErigonConfigDependencies, override)
+	log.Info("✅  Erigon configuration files downloaded!\n\n")
+
+	log.Info("⬇️  Downloading nethermind configuration files...")
+	_ = installConfigGroup(configs.NethermindConfigDependencies, override)
+	log.Info("✅  Nethermind configuration files downloaded!\n\n")
+
+	log.Info("⬇️  Downloading besu configuration files...")
+	_ = installConfigGroup(configs.BesuConfigDependencies, override)
+	log.Info("✅  Besu configuration files downloaded!\n\n")
+
+	log.Info("⬇️  Downloading prysm configuration files...")
+	_ = installConfigGroup(configs.PrysmConfigDependencies, override)
+	log.Info("✅  Prysm configuration files downloaded!\n\n")
+
+	log.Info("⬇️  Downloading lighthouse configuration files...")
+	_ = installConfigGroup(configs.LighthouseConfigDependencies, override)
+	log.Info("✅  Lighthouse configuration files downloaded!\n\n")
+
+	log.Info("⬇️  Downloading prysm validator configuration files...")
+	_ = installConfigGroup(configs.PrysmValidatorConfigDependencies, override)
+	log.Info("✅  Prysm validator configuration files downloaded!\n\n")
+
+	log.Info("⬇️  Downloading teku configuration files...")
+	_ = installConfigGroup(configs.TekuConfigDependencies, override)
+	log.Info("✅  Teku configuration files downloaded!\n\n")
+}

@@ -41,37 +41,7 @@ func InitializeDirectory(ctx *cli.Context) error {
 	_ = installConfigGroup(configs.SharedConfigDependencies, false) // we can omit errors - all errors are catched by cli.Exit()
 	log.Info("✅  Shared configuration files downloaded!\n\n")
 
-	log.Info("⬇️  Downloading geth configuration files...")
-	_ = installConfigGroup(configs.GethConfigDependencies, false)
-	log.Info("✅  Geth configuration files downloaded!\n\n")
-
-	log.Info("⬇️  Downloading erigon configuration files...")
-	_ = installConfigGroup(configs.ErigonConfigDependencies, false)
-	log.Info("✅  Erigon configuration files downloaded!\n\n")
-
-	log.Info("⬇️  Downloading nethermind configuration files...")
-	_ = installConfigGroup(configs.NethermindConfigDependencies, false)
-	log.Info("✅  Nethermind configuration files downloaded!\n\n")
-
-	log.Info("⬇️  Downloading besu configuration files...")
-	_ = installConfigGroup(configs.BesuConfigDependencies, false)
-	log.Info("✅  Besu configuration files downloaded!\n\n")
-
-	log.Info("⬇️  Downloading prysm configuration files...")
-	_ = installConfigGroup(configs.PrysmConfigDependencies, false)
-	log.Info("✅  Prysm configuration files downloaded!\n\n")
-
-	log.Info("⬇️  Downloading lighthouse configuration files...")
-	_ = installConfigGroup(configs.LighthouseConfigDependencies, false)
-	log.Info("✅  Lighthouse configuration files downloaded!\n\n")
-
-	log.Info("⬇️  Downloading prysm validator configuration files...")
-	_ = installConfigGroup(configs.PrysmValidatorConfigDependencies, false)
-	log.Info("✅  Prysm validator configuration files downloaded!\n\n")
-
-	log.Info("⬇️  Downloading teku configuration files...")
-	_ = installConfigGroup(configs.TekuConfigDependencies, false)
-	log.Info("✅  Teku configuration files downloaded!\n\n")
+	installClientConfigFiles(false)
 
 	err := utils.CreateJwtSecret(jwtSecretPath)
 	if err != nil {

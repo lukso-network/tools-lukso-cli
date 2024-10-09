@@ -148,8 +148,14 @@ var (
 			Value: false,
 		},
 	}
-	UpdateConfigFlags []cli.Flag
-	StopFlags         = []cli.Flag{
+	UpdateConfigFlags = []cli.Flag{
+		&cli.BoolFlag{
+			Name:  AllFlag,
+			Usage: "Updates all configuration files, including configurations for each client",
+			Value: false,
+		},
+	}
+	StopFlags = []cli.Flag{
 		executionSelectedFlag,
 		consensusSelectedFlag,
 		validatorSelectedFlag,
