@@ -496,5 +496,10 @@ var (
 			Usage: "Path to nimbus.toml config file",
 			Value: configs.MainnetConfig + configs.Nimbus2TomlPath,
 		},
+		&cli.StringFlag{
+			Name:  Nimbus2ValidatorConfigFileFlag,
+			Usage: "Path to validator.toml config file",
+			Value: configs.MainnetConfig + configs.Nimbus2ValidatorTomlPath,
+		},
 	}
 )

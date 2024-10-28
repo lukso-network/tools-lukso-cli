@@ -31,4 +31,14 @@ var Nimbus2ConfigDependencies = map[string]ClientConfigDependency{
 		name:     nimbus2TestnetDepositBlockHashDependencyName,
 		filePath: TestnetConfig + "/" + Nimbus2DepositContractHashPath,
 	},
+	nimbus2ValidatorMainnetConfigDependencyName: &clientConfig{
+		url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/prysm/validator.yaml",
+		name:     nimbus2ValidatorMainnetConfigDependencyName,
+		filePath: MainnetConfig + "/" + Nimbus2ValidatorTomlPath,
+	},
+	nimbus2ValidatorTestnetConfigDependencyName: &clientConfig{
+		url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/prysm/validator.yaml",
+		name:     nimbus2ValidatorTestnetConfigDependencyName,
+		filePath: TestnetConfig + "/" + Nimbus2ValidatorTomlPath,
+	},
 }

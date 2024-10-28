@@ -69,13 +69,6 @@ const (
 	depositContractBlockMainnetConfigDependencyName = "mainnet deposit contract block"
 	depositContractBlockTestnetConfigDependencyName = "testnet deposit contract block"
 
-	validatorMainnetConfigDependencyName           = "validator mainnet config"
-	validatorTestnetConfigDependencyName           = "validator testnet config"
-	lighthouseValidatorMainnetConfigDependencyName = "lighthouse validator mainnet config"
-	lighthouseValidatorTestnetConfigDependencyName = "lighthouse validator testnet config"
-	tekuValidatorMainnetConfigDependencyName       = "teku validator mainnet config"
-	tekuValidatorTestnetConfigDependencyName       = "teku validator testnet config"
-
 	tekuMainnetConfigDependencyName      = "teku mainnet config"
 	tekuTestnetConfigDependencyName      = "teku testnet config"
 	tekuMainnetChainConfigDependencyName = "teku mainnet chain config"
@@ -87,6 +80,15 @@ const (
 	nimbus2TestnetChainConfigDependencyName      = "nimbus2 testnet chain config"
 	nimbus2MainnetDepositBlockHashDependencyName = "nimbus2 mainnet deposit block hash"
 	nimbus2TestnetDepositBlockHashDependencyName = "nimbus2 testnet deposity block hash"
+
+	validatorMainnetConfigDependencyName           = "validator mainnet config"
+	validatorTestnetConfigDependencyName           = "validator testnet config"
+	lighthouseValidatorMainnetConfigDependencyName = "lighthouse validator mainnet config"
+	lighthouseValidatorTestnetConfigDependencyName = "lighthouse validator testnet config"
+	tekuValidatorMainnetConfigDependencyName       = "teku validator mainnet config"
+	tekuValidatorTestnetConfigDependencyName       = "teku validator testnet config"
+	nimbus2ValidatorMainnetConfigDependencyName    = "nimbus2 validator mainnet config"
+	nimbus2ValidatorTestnetConfigDependencyName    = "nimbus2 validator testnet config"
 
 	// PATHS
 	GenesisJsonPath    = "shared/genesis.json"
@@ -137,6 +139,7 @@ const (
 	TekuValidatorYamlPath          = "teku/validator.yaml"
 	TekuChainConfigYamlPath        = "teku/config.yaml"
 	Nimbus2TomlPath                = "nimbus2/nimbus.yaml"
+	Nimbus2ValidatorTomlPath       = "nimbus2/validator.toml"
 	Nimbus2ChainConfigYamlPath     = "nimbus2/config.yaml"
 	Nimbus2DepositContractHashPath = "nimbus2/deposit_contract_hash.txt"
 )
