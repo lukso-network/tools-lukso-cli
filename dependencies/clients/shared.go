@@ -39,6 +39,7 @@ const (
 	tekuValidatorDependencyName       = "Teku Validator"
 	nethermindDependencyName          = "Nethermind"
 	besuDependencyName                = "Besu"
+	nimbus2DependencyName             = "Nimbus2"
 
 	gethGithubLocation          = "ethereum/go-ethereum"
 	prysmaticLabsGithubLocation = "prysmaticlabs/prysm"
@@ -47,6 +48,7 @@ const (
 	tekuGithubLocation          = "Consensys/teku"
 	nethermindGithubLocation    = "NethermindEth/nethermind"
 	besuGithubLocation          = "hyperledger/besu"
+	nimbus2GithubLocation       = "status-im/nimbus-eth2"
 
 	peerDirectionInbound  = "inbound"
 	peerDirectionOutbound = "outbound"
@@ -71,6 +73,7 @@ var (
 		tekuValidatorDependencyName:       TekuValidator,
 		nethermindDependencyName:          Nethermind,
 		besuDependencyName:                Besu,
+		nimbus2DependencyName:             Nimbus2,
 	}
 
 	ClientVersions = map[string]string{
@@ -646,6 +649,7 @@ func untarDir(dst string, t *tar.Reader) error {
 		}
 
 		path := filepath.Join(dst, header.Name)
+		fmt.Println(header.Name)
 
 		// for the sake of compatibility with updated versions remove the tag from the tarred file - teku/teku-xx.x.x => teku/teku, same with jdk
 		switch {
@@ -660,7 +664,10 @@ func untarDir(dst string, t *tar.Reader) error {
 		case strings.Contains(header.Name, "besu-"):
 			newHeader := replaceRootFolderName(header.Name, "besu")
 			path = filepath.Join(dst, newHeader)
-
+		case strings.Contains(header.Name, "nimbus-eth2"):
+			fmt.Println("Here!")
+			newHeader := replaceRootFolderName(header.Name, "nimbus2")
+			path = filepath.Join(dst, newHeader)
 		}
 
 		info := header.FileInfo()

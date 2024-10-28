@@ -16,6 +16,7 @@ func init() {
 	InstallFlags = append(InstallFlags, TekuDownloadFlags...)
 	InstallFlags = append(InstallFlags, NethermindDownloadFlags...)
 	InstallFlags = append(InstallFlags, BesuDownloadFlags...)
+	InstallFlags = append(InstallFlags, Nimbus2DownloadFlags...)
 
 	StartFlags = append(StartFlags, GethStartFlags...)
 	StartFlags = append(StartFlags, ErigonStartFlags...)
@@ -26,6 +27,7 @@ func init() {
 	StartFlags = append(StartFlags, NetworkFlags...)
 	StartFlags = append(StartFlags, NethermindStartFlags...)
 	StartFlags = append(StartFlags, BesuStartFlags...)
+	StartFlags = append(StartFlags, Nimbus2StartFlags...)
 
 	LogsFlags = append(LogsFlags, GethLogsFlags...)
 	LogsFlags = append(LogsFlags, PrysmLogsFlags...)
@@ -473,6 +475,26 @@ var (
 			Name:  TekuValidatorConfigFileFlag,
 			Usage: "Path to validator.yaml config file",
 			Value: configs.MainnetConfig + configs.TekuValidatorYamlPath,
+		},
+	}
+
+	Nimbus2DownloadFlags = []cli.Flag{
+		&cli.StringFlag{
+			Name:  Nimbus2TagFlag,
+			Usage: "Tag for nimbus-eth2 client",
+			Value: common.Nimbus2Tag,
+		},
+		&cli.StringFlag{
+			Name:  Nimbus2CommitHashFlag,
+			Usage: "Commit hash for nimbus-eth2 client",
+			Value: common.Nimbus2CommitHash,
+		},
+	}
+	Nimbus2StartFlags = []cli.Flag{
+		&cli.StringFlag{
+			Name:  Nimbus2ConfigFileFlag,
+			Usage: "Path to nimbus.toml config file",
+			Value: configs.MainnetConfig + configs.Nimbus2TomlPath,
 		},
 	}
 )

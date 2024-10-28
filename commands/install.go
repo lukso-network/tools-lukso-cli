@@ -33,20 +33,22 @@ func InstallBinaries(ctx *cli.Context) (err error) {
 	}
 
 	var (
-		selectedConsensus clients.ClientBinaryDependency
-		selectedExecution clients.ClientBinaryDependency
-		consensusInput    string
-		executionInput    string
-		consensusTag      string
-		executionTag      string
-		commitHash        string
-		isSetupClientsDir bool = false
+		selectedConsensus   clients.ClientBinaryDependency
+		selectedExecution   clients.ClientBinaryDependency
+		consensusInput      string
+		executionInput      string
+		consensusTag        string
+		executionTag        string
+		executionCommitHash string
+		consensusCommitHash string
+		isSetupClientsDir   bool = false
 	)
 
 	consensusMessage := "\nWhich consensus client do you want to install?\n" +
 		"1: prysm\n" +
 		"2: lighthouse\n" +
 		"3: teku\n" +
+		"4: nimbus (eth2)\n" +
 		"> "
 
 	executionMessage := "\nWhich execution client do you want to install?\n" +
@@ -57,7 +59,7 @@ func InstallBinaries(ctx *cli.Context) (err error) {
 		"> "
 
 	consensusInput = utils.RegisterInputWithMessage(consensusMessage)
-	for consensusInput != "1" && consensusInput != "2" && consensusInput != "3" {
+	for consensusInput != "1" && consensusInput != "2" && consensusInput != "3" && consensusInput != "4" {
 		consensusInput = utils.RegisterInputWithMessage("Please provide a valid option\n> ")
 	}
 
@@ -72,6 +74,12 @@ func InstallBinaries(ctx *cli.Context) (err error) {
 		selectedConsensus = clients.Teku
 		consensusTag = ctx.String(flags.TekuTagFlag)
 		isSetupClientsDir = true
+	case "4":
+		selectedConsensus = clients.Nimbus2
+		consensusTag = ctx.String(flags.Nimbus2TagFlag)
+		consensusCommitHash = ctx.String(flags.Nimbus2CommitHashFlag)
+		isSetupClientsDir = true
+
 	}
 
 	executionInput = utils.RegisterInputWithMessage(executionMessage)
@@ -83,14 +91,14 @@ func InstallBinaries(ctx *cli.Context) (err error) {
 	case "1":
 		selectedExecution = clients.Geth
 		executionTag = ctx.String(flags.GethTagFlag)
-		commitHash = ctx.String(flags.GethCommitHashFlag)
+		executionCommitHash = ctx.String(flags.GethCommitHashFlag)
 	case "2":
 		selectedExecution = clients.Erigon
 		executionTag = ctx.String(flags.ErigonTagFlag)
 	case "3":
 		selectedExecution = clients.Nethermind
 		executionTag = ctx.String(flags.NethermindTagFlag)
-		commitHash = ctx.String(flags.NethermindCommitHashFlag)
+		executionCommitHash = ctx.String(flags.NethermindCommitHashFlag)
 		isSetupClientsDir = true
 	case "4":
 		selectedExecution = clients.Besu
@@ -123,13 +131,13 @@ func InstallBinaries(ctx *cli.Context) (err error) {
 	}
 
 	log.Infof("⬇️  Downloading %s...", selectedExecution.Name())
-	err = selectedExecution.Install(selectedExecution.ParseUrl(executionTag, commitHash), false)
+	err = selectedExecution.Install(selectedExecution.ParseUrl(executionTag, executionCommitHash), false)
 	if err != nil {
 		return utils.Exit(fmt.Sprintf("❌  There was an error while downloading %s: %v", selectedExecution.Name(), err), 1)
 	}
 
 	log.Infof("⬇️  Downloading %s...", selectedConsensus.Name())
-	err = selectedConsensus.Install(selectedConsensus.ParseUrl(consensusTag, commitHash), false)
+	err = selectedConsensus.Install(selectedConsensus.ParseUrl(consensusTag, consensusCommitHash), false)
 	if err != nil {
 		return utils.Exit(fmt.Sprintf("❌  There was an error while downloading %s: %v", selectedConsensus.Name(), err), 1)
 	}
@@ -146,6 +154,9 @@ func InstallBinaries(ctx *cli.Context) (err error) {
 	}
 	if selectedConsensus == clients.Teku {
 		selectedValidator = clients.TekuValidator
+	}
+	if selectedConsensus == clients.Nimbus2 {
+		log.Info("Temporarily fallbacking to LH validator (nimbus val not implemented yet)")
 	}
 
 	err = cfg.Create(selectedExecution.Name(), selectedConsensus.Name(), selectedValidator.Name())

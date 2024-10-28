@@ -81,6 +81,13 @@ const (
 	tekuMainnetChainConfigDependencyName = "teku mainnet chain config"
 	tekuTestnetChainConfigDependencyName = "teku testnet chain config"
 
+	nimbus2MainnetConfigDependencyName           = "nimbus2 mainnet config"
+	nimbus2TestnetConfigDependencyName           = "nimbus2 testnet config"
+	nimbus2MainnetChainConfigDependencyName      = "nimbus2 mainnet chain config"
+	nimbus2TestnetChainConfigDependencyName      = "nimbus2 testnet chain config"
+	nimbus2MainnetDepositBlockHashDependencyName = "nimbus2 mainnet deposit block hash"
+	nimbus2TestnetDepositBlockHashDependencyName = "nimbus2 testnet deposity block hash"
+
 	// PATHS
 	GenesisJsonPath    = "shared/genesis.json"
 	Genesis35JsonPath  = "shared/genesis_35.json"
@@ -115,20 +122,23 @@ const (
 	ValidatorMainnetDatadir = MainnetDatadir + "/validator"
 	ValidatorTestnetDatadir = TestnetDatadir + "/validator"
 
-	ChainConfigYamlPath         = "shared/config.yaml"
-	DeployBlockPath             = "shared/deploy_block.txt"
-	DepositContractBlockPath    = "shared/deposit_contract_block.txt"
-	GethTomlPath                = "geth/geth.toml"
-	ErigonTomlPath              = "erigon/erigon.toml"
-	NethermindCfgPath           = "nethermind/nethermind.cfg"
-	BesuTomlPath                = "besu/besu.toml"
-	PrysmYamlPath               = "prysm/prysm.yaml"
-	ValidatorYamlPath           = "prysm/validator.yaml"
-	LighthouseTomlPath          = "lighthouse/lighthouse.toml"
-	LighthouseValidatorTomlPath = "lighthouse/validator.toml"
-	TekuYamlPath                = "teku/teku.yaml"
-	TekuValidatorYamlPath       = "teku/validator.yaml"
-	TekuChainConfigYamlPath     = "teku/config.yaml"
+	ChainConfigYamlPath            = "shared/config.yaml"
+	DeployBlockPath                = "shared/deploy_block.txt"
+	DepositContractBlockPath       = "shared/deposit_contract_block.txt"
+	GethTomlPath                   = "geth/geth.toml"
+	ErigonTomlPath                 = "erigon/erigon.toml"
+	NethermindCfgPath              = "nethermind/nethermind.cfg"
+	BesuTomlPath                   = "besu/besu.toml"
+	PrysmYamlPath                  = "prysm/prysm.yaml"
+	ValidatorYamlPath              = "prysm/validator.yaml"
+	LighthouseTomlPath             = "lighthouse/lighthouse.toml"
+	LighthouseValidatorTomlPath    = "lighthouse/validator.toml"
+	TekuYamlPath                   = "teku/teku.yaml"
+	TekuValidatorYamlPath          = "teku/validator.yaml"
+	TekuChainConfigYamlPath        = "teku/config.yaml"
+	Nimbus2TomlPath                = "nimbus2/nimbus.yaml"
+	Nimbus2ChainConfigYamlPath     = "nimbus2/config.yaml"
+	Nimbus2DepositContractHashPath = "nimbus2/deposit_contract_hash.txt"
 )
 
 var (
@@ -196,7 +206,7 @@ var (
 		},
 	}
 	UpdateConfigDependencies = map[string]ClientConfigDependency{
-		// same as SharedConfigDependencies but with added Teku chain configs
+		// copied existing configs
 		mainnetGenesisDependencyName:                    SharedConfigDependencies[mainnetGenesisDependencyName],
 		mainnetGenesisStateDependencyName:               SharedConfigDependencies[mainnetGenesisStateDependencyName],
 		mainnetChainConfigDependencyName:                SharedConfigDependencies[mainnetChainConfigDependencyName],
@@ -209,16 +219,10 @@ var (
 		testnetGenesisChainspecDependencyName:           SharedConfigDependencies[testnetGenesisChainspecDependencyName],
 		deployBlockTestnetConfigDependencyName:          SharedConfigDependencies[deployBlockTestnetConfigDependencyName],
 		depositContractBlockTestnetConfigDependencyName: SharedConfigDependencies[depositContractBlockTestnetConfigDependencyName],
-		tekuMainnetChainConfigDependencyName: &clientConfig{
-			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/teku/config.yaml",
-			name:     tekuMainnetChainConfigDependencyName,
-			filePath: MainnetConfig + "/" + TekuChainConfigYamlPath,
-		},
-		tekuTestnetChainConfigDependencyName: &clientConfig{
-			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/teku/config.yaml",
-			name:     tekuTestnetChainConfigDependencyName,
-			filePath: TestnetConfig + "/" + TekuChainConfigYamlPath,
-		},
+		tekuMainnetChainConfigDependencyName:            TekuConfigDependencies[tekuMainnetChainConfigDependencyName],
+		tekuTestnetChainConfigDependencyName:            TekuConfigDependencies[tekuTestnetChainConfigDependencyName],
+		nimbus2MainnetChainConfigDependencyName:         Nimbus2ConfigDependencies[nimbus2MainnetChainConfigDependencyName],
+		nimbus2TestnetChainConfigDependencyName:         Nimbus2ConfigDependencies[nimbus2TestnetChainConfigDependencyName],
 	}
 )
 
