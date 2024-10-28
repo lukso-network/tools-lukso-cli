@@ -156,7 +156,7 @@ func InstallBinaries(ctx *cli.Context) (err error) {
 		selectedValidator = clients.TekuValidator
 	}
 	if selectedConsensus == clients.Nimbus2 {
-		log.Info("Temporarily fallbacking to LH validator (nimbus val not implemented yet)")
+		selectedValidator = clients.Nimbus2Validator
 	}
 
 	err = cfg.Create(selectedExecution.Name(), selectedConsensus.Name(), selectedValidator.Name())

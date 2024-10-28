@@ -40,6 +40,7 @@ const (
 	nethermindDependencyName          = "Nethermind"
 	besuDependencyName                = "Besu"
 	nimbus2DependencyName             = "Nimbus2"
+	nimbus2ValidatorDependencyName    = "Nimbus2 Validator"
 
 	gethGithubLocation          = "ethereum/go-ethereum"
 	prysmaticLabsGithubLocation = "prysmaticlabs/prysm"
@@ -74,6 +75,7 @@ var (
 		nethermindDependencyName:          Nethermind,
 		besuDependencyName:                Besu,
 		nimbus2DependencyName:             Nimbus2,
+		nimbus2ValidatorDependencyName:    Nimbus2Validator,
 	}
 
 	ClientVersions = map[string]string{
@@ -86,6 +88,7 @@ var (
 		lighthouseValidatorDependencyName: common.LighthouseTag,
 		tekuDependencyName:                common.TekuTag,
 		besuDependencyName:                common.BesuTag,
+		nimbus2DependencyName:             common.Nimbus2Tag,
 	}
 )
 
@@ -857,4 +860,36 @@ func isJdkInstalled() bool {
 	_, err := os.Stat(jdkFolder)
 
 	return err == nil
+}
+
+func prepareLogFile(ctx *cli.Context, command *exec.Cmd, client string) (err error) {
+	var (
+		logFile  *os.File
+		fullPath string
+	)
+
+	logFolder := ctx.String(flags.LogFolderFlag)
+	if logFolder == "" {
+		return utils.Exit(fmt.Sprintf("%v- %s", errors.ErrFlagMissing, flags.LogFolderFlag), 1)
+	}
+
+	fullPath, err = utils.PrepareTimestampedFile(logFolder, client)
+	if err != nil {
+		return
+	}
+
+	err = os.WriteFile(fullPath, []byte{}, 0o750)
+	if err != nil {
+		return
+	}
+
+	logFile, err = os.OpenFile(fullPath, os.O_RDWR, 0o750)
+	if err != nil {
+		return
+	}
+
+	command.Stdout = logFile
+	command.Stderr = logFile
+
+	return
 }

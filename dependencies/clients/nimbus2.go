@@ -13,7 +13,6 @@ import (
 	"github.com/urfave/cli/v2"
 
 	"github.com/lukso-network/tools-lukso-cli/common"
-	"github.com/lukso-network/tools-lukso-cli/common/errors"
 	"github.com/lukso-network/tools-lukso-cli/common/system"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
 	"github.com/lukso-network/tools-lukso-cli/flags"
@@ -119,33 +118,10 @@ func (n *Nimbus2Client) Start(ctx *cli.Context, arguments []string) (err error) 
 
 	command := exec.Command(fmt.Sprintf("./%s/build/nimbus_beacon_node", n.FilePath()), arguments...)
 
-	var (
-		logFile  *os.File
-		fullPath string
-	)
-
-	logFolder := ctx.String(flags.LogFolderFlag)
-	if logFolder == "" {
-		return utils.Exit(fmt.Sprintf("%v- %s", errors.ErrFlagMissing, flags.LogFolderFlag), 1)
-	}
-
-	fullPath, err = utils.PrepareTimestampedFile(logFolder, n.CommandName())
+	err = prepareLogFile(ctx, command, n.CommandName())
 	if err != nil {
-		return
+		log.Errorf("There was an error while preparing a log file for %s: %v", n.Name(), err)
 	}
-
-	err = os.WriteFile(fullPath, []byte{}, 0o750)
-	if err != nil {
-		return
-	}
-
-	logFile, err = os.OpenFile(fullPath, os.O_RDWR, 0o750)
-	if err != nil {
-		return
-	}
-
-	command.Stdout = logFile
-	command.Stderr = logFile
 
 	log.Infof("🔄  Starting %s", n.Name())
 	err = command.Start()
