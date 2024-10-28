@@ -43,12 +43,17 @@ const (
 	TekuTagFlag                 = "teku-tag"
 	TekuConfigFileFlag          = "teku-config"
 	TekuValidatorConfigFileFlag = "teku-validator-config"
-	MainnetFlag                 = "mainnet"
-	TestnetFlag                 = "testnet"
-	DevnetFlag                  = "devnet"
-	ValidatorFlag               = "validator"
-	ConsensusFlag               = "consensus"
-	ExecutionFlag               = "execution"
+
+	Nimbus2TagFlag        = "nimbus2-tag"
+	Nimbus2CommitHashFlag = "nimbus2-commit-hash"
+	Nimbus2ConfigFileFlag = "nimbus2-config-file"
+
+	MainnetFlag   = "mainnet"
+	TestnetFlag   = "testnet"
+	DevnetFlag    = "devnet"
+	ValidatorFlag = "validator"
+	ConsensusFlag = "consensus"
+	ExecutionFlag = "execution"
 
 	LogFolderFlag = "logs-folder"
 

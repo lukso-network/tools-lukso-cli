@@ -43,6 +43,10 @@ func InitializeDirectory(ctx *cli.Context) error {
 
 	installClientConfigFiles(false)
 
+	log.Info("⬇️  Downloading nimbus (eth2) configuration files...")
+	_ = installConfigGroup(configs.Nimbus2ConfigDependencies, false)
+	log.Info("✅  Nimbus (eth2) configuration files downloaded!\n\n")
+
 	err := utils.CreateJwtSecret(jwtSecretPath)
 	if err != nil {
 		return utils.Exit(fmt.Sprintf("❌  There was an error while creating JWT secret file: %v", err), 1)
