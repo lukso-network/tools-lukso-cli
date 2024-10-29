@@ -99,6 +99,8 @@ func updateValues(ctx *cli.Context, config networkConfig) (err error) {
 		validatorYamlPath           = config.configPath + "/" + configs.ValidatorYamlPath
 		tekuYamlPath                = config.configPath + "/" + configs.TekuYamlPath
 		tekuValidatorYamlPath       = config.configPath + "/" + configs.TekuValidatorYamlPath
+		nimbus2TomlPath             = config.configPath + "/" + configs.Nimbus2TomlPath
+		nimbus2ValidatorTomlPath    = config.configPath + "/" + configs.Nimbus2ValidatorTomlPath
 		gethGenesisPath             = config.configPath + "/" + configs.GenesisJsonPath
 		genesisStatePath            = config.configPath + "/" + configs.GenesisStateFilePath
 		configYamlPath              = config.configPath + "/" + configs.ChainConfigYamlPath
@@ -131,6 +133,8 @@ func updateValues(ctx *cli.Context, config networkConfig) (err error) {
 		flags.ValidatorConfigFileFlag:           validatorYamlPath,
 		flags.TekuConfigFileFlag:                tekuYamlPath,
 		flags.TekuValidatorConfigFileFlag:       tekuValidatorYamlPath,
+		flags.Nimbus2ConfigFileFlag:             nimbus2TomlPath,
+		flags.Nimbus2ValidatorConfigFileFlag:    nimbus2ValidatorTomlPath,
 		flags.GenesisJsonFlag:                   gethGenesisPath,
 		flags.PrysmChainConfigFileFlag:          configYamlPath,
 		flags.ValidatorChainConfigFileFlag:      configYamlPath,

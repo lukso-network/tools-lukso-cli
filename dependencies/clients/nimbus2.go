@@ -45,7 +45,7 @@ func (n *Nimbus2Client) PrepareStartFlags(ctx *cli.Context) (startFlags []string
 
 	startFlags = append(startFlags, fmt.Sprintf("--config-file=%s", ctx.String(flags.Nimbus2ConfigFileFlag)))
 	if ctx.String(flags.TransactionFeeRecipientFlag) != "" {
-		startFlags = append(startFlags, fmt.Sprintf("--validators-proposer-default-fee-recipient=%s", ctx.String(flags.TransactionFeeRecipientFlag)))
+		startFlags = append(startFlags, fmt.Sprintf("--suggested-fee-recipient=%s", ctx.String(flags.TransactionFeeRecipientFlag)))
 	}
 
 	return
@@ -114,6 +114,28 @@ func (n *Nimbus2Client) Start(ctx *cli.Context, arguments []string) (err error) 
 		}
 
 		log.Infof("🛑  Stopped %s", n.Name())
+	}
+
+	// in Nimbus case, we need to prepare the data dir using a syncing command:
+	// nimbus_beacon_node trustedNodeSync
+	if ctx.Bool(flags.CheckpointSyncFlag) {
+		network := "mainnet"
+		if ctx.Bool(flags.TestnetFlag) {
+			network = "testnet"
+		}
+
+		checkpointURL := fmt.Sprintf("https://checkpoints.%s.lukso.network", network)
+		args := []string{
+			"trustedNodeSync",
+			fmt.Sprintf("--trusted-node-url=%s", checkpointURL),
+		}
+
+		syncCommand := exec.Command(fmt.Sprintf("./%s/build/nimbus_beacon_node", n.FilePath()), args...)
+
+		syncCommand.Stdout = os.Stdout
+		syncCommand.Stderr = os.Stderr
+
+		return syncCommand.Run()
 	}
 
 	command := exec.Command(fmt.Sprintf("./%s/build/nimbus_beacon_node", n.FilePath()), arguments...)
