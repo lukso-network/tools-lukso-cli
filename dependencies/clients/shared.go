@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"io/fs"
 	"net/http"
 	"os"
 	"os/exec"
@@ -890,6 +891,58 @@ func prepareLogFile(ctx *cli.Context, command *exec.Cmd, client string) (err err
 
 	command.Stdout = logFile
 	command.Stderr = logFile
+
+	return
+}
+
+// keystoreListWalk walks through the given directory (and its subdirectories) and prints all found pubkeys.
+func keystoreListWalk(walletDir string) (err error) {
+	validatorIndex := 0
+
+	walkFunc := func(path string, d fs.DirEntry, entryError error) (err error) {
+		if d == nil {
+			return nil
+		}
+
+		keystoreExt := filepath.Ext(d.Name())
+		if !strings.Contains(keystoreExt, "json") {
+			return nil
+		}
+
+		keystoreFile, err := os.Open(path)
+		if err != nil {
+			return
+		}
+		defer keystoreFile.Close()
+
+		keystoreFileBytes, err := io.ReadAll(keystoreFile)
+		if err != nil {
+			return
+		}
+
+		keystore := struct {
+			Pubkey string `json:"pubkey"`
+		}{}
+
+		err = json.Unmarshal(keystoreFileBytes, &keystore)
+		if err != nil {
+			return
+		}
+
+		log.Infof("Validator #%d: %s", validatorIndex, keystore.Pubkey)
+		validatorIndex++
+
+		return
+	}
+
+	err = filepath.WalkDir(walletDir, walkFunc)
+	if err != nil {
+		return
+	}
+
+	if validatorIndex == 0 {
+		log.Info("No validator keys listed. To import your validator keys run lukso validator import")
+	}
 
 	return
 }
