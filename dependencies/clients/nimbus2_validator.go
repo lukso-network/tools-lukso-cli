@@ -37,7 +37,7 @@ func (n *Nimbus2ValidatorClient) PrepareStartFlags(ctx *cli.Context) (startFlags
 	startFlags = n.ParseUserFlags(ctx)
 
 	startFlags = append(startFlags, fmt.Sprintf("--config-file=%s", ctx.String(flags.Nimbus2ValidatorConfigFileFlag)))
-	startFlags = append(startFlags, fmt.Sprintf("--validators-proposer-default-fee-recipient=%s", ctx.String(flags.TransactionFeeRecipientFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--suggested-fee-recipient=%s", ctx.String(flags.TransactionFeeRecipientFlag)))
 
 	return
 }

@@ -138,7 +138,7 @@ const (
 	TekuYamlPath                   = "teku/teku.yaml"
 	TekuValidatorYamlPath          = "teku/validator.yaml"
 	TekuChainConfigYamlPath        = "teku/config.yaml"
-	Nimbus2TomlPath                = "nimbus2/nimbus.yaml"
+	Nimbus2TomlPath                = "nimbus2/nimbus.toml"
 	Nimbus2ValidatorTomlPath       = "nimbus2/validator.toml"
 	Nimbus2ChainConfigYamlPath     = "nimbus2/config.yaml"
 	Nimbus2DepositContractHashPath = "nimbus2/deposit_contract_hash.txt"

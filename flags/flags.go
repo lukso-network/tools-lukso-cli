@@ -469,12 +469,12 @@ var (
 		&cli.StringFlag{
 			Name:  TekuConfigFileFlag,
 			Usage: "Path to teku.yaml config file",
-			Value: configs.MainnetConfig + configs.TekuYamlPath,
+			Value: configs.MainnetConfig + "/" + configs.TekuYamlPath,
 		},
 		&cli.StringFlag{
 			Name:  TekuValidatorConfigFileFlag,
 			Usage: "Path to validator.yaml config file",
-			Value: configs.MainnetConfig + configs.TekuValidatorYamlPath,
+			Value: configs.MainnetConfig + "/" + configs.TekuValidatorYamlPath,
 		},
 	}
 
@@ -494,12 +494,12 @@ var (
 		&cli.StringFlag{
 			Name:  Nimbus2ConfigFileFlag,
 			Usage: "Path to nimbus.toml config file",
-			Value: configs.MainnetConfig + configs.Nimbus2TomlPath,
+			Value: configs.MainnetConfig + "/" + configs.Nimbus2TomlPath,
 		},
 		&cli.StringFlag{
 			Name:  Nimbus2ValidatorConfigFileFlag,
 			Usage: "Path to validator.toml config file",
-			Value: configs.MainnetConfig + configs.Nimbus2ValidatorTomlPath,
+			Value: configs.MainnetConfig + "/" + configs.Nimbus2ValidatorTomlPath,
 		},
 	}
 )
