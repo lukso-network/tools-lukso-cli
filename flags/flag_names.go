@@ -41,11 +41,14 @@ const (
 	ValidatorChainConfigFileFlag    = "validator-chain-config"
 
 	TekuTagFlag                 = "teku-tag"
+	TekuDatadirFlag             = "teku-datadir"
 	TekuConfigFileFlag          = "teku-config"
 	TekuValidatorConfigFileFlag = "teku-validator-config"
 
 	Nimbus2TagFlag                 = "nimbus2-tag"
 	Nimbus2CommitHashFlag          = "nimbus2-commit-hash"
+	Nimbus2NetworkFlag             = "nimbus2-network"
+	Nimbus2DatadirFlag             = "nimbus2-datadir"
 	Nimbus2ConfigFileFlag          = "nimbus2-config-file"
 	Nimbus2ValidatorConfigFileFlag = "nimbus2-validator-config-file"
 

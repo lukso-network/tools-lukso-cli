@@ -131,7 +131,7 @@ func installClientConfigFiles(override bool) {
 	_ = installConfigGroup(configs.TekuConfigDependencies, override)
 	log.Info("✅  Teku configuration files downloaded!\n\n")
 
-	log.Info("⬇️  Downloading nimbus configuration files...")
+	log.Info("⬇️  Downloading nimbus (eth2) configuration files...")
 	_ = installConfigGroup(configs.Nimbus2ConfigDependencies, override)
 	log.Info("✅  Nimbus configuration files downloaded!\n\n")
 }

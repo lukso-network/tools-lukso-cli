@@ -458,6 +458,7 @@ var (
 			Hidden: true,
 		},
 	}
+
 	TekuDownloadFlags = []cli.Flag{
 		&cli.StringFlag{
 			Name:  TekuTagFlag,
@@ -475,6 +476,11 @@ var (
 			Name:  TekuValidatorConfigFileFlag,
 			Usage: "Path to validator.yaml config file",
 			Value: configs.MainnetConfig + "/" + configs.TekuValidatorYamlPath,
+		},
+		&cli.StringFlag{
+			Name:  TekuDatadirFlag,
+			Usage: "Path to teku datadir",
+			Value: configs.MainnetDatadir,
 		},
 	}
 
@@ -500,6 +506,16 @@ var (
 			Name:  Nimbus2ValidatorConfigFileFlag,
 			Usage: "Path to validator.toml config file",
 			Value: configs.MainnetConfig + "/" + configs.Nimbus2ValidatorTomlPath,
+		},
+		&cli.StringFlag{
+			Name:  Nimbus2DatadirFlag,
+			Usage: "Path to nimbus2 datadir",
+			Value: configs.MainnetDatadir,
+		},
+		&cli.StringFlag{
+			Name:  Nimbus2NetworkFlag,
+			Usage: "Path to nimbus2 config directory, useful when using the --network nimbus flag",
+			Value: configs.MainnetConfig + "/" + configs.Nimbus2Path,
 		},
 	}
 )
