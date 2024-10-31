@@ -2,6 +2,7 @@ package commands
 
 import (
 	"fmt"
+	"strings"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
@@ -11,6 +12,7 @@ import (
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
 	"github.com/lukso-network/tools-lukso-cli/dependencies/clients"
 	"github.com/lukso-network/tools-lukso-cli/dependencies/configs"
+	"github.com/lukso-network/tools-lukso-cli/flags"
 )
 
 func UpdateClients(ctx *cli.Context) (err error) {
@@ -58,13 +60,26 @@ func UpdateClients(ctx *cli.Context) (err error) {
 	return
 }
 
-func UpdateConfigs(_ *cli.Context) (err error) {
+func UpdateConfigs(ctx *cli.Context) (err error) {
 	if clients.IsAnyRunning() {
 		return
 	}
 
 	if !cfg.Exists() {
 		return cli.Exit(errors.FolderNotInitialized, 1)
+	}
+
+	if ctx.Bool(flags.AllFlag) {
+		message := "⚠️  Warning - this action will overwrite all of your client configuration files, are you sure you want to continue? [y/N]\n> "
+
+		input := utils.RegisterInputWithMessage(message)
+		if !strings.EqualFold(input, "y") {
+			log.Info("❌  Aborting...")
+
+			return nil
+		}
+
+		installClientConfigFiles(true)
 	}
 
 	log.Info("⬇️  Updating shared configuration files...")

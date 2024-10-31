@@ -59,6 +59,7 @@ const (
 	CheckpointSyncFlag          = "checkpoint-sync"
 	TransactionFeeRecipientFlag = "transaction-fee-recipient"
 	AgreeTermsFlag              = "agree-terms"
+	AllFlag                     = "all"
 
 	ExecutionClientHost = "execution-client-host"
 	ConsensusClientHost = "consensus-client-host"
