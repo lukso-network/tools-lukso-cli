@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.22.0](https://github.com/lukso-network/tools-lukso-cli/compare/v0.21.1...v0.22.0) (2024-10-31)
+
+
+### Features
+
+* Add --all flag for update configs ([#261](https://github.com/lukso-network/tools-lukso-cli/issues/261)) ([f4547e8](https://github.com/lukso-network/tools-lukso-cli/commit/f4547e8bab540cf4b3303a2778ed7092109b9e83))
+
 ## [0.21.1](https://github.com/lukso-network/tools-lukso-cli/compare/v0.21.0...v0.21.1) (2024-10-02)
 
 
