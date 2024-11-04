@@ -119,6 +119,7 @@ func (n *Nimbus2Client) Start(ctx *cli.Context, arguments []string) (err error) 
 	// in Nimbus case, we need to prepare the data dir using a syncing command:
 	// nimbus_beacon_node trustedNodeSync
 	if ctx.Bool(flags.CheckpointSyncFlag) {
+		log.Info("⚙️  Downloading checkpointed state for Nimbus")
 		network := "mainnet"
 		if ctx.Bool(flags.TestnetFlag) {
 			network = "testnet"
@@ -137,7 +138,10 @@ func (n *Nimbus2Client) Start(ctx *cli.Context, arguments []string) (err error) 
 		syncCommand.Stdout = os.Stdout
 		syncCommand.Stderr = os.Stderr
 
-		return syncCommand.Run()
+		err = syncCommand.Run()
+		if err != nil {
+			return
+		}
 	}
 
 	command := exec.Command(fmt.Sprintf("./%s/build/nimbus_beacon_node", n.FilePath()), arguments...)
