@@ -112,25 +112,26 @@ func (n *Nimbus2ValidatorClient) List(ctx *cli.Context) (err error) {
 
 	err = keystoreListWalk(walletDir)
 	if err != nil {
-		return utils.Exit(fmt.Sprintf("❌  There was an error while list validators: %v", err), 1)
+		return utils.Exit(fmt.Sprintf("❌  There was an error while listing validators: %v", err), 1)
 	}
 
 	return
 }
 
-func (t *Nimbus2ValidatorClient) Exit(ctx *cli.Context) (err error) {
-	wallet := ctx.String(flags.ValidatorWalletDirFlag)
-	if wallet == "" {
-		return utils.Exit("❌  Wallet directory not provided - please provide a --validator-wallet-dir flag containing your keys directory", 1)
+func (n *Nimbus2ValidatorClient) Exit(ctx *cli.Context) (err error) {
+	args := []string{
+		"deposits",
+		"exit",
+		fmt.Sprintf("--data-dir=%s", ctx.String(flags.ValidatorWalletDirFlag)),
+		"--all",
 	}
 
-	if !utils.FileExists(wallet) {
-		return utils.Exit("❌  Wallet directory missing - please provide a --validator-wallet-dir flag containing your keys directory or use a network flag", 1)
+	rpc := ctx.String(flags.RpcAddressFlag)
+	if rpc != "" {
+		args = append(args, fmt.Sprintf("--rest-url=%s", rpc))
 	}
 
-	args := []string{"voluntary-exit", "--validator-keys", fmt.Sprintf("%s:%s", wallet, wallet)}
-
-	exitCommand := exec.Command(fmt.Sprintf("./%s/bin/teku", tekuFolder), args...)
+	exitCommand := exec.Command(fmt.Sprintf("./%s/build/nimbus_beacon_node", nimbus2Folder), args...)
 
 	exitCommand.Stdout = os.Stdout
 	exitCommand.Stderr = os.Stderr
@@ -138,8 +139,8 @@ func (t *Nimbus2ValidatorClient) Exit(ctx *cli.Context) (err error) {
 
 	err = exitCommand.Run()
 	if err != nil {
-		return utils.Exit(fmt.Sprintf("❌  There was an error while exiting validator: %v", err), 1)
+		return utils.Exit(fmt.Sprintf("❌  There was an error while exiting validators: %v", err), 1)
 	}
 
-	return
+	return nil
 }
