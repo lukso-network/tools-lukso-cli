@@ -26,6 +26,11 @@ var Nimbus2ConfigDependencies = map[string]ClientConfigDependency{
 		name:     nimbus2MainnetDepositContractBlockHashDependencyName,
 		filePath: MainnetConfig + "/" + Nimbus2DepositContractBlockHashPath,
 	},
+	nimbus2MainnetBootnodesDependencyName: &clientConfig{
+		url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/nimbus2/bootnodes.txt",
+		name:     nimbus2MainnetBootnodesDependencyName,
+		filePath: MainnetConfig + "/" + Nimbus2Bootnodes,
+	},
 	nimbus2TestnetDepositContractBlockHashDependencyName: &clientConfig{
 		url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/nimbus2/deposit_contract_block_hash.txt",
 		name:     nimbus2TestnetDepositContractBlockHashDependencyName,
@@ -50,5 +55,10 @@ var Nimbus2ConfigDependencies = map[string]ClientConfigDependency{
 		url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/nimbus2/validator.toml",
 		name:     nimbus2ValidatorTestnetConfigDependencyName,
 		filePath: TestnetConfig + "/" + Nimbus2ValidatorTomlPath,
+	},
+	nimbus2TestnetBootnodesDependencyName: &clientConfig{
+		url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/nimbus2/bootnodes.txt",
+		name:     nimbus2TestnetBootnodesDependencyName,
+		filePath: TestnetConfig + "/" + Nimbus2Bootnodes,
 	},
 }

@@ -82,6 +82,8 @@ const (
 	nimbus2TestnetDepositContractBlockHashDependencyName = "nimbus2 testnet deposit contract block hash"
 	nimbus2MainnetDeployBlockDependencyName              = "nimbus2 mainnet deploy block "
 	nimbus2TestnetDeployBlockDependencyName              = "nimbus2 testnet deploy block "
+	nimbus2MainnetBootnodesDependencyName                = "nimbus2 mainnet bootnodes"
+	nimbus2TestnetBootnodesDependencyName                = "nimbus2 testnet bootnodes"
 
 	validatorMainnetConfigDependencyName           = "validator mainnet config"
 	validatorTestnetConfigDependencyName           = "validator testnet config"
@@ -146,6 +148,7 @@ const (
 	Nimbus2ChainConfigYamlPath          = "nimbus2/config.yaml"
 	Nimbus2DeployBlockPath              = "nimbus2/deploy_block.txt"
 	Nimbus2DepositContractBlockHashPath = "nimbus2/deposit_contract_block_hash.txt"
+	Nimbus2Bootnodes                    = "nimbus2/bootnodes.txt"
 )
 
 var (
