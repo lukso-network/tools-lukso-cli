@@ -12,12 +12,12 @@ var Nimbus2ConfigDependencies = map[string]ClientConfigDependency{
 		filePath: TestnetConfig + "/" + Nimbus2ChainConfigYamlPath,
 	},
 	nimbus2MainnetConfigDependencyName: &clientConfig{
-		url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/nimbus2/nimbus2.toml",
+		url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/nimbus2/nimbus.toml",
 		name:     nimbus2MainnetConfigDependencyName,
 		filePath: MainnetConfig + "/" + Nimbus2TomlPath,
 	},
 	nimbus2TestnetConfigDependencyName: &clientConfig{
-		url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/nimbus2/nimbus2.toml",
+		url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/nimbus2/nimbus.toml",
 		name:     nimbus2TestnetConfigDependencyName,
 		filePath: TestnetConfig + "/" + Nimbus2TomlPath,
 	},
