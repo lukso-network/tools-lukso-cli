@@ -76,3 +76,23 @@ func (g *GethClient) PrepareStartFlags(ctx *cli.Context) (startFlags []string, e
 func (g *GethClient) Peers(ctx *cli.Context) (outbound, inbound int, err error) {
 	return defaultExecutionPeers(ctx, 8545)
 }
+
+func (g *GethClient) Version() (version string) {
+	cmdVer := execVersionCmd(
+		g.CommandName(),
+		[]string{"--version"},
+	)
+
+	if cmdVer == VersionNotAvailable {
+		return VersionNotAvailable
+	}
+
+	// Geth version output to parse:
+
+	// geth version 1.14.7-stable-aa55f5ea
+
+	// -> ...|1.14.7-stable-aa55f5ea
+	s := strings.Split(cmdVer, " ")[2]
+	// -> v1.14.7|...
+	return fmt.Sprintf("v%s", strings.Split(s, "-")[0])
+}

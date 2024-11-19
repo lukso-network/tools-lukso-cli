@@ -16,11 +16,11 @@ import (
 
 var Version = "develop"
 
-var (
-	appName = "lukso"
-)
+var appName = "lukso"
 
 func main() {
+	log.SetFormatter(&log.TextFormatter{DisableTimestamp: true})
+
 	app := cli.App{}
 	app.Name = appName
 
@@ -162,6 +162,14 @@ REPO: https://github.com/lukso-network/tools-lukso-cli
 			Usage:           "Display the version of the LUKSO CLI that is currently installed",
 			Action:          displayVersion,
 			HideHelpCommand: true,
+			Subcommands: []*cli.Command{
+				{
+					Name:            "clients",
+					Usage:           "Display supported clients' installed versions.",
+					Action:          commands.ClientVersions,
+					HideHelpCommand: true,
+				},
+			},
 		},
 	}
 
@@ -187,5 +195,6 @@ REPO: https://github.com/lukso-network/tools-lukso-cli
 
 func displayVersion(ctx *cli.Context) error {
 	fmt.Println("Version:", Version)
+	fmt.Println("To display versions of installed clients, run 'lukso version clients' command.")
 	return nil
 }

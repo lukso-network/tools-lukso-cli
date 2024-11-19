@@ -46,6 +46,10 @@ type ClientBinaryDependency interface {
 
 	// Peers prints to console how many peers does the client have
 	Peers(ctx *cli.Context) (outbound int, inbound int, err error)
+
+	// Version returns a version of the given client as a string (different clients may vary in versioning).
+	// For compatibility with display, all clients should be preceded by 'v', e.g. Geth version: v1.14.11
+	Version() string
 }
 
 type ValidatorBinaryDependency interface {

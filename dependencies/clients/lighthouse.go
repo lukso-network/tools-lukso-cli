@@ -131,6 +131,31 @@ func (l *LighthouseClient) Peers(ctx *cli.Context) (outbound, inbound int, err e
 	return defaultConsensusPeers(ctx, 4000)
 }
 
+func (l *LighthouseClient) Version() (version string) {
+	cmdVer := execVersionCmd(
+		l.CommandName(),
+		[]string{"--version"},
+	)
+
+	if cmdVer == VersionNotAvailable {
+		return VersionNotAvailable
+	}
+
+	// Lighthouse version output to parse:
+
+	// Lighthouse v5.2.1-9e12c21
+	// BLS library: blst-portable
+	// SHA256 hardware acceleration: false
+	// Allocator: jemalloc
+	// Profile: maxperf
+	// Specs: mainnet (true), minimal (false), gnosis (true)
+
+	// -> ...|v5.2.1-9e12c21|...
+	s := strings.Split(cmdVer, " ")[1]
+	// -> v5.2.1|...
+	return strings.Split(s, "-")[0]
+}
+
 // mergeFlags takes 2 arrays of flag sets, and replaces all flags present in both with user input. Appends default otherwise
 func mergeFlags(userFlags, configFlags []string) (startFlags []string) {
 	for cfgI, configArg := range configFlags {

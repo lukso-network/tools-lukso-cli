@@ -61,6 +61,8 @@ const (
 	tarFormat = "tar"
 
 	jdkFolder = common.ClientDepsFolder + "/jdk"
+
+	VersionNotAvailable = "Not available"
 )
 
 var (
@@ -90,6 +92,22 @@ var (
 		tekuDependencyName:                common.TekuTag,
 		besuDependencyName:                common.BesuTag,
 		nimbus2DependencyName:             common.Nimbus2Tag,
+	}
+
+	// for ordered actions
+	AllClientNames = []string{
+		gethDependencyName,
+		erigonDependencyName,
+		prysmDependencyName,
+		lighthouseDependencyName,
+		prysmValidatorDependencyName,
+		lighthouseValidatorDependencyName,
+		tekuDependencyName,
+		tekuValidatorDependencyName,
+		nethermindDependencyName,
+		besuDependencyName,
+		nimbus2DependencyName,
+		nimbus2ValidatorDependencyName,
 	}
 )
 
@@ -501,6 +519,29 @@ func (client *clientBinary) Peers(ctx *cli.Context) (outbound, inbound int, err 
 	_ = utils.Exit(fmt.Sprintf("FATAL: STATUS PEERS NOT CONFIGURED FOR %s CLIENT - PLEASE MARK THIS ISSUE TO THE LUKSO TEAM", client.Name()), 1)
 
 	return
+}
+
+func (client *clientBinary) Version() (v string) {
+	_ = utils.Exit(fmt.Sprintf("FATAL: VERSION NOT CONFIGURED FOR %s CLIENT - PLEASE MARK THIS ISSUE TO THE LUKSO TEAM", client.Name()), 1)
+
+	return
+}
+
+func execVersionCmd(cmd string, args []string) (ver string) {
+	buf := new(bytes.Buffer)
+
+	versionCommand := exec.Command(cmd, args...)
+	versionCommand.Stdout = buf
+	versionCommand.Stderr = buf
+
+	err := versionCommand.Run()
+	if err != nil {
+		ver = VersionNotAvailable
+
+		return
+	}
+
+	return buf.String()
 }
 
 func (client *clientBinary) getVersion() string {

@@ -170,3 +170,28 @@ func (n *Nimbus2Client) Start(ctx *cli.Context, arguments []string) (err error) 
 func (n *Nimbus2Client) Peers(ctx *cli.Context) (outbound, inbound int, err error) {
 	return defaultConsensusPeers(ctx, 5052)
 }
+
+func (n *Nimbus2Client) Version() (version string) {
+	cmdVer := execVersionCmd(
+		fmt.Sprintf("./%s/build/nimbus_beacon_node", n.FilePath()),
+		[]string{"--version"},
+	)
+
+	if cmdVer == VersionNotAvailable {
+		return VersionNotAvailable
+	}
+
+	// Nimbus-eth2 version output to parse:
+
+	// Nimbus beacon node v24.10.0-c4037d-stateofus
+	// Copyright (c) 2019-2024 Status Research & Development GmbH
+	//
+	// eth2 specification v1.5.0-alpha.8
+	//
+	// Nim Compiler Version 2.0.10 [Linux: amd64]
+
+	// -> ...|v24.10.0-c4037d-stateofus|...
+	s := strings.Split(cmdVer, " ")[3]
+	// -> ...|v24.10.0|...
+	return strings.Split(s, "-")[0]
+}

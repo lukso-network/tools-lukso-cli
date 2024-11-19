@@ -77,6 +77,10 @@ func (n *Nimbus2ValidatorClient) Start(ctx *cli.Context, arguments []string) (er
 	return
 }
 
+func (n *Nimbus2ValidatorClient) Version() (version string) {
+	return Nimbus2.Version()
+}
+
 func (n *Nimbus2ValidatorClient) Import(ctx *cli.Context) (err error) {
 	args := []string{
 		"deposits",

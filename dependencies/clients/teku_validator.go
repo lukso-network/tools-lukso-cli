@@ -107,6 +107,10 @@ func (t *TekuValidatorClient) Start(ctx *cli.Context, arguments []string) (err e
 	return
 }
 
+func (t *TekuValidatorClient) Version() (version string) {
+	return Teku.Version()
+}
+
 func (t *TekuValidatorClient) Import(ctx *cli.Context) (err error) {
 	walletDir := ctx.String(flags.ValidatorWalletDirFlag)
 	message := fmt.Sprintf("To run a Teku validator the LUKSO CLI needs to prepare a separate password file for each of your validator key files."+

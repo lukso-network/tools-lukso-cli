@@ -2,6 +2,7 @@ package clients
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/urfave/cli/v2"
 
@@ -67,4 +68,24 @@ func (p *PrysmClient) PrepareStartFlags(ctx *cli.Context) (startFlags []string, 
 
 func (p *PrysmClient) Peers(ctx *cli.Context) (outbound, inbound int, err error) {
 	return defaultConsensusPeers(ctx, 3500)
+}
+
+func (p *PrysmClient) Version() (version string) {
+	cmdVer := execVersionCmd(
+		p.CommandName(),
+		[]string{"--version"},
+	)
+
+	if cmdVer == VersionNotAvailable {
+		return VersionNotAvailable
+	}
+
+	// Prysm version output to parse:
+
+	// beacon-chain version Prysm/v5.0.4/3b184f43c86baf6c36478f65a5113e7cf0836d41. Built at: 2024-06-21 00:26:00+00:00
+
+	// -> ...|Prysm/v5.0.4/3b184f43c86baf6c36478f65a5113e7cf0836d41.|...
+	s := strings.Split(cmdVer, " ")[2]
+	// -> ...|v5.0.4|...
+	return strings.Split(s, "/")[1]
 }
