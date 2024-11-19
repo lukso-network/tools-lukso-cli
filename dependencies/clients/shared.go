@@ -527,9 +527,12 @@ func (client *clientBinary) Version() (v string) {
 	return
 }
 
-func execVersionCmd(cmd string, args []string) (ver string) {
+func execVersionCmd(cmd string) (ver string) {
 	buf := new(bytes.Buffer)
 
+	args := []string{
+		"--version",
+	}
 	versionCommand := exec.Command(cmd, args...)
 	versionCommand.Stdout = buf
 	versionCommand.Stderr = buf

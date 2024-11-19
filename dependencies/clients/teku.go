@@ -174,7 +174,6 @@ func (t *TekuClient) Peers(ctx *cli.Context) (outbound, inbound int, err error) 
 func (t *TekuClient) Version() (version string) {
 	cmdVer := execVersionCmd(
 		fmt.Sprintf("./%s/bin/teku", t.FilePath()),
-		[]string{"--version"},
 	)
 
 	if cmdVer == VersionNotAvailable {

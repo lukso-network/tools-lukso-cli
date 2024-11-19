@@ -73,7 +73,6 @@ func (p *PrysmClient) Peers(ctx *cli.Context) (outbound, inbound int, err error)
 func (p *PrysmClient) Version() (version string) {
 	cmdVer := execVersionCmd(
 		p.CommandName(),
-		[]string{"--version"},
 	)
 
 	if cmdVer == VersionNotAvailable {

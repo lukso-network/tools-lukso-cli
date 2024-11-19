@@ -134,7 +134,6 @@ func (l *LighthouseClient) Peers(ctx *cli.Context) (outbound, inbound int, err e
 func (l *LighthouseClient) Version() (version string) {
 	cmdVer := execVersionCmd(
 		l.CommandName(),
-		[]string{"--version"},
 	)
 
 	if cmdVer == VersionNotAvailable {

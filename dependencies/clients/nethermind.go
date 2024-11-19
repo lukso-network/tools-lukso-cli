@@ -186,7 +186,6 @@ func (n *NethermindClient) Peers(ctx *cli.Context) (outbound, inbound int, err e
 func (n *NethermindClient) Version() (version string) {
 	cmdVer := execVersionCmd(
 		fmt.Sprintf("./%s/nethermind", n.FilePath()),
-		[]string{"--version"},
 	)
 
 	if cmdVer == VersionNotAvailable {

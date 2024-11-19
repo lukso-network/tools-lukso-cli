@@ -165,7 +165,6 @@ func (b *BesuClient) Peers(ctx *cli.Context) (outbound, inbound int, err error) 
 func (b *BesuClient) Version() (version string) {
 	cmdVer := execVersionCmd(
 		fmt.Sprintf("./%s/bin/besu", b.FilePath()),
-		[]string{"--version"},
 	)
 
 	if cmdVer == VersionNotAvailable {

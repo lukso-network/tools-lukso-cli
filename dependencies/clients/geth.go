@@ -80,7 +80,6 @@ func (g *GethClient) Peers(ctx *cli.Context) (outbound, inbound int, err error) 
 func (g *GethClient) Version() (version string) {
 	cmdVer := execVersionCmd(
 		g.CommandName(),
-		[]string{"--version"},
 	)
 
 	if cmdVer == VersionNotAvailable {

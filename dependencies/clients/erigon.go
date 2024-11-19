@@ -50,7 +50,6 @@ func (e *ErigonClient) Peers(ctx *cli.Context) (outbound, inbound int, err error
 func (e *ErigonClient) Version() (version string) {
 	cmdVer := execVersionCmd(
 		e.CommandName(),
-		[]string{"--version"},
 	)
 
 	if cmdVer == VersionNotAvailable {

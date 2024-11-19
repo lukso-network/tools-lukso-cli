@@ -174,7 +174,6 @@ func (n *Nimbus2Client) Peers(ctx *cli.Context) (outbound, inbound int, err erro
 func (n *Nimbus2Client) Version() (version string) {
 	cmdVer := execVersionCmd(
 		fmt.Sprintf("./%s/build/nimbus_beacon_node", n.FilePath()),
-		[]string{"--version"},
 	)
 
 	if cmdVer == VersionNotAvailable {

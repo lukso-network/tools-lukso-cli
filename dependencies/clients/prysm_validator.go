@@ -116,7 +116,6 @@ func (p *PrysmValidatorClient) Import(ctx *cli.Context) (err error) {
 func (p *PrysmValidatorClient) Version() (version string) {
 	cmdVer := execVersionCmd(
 		p.CommandName(),
-		[]string{"--version"},
 	)
 
 	if cmdVer == VersionNotAvailable {
