@@ -133,12 +133,12 @@ func (client *clientBinary) Start(ctx *cli.Context, arguments []string) (err err
 		return
 	}
 
-	err = os.WriteFile(fullPath, []byte{}, 0750)
+	err = os.WriteFile(fullPath, []byte{}, 0o750)
 	if err != nil {
 		return
 	}
 
-	logFile, err = os.OpenFile(fullPath, os.O_RDWR, 0750)
+	logFile, err = os.OpenFile(fullPath, os.O_RDWR, 0o750)
 	if err != nil {
 		return
 	}
@@ -341,12 +341,6 @@ func (client *clientBinary) IsRunning() bool {
 }
 
 func initClient(ctx *cli.Context, client ClientBinaryDependency) (err error) {
-	if utils.FileExists(ctx.String(flags.GethDatadirFlag)) { // geth datadir is the same as erigon - no matter which client we use
-		log.Info("⚙️  Execution database already exists - continuing...")
-
-		return
-	}
-
 	log.Infof("⚙️  Running %s init...", client.Name())
 
 	if client.IsRunning() {
