@@ -152,6 +152,11 @@ func startValidator(ctx *cli.Context) (err error) {
 			return utils.Exit("⚠️  Validator is not initialized. Run lukso validator import to initialize your validator.", 1)
 		}
 		validatorClient = clients.TekuValidator
+	case clients.Nimbus2:
+		if !utils.FileExists(ctx.String(flags.ValidatorKeysFlag)) { // path to imported keys
+			return utils.Exit("⚠️  Validator is not initialized. Run lukso validator import to initialize your validator.", 1)
+		}
+		validatorClient = clients.Nimbus2Validator
 	}
 
 	var passwordPipe *os.File = nil

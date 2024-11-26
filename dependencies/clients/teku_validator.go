@@ -1,7 +1,6 @@
 package clients
 
 import (
-	"encoding/json"
 	"fmt"
 	"io"
 	"io/fs"
@@ -79,12 +78,12 @@ func (t *TekuValidatorClient) Start(ctx *cli.Context, arguments []string) (err e
 		return
 	}
 
-	err = os.WriteFile(fullPath, []byte{}, 0750)
+	err = os.WriteFile(fullPath, []byte{}, 0o750)
 	if err != nil {
 		return
 	}
 
-	logFile, err = os.OpenFile(fullPath, os.O_RDWR, 0750)
+	logFile, err = os.OpenFile(fullPath, os.O_RDWR, 0o750)
 	if err != nil {
 		return
 	}
@@ -122,7 +121,7 @@ func (t *TekuValidatorClient) Import(ctx *cli.Context) (err error) {
 		return
 	}
 
-	err = os.MkdirAll(walletDir, 0750)
+	err = os.MkdirAll(walletDir, 0o750)
 	if err != nil {
 		return
 	}
@@ -233,51 +232,9 @@ func (t *TekuValidatorClient) List(ctx *cli.Context) (err error) {
 		return utils.Exit("❌  Wallet directory not provided - please provide a --validator-wallet-dir flag containing your keys directory", 1)
 	}
 
-	validatorIndex := 0
-
-	walkFunc := func(path string, d fs.DirEntry, entryError error) (err error) {
-		if d == nil {
-			return nil
-		}
-
-		keystoreExt := filepath.Ext(d.Name())
-		if !strings.Contains(keystoreExt, "json") {
-			return nil
-		}
-
-		keystoreFile, err := os.Open(path)
-		if err != nil {
-			return
-		}
-		defer keystoreFile.Close()
-
-		keystoreFileBytes, err := io.ReadAll(keystoreFile)
-		if err != nil {
-			return
-		}
-
-		keystore := struct {
-			Pubkey string `json:"pubkey"`
-		}{}
-
-		err = json.Unmarshal(keystoreFileBytes, &keystore)
-		if err != nil {
-			return
-		}
-
-		log.Infof("Validator #%d: %s", validatorIndex, keystore.Pubkey)
-		validatorIndex++
-
-		return
-	}
-
-	err = filepath.WalkDir(walletDir, walkFunc)
+	err = keystoreListWalk(walletDir)
 	if err != nil {
-		return
-	}
-
-	if validatorIndex == 0 {
-		log.Info("No validator keys listed. To import your validator keys run lukso validator import")
+		return utils.Exit(fmt.Sprintf("❌  There was an error while list validators: %v", err), 1)
 	}
 
 	return

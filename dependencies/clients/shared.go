@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"io/fs"
 	"net/http"
 	"os"
 	"os/exec"
@@ -39,6 +40,8 @@ const (
 	tekuValidatorDependencyName       = "Teku Validator"
 	nethermindDependencyName          = "Nethermind"
 	besuDependencyName                = "Besu"
+	nimbus2DependencyName             = "Nimbus2"
+	nimbus2ValidatorDependencyName    = "Nimbus2 Validator"
 
 	gethGithubLocation          = "ethereum/go-ethereum"
 	prysmaticLabsGithubLocation = "prysmaticlabs/prysm"
@@ -47,6 +50,7 @@ const (
 	tekuGithubLocation          = "Consensys/teku"
 	nethermindGithubLocation    = "NethermindEth/nethermind"
 	besuGithubLocation          = "hyperledger/besu"
+	nimbus2GithubLocation       = "status-im/nimbus-eth2"
 
 	peerDirectionInbound  = "inbound"
 	peerDirectionOutbound = "outbound"
@@ -71,6 +75,8 @@ var (
 		tekuValidatorDependencyName:       TekuValidator,
 		nethermindDependencyName:          Nethermind,
 		besuDependencyName:                Besu,
+		nimbus2DependencyName:             Nimbus2,
+		nimbus2ValidatorDependencyName:    Nimbus2Validator,
 	}
 
 	ClientVersions = map[string]string{
@@ -83,6 +89,7 @@ var (
 		lighthouseValidatorDependencyName: common.LighthouseTag,
 		tekuDependencyName:                common.TekuTag,
 		besuDependencyName:                common.BesuTag,
+		nimbus2DependencyName:             common.Nimbus2Tag,
 	}
 )
 
@@ -661,6 +668,9 @@ func untarDir(dst string, t *tar.Reader) error {
 			newHeader := replaceRootFolderName(header.Name, "besu")
 			path = filepath.Join(dst, newHeader)
 
+		case strings.Contains(header.Name, "nimbus-eth2"):
+			newHeader := replaceRootFolderName(header.Name, "nimbus2")
+			path = filepath.Join(dst, newHeader)
 		}
 
 		info := header.FileInfo()
@@ -850,4 +860,88 @@ func isJdkInstalled() bool {
 	_, err := os.Stat(jdkFolder)
 
 	return err == nil
+}
+
+func prepareLogFile(ctx *cli.Context, command *exec.Cmd, client string) (err error) {
+	var (
+		logFile  *os.File
+		fullPath string
+	)
+
+	logFolder := ctx.String(flags.LogFolderFlag)
+	if logFolder == "" {
+		return utils.Exit(fmt.Sprintf("%v- %s", errors.ErrFlagMissing, flags.LogFolderFlag), 1)
+	}
+
+	fullPath, err = utils.PrepareTimestampedFile(logFolder, client)
+	if err != nil {
+		return
+	}
+
+	err = os.WriteFile(fullPath, []byte{}, 0o750)
+	if err != nil {
+		return
+	}
+
+	logFile, err = os.OpenFile(fullPath, os.O_RDWR, 0o750)
+	if err != nil {
+		return
+	}
+
+	command.Stdout = logFile
+	command.Stderr = logFile
+
+	return
+}
+
+// keystoreListWalk walks through the given directory (and its subdirectories) and prints all found pubkeys.
+func keystoreListWalk(walletDir string) (err error) {
+	validatorIndex := 0
+
+	walkFunc := func(path string, d fs.DirEntry, entryError error) (err error) {
+		if d == nil {
+			return nil
+		}
+
+		keystoreExt := filepath.Ext(d.Name())
+		if !strings.Contains(keystoreExt, "json") {
+			return nil
+		}
+
+		keystoreFile, err := os.Open(path)
+		if err != nil {
+			return
+		}
+		defer keystoreFile.Close()
+
+		keystoreFileBytes, err := io.ReadAll(keystoreFile)
+		if err != nil {
+			return
+		}
+
+		keystore := struct {
+			Pubkey string `json:"pubkey"`
+		}{}
+
+		err = json.Unmarshal(keystoreFileBytes, &keystore)
+		if err != nil {
+			return
+		}
+
+		log.Infof("Validator #%d: %s", validatorIndex, keystore.Pubkey)
+		validatorIndex++
+
+		return
+	}
+
+	err = filepath.WalkDir(walletDir, walkFunc)
+	if err != nil {
+		return
+	}
+
+	if validatorIndex == 0 {
+		log.Info("No validator keys listed. To import your validator keys run lukso validator import")
+	}
+
+	return
 }

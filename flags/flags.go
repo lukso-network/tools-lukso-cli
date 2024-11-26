@@ -16,6 +16,7 @@ func init() {
 	InstallFlags = append(InstallFlags, TekuDownloadFlags...)
 	InstallFlags = append(InstallFlags, NethermindDownloadFlags...)
 	InstallFlags = append(InstallFlags, BesuDownloadFlags...)
+	InstallFlags = append(InstallFlags, Nimbus2DownloadFlags...)
 
 	StartFlags = append(StartFlags, GethStartFlags...)
 	StartFlags = append(StartFlags, ErigonStartFlags...)
@@ -26,6 +27,7 @@ func init() {
 	StartFlags = append(StartFlags, NetworkFlags...)
 	StartFlags = append(StartFlags, NethermindStartFlags...)
 	StartFlags = append(StartFlags, BesuStartFlags...)
+	StartFlags = append(StartFlags, Nimbus2StartFlags...)
 
 	LogsFlags = append(LogsFlags, GethLogsFlags...)
 	LogsFlags = append(LogsFlags, PrysmLogsFlags...)
@@ -456,6 +458,7 @@ var (
 			Hidden: true,
 		},
 	}
+
 	TekuDownloadFlags = []cli.Flag{
 		&cli.StringFlag{
 			Name:  TekuTagFlag,
@@ -467,12 +470,52 @@ var (
 		&cli.StringFlag{
 			Name:  TekuConfigFileFlag,
 			Usage: "Path to teku.yaml config file",
-			Value: configs.MainnetConfig + configs.TekuYamlPath,
+			Value: configs.MainnetConfig + "/" + configs.TekuYamlPath,
 		},
 		&cli.StringFlag{
 			Name:  TekuValidatorConfigFileFlag,
 			Usage: "Path to validator.yaml config file",
-			Value: configs.MainnetConfig + configs.TekuValidatorYamlPath,
+			Value: configs.MainnetConfig + "/" + configs.TekuValidatorYamlPath,
+		},
+		&cli.StringFlag{
+			Name:  TekuDatadirFlag,
+			Usage: "Path to teku datadir",
+			Value: configs.MainnetDatadir,
+		},
+	}
+
+	Nimbus2DownloadFlags = []cli.Flag{
+		&cli.StringFlag{
+			Name:  Nimbus2TagFlag,
+			Usage: "Tag for nimbus-eth2 client",
+			Value: common.Nimbus2Tag,
+		},
+		&cli.StringFlag{
+			Name:  Nimbus2CommitHashFlag,
+			Usage: "Commit hash for nimbus-eth2 client",
+			Value: common.Nimbus2CommitHash,
+		},
+	}
+	Nimbus2StartFlags = []cli.Flag{
+		&cli.StringFlag{
+			Name:  Nimbus2ConfigFileFlag,
+			Usage: "Path to nimbus.toml config file",
+			Value: configs.MainnetConfig + "/" + configs.Nimbus2TomlPath,
+		},
+		&cli.StringFlag{
+			Name:  Nimbus2ValidatorConfigFileFlag,
+			Usage: "Path to validator.toml config file",
+			Value: configs.MainnetConfig + "/" + configs.Nimbus2ValidatorTomlPath,
+		},
+		&cli.StringFlag{
+			Name:  Nimbus2DatadirFlag,
+			Usage: "Path to nimbus2 datadir",
+			Value: configs.MainnetDatadir,
+		},
+		&cli.StringFlag{
+			Name:  Nimbus2NetworkFlag,
+			Usage: "Path to nimbus2 config directory, useful when using the --network nimbus flag",
+			Value: configs.MainnetConfig + "/" + configs.Nimbus2Path,
 		},
 	}
 )
