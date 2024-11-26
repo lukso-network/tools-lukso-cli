@@ -133,7 +133,7 @@ const (
 	DepositContractBlockPath            = "shared/deposit_contract_block.txt"
 	GethTomlPath                        = "geth/geth.toml"
 	ErigonTomlPath                      = "erigon/erigon.toml"
-	NethermindCfgPath                   = "nethermind/nethermind.cfg"
+	NethermindJsonPath                  = "nethermind/nethermind.json"
 	BesuTomlPath                        = "besu/besu.toml"
 	PrysmYamlPath                       = "prysm/prysm.yaml"
 	ValidatorYamlPath                   = "prysm/validator.yaml"

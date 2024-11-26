@@ -91,7 +91,7 @@ func updateValues(ctx *cli.Context, config networkConfig) (err error) {
 		// genesisJson  = config.configPath + "/" + genesisJsonPath
 		gethTomlPath                = config.configPath + "/" + configs.GethTomlPath
 		erigonTomlPath              = config.configPath + "/" + configs.ErigonTomlPath
-		nethermindCfgPath           = config.configPath + "/" + configs.NethermindCfgPath
+		nethermindJsonPath          = config.configPath + "/" + configs.NethermindJsonPath
 		besuTomlPath                = config.configPath + "/" + configs.BesuTomlPath
 		prysmYamlPath               = config.configPath + "/" + configs.PrysmYamlPath
 		lighthouseTomlPath          = config.configPath + "/" + configs.LighthouseTomlPath
@@ -130,7 +130,7 @@ func updateValues(ctx *cli.Context, config networkConfig) (err error) {
 		flags.ValidatorKeysFlag:                 config.keysPath,
 		flags.GethConfigFileFlag:                gethTomlPath,
 		flags.ErigonConfigFileFlag:              erigonTomlPath,
-		flags.NethermindConfigFileFlag:          nethermindCfgPath,
+		flags.NethermindConfigFileFlag:          nethermindJsonPath,
 		flags.BesuConfigFileFlag:                besuTomlPath,
 		flags.PrysmConfigFileFlag:               prysmYamlPath,
 		flags.LighthouseConfigFileFlag:          lighthouseTomlPath,
