@@ -305,8 +305,8 @@ var (
 	NethermindStartFlags = []cli.Flag{
 		&cli.StringFlag{
 			Name:  NethermindConfigFileFlag,
-			Usage: "Path to nethermind.cfg config file",
-			Value: configs.MainnetConfig + "/" + configs.NethermindCfgPath,
+			Usage: "Path to nethermind.json config file",
+			Value: configs.MainnetConfig + "/" + configs.NethermindJsonPath,
 		},
 		&cli.StringFlag{
 			Name:  NethermindDatadirFlag,

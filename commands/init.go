@@ -96,69 +96,112 @@ func setIPInConfigs() (err error) {
 		name          string
 		fileType      string
 		flagsToChange []string
+		// wrap is an optional func that should edit the ip flag value.
+		wrap func(string) string
 	}
 
-	prysmFlagsToChange := []string{"p2p-host-ip"}
-	lighthouseFlagsToChange := []string{"enr-address"}
-	tekuFlagsToChange := []string{"p2p-advertised-ip"}
+	natWrap := func(s string) string {
+		return "extip:" + s
+	}
+
+	gethFlags := []string{"nat"}
+	erigonFlags := []string{"nat"}
+	besuFlags := []string{"p2p-host"}
+	nethermindFlags := []string{"Network.ExternalIp"}
+	prysmFlags := []string{"p2p-host-ip"}
+	lighthouseFlags := []string{"enr-address"}
+	tekuFlags := []string{"p2p-advertised-ip"}
+	nimbusFlags := []string{"nat"}
+
 	configs := []tempConfig{
 		{
-			path:          "./configs/testnet/prysm",
+			path:          "./configs/%s/geth",
+			name:          "geth",
+			fileType:      "toml",
+			flagsToChange: gethFlags,
+			wrap:          natWrap,
+		},
+		{
+			path:          "./configs/%s/erigon",
+			name:          "erigon",
+			fileType:      "toml",
+			flagsToChange: erigonFlags,
+			wrap:          natWrap,
+		},
+		{
+			path:          "./configs/%s/besu",
+			name:          "besu",
+			fileType:      "toml",
+			flagsToChange: besuFlags,
+			wrap:          nil,
+		},
+		{
+			path:          "./configs/%s/nethermind",
+			name:          "nethermind",
+			fileType:      "json",
+			flagsToChange: nethermindFlags,
+			wrap:          nil,
+		},
+		{
+			path:          "./configs/%s/prysm",
 			name:          "prysm",
 			fileType:      "yaml",
-			flagsToChange: prysmFlagsToChange,
+			flagsToChange: prysmFlags,
+			wrap:          nil,
 		},
 		{
-			path:          "./configs/testnet/lighthouse",
+			path:          "./configs/%s/lighthouse",
 			name:          "lighthouse",
 			fileType:      "toml",
-			flagsToChange: lighthouseFlagsToChange,
+			flagsToChange: lighthouseFlags,
+			wrap:          nil,
 		},
 		{
-			path:          "./configs/testnet/teku",
+			path:          "./configs/%s/teku",
 			name:          "teku",
 			fileType:      "yaml",
-			flagsToChange: tekuFlagsToChange,
+			flagsToChange: tekuFlags,
+			wrap:          nil,
 		},
 		{
-			path:          "./configs/mainnet/prysm",
-			name:          "prysm",
-			fileType:      "yaml",
-			flagsToChange: prysmFlagsToChange,
-		},
-		{
-			path:          "./configs/mainnet/lighthouse",
-			name:          "lighthouse",
+			path:          "./configs/%s/nimbus2",
+			name:          "nimbus",
 			fileType:      "toml",
-			flagsToChange: lighthouseFlagsToChange,
-		},
-		{
-			path:          "./configs/mainnet/teku",
-			name:          "teku",
-			fileType:      "yaml",
-			flagsToChange: tekuFlagsToChange,
+			flagsToChange: nimbusFlags,
+			wrap:          natWrap,
 		},
 	}
 
-	for _, cfg := range configs {
-		v := viper.New()
+	networks := []string{"mainnet", "testnet"}
 
-		v.AddConfigPath(cfg.path)
-		v.SetConfigName(cfg.name)
-		v.SetConfigType(cfg.fileType)
+	for _, network := range networks {
+		for _, cfg := range configs {
+			cfg.path = fmt.Sprintf(cfg.path, network)
 
-		err = v.ReadInConfig()
-		if err != nil {
-			return
-		}
+			v := viper.New()
 
-		for _, flag := range cfg.flagsToChange {
-			v.Set(flag, ip)
-		}
+			v.AddConfigPath(cfg.path)
+			v.SetConfigName(cfg.name)
+			v.SetConfigType(cfg.fileType)
 
-		err = v.WriteConfig()
-		if err != nil {
-			return
+			err = v.ReadInConfig()
+			if err != nil {
+				return
+			}
+
+			cfgIp := ip
+			if cfg.wrap != nil {
+				cfgIp = cfg.wrap(cfgIp)
+			}
+
+			for _, flag := range cfg.flagsToChange {
+				v.Set(flag, cfgIp)
+			}
+
+			err = v.WriteConfig()
+			if err != nil {
+				return
+			}
 		}
 	}
 
