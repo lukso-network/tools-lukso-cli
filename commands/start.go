@@ -88,6 +88,8 @@ func StartClients(ctx *cli.Context) (err error) {
 			consArgs = append(consArgs, fmt.Sprintf("--genesis-beacon-api-url=%s", checkpointURL))
 		case clients.Lighthouse:
 			consArgs = append(consArgs, fmt.Sprintf("--checkpoint-sync-url=%s", checkpointURL))
+		case clients.Nimbus2:
+			// nimbus doesn't have a checkpoint flag, rather it has a separate process. Catching so the WARN doesn't trigger.
 		default:
 			log.Warnf("️⚠️  Checkpoint sync not configured for %s: continuing without checkpoint sync", consensusClient.Name())
 		}
