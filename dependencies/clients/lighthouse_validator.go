@@ -68,12 +68,12 @@ func (l *LighthouseValidatorClient) Start(ctx *cli.Context, args []string) (err 
 		return
 	}
 
-	err = os.WriteFile(fullPath, []byte{}, 0750)
+	err = os.WriteFile(fullPath, []byte{}, 0o750)
 	if err != nil {
 		return
 	}
 
-	logFile, err = os.OpenFile(fullPath, os.O_RDWR, 0750)
+	logFile, err = os.OpenFile(fullPath, os.O_RDWR, 0o750)
 	if err != nil {
 		return
 	}
@@ -195,4 +195,8 @@ func (l *LighthouseValidatorClient) Exit(ctx *cli.Context) (err error) {
 	}
 
 	return
+}
+
+func (l *LighthouseValidatorClient) Version() (version string) {
+	return Lighthouse.Version() // same binary
 }

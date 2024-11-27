@@ -129,12 +129,12 @@ func (b *BesuClient) Start(ctx *cli.Context, arguments []string) (err error) {
 		return
 	}
 
-	err = os.WriteFile(fullPath, []byte{}, 0750)
+	err = os.WriteFile(fullPath, []byte{}, 0o750)
 	if err != nil {
 		return
 	}
 
-	logFile, err = os.OpenFile(fullPath, os.O_RDWR, 0750)
+	logFile, err = os.OpenFile(fullPath, os.O_RDWR, 0o750)
 	if err != nil {
 		return
 	}
@@ -160,4 +160,19 @@ func (b *BesuClient) Start(ctx *cli.Context, arguments []string) (err error) {
 
 func (b *BesuClient) Peers(ctx *cli.Context) (outbound, inbound int, err error) {
 	return defaultExecutionPeers(ctx, 8545)
+}
+
+func (b *BesuClient) Version() (version string) {
+	cmdVer := execVersionCmd(
+		fmt.Sprintf("./%s/bin/besu", b.FilePath()),
+	)
+
+	if cmdVer == VersionNotAvailable {
+		return VersionNotAvailable
+	}
+
+	// Besu version output to parse:
+
+	// besu/v24.7.0/linux-x86_64/oracle_openjdk-java-22
+	return strings.Split(cmdVer, "/")[1]
 }

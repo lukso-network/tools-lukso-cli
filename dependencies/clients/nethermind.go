@@ -100,12 +100,12 @@ func (n *NethermindClient) Start(ctx *cli.Context, arguments []string) (err erro
 		return
 	}
 
-	err = os.WriteFile(fullPath, []byte{}, 0750)
+	err = os.WriteFile(fullPath, []byte{}, 0o750)
 	if err != nil {
 		return
 	}
 
-	logFile, err = os.OpenFile(fullPath, os.O_RDWR, 0750)
+	logFile, err = os.OpenFile(fullPath, os.O_RDWR, 0o750)
 	if err != nil {
 		return
 	}
@@ -181,6 +181,37 @@ func (n *NethermindClient) PrepareStartFlags(ctx *cli.Context) (startFlags []str
 
 func (n *NethermindClient) Peers(ctx *cli.Context) (outbound, inbound int, err error) {
 	return defaultExecutionPeers(ctx, 8545)
+}
+
+func (n *NethermindClient) Version() (version string) {
+	cmdVer := execVersionCmd(
+		fmt.Sprintf("./%s/nethermind", n.FilePath()),
+	)
+
+	if cmdVer == VersionNotAvailable {
+		return VersionNotAvailable
+	}
+
+	// Nethermind version output to parse:
+
+	// 2024-11-19 11-41-29.6737|Nethermind starting initialization.
+	// 2024-11-19 11-41-29.6915|Client version: Nethermind/v1.27.0+220b5b85/linux-x64/dotnet8.0.6
+	// 2024-11-19 11-41-29.7003|Loading embedded plugins
+	// ...
+	// 2024-11-19 11-41-29.7460|Loading assembly Nethermind.Init.Snapshot
+	// 2024-11-19 11-41-29.7463|  Found plugin type Nethermind.Init.Snapshot
+	//
+	// Version: 1.27.0+220b5b85
+	// Commit: 220b5b856b1530482e957c002c9b24148a25f075
+	// Build Date: 2024-06-21 11:48:18Z
+	// OS: Linux x64
+	// Runtime: .NET 8.0.6
+
+	// We can use the second line
+	s := strings.Split(cmdVer, "\n")[1]
+	// -> ...|v1.27.0+220b5b85|...
+	s = strings.Split(s, "/")[1]
+	return strings.Split(s, "+")[0]
 }
 
 func (n *NethermindClient) FilePath() string {

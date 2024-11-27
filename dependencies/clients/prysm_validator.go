@@ -113,6 +113,25 @@ func (p *PrysmValidatorClient) Import(ctx *cli.Context) (err error) {
 	return nil
 }
 
+func (p *PrysmValidatorClient) Version() (version string) {
+	cmdVer := execVersionCmd(
+		p.CommandName(),
+	)
+
+	if cmdVer == VersionNotAvailable {
+		return VersionNotAvailable
+	}
+
+	// Prysm validator version output to parse:
+
+	// validator version Prysm/v5.0.4/3b184f43c86baf6c36478f65a5113e7cf0836d41. Built at: 2024-06-21 00:26:00+00:00
+
+	// -> ...|Prysm/v5.0.4/3b184f43c86baf6c36478f65a5113e7cf0836d41.|...
+	s := strings.Split(cmdVer, " ")[2]
+	// -> ...|v5.0.4|...
+	return strings.Split(s, "/")[1]
+}
+
 func (p *PrysmValidatorClient) List(ctx *cli.Context) (err error) {
 	walletDir := ctx.String(flags.ValidatorWalletDirFlag)
 	cmd := exec.Command("validator", "accounts", "list", "--wallet-dir", walletDir)

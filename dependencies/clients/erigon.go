@@ -2,6 +2,7 @@ package clients
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/urfave/cli/v2"
 
@@ -44,4 +45,19 @@ func (e *ErigonClient) PrepareStartFlags(ctx *cli.Context) (startFlags []string,
 
 func (e *ErigonClient) Peers(ctx *cli.Context) (outbound, inbound int, err error) {
 	return defaultExecutionPeers(ctx, 8545)
+}
+
+func (e *ErigonClient) Version() (version string) {
+	cmdVer := execVersionCmd(
+		e.CommandName(),
+	)
+
+	if cmdVer == VersionNotAvailable {
+		return VersionNotAvailable
+	}
+
+	// Erigon version output to parse:
+
+	// erigon version 2.60.4
+	return fmt.Sprintf("v%s", strings.Split(cmdVer, " ")[2])
 }
