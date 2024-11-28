@@ -149,6 +149,7 @@ lukso-node
 | [`validator list`](#validator-list)         | Display the imported validator keys                                                                             |
 | [`validator exit`](#validator-exit)         | Issue an exit for your validator                                                                                |
 | [`version`](#version)                       | Display the version of the LUKSO CLI that is currently installed                                                |
+| [`version clients`](#version-clients)       | Display versions of installed LUKSO CLI client dependencies                                                     |
 | [`help`, `h`](#help)                        | Shows the full list of commands, global options, and their usage                                                |
 
 ## Global Help Flag
@@ -488,6 +489,15 @@ $ lukso reset --devnet
 ```sh
 # Displays the currently installed version of the LUKSO CLI
 $ lukso version
+```
+
+### `version clients`
+
+#### How to check the versions of installed LUKSO CLI clients
+
+```sh
+# Displays a list of clients and their installed versions, as well as indications that clients are missing
+$ lukso version clients
 ```
 
 ### `help`
