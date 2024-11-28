@@ -373,7 +373,8 @@ Please note that this won't affect your node in any way.
 | --nethermind-config [string]         | Defines the path to nethermind CFG config file                                                                                                        |
 | --besu-config [string]               | Defines the path to besu TOML config file                                                                                                             |
 | --teku-config [string]               | Defines the path to teku YAML config file                                                                                                             |
-| --nimbsu2-config [string]            | Defines the path to nimbus TOML config file                                                                                                           |
+| --nimbus2-config [string]            | Defines the path to nimbus TOML config file                                                                                                           |
+| --nimbus2-validator-config [string]  | Defines the path to nimbus validator TOML config file                                                                                                 |
 | --validator-config [string]          | Defines the path to validator YAML config file                                                                                                        |
 | --geth-[command]                     | The `command` will be passed to the Geth client. [See the client docs for details](https://geth.ethereum.org/docs/fundamentals/command-line-options)  |
 | --prysm-[command]                    | The `command` will be passed to the Prysm client. [See the client docs for details](https://docs.prylabs.network/docs/prysm-usage/parameters)         |

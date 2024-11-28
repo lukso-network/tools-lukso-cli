@@ -49,8 +49,8 @@ const (
 	Nimbus2CommitHashFlag          = "nimbus2-commit-hash"
 	Nimbus2NetworkFlag             = "nimbus2-network"
 	Nimbus2DatadirFlag             = "nimbus2-datadir"
-	Nimbus2ConfigFileFlag          = "nimbus2-config-file"
-	Nimbus2ValidatorConfigFileFlag = "nimbus2-validator-config-file"
+	Nimbus2ConfigFileFlag          = "nimbus2-config"
+	Nimbus2ValidatorConfigFileFlag = "nimbus2-validator-config"
 
 	MainnetFlag   = "mainnet"
 	TestnetFlag   = "testnet"
