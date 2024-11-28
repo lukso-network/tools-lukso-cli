@@ -24,7 +24,7 @@ The LUKSO CLI is able to install multiple clients for running the node.
 | Erigon         | v2.60.4  | https://github.com/ledgerwatch/erigon/releases/tag/v2.60.4      |
 | Nethermind     | v1.27.0  | https://github.com/NethermindEth/nethermind/releases/tag/1.27.0 |
 | Besu           | v24.7.0  | https://github.com/hyperledger/besu/releases/tag/24.7.0         |
-| Prysm          | v5.0.4   | https://github.com/prysmaticlabs/prysm/releases/tag/v5.0.4      |
+| Prysm          | v5.1.2   | https://github.com/prysmaticlabs/prysm/releases/tag/v5.1.2      |
 | Lighthouse     | v5.2.1   | https://github.com/sigp/lighthouse/releases/tag/v5.2.1          |
 | Teku           | v24.6.1  | https://github.com/Consensys/teku/releases/tag/24.6.1           |
 | Nimbus (eth-2) | v24.10.0 | https://github.com/status-im/nimbus-eth2/releases/tag/v24.10.0  |
