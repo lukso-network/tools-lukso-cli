@@ -13,20 +13,21 @@ The LUKSO CLI is a command line tool to install, manage and set up validators of
 The LUKSO CLI is able to install multiple clients for running the node.
 
 - Execution Clients: [Geth](https://geth.ethereum.org/), [Erigon](https://github.com/ledgerwatch/erigon), [Nethermind](https://github.com/NethermindEth/nethermind), [Besu](https://www.hyperledger.org/projects/besu)
-- Consensus Clients: [Prysm](https://github.com/prysmaticlabs/prysm), [Lighthouse](https://github.com/sigp/lighthouse), [Teku](https://github.com/Consensys/teku)
+- Consensus Clients: [Prysm](https://github.com/prysmaticlabs/prysm), [Lighthouse](https://github.com/sigp/lighthouse), [Teku](https://github.com/Consensys/teku), [Nimbus (eth-2)](https://nimbus.guide/index.html)
 - Validator Staking Clients: [Prysm](https://docs.prylabs.network/docs/how-prysm-works/prysm-validator-client), [Lighthouse](https://github.com/sigp/lighthouse), [Teku](https://github.com/Consensys/teku)
 
 ### Client versions
 
-| Client     | Version  | Release                                                         |
-|------------|----------|-----------------------------------------------------------------|
-| Geth       | v1.14.7  | https://github.com/ethereum/go-ethereum/releases/tag/v1.14.7    |
-| Erigon     | v2.60.4  | https://github.com/ledgerwatch/erigon/releases/tag/v2.60.4      |
-| Nethermind | v1.27.0  | https://github.com/NethermindEth/nethermind/releases/tag/1.27.0 |
-| Besu       | v24.7.0  | https://github.com/hyperledger/besu/releases/tag/24.7.0         |
-| Prysm      | v5.0.4   | https://github.com/prysmaticlabs/prysm/releases/tag/v5.0.4      |
-| Lighthouse | v5.2.1   | https://github.com/sigp/lighthouse/releases/tag/v5.2.1          |
-| Teku       | v24.6.1  | https://github.com/Consensys/teku/releases/tag/24.6.1           |
+| Client         | Version  | Release                                                         |
+| -------------- | -------- | --------------------------------------------------------------- |
+| Geth           | v1.14.12 | https://github.com/ethereum/go-ethereum/releases/tag/v1.14.12   |
+| Erigon         | v2.60.4  | https://github.com/ledgerwatch/erigon/releases/tag/v2.60.4      |
+| Nethermind     | v1.27.0  | https://github.com/NethermindEth/nethermind/releases/tag/1.27.0 |
+| Besu           | v24.7.0  | https://github.com/hyperledger/besu/releases/tag/24.7.0         |
+| Prysm          | v5.1.2   | https://github.com/prysmaticlabs/prysm/releases/tag/v5.1.2      |
+| Lighthouse     | v5.2.1   | https://github.com/sigp/lighthouse/releases/tag/v5.2.1          |
+| Teku           | v24.6.1  | https://github.com/Consensys/teku/releases/tag/24.6.1           |
+| Nimbus (eth-2) | v24.10.0 | https://github.com/status-im/nimbus-eth2/releases/tag/v24.10.0  |
 
 > More clients will be added in the future.
 
@@ -110,6 +111,7 @@ lukso-node
 │       ├───nethermind                      // Config for Nethermind Client
 │       ├───besu                            // Config for Besu Client
 │       ├───teku                            // Config for Teku Client
+│       ├───nimbus2                         // Config for Nimbus (eth-2) Client
 │       └───lighthouse                      // Config for Lighthouse Client
 │
 ├───[network_type]-keystore                 // Network's Validator Wallet
@@ -132,7 +134,7 @@ lukso-node
 ## Available Commands
 
 | Command                                     | Description                                                                                                     |
-|---------------------------------------------|-----------------------------------------------------------------------------------------------------------------|
+| ------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
 | [`install` ](#install)                      | Installs choosen clients (Execution, Consensus, Validator) and their binary dependencies                        |
 | [`update` ](#update)                        | Update all currently selected clients to their newest versions                                                  |
 | [`update configs` ](#update-configs)        | Update chain configuration files. This commands overwrites your oldchain configs, but keeps your client configs |
@@ -147,6 +149,7 @@ lukso-node
 | [`validator list`](#validator-list)         | Display the imported validator keys                                                                             |
 | [`validator exit`](#validator-exit)         | Issue an exit for your validator                                                                                |
 | [`version`](#version)                       | Display the version of the LUKSO CLI that is currently installed                                                |
+| [`version clients`](#version-clients)       | Display versions of installed LUKSO CLI client dependencies                                                     |
 | [`help`, `h`](#help)                        | Shows the full list of commands, global options, and their usage                                                |
 
 ## Global Help Flag
@@ -197,24 +200,28 @@ $ lukso install --geth-tag 1.14.7 --geth-commit-hash aa55f5ea
 #### Options for `install`
 
 | Option                         | Description                                         | Default    |
-|--------------------------------|-----------------------------------------------------|------------|
+| ------------------------------ | --------------------------------------------------- | ---------- |
 | --agree-terms                  | Automatically accept Terms and Conditions           | false      |
-| --geth-tag value               | Tag for Geth                                        | "1.14.7"   |
-| --geth-commit-hash value       | A hash of commit that is bound to given release tag | "aa55f5ea" |
-| --validator-tag value          | Tag for validator binary                            | "v5.0.4"   |
-| --prysm-tag value              | Tag for Prysm                                       | "v5.0.4"   |
+| --geth-tag value               | Tag for Geth                                        | "1.14.12"  |
+| --geth-commit-hash value       | A hash of commit that is bound to given release tag | "293a300d" |
+| --validator-tag value          | Tag for validator binary                            | "v5.1.2"   |
+| --prysm-tag value              | Tag for Prysm                                       | "v5.1.2"   |
 | --erigon-tag value             | Tag for Erigon                                      | "2.60.4"   |
 | --lighthouse-tag value         | Tag for Lighthouse                                  | "v5.2.1"   |
 | --teku-tag value               | Tag for Teku                                        | "24.6.1"   |
 | --besu-tag value               | Tag for Besu                                        | "24.7.0"   |
+| --nimbus2-tag value            | Tag for Nimbus2                                     | "24.10.0"  |
+| --nimbus2-commit-hash value    | A hash of commit that is bound to given release tag | "c4037d63" |
 | --nethermind-tag value         | Tag for Teku                                        | "1.27.0"   |
 | --nethermind-commit-hash value | A hash of commit that is bound to given release tag | "220b5b85" |
-| --help, -h                     | show  help                                          | false      |
+| --help, -h                     | show help                                           | false      |
 
 ### `update`
-`update` will install the newest verions of the clients that you selected duing installation process.  
+
+`update` will install the newest verions of the clients that you selected duing installation process.
 
 #### How to update clients
+
 ```sh
 # starts an update of your selected clients - note that your node must be STOPPED before proceeding with update
 $ lukso update
@@ -222,14 +229,17 @@ $ lukso update
 ```
 
 ### `update configs`
+
 `update configs` Update chain configuration files. This commands overwrites your oldchain configs, but keeps your client configs.  
-In order to update your configs, you need to: 
-1) Have your node stopped
-2) Be in the LUKSO CLI initialized directory
+In order to update your configs, you need to:
+
+1. Have your node stopped
+2. Be in the LUKSO CLI initialized directory
 
 #### How to update chain config files
+
 ```sh
-# starts an update of chain config files. 
+# starts an update of chain config files.
 $ lukso update configs
 
 ```
@@ -327,48 +337,54 @@ $ lukso start --testnet --lighthouse-checkpoint-sync-url=https://checkpoints.tes
 ```
 
 #### Possible issues
+
 - When starting prysm <=v4.0.8 after the [v0.16.0](https://github.com/lukso-network/network-configs/pull/131) CLI update, you may encounter some configuration issues:
+
 ```
 time="2024-02-27 11:32:55" level=error msg="There were some issues parsing the config from a yaml file" error="yaml: unmarshal errors:
   line 113: field DENEB_FORK_VERSION not found in type params.BeaconChainConfig
   line 119: field DENEB_FORK_EPOCH not found in type params.BeaconChainConfig"
 ```
+
 Please note that this won't affect your node in any way.
 
 #### Options for `start`
 
-| Option                                | Description                                                                                                                                           |
-|---------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **NETWORK**                           |                                                                                                                                                       |
-| --mainnet                             | Starts the LUKSO node with mainnet data [default] (./configs/mainnet)                                                                                 |
-| --testnet                             | Starts the LUKSO node with testnet data (./configs/tesnet)                                                                                            |
-| --devnet                              | Starts the LUKSO node with devnet data (./configs/devnet)                                                                                             |
-| **VALIDATOR**                         |                                                                                                                                                       |
-| --validator                           | Starts the validator client                                                                                                                           |
-| --validator-keys [string]             | Directory of the validator keys (default: "./\[network_type\]-keystore")                                                                              |
-| --validator-wallet-password [string]  | Location of password file that you used for generated validator keys                                                                                  |
-| --validator-config [string]           | Path to prysms validator.yaml config file                                                                                                             |
-| --transaction-fee-recipient [string]  | The address that receives block reward from transactions (required for --validator flag)                                                              |
-| --genesis-json [string]               | The path to genesis JSON file                                                                                                                         |
-| --genesis-ssz [string]                |  The path to genesis SSZ file                                                                                                                         |
-| --no-slasher                          | Disables slasher                                                                                                                                      |
-| **CLIENT OPTIONS**                    |                                                                                                                                                       |
-| --logs-folder [string]                | Sets up a custom logs directory (default: "./\[network_type\]-logs")                                                                                  |
-| --geth-config [string]                | Defines the path to geth TOML config file                                                                                                             |
-| --prysm-config [string]               | Defines the path to prysm YAML config file                                                                                                            |
-| --erigon-config [string]              | Defines the path to erigon TOML config file                                                                                                           |
-| --nethermind-config [string]          | Defines the path to nethermind CFG config file                                                                                                        |
-| --besu-config [string]                | Defines the path to besu TOML config file                                                                                                             |
-| --teku-config [string]                | Defines the path to teku YAML config file                                                                                                             | 
-| --validator-config [string]           | Defines the path to teku validator YAML config file                                                                                                   |
-| --geth-[command]                      | The `command` will be passed to the Geth client. [See the client docs for details](https://geth.ethereum.org/docs/fundamentals/command-line-options)  |
-| --prysm-[command]                     | The `command` will be passed to the Prysm client. [See the client docs for details](https://docs.prylabs.network/docs/prysm-usage/parameters)         |
-| --lighhouse-[command]                 | The `command` will be passed to the Lighthouse client. [See the client docs for details](https://lighthouse-book.sigmaprime.io/advanced-datadir.html) |
-| --erigon-[command]                    | The `command` will be passed to the Erigon client. [See the client docs for details](https://github.com/ledgerwatch/erigon)                           |
-| --teku-[command]                      | The `command` will be passed to the Teku client. [See the client docs for details](https://github.com/ledgerwatch/erigon)                             |
-| --besu-[command]                      | The `command` will be passed to the Besu client. [See the client docs for details](https://github.com/hyperledger/besu)                               |
-| --nethermind-[command]                | The `command` will be passed to the Nethermind client. [See the client docs for details](https://github.com/NethermindEth/nethermind)                 |
-| --checkpoint-sync                     | Run a node with checkpoint sync feature                                                                                                               |
+| Option                               | Description                                                                                                                                           |
+| ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **NETWORK**                          |                                                                                                                                                       |
+| --mainnet                            | Starts the LUKSO node with mainnet data [default] (./configs/mainnet)                                                                                 |
+| --testnet                            | Starts the LUKSO node with testnet data (./configs/tesnet)                                                                                            |
+| --devnet                             | Starts the LUKSO node with devnet data (./configs/devnet)                                                                                             |
+| **VALIDATOR**                        |                                                                                                                                                       |
+| --validator                          | Starts the validator client                                                                                                                           |
+| --validator-keys [string]            | Directory of the validator keys (default: "./\[network_type\]-keystore")                                                                              |
+| --validator-wallet-password [string] | Location of password file that you used for generated validator keys                                                                                  |
+| --validator-config [string]          | Path to prysms validator.yaml config file                                                                                                             |
+| --transaction-fee-recipient [string] | The address that receives block reward from transactions (required for --validator flag)                                                              |
+| --genesis-json [string]              | The path to genesis JSON file                                                                                                                         |
+| --genesis-ssz [string]               | The path to genesis SSZ file                                                                                                                          |
+| --no-slasher                         | Disables slasher                                                                                                                                      |
+| **CLIENT OPTIONS**                   |                                                                                                                                                       |
+| --logs-folder [string]               | Sets up a custom logs directory (default: "./\[network_type\]-logs")                                                                                  |
+| --geth-config [string]               | Defines the path to geth TOML config file                                                                                                             |
+| --prysm-config [string]              | Defines the path to prysm YAML config file                                                                                                            |
+| --erigon-config [string]             | Defines the path to erigon TOML config file                                                                                                           |
+| --nethermind-config [string]         | Defines the path to nethermind CFG config file                                                                                                        |
+| --besu-config [string]               | Defines the path to besu TOML config file                                                                                                             |
+| --teku-config [string]               | Defines the path to teku YAML config file                                                                                                             |
+| --nimbus2-config [string]            | Defines the path to nimbus TOML config file                                                                                                           |
+| --nimbus2-validator-config [string]  | Defines the path to nimbus validator TOML config file                                                                                                 |
+| --validator-config [string]          | Defines the path to validator YAML config file                                                                                                        |
+| --geth-[command]                     | The `command` will be passed to the Geth client. [See the client docs for details](https://geth.ethereum.org/docs/fundamentals/command-line-options)  |
+| --prysm-[command]                    | The `command` will be passed to the Prysm client. [See the client docs for details](https://docs.prylabs.network/docs/prysm-usage/parameters)         |
+| --lighhouse-[command]                | The `command` will be passed to the Lighthouse client. [See the client docs for details](https://lighthouse-book.sigmaprime.io/advanced-datadir.html) |
+| --erigon-[command]                   | The `command` will be passed to the Erigon client. [See the client docs for details](https://github.com/ledgerwatch/erigon)                           |
+| --teku-[command]                     | The `command` will be passed to the Teku client. [See the client docs for details](https://github.com/ledgerwatch/erigon)                             |
+| --besu-[command]                     | The `command` will be passed to the Besu client. [See the client docs for details](https://github.com/hyperledger/besu)                               |
+| --nethermind-[command]               | The `command` will be passed to the Nethermind client. [See the client docs for details](https://github.com/NethermindEth/nethermind)                 |
+| --nimbus2-[command]                  | The `command` will be passed to the Nethermind client. [See the client docs for details](https://nimbus.guide/index.html)                             |
+| --checkpoint-sync                    | Run a node with checkpoint sync feature                                                                                                               |
 
 ### `stop`
 
@@ -474,6 +490,15 @@ $ lukso reset --devnet
 ```sh
 # Displays the currently installed version of the LUKSO CLI
 $ lukso version
+```
+
+### `version clients`
+
+#### How to check the versions of installed LUKSO CLI clients
+
+```sh
+# Displays a list of clients and their installed versions, as well as indications that clients are missing
+$ lukso version clients
 ```
 
 ### `help`
@@ -683,16 +708,17 @@ $ rm -rf ~/myNodeFolder
 ```
 
 ## Known Issues
+
 - [Minor] With the [v0.16.0](https://github.com/lukso-network/network-configs/pull/131) update, LUKSO CLI clients support the Cancun hardfork. To avoid uncontrolled forking, the LUKSO team
-have updated the chain config files, which can cause config unmarshalling errors for Prysm <=4.0.8.
-Client is still functioning as intended.  
-Example Prysm Error log:
+  have updated the chain config files, which can cause config unmarshalling errors for Prysm <=4.0.8.
+  Client is still functioning as intended.  
+  Example Prysm Error log:
+
 ```
 time="2024-02-27 11:32:55" level=error msg="There were some issues parsing the config from a yaml file" error="yaml: unmarshal errors:
   line 113: field DENEB_FORK_VERSION not found in type params.BeaconChainConfig
   line 119: field DENEB_FORK_EPOCH not found in type params.BeaconChainConfig"
 ```
-
 
 ## Contributing
 

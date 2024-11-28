@@ -98,14 +98,14 @@ var (
 	AllClientNames = []string{
 		gethDependencyName,
 		erigonDependencyName,
+		nethermindDependencyName,
+		besuDependencyName,
 		prysmDependencyName,
-		lighthouseDependencyName,
 		prysmValidatorDependencyName,
+		lighthouseDependencyName,
 		lighthouseValidatorDependencyName,
 		tekuDependencyName,
 		tekuValidatorDependencyName,
-		nethermindDependencyName,
-		besuDependencyName,
 		nimbus2DependencyName,
 		nimbus2ValidatorDependencyName,
 	}
