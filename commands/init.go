@@ -57,25 +57,26 @@ func InitializeDirectory(ctx *cli.Context) error {
 	case true:
 		log.Info("⚙️   LUKSO configuration already exists - continuing...")
 	case false:
+		log.Info("⚙️   LUKSO CLI can replace your p2p communication flags with your public IP for better connection (optional)")
+		message := "Do you want to proceed? [Y/n]\n> "
+
+		ip := "0.0.0.0"
+		input := utils.RegisterInputWithMessage(message)
+		if strings.EqualFold(input, "y") || input == "" {
+			ip, err = setIPInConfigs()
+			if err != nil {
+				return err
+			}
+		}
+
 		log.Info("⚙️   Creating LUKSO configuration file...")
 
-		err = cfg.Create("", "", "")
+		err = cfg.Create("", "", "", ip)
 		if err != nil {
 			return utils.Exit(fmt.Sprintf("❌  There was an error while preparing LUKSO configuration: %v", err), 1)
 		}
 
 		log.Infof("✅  LUKSO configuration created under %s", config.Path)
-	}
-
-	log.Info("⚙️   LUKSO CLI can replace your p2p communication flags with your public IP for better connection (optional)")
-	message := "Do you want to proceed? [Y/n]\n> "
-
-	input := utils.RegisterInputWithMessage(message)
-	if strings.EqualFold(input, "y") || input == "" {
-		err = setIPInConfigs()
-		if err != nil {
-			return err
-		}
 	}
 
 	displayNetworksHardforkTimestamps()
@@ -85,11 +86,13 @@ func InitializeDirectory(ctx *cli.Context) error {
 	return nil
 }
 
-func setIPInConfigs() (err error) {
-	ip, err := getPublicIP()
+func setIPInConfigs() (ip string, err error) {
+	ip, err = getPublicIP()
 	if err != nil {
-		return err
+		return
 	}
+
+	log.Infof("⚙️  IPv4 found: %s", ip)
 
 	type tempConfig struct {
 		path          string
@@ -104,23 +107,15 @@ func setIPInConfigs() (err error) {
 		return "extip:" + s
 	}
 
-	gethFlags := []string{"nat"}
 	erigonFlags := []string{"nat"}
 	besuFlags := []string{"p2p-host"}
-	nethermindFlags := []string{"Network.ExternalIp"}
+	nethermindFlags := []string{"Network:ExternalIp"} // : because of the non-standard delimiter
 	prysmFlags := []string{"p2p-host-ip"}
 	lighthouseFlags := []string{"enr-address"}
 	tekuFlags := []string{"p2p-advertised-ip"}
 	nimbusFlags := []string{"nat"}
 
 	configs := []tempConfig{
-		{
-			path:          "./configs/%s/geth",
-			name:          "geth",
-			fileType:      "toml",
-			flagsToChange: gethFlags,
-			wrap:          natWrap,
-		},
 		{
 			path:          "./configs/%s/erigon",
 			name:          "erigon",
@@ -178,8 +173,7 @@ func setIPInConfigs() (err error) {
 		for _, cfg := range configs {
 			cfg.path = fmt.Sprintf(cfg.path, network)
 
-			v := viper.New()
-
+			v := viper.NewWithOptions(viper.KeyDelimiter(":"))
 			v.AddConfigPath(cfg.path)
 			v.SetConfigName(cfg.name)
 			v.SetConfigType(cfg.fileType)
@@ -205,7 +199,14 @@ func setIPInConfigs() (err error) {
 		}
 	}
 
+	names := ""
+	for _, cfg := range configs {
+		names += fmt.Sprintf("- %s\n", cfg.name)
+	}
+
 	log.Info("✅  IP Address updated!\n\n")
+	log.Infof("▶️  Your IPv4 Address has been wrtitten into the cli-config.yaml file.\n\n"+
+		"Additionally, the following clients' configs have been updated: \n%s\n", names)
 
 	return
 }

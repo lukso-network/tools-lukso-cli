@@ -159,9 +159,19 @@ func InstallBinaries(ctx *cli.Context) (err error) {
 		selectedValidator = clients.Nimbus2Validator
 	}
 
-	err = cfg.Create(selectedExecution.Name(), selectedConsensus.Name(), selectedValidator.Name())
+	err = cfg.WriteExecution(selectedExecution.Name())
 	if err != nil {
-		return utils.Exit(fmt.Sprintf("❌  There was an error while creating configration file: %v", err), 1)
+		return utils.Exit(fmt.Sprintf("❌  There was an error while writing execution client: %v", err), 1)
+	}
+
+	err = cfg.WriteConsensus(selectedConsensus.Name())
+	if err != nil {
+		return utils.Exit(fmt.Sprintf("❌  There was an error while writing consensus client: %v", err), 1)
+	}
+
+	err = cfg.WriteValidator(selectedValidator.Name())
+	if err != nil {
+		return utils.Exit(fmt.Sprintf("❌  There was an error while writing validator client: %v", err), 1)
 	}
 
 	log.Info("✅  Configuration files created!")

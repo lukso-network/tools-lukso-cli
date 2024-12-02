@@ -6,11 +6,8 @@ import (
 	"strconv"
 	"strings"
 
-	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"github.com/urfave/cli/v2"
-
-	"github.com/lukso-network/tools-lukso-cli/common/errors"
 )
 
 const (
@@ -59,11 +56,18 @@ func parsePath(path string) (dir, fileName, extension string) {
 }
 
 type Config struct {
-	path            string
-	viper           *viper.Viper
-	executionClient string `mapstructure:"execution"`
-	consensusClient string `mapstructure:"consensus"`
-	validatorClient string `mapstructure:"validator"`
+	path  string
+	viper *viper.Viper
+	configValues
+}
+
+type configValues struct {
+	useClients struct {
+		executionClient string `mapstructure:"execution"`
+		consensusClient string `mapstructure:"consensus"`
+		validatorClient string `mapstructure:"validator"`
+	} `mapstructure:"useclients"`
+	ipv4 string `mapstructure:"ipv4"`
 }
 
 // NewConfig creates and initializes viper config instance - it doesn't load config, to load use c.Read().
@@ -83,7 +87,7 @@ func NewConfig(path string) *Config {
 
 // Create creates a new config that keeps track of selected dependencies and writes to it.
 // By default, this file should be present in root of initialized lukso directory
-func (c *Config) Create(selectedExecution, selectedConsensus, selectedValidator string) (err error) {
+func (c *Config) Create(selectedExecution, selectedConsensus, selectedValidator, ipv4 string) (err error) {
 	_, err = os.Create(c.path)
 	if err != nil {
 		return
@@ -92,6 +96,7 @@ func (c *Config) Create(selectedExecution, selectedConsensus, selectedValidator 
 	c.viper.Set("useClients.execution", selectedExecution)
 	c.viper.Set("useClients.consensus", selectedConsensus)
 	c.viper.Set("useClients.validator", selectedValidator)
+	c.viper.Set("ipv4", ipv4)
 
 	err = c.viper.WriteConfigAs(c.path)
 
@@ -105,6 +110,10 @@ func (c *Config) Exists() bool {
 }
 
 func (c *Config) WriteExecution(selectedExecution string) (err error) {
+	err = c.viper.ReadInConfig()
+	if err != nil {
+		return
+	}
 	c.viper.Set("useClients.execution", selectedExecution)
 
 	err = c.viper.WriteConfigAs(c.path)
@@ -113,7 +122,35 @@ func (c *Config) WriteExecution(selectedExecution string) (err error) {
 }
 
 func (c *Config) WriteConsensus(selectedConsensus string) (err error) {
+	err = c.viper.ReadInConfig()
+	if err != nil {
+		return
+	}
 	c.viper.Set("useClients.consensus", selectedConsensus)
+
+	err = c.viper.WriteConfigAs(c.path)
+
+	return
+}
+
+func (c *Config) WriteValidator(selectedValidator string) (err error) {
+	err = c.viper.ReadInConfig()
+	if err != nil {
+		return
+	}
+	c.viper.Set("useClients.validator", selectedValidator)
+
+	err = c.viper.WriteConfigAs(c.path)
+
+	return
+}
+
+func (c *Config) WriteIPv4(ipv4 string) (err error) {
+	err = c.viper.ReadInConfig()
+	if err != nil {
+		return
+	}
+	c.viper.Set("ipv4", ipv4)
 
 	err = c.viper.WriteConfigAs(c.path)
 
@@ -127,35 +164,30 @@ func (c *Config) Read() (err error) {
 		return
 	}
 
-	exec, execOk := c.viper.Get("useClients.execution").(string)
-	cons, consOk := c.viper.Get("useClients.consensus").(string)
-	val, valOk := c.viper.Get("useClients.validator").(string)
-
-	if !execOk || !consOk || !valOk {
-		log.Error(errors.ErrOlderFolderDetected)
-
-		os.Exit(1)
-
-		return
-	}
-
-	c.executionClient = exec
-	c.consensusClient = cons
-	c.validatorClient = val
+	err = c.viper.Unmarshal(&c.configValues)
 
 	return
 }
 
 func (c *Config) Execution() string {
-	return c.executionClient
+	return c.useClients.executionClient
 }
 
 func (c *Config) Consensus() string {
-	return c.consensusClient
+	return c.useClients.consensusClient
 }
 
 func (c *Config) Validator() string {
-	return c.validatorClient
+	return c.useClients.validatorClient
+}
+
+func (c *Config) IPv4() string {
+	ip := c.ipv4
+	if ip == "" {
+		ip = "0.0.0.0"
+	}
+
+	return ip
 }
 
 func LoadLighthouseConfig(path string) (args []string, err error) {
