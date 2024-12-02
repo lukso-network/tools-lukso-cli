@@ -76,6 +76,7 @@ func InitializeDirectory(ctx *cli.Context) error {
 			return utils.Exit(fmt.Sprintf("❌  There was an error while preparing LUKSO configuration: %v", err), 1)
 		}
 
+		log.Infof("⚙️  IPv4 found: %s", ip)
 		log.Infof("✅  LUKSO configuration created under %s", config.Path)
 	}
 
@@ -91,8 +92,6 @@ func setIPInConfigs() (ip string, err error) {
 	if err != nil {
 		return
 	}
-
-	log.Infof("⚙️  IPv4 found: %s", ip)
 
 	type tempConfig struct {
 		path          string
