@@ -62,12 +62,12 @@ type Config struct {
 }
 
 type configValues struct {
-	useClients struct {
-		executionClient string `mapstructure:"execution"`
-		consensusClient string `mapstructure:"consensus"`
-		validatorClient string `mapstructure:"validator"`
+	UseClients struct {
+		ExecutionClient string `mapstructure:"execution"`
+		ConsensusClient string `mapstructure:"consensus"`
+		ValidatorClient string `mapstructure:"validator"`
 	} `mapstructure:"useclients"`
-	ipv4 string `mapstructure:"ipv4"`
+	Ipv4 string `mapstructure:"ipv4"`
 }
 
 // NewConfig creates and initializes viper config instance - it doesn't load config, to load use c.Read().
@@ -170,19 +170,19 @@ func (c *Config) Read() (err error) {
 }
 
 func (c *Config) Execution() string {
-	return c.useClients.executionClient
+	return c.UseClients.ExecutionClient
 }
 
 func (c *Config) Consensus() string {
-	return c.useClients.consensusClient
+	return c.UseClients.ConsensusClient
 }
 
 func (c *Config) Validator() string {
-	return c.useClients.validatorClient
+	return c.UseClients.ValidatorClient
 }
 
 func (c *Config) IPv4() string {
-	ip := c.ipv4
+	ip := c.Ipv4
 	if ip == "" {
 		ip = "0.0.0.0"
 	}
