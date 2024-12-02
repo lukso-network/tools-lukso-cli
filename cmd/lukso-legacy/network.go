@@ -19,7 +19,7 @@ type networkConfig struct {
 	walletPath           string
 }
 
-// selectNetwork accepts a CLI func as an argument, and adjusts all values that need to be changed depending on
+// selectNetworkFor accepts a CLI func as an argument, and adjusts all values that need to be changed depending on
 // network passed as a flag. Works as a wrapper for selecting current working network
 func selectNetworkFor(f func(*cli.Context) error) func(*cli.Context) error {
 	return func(ctx *cli.Context) error {
