@@ -20,8 +20,8 @@ func init() {
 
 	StartFlags = append(StartFlags, GethStartFlags...)
 	StartFlags = append(StartFlags, ErigonStartFlags...)
-	StartFlags = append(StartFlags, BesuStartFlags...)
 	StartFlags = append(StartFlags, NethermindStartFlags...)
+	StartFlags = append(StartFlags, BesuStartFlags...)
 	StartFlags = append(StartFlags, PrysmStartFlags...)
 	StartFlags = append(StartFlags, LighthouseStartFlags...)
 	StartFlags = append(StartFlags, TekuStartFlags...)
@@ -322,7 +322,7 @@ var (
 			Value: configs.MainnetConfig + "/" + configs.GenesisStateFilePath,
 		},
 		&cli.StringFlag{
-			Name:   PrysmChainConfigFileFlag,
+			Name:   ChainConfigFileFlag,
 			Usage:  "Path to chain config file",
 			Value:  configs.MainnetConfig + "/" + configs.ChainConfigYamlPath,
 			Hidden: true,
@@ -380,12 +380,12 @@ var (
 			Value: "",
 		},
 		&cli.StringFlag{
-			Name:  ValidatorConfigFileFlag,
+			Name:  PrysmValidatorConfigFileFlag,
 			Usage: "Path to validator.yaml config file",
 			Value: configs.MainnetConfig + "/" + configs.PrysmValidatorYamlPath,
 		},
 		&cli.StringFlag{
-			Name:   ValidatorChainConfigFileFlag,
+			Name:   PrysmValidatorChainConfigFileFlag,
 			Usage:  "Prysm chain config file path",
 			Value:  configs.ChainConfigYamlPath,
 			Hidden: true,

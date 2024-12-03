@@ -98,8 +98,8 @@ func (l *LighthouseValidatorClient) Start(ctx *cli.Context, args []string) (err 
 }
 
 func (l *LighthouseValidatorClient) PrepareStartFlags(ctx *cli.Context) (startFlags []string, err error) {
-	validatorConfigExists := utils.FlagFileExists(ctx, flags.ValidatorConfigFileFlag)
-	chainConfigExists := utils.FlagFileExists(ctx, flags.PrysmChainConfigFileFlag)
+	validatorConfigExists := utils.FlagFileExists(ctx, flags.PrysmValidatorConfigFileFlag)
+	chainConfigExists := utils.FlagFileExists(ctx, flags.ChainConfigFileFlag)
 	if !validatorConfigExists || !chainConfigExists {
 		err = errors.ErrFlagPathInvalid
 

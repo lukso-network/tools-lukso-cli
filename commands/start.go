@@ -42,7 +42,7 @@ func StartClients(ctx *cli.Context) (err error) {
 	var (
 		selectedNetwork    = "Mainnet"
 		startUnixTimestamp = network.MainnetStartUnixTimestamp
-		networkConfigPath  = ctx.String(flags.PrysmChainConfigFileFlag)
+		networkConfigPath  = ctx.String(flags.ChainConfigFileFlag)
 	)
 
 	if ctx.Bool(flags.TestnetFlag) {

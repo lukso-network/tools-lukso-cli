@@ -106,10 +106,10 @@ lukso-node
 |       |   ├───genesis.ssz                 // Genesis Validator File
 |       |   └───config.yaml                 // Global Client Config
 │       ├───geth                            // Config for Geth Client
-│       ├───prysm                           // Config for Prysm Client
 │       ├───erigon                          // Config for Erigon Client
 │       ├───nethermind                      // Config for Nethermind Client
 │       ├───besu                            // Config for Besu Client
+│       ├───prysm                           // Config for Prysm Client
 │       ├───teku                            // Config for Teku Client
 │       ├───nimbus2                         // Config for Nimbus (eth-2) Client
 │       └───lighthouse                      // Config for Lighthouse Client
@@ -377,13 +377,13 @@ Please note that this won't affect your node in any way.
 | --nimbus2-validator-config [string]  | Defines the path to nimbus validator TOML config file                                                                                                 |
 | --validator-config [string]          | Defines the path to validator YAML config file                                                                                                        |
 | --geth-[command]                     | The `command` will be passed to the Geth client. [See the client docs for details](https://geth.ethereum.org/docs/fundamentals/command-line-options)  |
-| --prysm-[command]                    | The `command` will be passed to the Prysm client. [See the client docs for details](https://docs.prylabs.network/docs/prysm-usage/parameters)         |
-| --lighhouse-[command]                | The `command` will be passed to the Lighthouse client. [See the client docs for details](https://lighthouse-book.sigmaprime.io/advanced-datadir.html) |
-| --erigon-[command]                   | The `command` will be passed to the Erigon client. [See the client docs for details](https://github.com/erigontech/erigon)                            |
-| --teku-[command]                     | The `command` will be passed to the Teku client. [See the client docs for details](https://github.com/Consensys/teku)                                 |
-| --besu-[command]                     | The `command` will be passed to the Besu client. [See the client docs for details](https://github.com/hyperledger/besu)                               |
+| --erigon-[command]                   | The `command` will be passed to the Erigon client. [See the client docs for details](https://github.com/erigontech/erigon)                           |
 | --nethermind-[command]               | The `command` will be passed to the Nethermind client. [See the client docs for details](https://github.com/NethermindEth/nethermind)                 |
-| --nimbus2-[command]                  | The `command` will be passed to the Nethermind client. [See the client docs for details](https://nimbus.guide/index.html)                             |
+| --besu-[command]                     | The `command` will be passed to the Besu client. [See the client docs for details](https://github.com/hyperledger/besu)                               |
+| --prysm-[command]                    | The `command` will be passed to the Prysm client. [See the client docs for details](https://docs.prylabs.network/docs/prysm-usage/parameters)         |
+| --lighthouse-[command]               | The `command` will be passed to the Lighthouse client. [See the client docs for details](https://lighthouse-book.sigmaprime.io/advanced-datadir.html) |
+| --teku-[command]                     | The `command` will be passed to the Teku client. [See the client docs for details](https://github.com/ledgerwatch/erigon)                             |
+| --nimbus2-[command]                  | The `command` will be passed to the Nimbus-eth2 client. [See the client docs for details](https://nimbus.guide/index.html)                            |
 | --checkpoint-sync                    | Run a node with checkpoint sync feature                                                                                                               |
 
 ### `stop`

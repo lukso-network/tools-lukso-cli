@@ -120,8 +120,8 @@ const (
 
 	GethTomlPath                        = "geth/geth.toml"
 	ErigonTomlPath                      = "erigon/erigon.toml"
-	BesuTomlPath                        = "besu/besu.toml"
 	NethermindJsonPath                  = "nethermind/nethermind.json"
+	BesuTomlPath                        = "besu/besu.toml"
 	PrysmYamlPath                       = "prysm/prysm.yaml"
 	LighthouseTomlPath                  = "lighthouse/lighthouse.toml"
 	TekuYamlPath                        = "teku/teku.yaml"

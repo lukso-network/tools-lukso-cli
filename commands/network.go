@@ -88,7 +88,7 @@ func updateValues(ctx *cli.Context, config networkConfig) (err error) {
 		tekuYamlPath                = config.configPath + "/" + configs.TekuYamlPath
 		nimbus2Path                 = config.configPath + "/" + configs.Nimbus2Path
 		nimbus2TomlPath             = config.configPath + "/" + configs.Nimbus2TomlPath
-		validatorYamlPath           = config.configPath + "/" + configs.PrysmValidatorYamlPath
+		prysmValidatorYamlPath      = config.configPath + "/" + configs.PrysmValidatorYamlPath
 		lighthouseValidatorTomlPath = config.configPath + "/" + configs.LighthouseValidatorTomlPath
 		tekuValidatorYamlPath       = config.configPath + "/" + configs.TekuValidatorYamlPath
 		nimbus2ValidatorTomlPath    = config.configPath + "/" + configs.Nimbus2ValidatorTomlPath
@@ -113,20 +113,20 @@ func updateValues(ctx *cli.Context, config networkConfig) (err error) {
 		flags.ValidatorKeysFlag:                 config.keysPath,
 		flags.GethConfigFileFlag:                gethTomlPath,
 		flags.ErigonConfigFileFlag:              erigonTomlPath,
-		flags.BesuConfigFileFlag:                besuTomlPath,
 		flags.NethermindConfigFileFlag:          nethermindJsonPath,
+		flags.BesuConfigFileFlag:                besuTomlPath,
 		flags.PrysmConfigFileFlag:               prysmYamlPath,
 		flags.LighthouseConfigFileFlag:          lighthouseTomlPath,
 		flags.TekuConfigFileFlag:                tekuYamlPath,
 		flags.Nimbus2NetworkFlag:                nimbus2Path,
 		flags.Nimbus2ConfigFileFlag:             nimbus2TomlPath,
-		flags.ValidatorConfigFileFlag:           validatorYamlPath,
+		flags.PrysmValidatorConfigFileFlag:      prysmValidatorYamlPath,
 		flags.LighthouseValidatorConfigFileFlag: lighthouseValidatorTomlPath,
 		flags.TekuValidatorConfigFileFlag:       tekuValidatorYamlPath,
 		flags.Nimbus2ValidatorConfigFileFlag:    nimbus2ValidatorTomlPath,
 		flags.GenesisJsonFlag:                   genesisJson,
-		flags.PrysmChainConfigFileFlag:          configYamlPath,
-		flags.ValidatorChainConfigFileFlag:      configYamlPath,
+		flags.ChainConfigFileFlag:               configYamlPath,
+		flags.PrysmValidatorChainConfigFileFlag: configYamlPath,
 		flags.GenesisStateFlag:                  genesisStatePath,
 		flags.ValidatorWalletDirFlag:            config.walletPath,
 		flags.TestnetDirFlag:                    config.testnetDirPath,

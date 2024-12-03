@@ -33,8 +33,8 @@ const (
 	// Execution
 	gethDependencyName       = "Geth"
 	erigonDependencyName     = "Erigon"
-	besuDependencyName       = "Besu"
 	nethermindDependencyName = "Nethermind"
+	besuDependencyName       = "Besu"
 	// Consensus
 	prysmDependencyName      = "Prysm"
 	lighthouseDependencyName = "Lighthouse"
@@ -47,11 +47,11 @@ const (
 	nimbus2ValidatorDependencyName    = "Nimbus2 Validator"
 
 	gethGithubLocation          = "ethereum/go-ethereum"
-	besuGithubLocation          = "hyperledger/besu"
+	erigonGithubLocation        = "erigontech/erigon"
 	nethermindGithubLocation    = "NethermindEth/nethermind"
+	besuGithubLocation          = "hyperledger/besu"
 	prysmaticLabsGithubLocation = "prysmaticlabs/prysm"
 	lighthouseGithubLocation    = "sigp/lighthouse"
-	erigonGithubLocation        = "erigontech/erigon"
 	tekuGithubLocation          = "Consensys/teku"
 	nimbus2GithubLocation       = "status-im/nimbus-eth2"
 
@@ -72,8 +72,8 @@ var (
 	AllClients = map[string]ClientBinaryDependency{
 		gethDependencyName:                Geth,
 		erigonDependencyName:              Erigon,
-		besuDependencyName:                Besu,
 		nethermindDependencyName:          Nethermind,
+		besuDependencyName:                Besu,
 		prysmDependencyName:               Prysm,
 		lighthouseDependencyName:          Lighthouse,
 		tekuDependencyName:                Teku,
@@ -87,8 +87,8 @@ var (
 	ClientVersions = map[string]string{
 		gethDependencyName:                common.GethTag,
 		erigonDependencyName:              common.ErigonTag,
-		besuDependencyName:                common.BesuTag,
 		nethermindDependencyName:          common.NethermindTag,
+		besuDependencyName:                common.BesuTag,
 		prysmDependencyName:               common.PrysmTag,
 		lighthouseDependencyName:          common.LighthouseTag,
 		tekuDependencyName:                common.TekuTag,
@@ -101,8 +101,8 @@ var (
 	AllClientNames = []string{
 		gethDependencyName,
 		erigonDependencyName,
-		besuDependencyName,
 		nethermindDependencyName,
+		besuDependencyName,
 		prysmDependencyName,
 		lighthouseDependencyName,
 		lighthouseValidatorDependencyName,
@@ -432,7 +432,7 @@ func (client *clientBinary) ParseUserFlags(ctx *cli.Context) (startFlags []strin
 		flags.ValidatorFlag,
 		flags.GethConfigFileFlag,
 		flags.PrysmConfigFileFlag,
-		flags.ValidatorConfigFileFlag,
+		flags.PrysmValidatorConfigFileFlag,
 		flags.ValidatorWalletPasswordFileFlag,
 	}
 
