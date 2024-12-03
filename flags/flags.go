@@ -30,7 +30,6 @@ func init() {
 	StartFlags = append(StartFlags, DatadirFlags...)
 	StartFlags = append(StartFlags, NetworkFlags...)
 
-	ResetFlags = append(ResetFlags, DatadirFlags...)
 	ResetFlags = append(ResetFlags, NetworkFlags...)
 
 	ExecutionLogsFlags = append(ExecutionLogsFlags, NetworkFlags...)
@@ -383,12 +382,6 @@ var (
 			Name:  PrysmValidatorConfigFileFlag,
 			Usage: "Path to validator.yaml config file",
 			Value: configs.MainnetConfig + "/" + configs.PrysmValidatorYamlPath,
-		},
-		&cli.StringFlag{
-			Name:   PrysmValidatorChainConfigFileFlag,
-			Usage:  "Prysm chain config file path",
-			Value:  configs.ChainConfigYamlPath,
-			Hidden: true,
 		},
 	}
 	ValidatorLogsFlags = []cli.Flag{

@@ -77,8 +77,8 @@ func (p *PrysmValidatorClient) PrepareStartFlags(ctx *cli.Context) (startFlags [
 	if ctx.String(flags.ValidatorWalletPasswordFileFlag) != "" {
 		startFlags = append(startFlags, fmt.Sprintf("--wallet-password-file=%s", ctx.String(flags.ValidatorWalletPasswordFileFlag)))
 	}
-	if ctx.String(flags.PrysmValidatorChainConfigFileFlag) != "" {
-		startFlags = append(startFlags, fmt.Sprintf("--chain-config-file=%s", ctx.String(flags.PrysmValidatorChainConfigFileFlag)))
+	if ctx.String(flags.ChainConfigFileFlag) != "" {
+		startFlags = append(startFlags, fmt.Sprintf("--chain-config-file=%s", ctx.String(flags.ChainConfigFileFlag)))
 	}
 	return
 }
