@@ -370,12 +370,6 @@ var (
 	}
 	ValidatorStartFlags = []cli.Flag{
 		&cli.StringFlag{
-			Name:   ValidatorDatadirFlag,
-			Usage:  "Validator datadir",
-			Value:  configs.ValidatorMainnetDatadir,
-			Hidden: true,
-		},
-		&cli.StringFlag{
 			Name:  ValidatorKeysFlag,
 			Usage: "Location of generated wallet",
 			Value: configs.MainnetKeystore,
@@ -388,7 +382,7 @@ var (
 		&cli.StringFlag{
 			Name:  ValidatorConfigFileFlag,
 			Usage: "Path to validator.yaml config file",
-			Value: configs.MainnetConfig + "/" + configs.ValidatorYamlPath,
+			Value: configs.MainnetConfig + "/" + configs.PrysmValidatorYamlPath,
 		},
 		&cli.StringFlag{
 			Name:   ValidatorChainConfigFileFlag,

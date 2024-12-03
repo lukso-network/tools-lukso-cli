@@ -72,45 +72,45 @@ var (
 	AllClients = map[string]ClientBinaryDependency{
 		gethDependencyName:                Geth,
 		erigonDependencyName:              Erigon,
+		besuDependencyName:                Besu,
+		nethermindDependencyName:          Nethermind,
 		prysmDependencyName:               Prysm,
 		lighthouseDependencyName:          Lighthouse,
+		tekuDependencyName:                Teku,
+		nimbus2DependencyName:             Nimbus2,
 		prysmValidatorDependencyName:      PrysmValidator,
 		lighthouseValidatorDependencyName: LighthouseValidator,
-		tekuDependencyName:                Teku,
 		tekuValidatorDependencyName:       TekuValidator,
-		nethermindDependencyName:          Nethermind,
-		besuDependencyName:                Besu,
-		nimbus2DependencyName:             Nimbus2,
 		nimbus2ValidatorDependencyName:    Nimbus2Validator,
 	}
 
 	ClientVersions = map[string]string{
 		gethDependencyName:                common.GethTag,
 		erigonDependencyName:              common.ErigonTag,
+		besuDependencyName:                common.BesuTag,
 		nethermindDependencyName:          common.NethermindTag,
 		prysmDependencyName:               common.PrysmTag,
 		lighthouseDependencyName:          common.LighthouseTag,
+		tekuDependencyName:                common.TekuTag,
+		nimbus2DependencyName:             common.Nimbus2Tag,
 		prysmValidatorDependencyName:      common.PrysmTag,
 		lighthouseValidatorDependencyName: common.LighthouseTag,
-		tekuDependencyName:                common.TekuTag,
-		besuDependencyName:                common.BesuTag,
-		nimbus2DependencyName:             common.Nimbus2Tag,
 	}
 
 	// for ordered actions
 	AllClientNames = []string{
 		gethDependencyName,
 		erigonDependencyName,
-		nethermindDependencyName,
 		besuDependencyName,
+		nethermindDependencyName,
 		prysmDependencyName,
-		prysmValidatorDependencyName,
 		lighthouseDependencyName,
 		lighthouseValidatorDependencyName,
 		tekuDependencyName,
 		tekuValidatorDependencyName,
 		nimbus2DependencyName,
 		nimbus2ValidatorDependencyName,
+		prysmValidatorDependencyName,
 	}
 )
 
