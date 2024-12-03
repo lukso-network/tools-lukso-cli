@@ -126,7 +126,6 @@ func updateValues(ctx *cli.Context, config networkConfig) (err error) {
 		flags.Nimbus2ValidatorConfigFileFlag:    nimbus2ValidatorTomlPath,
 		flags.GenesisJsonFlag:                   genesisJson,
 		flags.ChainConfigFileFlag:               configYamlPath,
-		flags.PrysmValidatorChainConfigFileFlag: configYamlPath,
 		flags.GenesisStateFlag:                  genesisStatePath,
 		flags.ValidatorWalletDirFlag:            config.walletPath,
 		flags.TestnetDirFlag:                    config.testnetDirPath,

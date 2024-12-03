@@ -25,11 +25,10 @@ const (
 	NethermindConfigFileFlag = "nethermind-config"
 
 	// Prysm
-	PrysmTagFlag                      = "prysm-tag"
-	PrysmConfigFileFlag               = "prysm-config"
-	PrysmValidatorConfigFileFlag      = "prysm-validator-config"
-	PrysmValidatorChainConfigFileFlag = "prysm-validator-chain-config"
-	NoSlasherFlag                     = "no-slasher"
+	PrysmTagFlag                 = "prysm-tag"
+	PrysmConfigFileFlag          = "prysm-config"
+	PrysmValidatorConfigFileFlag = "prysm-validator-config"
+	NoSlasherFlag                = "no-slasher"
 
 	// Lighthouse
 	LighthouseTagFlag                 = "lighthouse-tag"
