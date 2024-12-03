@@ -1,65 +1,70 @@
 package flags
 
 const (
+	// Network
+	GenesisStateFlag = "genesis-ssz"
+	GenesisJsonFlag  = "genesis-json"
+
+	// Geth
 	GethTagFlag        = "geth-tag"
 	GethCommitHashFlag = "geth-commit-hash"
-	GethDatadirFlag    = "geth-datadir"
 	GethConfigFileFlag = "geth-config"
-	GenesisJsonFlag    = "genesis-json"
 
+	// Erigon
 	ErigonTagFlag        = "erigon-tag"
 	ErigonConfigFileFlag = "erigon-config"
-	ErigonDatadirFlag    = "erigon-datadir"
 
+	// Besu
+	BesuTagFlag        = "besu-tag"
+	BesuConfigFileFlag = "besu-config"
+
+	// Nethermind
 	NethermindTagFlag        = "nethermind-tag"
 	NethermindCommitHashFlag = "nethermind-commit-hash"
 	NethermindConfigFileFlag = "nethermind-config"
-	NethermindDatadirFlag    = "nethermind-datadir"
 
-	BesuTagFlag        = "besu-tag"
-	BesuConfigFileFlag = "besu-config"
-	BesuDatadirFlag    = "besu-datadir"
-
+	// Prysm
 	PrysmTagFlag             = "prysm-tag"
-	GenesisStateFlag         = "genesis-ssz"
 	PrysmChainConfigFileFlag = "prysm-chain-config"
 	PrysmConfigFileFlag      = "prysm-config"
-	PrysmDatadirFlag         = "prysm-datadir"
 	NoSlasherFlag            = "no-slasher"
 
+	// Lighthouse
 	LighthouseTagFlag                 = "lighthouse-tag"
 	LighthouseConfigFileFlag          = "lighthouse-config"
 	LighthouseValidatorConfigFileFlag = "lighthouse-validator-config"
-	LighthouseDatadirFlag             = "lighthouse-datadir"
 	TestnetDirFlag                    = "testnet-dir"
 
+	// Teku
+	TekuTagFlag                 = "teku-tag"
+	TekuConfigFileFlag          = "teku-config"
+	TekuValidatorConfigFileFlag = "teku-validator-config"
+
+	// Nimbus-eth2
+	Nimbus2TagFlag                 = "nimbus2-tag"
+	Nimbus2CommitHashFlag          = "nimbus2-commit-hash"
+	Nimbus2NetworkFlag             = "nimbus2-network"
+	Nimbus2ConfigFileFlag          = "nimbus2-config"
+	Nimbus2ValidatorConfigFileFlag = "nimbus2-validator-config"
+
+	// Validator
 	ValidatorTagFlag                = "validator-tag"
-	ValidatorDatadirFlag            = "validator-datadir"
 	ValidatorWalletPasswordFileFlag = "validator-wallet-password"
 	ValidatorWalletDirFlag          = "validator-wallet-dir"
 	ValidatorConfigFileFlag         = "validator-config"
 	ValidatorChainConfigFileFlag    = "validator-chain-config"
 
-	TekuTagFlag                 = "teku-tag"
-	TekuDatadirFlag             = "teku-datadir"
-	TekuConfigFileFlag          = "teku-config"
-	TekuValidatorConfigFileFlag = "teku-validator-config"
-
-	Nimbus2TagFlag                 = "nimbus2-tag"
-	Nimbus2CommitHashFlag          = "nimbus2-commit-hash"
-	Nimbus2NetworkFlag             = "nimbus2-network"
-	Nimbus2DatadirFlag             = "nimbus2-datadir"
-	Nimbus2ConfigFileFlag          = "nimbus2-config"
-	Nimbus2ValidatorConfigFileFlag = "nimbus2-validator-config"
-
+	// Node folder
 	MainnetFlag   = "mainnet"
 	TestnetFlag   = "testnet"
-	DevnetFlag    = "devnet"
 	ValidatorFlag = "validator"
 	ConsensusFlag = "consensus"
 	ExecutionFlag = "execution"
 
-	LogFolderFlag = "logs-folder"
+	LogFolderFlag        = "logs-folder"
+	ExecutionDatadirFlag = "execution-datadir"
+	ConsensusDatadirFlag = "consensus-datadir"
+	ValidatorDatadirFlag = "validator-datadir"
 
 	ValidatorKeysFlag           = "validator-keys"
 	ValidatorPasswordFlag       = "validator-password"
@@ -70,6 +75,8 @@ const (
 	AgreeTermsFlag              = "agree-terms"
 	AllFlag                     = "all"
 
+	// Misc.
+	// Status host:port
 	ExecutionClientHost = "execution-client-host"
 	ConsensusClientHost = "consensus-client-host"
 	ValidatorClientHost = "validator-client-host"

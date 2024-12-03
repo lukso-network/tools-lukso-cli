@@ -150,7 +150,7 @@ func (n *Nimbus2Client) Start(ctx *cli.Context, arguments []string) (err error) 
 		args := []string{
 			"trustedNodeSync",
 			fmt.Sprintf("--trusted-node-url=%s", checkpointURL),
-			fmt.Sprintf("--data-dir=%s", ctx.String(flags.Nimbus2DatadirFlag)),
+			fmt.Sprintf("--data-dir=%s", ctx.String(flags.ConsensusDatadirFlag)),
 			fmt.Sprintf("--network=%s", ctx.String(flags.Nimbus2NetworkFlag)),
 		}
 

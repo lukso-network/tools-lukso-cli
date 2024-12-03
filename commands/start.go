@@ -77,7 +77,7 @@ func StartClients(ctx *cli.Context) (err error) {
 		return utils.Exit(fmt.Sprintf("❌  There was an error while preparing %s flags: %v", consensusClient.Name(), err), 1)
 	}
 
-	if ctx.Bool(flags.CheckpointSyncFlag) && !ctx.Bool(flags.DevnetFlag) {
+	if ctx.Bool(flags.CheckpointSyncFlag) {
 		log.Info("⚙️   Checkpoint sync feature enabled")
 
 		network := "mainnet"
@@ -98,9 +98,6 @@ func StartClients(ctx *cli.Context) (err error) {
 		default:
 			log.Warnf("️⚠️  Checkpoint sync not configured for %s: continuing without checkpoint sync", consensusClient.Name())
 		}
-	}
-	if ctx.Bool(flags.DevnetFlag) {
-		log.Info("️️⚠️  This network doesn't have a checkpoint sync setup, starting without checkpoint sync...")
 	}
 
 	err = executionClient.Start(ctx, execArgs)

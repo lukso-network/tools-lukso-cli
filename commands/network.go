@@ -39,12 +39,6 @@ func SelectNetworkFor(f func(*cli.Context) error) func(*cli.Context) error {
 		}
 
 		testnetEnabled := ctx.Bool(flags.TestnetFlag)
-		devnetEnabled := ctx.Bool(flags.DevnetFlag)
-
-		enabledCount := utils.BoolToInt(testnetEnabled) + utils.BoolToInt(devnetEnabled)
-		if enabledCount > 1 {
-			return errors.ErrMoreNetworksSelected
-		}
 
 		var cfg networkConfig
 
@@ -57,10 +51,6 @@ func SelectNetworkFor(f func(*cli.Context) error) func(*cli.Context) error {
 			keysPath:             configs.MainnetKeystore,
 			walletPath:           configs.MainnetKeystore,
 			testnetDirPath:       configs.MainnetConfig + "/shared",
-		}
-
-		if devnetEnabled {
-			return utils.Exit("❌  Network not supported", 1)
 		}
 
 		if testnetEnabled {
@@ -88,21 +78,20 @@ func SelectNetworkFor(f func(*cli.Context) error) func(*cli.Context) error {
 // updateValues is responsible for overriding values for data and logs directories etc.
 func updateValues(ctx *cli.Context, config networkConfig) (err error) {
 	var (
-		// genesisJson  = config.configPath + "/" + genesisJsonPath
+		genesisJson                 = config.configPath + "/" + configs.GenesisJsonPath
 		gethTomlPath                = config.configPath + "/" + configs.GethTomlPath
 		erigonTomlPath              = config.configPath + "/" + configs.ErigonTomlPath
 		nethermindJsonPath          = config.configPath + "/" + configs.NethermindJsonPath
 		besuTomlPath                = config.configPath + "/" + configs.BesuTomlPath
 		prysmYamlPath               = config.configPath + "/" + configs.PrysmYamlPath
 		lighthouseTomlPath          = config.configPath + "/" + configs.LighthouseTomlPath
-		lighthouseValidatorTomlPath = config.configPath + "/" + configs.LighthouseValidatorTomlPath
-		validatorYamlPath           = config.configPath + "/" + configs.ValidatorYamlPath
 		tekuYamlPath                = config.configPath + "/" + configs.TekuYamlPath
-		tekuValidatorYamlPath       = config.configPath + "/" + configs.TekuValidatorYamlPath
 		nimbus2Path                 = config.configPath + "/" + configs.Nimbus2Path
 		nimbus2TomlPath             = config.configPath + "/" + configs.Nimbus2TomlPath
+		validatorYamlPath           = config.configPath + "/" + configs.ValidatorYamlPath
+		lighthouseValidatorTomlPath = config.configPath + "/" + configs.LighthouseValidatorTomlPath
+		tekuValidatorYamlPath       = config.configPath + "/" + configs.TekuValidatorYamlPath
 		nimbus2ValidatorTomlPath    = config.configPath + "/" + configs.Nimbus2ValidatorTomlPath
-		gethGenesisPath             = config.configPath + "/" + configs.GenesisJsonPath
 		genesisStatePath            = config.configPath + "/" + configs.GenesisStateFilePath
 		configYamlPath              = config.configPath + "/" + configs.ChainConfigYamlPath
 	)
@@ -117,31 +106,25 @@ func updateValues(ctx *cli.Context, config networkConfig) (err error) {
 
 	// varyingFlags represents list of all flags that can be affected by selecting network and values that may be replaced
 	varyingFlags := map[string]string{
-		flags.GethDatadirFlag:                   config.executionDatadirPath,
-		flags.ErigonDatadirFlag:                 config.executionDatadirPath,
-		flags.PrysmDatadirFlag:                  config.consensusDatadirPath,
+		flags.ExecutionDatadirFlag:              config.executionDatadirPath,
+		flags.ConsensusDatadirFlag:              config.consensusDatadirPath,
 		flags.ValidatorDatadirFlag:              config.validatorDatadirPath,
-		flags.LighthouseDatadirFlag:             config.consensusDatadirPath,
-		flags.NethermindDatadirFlag:             config.executionDatadirPath,
-		flags.Nimbus2DatadirFlag:                config.consensusDatadirPath,
-		flags.BesuDatadirFlag:                   config.executionDatadirPath,
-		flags.TekuDatadirFlag:                   config.consensusDatadirPath,
 		flags.LogFolderFlag:                     config.logPath,
 		flags.ValidatorKeysFlag:                 config.keysPath,
 		flags.GethConfigFileFlag:                gethTomlPath,
 		flags.ErigonConfigFileFlag:              erigonTomlPath,
-		flags.NethermindConfigFileFlag:          nethermindJsonPath,
 		flags.BesuConfigFileFlag:                besuTomlPath,
+		flags.NethermindConfigFileFlag:          nethermindJsonPath,
 		flags.PrysmConfigFileFlag:               prysmYamlPath,
 		flags.LighthouseConfigFileFlag:          lighthouseTomlPath,
-		flags.LighthouseValidatorConfigFileFlag: lighthouseValidatorTomlPath,
-		flags.ValidatorConfigFileFlag:           validatorYamlPath,
 		flags.TekuConfigFileFlag:                tekuYamlPath,
-		flags.TekuValidatorConfigFileFlag:       tekuValidatorYamlPath,
 		flags.Nimbus2NetworkFlag:                nimbus2Path,
 		flags.Nimbus2ConfigFileFlag:             nimbus2TomlPath,
+		flags.ValidatorConfigFileFlag:           validatorYamlPath,
+		flags.LighthouseValidatorConfigFileFlag: lighthouseValidatorTomlPath,
+		flags.TekuValidatorConfigFileFlag:       tekuValidatorYamlPath,
 		flags.Nimbus2ValidatorConfigFileFlag:    nimbus2ValidatorTomlPath,
-		flags.GenesisJsonFlag:                   gethGenesisPath,
+		flags.GenesisJsonFlag:                   genesisJson,
 		flags.PrysmChainConfigFileFlag:          configYamlPath,
 		flags.ValidatorChainConfigFileFlag:      configYamlPath,
 		flags.GenesisStateFlag:                  genesisStatePath,

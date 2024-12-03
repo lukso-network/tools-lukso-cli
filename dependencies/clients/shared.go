@@ -30,26 +30,29 @@ import (
 )
 
 const (
-	gethDependencyName                = "Geth"
-	prysmDependencyName               = "Prysm"
+	// Execution
+	gethDependencyName       = "Geth"
+	erigonDependencyName     = "Erigon"
+	besuDependencyName       = "Besu"
+	nethermindDependencyName = "Nethermind"
+	// Consensus
+	prysmDependencyName      = "Prysm"
+	lighthouseDependencyName = "Lighthouse"
+	tekuDependencyName       = "Teku"
+	nimbus2DependencyName    = "Nimbus2"
+	// Validators
 	prysmValidatorDependencyName      = "Prysm Validator"
-	lighthouseDependencyName          = "Lighthouse"
 	lighthouseValidatorDependencyName = "Lighthouse Validator"
-	erigonDependencyName              = "Erigon"
-	tekuDependencyName                = "Teku"
 	tekuValidatorDependencyName       = "Teku Validator"
-	nethermindDependencyName          = "Nethermind"
-	besuDependencyName                = "Besu"
-	nimbus2DependencyName             = "Nimbus2"
 	nimbus2ValidatorDependencyName    = "Nimbus2 Validator"
 
 	gethGithubLocation          = "ethereum/go-ethereum"
+	besuGithubLocation          = "hyperledger/besu"
+	nethermindGithubLocation    = "NethermindEth/nethermind"
 	prysmaticLabsGithubLocation = "prysmaticlabs/prysm"
 	lighthouseGithubLocation    = "sigp/lighthouse"
 	erigonGithubLocation        = "erigontech/erigon"
 	tekuGithubLocation          = "Consensys/teku"
-	nethermindGithubLocation    = "NethermindEth/nethermind"
-	besuGithubLocation          = "hyperledger/besu"
 	nimbus2GithubLocation       = "status-im/nimbus-eth2"
 
 	peerDirectionInbound  = "inbound"
@@ -373,56 +376,7 @@ func initClient(ctx *cli.Context, client ClientBinaryDependency) (err error) {
 	}
 
 	if !utils.FileExists(ctx.String(flags.GenesisJsonFlag)) {
-		if ctx.Bool(flags.TestnetFlag) || ctx.Bool(flags.DevnetFlag) {
-			return errors.ErrGenesisNotFound
-		}
-
-		message := `Choose your preferred initial LYX supply!
-If you are a Genesis Validator, we recommend to choose the supply, which the majority of the Genesis Validators would choose,
-to prevent your node from running on a network that can not finalize due to missing validators!
-🗳️ See the voting results at https://deposit.mainnet.lukso.network
-
-For more information read:
-👉 https://medium.com/lukso/genesis-validators-deposit-smart-contract-freeze-and-testnet-launch-c5f7b568b1fc
-
-Which initial LYX supply do you choose?
-1: 35M LYX
-2: 42M LYX
-3: 100M LYX
-> `
-		var input string
-		for input != "1" && input != "2" && input != "3" {
-			input = utils.RegisterInputWithMessage(message)
-			switch input {
-			case "1":
-				err = ctx.Set(flags.GenesisJsonFlag, configs.MainnetConfig+"/"+configs.Genesis35JsonPath)
-				if err != nil {
-					return
-				}
-				err = ctx.Set(flags.GenesisStateFlag, configs.MainnetConfig+"/"+configs.GenesisState35FilePath)
-
-			case "2":
-				err = ctx.Set(flags.GenesisJsonFlag, configs.MainnetConfig+"/"+configs.Genesis42JsonPath)
-				if err != nil {
-					return
-				}
-				err = ctx.Set(flags.GenesisStateFlag, configs.MainnetConfig+"/"+configs.GenesisState42FilePath)
-
-			case "3":
-				err = ctx.Set(flags.GenesisJsonFlag, configs.MainnetConfig+"/"+configs.Genesis100JsonPath)
-				if err != nil {
-					return
-				}
-				err = ctx.Set(flags.GenesisStateFlag, configs.MainnetConfig+"/"+configs.GenesisState100FilePath)
-
-			default:
-				log.Warn("Please select a valid option\n\n")
-			}
-
-			if err != nil {
-				return
-			}
-		}
+		return errors.ErrGenesisNotFound
 	}
 
 	var (
@@ -450,10 +404,10 @@ Which initial LYX supply do you choose?
 func (client *clientBinary) ParseUrl(tag, commitHash string) (url string) {
 	url = client.baseUrl
 
-	url = strings.Replace(url, "|TAG|", tag, -1)
-	url = strings.Replace(url, "|OS|", system.Os, -1)
-	url = strings.Replace(url, "|COMMIT|", commitHash, -1)
-	url = strings.Replace(url, "|ARCH|", system.Arch, -1)
+	url = strings.ReplaceAll(url, "|TAG|", tag)
+	url = strings.ReplaceAll(url, "|OS|", system.Os)
+	url = strings.ReplaceAll(url, "|COMMIT|", commitHash)
+	url = strings.ReplaceAll(url, "|ARCH|", system.Arch)
 
 	return
 }

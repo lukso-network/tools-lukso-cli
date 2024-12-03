@@ -25,22 +25,16 @@ const (
 	ValidatorLayer = "validator"
 
 	// genesis file names
-	mainnetGenesisDependencyName    = "mainnet genesis"
-	testnetGenesisDependencyName    = "testnet genesis"
-	mainnetGenesis35DependencyName  = "mainnet genesis (35M)"
-	mainnetGenesis42DependencyName  = "mainnet genesis (42M)"
-	mainnetGenesis100DependencyName = "mainnet genesis (100M)"
+	mainnetGenesisDependencyName = "mainnet genesis"
+	testnetGenesisDependencyName = "testnet genesis"
 
 	// nethermind chainspec
 	mainnetGenesisChainspecDependencyName = "mainnet genesis chainspec"
 	testnetGenesisChainspecDependencyName = "testnet genesis chainspec"
 
 	// genesis state file names
-	mainnetGenesisStateDependencyName    = "mainnet genesis state"
-	testnetGenesisStateDependencyName    = "testnet genesis state"
-	mainnetGenesisState35DependencyName  = "mainnet genesis state (35M)"
-	mainnetGenesisState42DependencyName  = "mainnet genesis state (42M)"
-	mainnetGenesisState100DependencyName = "mainnet genesis state (100M)"
+	mainnetGenesisStateDependencyName = "mainnet genesis state"
+	testnetGenesisStateDependencyName = "testnet genesis state"
 
 	// chain configurations
 	mainnetChainConfigDependencyName = "mainnet chain config"
@@ -95,16 +89,8 @@ const (
 	nimbus2ValidatorTestnetConfigDependencyName    = "nimbus2 validator testnet config"
 
 	// PATHS
-	GenesisJsonPath    = "shared/genesis.json"
-	Genesis35JsonPath  = "shared/genesis_35.json"
-	Genesis42JsonPath  = "shared/genesis_42.json"
-	Genesis100JsonPath = "shared/genesis_100.json"
-
-	GenesisStateFilePath    = "shared/genesis.ssz"
-	GenesisState35FilePath  = "shared/genesis_35.ssz"
-	GenesisState42FilePath  = "shared/genesis_42.ssz"
-	GenesisState100FilePath = "shared/genesis_100.ssz"
-
+	GenesisJsonPath      = "shared/genesis.json"
+	GenesisStateFilePath = "shared/genesis.ssz"
 	GenesisChainspecPath = "nethermind/chainspec.json"
 
 	MainnetConfig = ConfigRootDir + "/mainnet"
@@ -217,21 +203,23 @@ var (
 	}
 	UpdateConfigDependencies = map[string]ClientConfigDependency{
 		// copied existing configs
+		// mainnet
 		mainnetGenesisDependencyName:                    SharedConfigDependencies[mainnetGenesisDependencyName],
 		mainnetGenesisStateDependencyName:               SharedConfigDependencies[mainnetGenesisStateDependencyName],
 		mainnetChainConfigDependencyName:                SharedConfigDependencies[mainnetChainConfigDependencyName],
 		mainnetGenesisChainspecDependencyName:           SharedConfigDependencies[mainnetGenesisChainspecDependencyName],
 		deployBlockMainnetConfigDependencyName:          SharedConfigDependencies[deployBlockMainnetConfigDependencyName],
 		depositContractBlockMainnetConfigDependencyName: SharedConfigDependencies[depositContractBlockMainnetConfigDependencyName],
+		tekuMainnetChainConfigDependencyName:            TekuConfigDependencies[tekuMainnetChainConfigDependencyName],
+		nimbus2MainnetChainConfigDependencyName:         Nimbus2ConfigDependencies[nimbus2MainnetChainConfigDependencyName],
+		// testnet
 		testnetGenesisDependencyName:                    SharedConfigDependencies[testnetGenesisDependencyName],
 		testnetGenesisStateDependencyName:               SharedConfigDependencies[testnetGenesisStateDependencyName],
 		testnetChainConfigDependencyName:                SharedConfigDependencies[testnetChainConfigDependencyName],
 		testnetGenesisChainspecDependencyName:           SharedConfigDependencies[testnetGenesisChainspecDependencyName],
 		deployBlockTestnetConfigDependencyName:          SharedConfigDependencies[deployBlockTestnetConfigDependencyName],
 		depositContractBlockTestnetConfigDependencyName: SharedConfigDependencies[depositContractBlockTestnetConfigDependencyName],
-		tekuMainnetChainConfigDependencyName:            TekuConfigDependencies[tekuMainnetChainConfigDependencyName],
 		tekuTestnetChainConfigDependencyName:            TekuConfigDependencies[tekuTestnetChainConfigDependencyName],
-		nimbus2MainnetChainConfigDependencyName:         Nimbus2ConfigDependencies[nimbus2MainnetChainConfigDependencyName],
 		nimbus2TestnetChainConfigDependencyName:         Nimbus2ConfigDependencies[nimbus2TestnetChainConfigDependencyName],
 	}
 )
