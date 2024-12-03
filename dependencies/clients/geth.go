@@ -67,9 +67,11 @@ func (g *GethClient) PrepareStartFlags(ctx *cli.Context) (startFlags []string, e
 		return
 	}
 
+	ip := ctx.Context.Value(common.ConfigKey("ip"))
+
 	startFlags = g.ParseUserFlags(ctx)
 	startFlags = append(startFlags, fmt.Sprintf("--config=%s", ctx.String(flags.GethConfigFileFlag)))
-
+	startFlags = append(startFlags, fmt.Sprintf("--nat=extip:%s", ip))
 	return
 }
 

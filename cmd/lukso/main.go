@@ -56,7 +56,7 @@ REPO: https://github.com/lukso-network/tools-lukso-cli
 			Subcommands: cli.Commands{
 				&cli.Command{
 					Name:            "configs",
-					Usage:           "Updates chain configuration files, without overwriting client configuration files",
+					Usage:           "Updates chain configuration and CLI configuration files, without overwriting client configuration files",
 					Flags:           flags.UpdateConfigFlags,
 					Action:          commands.UpdateConfigs,
 					HideHelpCommand: true,

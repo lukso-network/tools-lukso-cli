@@ -1,6 +1,7 @@
 package commands
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"strings"
@@ -9,6 +10,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 
+	"github.com/lukso-network/tools-lukso-cli/common"
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
 	"github.com/lukso-network/tools-lukso-cli/common/network"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
@@ -26,6 +28,9 @@ func StartClients(ctx *cli.Context) (err error) {
 	if err != nil {
 		return utils.Exit(fmt.Sprintf("❌  Couldn't read from config file: %v", err), 1)
 	}
+
+	// Pass down the IP to any client that needs to set it in flag
+	ctx.Context = context.WithValue(ctx.Context, common.ConfigKey("ip"), cfg.IPv4())
 
 	selectedExecution := cfg.Execution()
 	selectedConsensus := cfg.Consensus()

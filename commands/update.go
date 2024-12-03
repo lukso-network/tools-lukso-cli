@@ -69,6 +69,18 @@ func UpdateConfigs(ctx *cli.Context) (err error) {
 		return cli.Exit(errors.FolderNotInitialized, 1)
 	}
 
+	log.Info("⬇️  Updating IPv4 Addres...")
+
+	ip, err := getPublicIP()
+	if err != nil {
+		log.Warn("⚠️  There was an error while getting the IPv4 Address: continuing...")
+	} else {
+		err = cfg.WriteIPv4(ip)
+		if err != nil {
+			return utils.Exit(fmt.Sprintf("❌  There was an error while writing IPv4 Address: %v", err), 1)
+		}
+	}
+
 	if ctx.Bool(flags.AllFlag) {
 		message := "⚠️  Warning - this action will overwrite all of your client configuration files, are you sure you want to continue? [y/N]\n> "
 

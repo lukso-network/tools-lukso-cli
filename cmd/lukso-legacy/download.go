@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	configPerms = 0750
+	configPerms = 0o750
 	binaryPerms = int(os.ModePerm)
 )
 
@@ -256,7 +256,7 @@ func installBinaries(ctx *cli.Context) (err error) {
 		return exit(fmt.Sprintf("❌  There was an error while downloading validator: %v", err), 1)
 	}
 
-	err = cfg.Create(selectedExecution, selectedConsensus, "")
+	err = cfg.Create(selectedExecution, selectedConsensus, "", "")
 	if err != nil {
 		return exit(fmt.Sprintf("❌  There was an error while creating configration file: %v", err), 1)
 	}
