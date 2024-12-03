@@ -47,11 +47,11 @@ const (
 	erigonMainnetConfigName = "erigon mainnet config"
 	erigonTestnetConfigName = "erigon testnet config"
 
-	nethermindMainnetConfigName = "nethermind mainnet config"
-	nethermindTestnetConfigName = "nethermind testnet config"
-
 	besuMainnetConfigName = "besu mainnet config"
 	besuTestnetConfigName = "besu testnet config"
+
+	nethermindMainnetConfigName = "nethermind mainnet config"
+	nethermindTestnetConfigName = "nethermind testnet config"
 
 	prysmMainnetConfigDependencyName = "prysm mainnet config"
 	prysmTestnetConfigDependencyName = "prysm testnet config"
@@ -79,8 +79,8 @@ const (
 	nimbus2MainnetBootnodesDependencyName                = "nimbus2 mainnet bootnodes"
 	nimbus2TestnetBootnodesDependencyName                = "nimbus2 testnet bootnodes"
 
-	validatorMainnetConfigDependencyName           = "validator mainnet config"
-	validatorTestnetConfigDependencyName           = "validator testnet config"
+	prysmValidatorMainnetConfigDependencyName      = "prysm validator mainnet config"
+	prysmValidatorTestnetConfigDependencyName      = "prysm validator testnet config"
 	lighthouseValidatorMainnetConfigDependencyName = "lighthouse validator mainnet config"
 	lighthouseValidatorTestnetConfigDependencyName = "lighthouse validator testnet config"
 	tekuValidatorMainnetConfigDependencyName       = "teku validator mainnet config"
@@ -89,10 +89,6 @@ const (
 	nimbus2ValidatorTestnetConfigDependencyName    = "nimbus2 validator testnet config"
 
 	// PATHS
-	GenesisJsonPath      = "shared/genesis.json"
-	GenesisStateFilePath = "shared/genesis.ssz"
-	GenesisChainspecPath = "nethermind/chainspec.json"
-
 	MainnetConfig = ConfigRootDir + "/mainnet"
 	TestnetConfig = ConfigRootDir + "/testnet"
 
@@ -114,27 +110,32 @@ const (
 	ValidatorMainnetDatadir = MainnetDatadir + "/validator"
 	ValidatorTestnetDatadir = TestnetDatadir + "/validator"
 
-	ChainConfigYamlPath                 = "shared/config.yaml"
-	DeployBlockPath                     = "shared/deploy_block.txt"
-	DepositContractBlockPath            = "shared/deposit_contract_block.txt"
+	// shared/network configs
+	GenesisJsonPath          = "shared/genesis.json"
+	GenesisStateFilePath     = "shared/genesis.ssz"
+	ChainConfigYamlPath      = "shared/config.yaml"
+	DeployBlockPath          = "shared/deploy_block.txt"
+	DepositContractBlockPath = "shared/deposit_contract_block.txt"
+	GenesisChainspecPath     = "nethermind/chainspec.json"
+
 	GethTomlPath                        = "geth/geth.toml"
 	ErigonTomlPath                      = "erigon/erigon.toml"
-	NethermindJsonPath                  = "nethermind/nethermind.json"
 	BesuTomlPath                        = "besu/besu.toml"
+	NethermindJsonPath                  = "nethermind/nethermind.json"
 	PrysmYamlPath                       = "prysm/prysm.yaml"
-	ValidatorYamlPath                   = "prysm/validator.yaml"
 	LighthouseTomlPath                  = "lighthouse/lighthouse.toml"
-	LighthouseValidatorTomlPath         = "lighthouse/validator.toml"
 	TekuYamlPath                        = "teku/teku.yaml"
-	TekuValidatorYamlPath               = "teku/validator.yaml"
 	TekuChainConfigYamlPath             = "teku/config.yaml"
 	Nimbus2Path                         = "nimbus2" // useful when the path to the nimbus configs is needed, e.g. in --network flag
 	Nimbus2TomlPath                     = "nimbus2/nimbus.toml"
-	Nimbus2ValidatorTomlPath            = "nimbus2/validator.toml"
 	Nimbus2ChainConfigYamlPath          = "nimbus2/config.yaml"
 	Nimbus2DeployBlockPath              = "nimbus2/deploy_block.txt"
 	Nimbus2DepositContractBlockHashPath = "nimbus2/deposit_contract_block_hash.txt"
 	Nimbus2Bootnodes                    = "nimbus2/bootnodes.txt"
+	PrysmValidatorYamlPath              = "prysm/validator.yaml"
+	LighthouseValidatorTomlPath         = "lighthouse/validator.toml"
+	TekuValidatorYamlPath               = "teku/validator.yaml"
+	Nimbus2ValidatorTomlPath            = "nimbus2/validator.toml"
 )
 
 var (

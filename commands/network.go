@@ -88,7 +88,7 @@ func updateValues(ctx *cli.Context, config networkConfig) (err error) {
 		tekuYamlPath                = config.configPath + "/" + configs.TekuYamlPath
 		nimbus2Path                 = config.configPath + "/" + configs.Nimbus2Path
 		nimbus2TomlPath             = config.configPath + "/" + configs.Nimbus2TomlPath
-		validatorYamlPath           = config.configPath + "/" + configs.ValidatorYamlPath
+		validatorYamlPath           = config.configPath + "/" + configs.PrysmValidatorYamlPath
 		lighthouseValidatorTomlPath = config.configPath + "/" + configs.LighthouseValidatorTomlPath
 		tekuValidatorYamlPath       = config.configPath + "/" + configs.TekuValidatorYamlPath
 		nimbus2ValidatorTomlPath    = config.configPath + "/" + configs.Nimbus2ValidatorTomlPath

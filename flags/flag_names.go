@@ -62,6 +62,7 @@ const (
 	ExecutionFlag = "execution"
 
 	LogFolderFlag        = "logs-folder"
+	DatadirFlag          = "datadir"
 	ExecutionDatadirFlag = "execution-datadir"
 	ConsensusDatadirFlag = "consensus-datadir"
 	ValidatorDatadirFlag = "validator-datadir"
