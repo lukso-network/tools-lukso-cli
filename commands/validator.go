@@ -41,8 +41,6 @@ func ListValidator(ctx *cli.Context) (err error) {
 
 	if ctx.Bool(flags.TestnetFlag) {
 		network = "testnet"
-	} else if ctx.Bool(flags.DevnetFlag) {
-		network = "devnet"
 	}
 
 	return executeValidatorList(ctx, network)

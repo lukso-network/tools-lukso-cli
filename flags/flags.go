@@ -8,49 +8,34 @@ import (
 )
 
 func init() {
-	InstallFlags = append(InstallFlags, GethDownloadFlags...)
-	InstallFlags = append(InstallFlags, ValidatorDownloadFlags...)
-	InstallFlags = append(InstallFlags, PrysmDownloadFlags...)
-	InstallFlags = append(InstallFlags, ErigonDownloadFlags...)
-	InstallFlags = append(InstallFlags, LighthouseDownloadFlags...)
-	InstallFlags = append(InstallFlags, TekuDownloadFlags...)
-	InstallFlags = append(InstallFlags, NethermindDownloadFlags...)
-	InstallFlags = append(InstallFlags, BesuDownloadFlags...)
+	InstallFlags = append(InstallFlags, GethInstallFlags...)
+	InstallFlags = append(InstallFlags, ErigonInstallFlags...)
+	InstallFlags = append(InstallFlags, BesuInstallFlags...)
+	InstallFlags = append(InstallFlags, NethermindInstallFlags...)
+	InstallFlags = append(InstallFlags, PrysmInstallFlags...)
+	InstallFlags = append(InstallFlags, LighthouseInstallFlags...)
+	InstallFlags = append(InstallFlags, TekuInstallFlags...)
 	InstallFlags = append(InstallFlags, Nimbus2DownloadFlags...)
+	InstallFlags = append(InstallFlags, ValidatorInstallFlags...)
 
 	StartFlags = append(StartFlags, GethStartFlags...)
 	StartFlags = append(StartFlags, ErigonStartFlags...)
+	StartFlags = append(StartFlags, BesuStartFlags...)
+	StartFlags = append(StartFlags, NethermindStartFlags...)
 	StartFlags = append(StartFlags, PrysmStartFlags...)
 	StartFlags = append(StartFlags, LighthouseStartFlags...)
-	StartFlags = append(StartFlags, ValidatorStartFlags...)
 	StartFlags = append(StartFlags, TekuStartFlags...)
-	StartFlags = append(StartFlags, NetworkFlags...)
-	StartFlags = append(StartFlags, NethermindStartFlags...)
-	StartFlags = append(StartFlags, BesuStartFlags...)
 	StartFlags = append(StartFlags, Nimbus2StartFlags...)
+	StartFlags = append(StartFlags, ValidatorStartFlags...)
+	StartFlags = append(StartFlags, DatadirFlags...)
+	StartFlags = append(StartFlags, NetworkFlags...)
 
-	LogsFlags = append(LogsFlags, GethLogsFlags...)
-	LogsFlags = append(LogsFlags, PrysmLogsFlags...)
-	LogsFlags = append(LogsFlags, ValidatorLogsFlags...)
-	LogsFlags = append(LogsFlags, NetworkFlags...)
-
-	ResetFlags = append(ResetFlags, GethResetFlags...)
-	ResetFlags = append(ResetFlags, PrysmResetFlags...)
-	ResetFlags = append(ResetFlags, ValidatorResetFlags...)
+	ResetFlags = append(ResetFlags, DatadirFlags...)
 	ResetFlags = append(ResetFlags, NetworkFlags...)
 
-	// after we exported flags from each command we can update them
-	GethStartFlags = append(GethStartFlags, NetworkFlags...)
-	GethLogsFlags = append(GethLogsFlags, NetworkFlags...)
-	GethResetFlags = append(GethResetFlags, NetworkFlags...)
-
-	PrysmStartFlags = append(PrysmStartFlags, NetworkFlags...)
-	PrysmLogsFlags = append(PrysmLogsFlags, NetworkFlags...)
-	PrysmResetFlags = append(PrysmResetFlags, NetworkFlags...)
-
-	ValidatorStartFlags = append(ValidatorStartFlags, NetworkFlags...)
+	ExecutionLogsFlags = append(ExecutionLogsFlags, NetworkFlags...)
+	ConsensusLogsFlags = append(ConsensusLogsFlags, NetworkFlags...)
 	ValidatorLogsFlags = append(ValidatorLogsFlags, NetworkFlags...)
-	ValidatorResetFlags = append(ValidatorResetFlags, NetworkFlags...)
 
 	ValidatorImportFlags = append(ValidatorImportFlags, NetworkFlags...)
 	ValidatorListFlags = append(ValidatorListFlags, NetworkFlags...)
@@ -66,11 +51,6 @@ var (
 	testnetEnabledFlag = &cli.BoolFlag{
 		Name:  TestnetFlag,
 		Usage: "Run for testnet",
-		Value: false,
-	}
-	devnetEnabledFlag = &cli.BoolFlag{
-		Name:  DevnetFlag,
-		Usage: "Run for devnet",
 		Value: false,
 	}
 
@@ -90,10 +70,27 @@ var (
 		Value: false,
 	}
 
+	DatadirFlags = []cli.Flag{
+		&cli.StringFlag{
+			Name:  ExecutionDatadirFlag,
+			Usage: "Path do execution datadir",
+			Value: configs.ExecutionMainnetDatadir,
+		},
+		&cli.StringFlag{
+			Name:  ConsensusDatadirFlag,
+			Usage: "Path do consensus datadir",
+			Value: configs.ConsensusMainnetDatadir,
+		},
+		&cli.StringFlag{
+			Name:  ValidatorDatadirFlag,
+			Usage: "Path do execution datadir",
+			Value: configs.ValidatorMainnetDatadir,
+		},
+	}
+
 	NetworkFlags = []cli.Flag{
 		mainnetEnabledFlag,
 		testnetEnabledFlag,
-		devnetEnabledFlag,
 	}
 
 	ValidatorImportFlags = []cli.Flag{
@@ -188,7 +185,13 @@ var (
 			Usage: "Run a node with checkpoint sync feature",
 		},
 	}
-	LogsFlags        []cli.Flag
+	LogsFlags = []cli.Flag{
+		&cli.StringFlag{
+			Name:  LogFolderFlag,
+			Usage: "Directory to output logs into",
+			Value: "./mainnet-logs",
+		},
+	}
 	ResetFlags       []cli.Flag
 	AppFlags         []cli.Flag
 	StatusPeersFlags = []cli.Flag{
@@ -221,7 +224,7 @@ var (
 		},
 	}
 
-	GethDownloadFlags = []cli.Flag{
+	GethInstallFlags = []cli.Flag{
 		&cli.StringFlag{
 			Name:  GethTagFlag,
 			Usage: "A tag of geth you would like to run",
@@ -236,12 +239,6 @@ var (
 
 	GethStartFlags = []cli.Flag{
 		&cli.StringFlag{
-			Name:   GethDatadirFlag,
-			Usage:  "Geth datadir",
-			Value:  configs.ExecutionMainnetDatadir,
-			Hidden: true,
-		},
-		&cli.StringFlag{
 			Name:  GethConfigFileFlag,
 			Usage: "Path to geth.toml config file",
 			Value: configs.MainnetConfig + "/" + configs.GethTomlPath,
@@ -253,7 +250,7 @@ var (
 		},
 	}
 
-	GethLogsFlags = []cli.Flag{
+	ExecutionLogsFlags = []cli.Flag{
 		&cli.StringFlag{
 			Name:  LogFolderFlag,
 			Usage: "Directory to output logs into",
@@ -261,16 +258,7 @@ var (
 		},
 	}
 
-	GethResetFlags = []cli.Flag{
-		&cli.StringFlag{
-			Name:   GethDatadirFlag,
-			Usage:  "geth datadir",
-			Value:  configs.ExecutionMainnetDatadir,
-			Hidden: true,
-		},
-	}
-
-	ErigonDownloadFlags = []cli.Flag{
+	ErigonInstallFlags = []cli.Flag{
 		&cli.StringFlag{
 			Name:  ErigonTagFlag,
 			Usage: "Tag for erigon",
@@ -283,14 +271,9 @@ var (
 			Usage: "Path to erigon.toml config file",
 			Value: configs.MainnetConfig + "/" + configs.ErigonTomlPath,
 		},
-		&cli.StringFlag{
-			Name:  ErigonDatadirFlag,
-			Usage: "Erigon datadir",
-			Value: configs.ExecutionMainnetDatadir,
-		},
 	}
 
-	NethermindDownloadFlags = []cli.Flag{
+	NethermindInstallFlags = []cli.Flag{
 		&cli.StringFlag{
 			Name:  NethermindTagFlag,
 			Usage: "Tag for nethermind",
@@ -308,14 +291,9 @@ var (
 			Usage: "Path to nethermind.json config file",
 			Value: configs.MainnetConfig + "/" + configs.NethermindJsonPath,
 		},
-		&cli.StringFlag{
-			Name:  NethermindDatadirFlag,
-			Usage: "Nethermind datadir",
-			Value: configs.ExecutionMainnetDatadir,
-		},
 	}
 
-	BesuDownloadFlags = []cli.Flag{
+	BesuInstallFlags = []cli.Flag{
 		&cli.StringFlag{
 			Name:  BesuTagFlag,
 			Usage: "Tag for besu",
@@ -328,14 +306,9 @@ var (
 			Usage: "Path to besu.toml config file",
 			Value: configs.MainnetConfig + "/" + configs.BesuTomlPath,
 		},
-		&cli.StringFlag{
-			Name:  BesuDatadirFlag,
-			Usage: "Besu datadir",
-			Value: configs.ExecutionMainnetDatadir,
-		},
 	}
 
-	PrysmDownloadFlags = []cli.Flag{
+	PrysmInstallFlags = []cli.Flag{
 		&cli.StringFlag{
 			Name:  PrysmTagFlag,
 			Usage: "Tag for prysm",
@@ -349,12 +322,6 @@ var (
 			Value: configs.MainnetConfig + "/" + configs.GenesisStateFilePath,
 		},
 		&cli.StringFlag{
-			Name:   PrysmDatadirFlag,
-			Usage:  "Prysm datadir",
-			Value:  configs.ConsensusMainnetDatadir,
-			Hidden: true,
-		},
-		&cli.StringFlag{
 			Name:   PrysmChainConfigFileFlag,
 			Usage:  "Path to chain config file",
 			Value:  configs.MainnetConfig + "/" + configs.ChainConfigYamlPath,
@@ -366,23 +333,15 @@ var (
 			Value: configs.MainnetConfig + "/" + configs.PrysmYamlPath,
 		},
 	}
-	PrysmLogsFlags = []cli.Flag{
+	ConsensusLogsFlags = []cli.Flag{
 		&cli.StringFlag{
 			Name:  LogFolderFlag,
 			Usage: "Directory to output logs into",
 			Value: "./mainnet-logs",
 		},
 	}
-	PrysmResetFlags = []cli.Flag{
-		&cli.StringFlag{
-			Name:   PrysmDatadirFlag,
-			Usage:  "prysm datadir",
-			Value:  configs.ConsensusMainnetDatadir,
-			Hidden: true,
-		},
-	}
 
-	LighthouseDownloadFlags = []cli.Flag{
+	LighthouseInstallFlags = []cli.Flag{
 		&cli.StringFlag{
 			Name:  LighthouseTagFlag,
 			Usage: "Tag for lighthouse",
@@ -396,18 +355,13 @@ var (
 			Value: configs.MainnetConfig + "/" + configs.LighthouseTomlPath,
 		},
 		&cli.StringFlag{
-			Name:  LighthouseDatadirFlag,
-			Usage: "Lighthouse datadir",
-			Value: configs.ConsensusMainnetDatadir,
-		},
-		&cli.StringFlag{
 			Name:  LighthouseValidatorConfigFileFlag,
 			Usage: "Path to validator.toml config file",
 			Value: configs.MainnetConfig + "/" + configs.LighthouseValidatorTomlPath,
 		},
 	}
 
-	ValidatorDownloadFlags = []cli.Flag{
+	ValidatorInstallFlags = []cli.Flag{
 		&cli.StringFlag{
 			Name:  ValidatorTagFlag,
 			Usage: "Tag for validator binary",
@@ -459,7 +413,7 @@ var (
 		},
 	}
 
-	TekuDownloadFlags = []cli.Flag{
+	TekuInstallFlags = []cli.Flag{
 		&cli.StringFlag{
 			Name:  TekuTagFlag,
 			Usage: "Tag for teku client",
@@ -476,11 +430,6 @@ var (
 			Name:  TekuValidatorConfigFileFlag,
 			Usage: "Path to validator.yaml config file",
 			Value: configs.MainnetConfig + "/" + configs.TekuValidatorYamlPath,
-		},
-		&cli.StringFlag{
-			Name:  TekuDatadirFlag,
-			Usage: "Path to teku datadir",
-			Value: configs.MainnetDatadir,
 		},
 	}
 
@@ -506,11 +455,6 @@ var (
 			Name:  Nimbus2ValidatorConfigFileFlag,
 			Usage: "Path to validator.toml config file",
 			Value: configs.MainnetConfig + "/" + configs.Nimbus2ValidatorTomlPath,
-		},
-		&cli.StringFlag{
-			Name:  Nimbus2DatadirFlag,
-			Usage: "Path to nimbus2 datadir",
-			Value: configs.MainnetDatadir,
 		},
 		&cli.StringFlag{
 			Name:  Nimbus2NetworkFlag,

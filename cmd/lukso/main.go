@@ -87,14 +87,14 @@ REPO: https://github.com/lukso-network/tools-lukso-cli
 				{
 					Name:            "execution",
 					Usage:           "Outputs selected execution client's logs, add the network flag, if not mainnet",
-					Flags:           flags.GethLogsFlags,
+					Flags:           flags.ExecutionLogsFlags,
 					Action:          commands.SelectNetworkFor(commands.LogLayer(configs.ExecutionLayer)),
 					HideHelpCommand: true,
 				},
 				{
 					Name:            "consensus",
 					Usage:           "Outputs selected consensus client's logs, add the network flag, if not mainnet",
-					Flags:           flags.PrysmLogsFlags,
+					Flags:           flags.ConsensusLogsFlags,
 					Action:          commands.SelectNetworkFor(commands.LogLayer(configs.ConsensusLayer)),
 					HideHelpCommand: true,
 				},
