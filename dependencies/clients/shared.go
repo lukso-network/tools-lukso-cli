@@ -33,8 +33,8 @@ const (
 	// Execution
 	gethDependencyName       = "Geth"
 	erigonDependencyName     = "Erigon"
-	besuDependencyName       = "Besu"
 	nethermindDependencyName = "Nethermind"
+	besuDependencyName       = "Besu"
 	// Consensus
 	prysmDependencyName      = "Prysm"
 	lighthouseDependencyName = "Lighthouse"
@@ -48,8 +48,8 @@ const (
 
 	gethGithubLocation          = "ethereum/go-ethereum"
 	erigonGithubLocation        = "ledgerwatch/erigon"
-	besuGithubLocation          = "hyperledger/besu"
 	nethermindGithubLocation    = "NethermindEth/nethermind"
+	besuGithubLocation          = "hyperledger/besu"
 	prysmaticLabsGithubLocation = "prysmaticlabs/prysm"
 	lighthouseGithubLocation    = "sigp/lighthouse"
 	tekuGithubLocation          = "Consensys/teku"
@@ -72,8 +72,8 @@ var (
 	AllClients = map[string]ClientBinaryDependency{
 		gethDependencyName:                Geth,
 		erigonDependencyName:              Erigon,
-		besuDependencyName:                Besu,
 		nethermindDependencyName:          Nethermind,
+		besuDependencyName:                Besu,
 		prysmDependencyName:               Prysm,
 		lighthouseDependencyName:          Lighthouse,
 		tekuDependencyName:                Teku,
@@ -87,8 +87,8 @@ var (
 	ClientVersions = map[string]string{
 		gethDependencyName:                common.GethTag,
 		erigonDependencyName:              common.ErigonTag,
-		besuDependencyName:                common.BesuTag,
 		nethermindDependencyName:          common.NethermindTag,
+		besuDependencyName:                common.BesuTag,
 		prysmDependencyName:               common.PrysmTag,
 		lighthouseDependencyName:          common.LighthouseTag,
 		tekuDependencyName:                common.TekuTag,
@@ -101,8 +101,8 @@ var (
 	AllClientNames = []string{
 		gethDependencyName,
 		erigonDependencyName,
-		besuDependencyName,
 		nethermindDependencyName,
+		besuDependencyName,
 		prysmDependencyName,
 		lighthouseDependencyName,
 		lighthouseValidatorDependencyName,
@@ -425,7 +425,7 @@ func (client *clientBinary) ParseUserFlags(ctx *cli.Context) (startFlags []strin
 		flags.ValidatorFlag,
 		flags.GethConfigFileFlag,
 		flags.PrysmConfigFileFlag,
-		flags.ValidatorConfigFileFlag,
+		flags.PrysmValidatorConfigFileFlag,
 		flags.ValidatorWalletPasswordFileFlag,
 	}
 

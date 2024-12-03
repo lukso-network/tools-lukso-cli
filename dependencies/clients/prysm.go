@@ -33,7 +33,7 @@ var _ ClientBinaryDependency = &PrysmClient{}
 func (p *PrysmClient) PrepareStartFlags(ctx *cli.Context) (startFlags []string, err error) {
 	genesisExists := utils.FlagFileExists(ctx, flags.GenesisStateFlag)
 	prysmConfigExists := utils.FlagFileExists(ctx, flags.PrysmConfigFileFlag)
-	chainConfigExists := utils.FlagFileExists(ctx, flags.PrysmChainConfigFileFlag)
+	chainConfigExists := utils.FlagFileExists(ctx, flags.ChainConfigFileFlag)
 	if !genesisExists || !prysmConfigExists || !chainConfigExists {
 		err = errors.ErrFlagPathInvalid
 
@@ -53,8 +53,8 @@ func (p *PrysmClient) PrepareStartFlags(ctx *cli.Context) (startFlags []string, 
 	if ctx.String(flags.GenesisStateFlag) != "" {
 		startFlags = append(startFlags, fmt.Sprintf("--genesis-state=%s", ctx.String(flags.GenesisStateFlag)))
 	}
-	if ctx.String(flags.PrysmChainConfigFileFlag) != "" {
-		startFlags = append(startFlags, fmt.Sprintf("--chain-config-file=%s", ctx.String(flags.PrysmChainConfigFileFlag)))
+	if ctx.String(flags.ChainConfigFileFlag) != "" {
+		startFlags = append(startFlags, fmt.Sprintf("--chain-config-file=%s", ctx.String(flags.ChainConfigFileFlag)))
 	}
 
 	isSlasher := !ctx.Bool(flags.NoSlasherFlag)

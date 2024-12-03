@@ -36,8 +36,8 @@ var PrysmValidator = NewPrysmValidatorClient()
 var _ ValidatorBinaryDependency = &PrysmValidatorClient{}
 
 func (p *PrysmValidatorClient) PrepareStartFlags(ctx *cli.Context) (startFlags []string, err error) {
-	validatorConfigExists := utils.FlagFileExists(ctx, flags.ValidatorConfigFileFlag)
-	chainConfigExists := utils.FlagFileExists(ctx, flags.PrysmChainConfigFileFlag)
+	validatorConfigExists := utils.FlagFileExists(ctx, flags.PrysmValidatorConfigFileFlag)
+	chainConfigExists := utils.FlagFileExists(ctx, flags.ChainConfigFileFlag)
 	validatorKeysExists := utils.FlagFileExists(ctx, flags.ValidatorKeysFlag)
 	if !validatorConfigExists || !chainConfigExists {
 		err = errors.ErrFlagPathInvalid
@@ -69,7 +69,7 @@ func (p *PrysmValidatorClient) PrepareStartFlags(ctx *cli.Context) (startFlags [
 
 	// terms of use already accepted during installation
 	startFlags = append(startFlags, "--accept-terms-of-use")
-	startFlags = append(startFlags, fmt.Sprintf("--config-file=%s", ctx.String(flags.ValidatorConfigFileFlag)))
+	startFlags = append(startFlags, fmt.Sprintf("--config-file=%s", ctx.String(flags.PrysmValidatorConfigFileFlag)))
 	startFlags = append(startFlags, fmt.Sprintf("--suggested-fee-recipient=%s", ctx.String(flags.TransactionFeeRecipientFlag)))
 	if ctx.String(flags.ValidatorKeysFlag) != "" {
 		startFlags = append(startFlags, fmt.Sprintf("--wallet-dir=%s", ctx.String(flags.ValidatorKeysFlag)))
@@ -77,8 +77,8 @@ func (p *PrysmValidatorClient) PrepareStartFlags(ctx *cli.Context) (startFlags [
 	if ctx.String(flags.ValidatorWalletPasswordFileFlag) != "" {
 		startFlags = append(startFlags, fmt.Sprintf("--wallet-password-file=%s", ctx.String(flags.ValidatorWalletPasswordFileFlag)))
 	}
-	if ctx.String(flags.ValidatorChainConfigFileFlag) != "" {
-		startFlags = append(startFlags, fmt.Sprintf("--chain-config-file=%s", ctx.String(flags.ValidatorChainConfigFileFlag)))
+	if ctx.String(flags.PrysmValidatorChainConfigFileFlag) != "" {
+		startFlags = append(startFlags, fmt.Sprintf("--chain-config-file=%s", ctx.String(flags.PrysmValidatorChainConfigFileFlag)))
 	}
 	return
 }

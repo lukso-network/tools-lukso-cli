@@ -2,8 +2,9 @@ package flags
 
 const (
 	// Network
-	GenesisStateFlag = "genesis-ssz"
-	GenesisJsonFlag  = "genesis-json"
+	GenesisStateFlag    = "genesis-ssz"
+	GenesisJsonFlag     = "genesis-json"
+	ChainConfigFileFlag = "config-yaml"
 
 	// Geth
 	GethTagFlag        = "geth-tag"
@@ -24,10 +25,11 @@ const (
 	NethermindConfigFileFlag = "nethermind-config"
 
 	// Prysm
-	PrysmTagFlag             = "prysm-tag"
-	PrysmChainConfigFileFlag = "prysm-chain-config"
-	PrysmConfigFileFlag      = "prysm-config"
-	NoSlasherFlag            = "no-slasher"
+	PrysmTagFlag                      = "prysm-tag"
+	PrysmConfigFileFlag               = "prysm-config"
+	PrysmValidatorConfigFileFlag      = "prysm-validator-config"
+	PrysmValidatorChainConfigFileFlag = "prysm-validator-chain-config"
+	NoSlasherFlag                     = "no-slasher"
 
 	// Lighthouse
 	LighthouseTagFlag                 = "lighthouse-tag"
@@ -51,8 +53,6 @@ const (
 	ValidatorTagFlag                = "validator-tag"
 	ValidatorWalletPasswordFileFlag = "validator-wallet-password"
 	ValidatorWalletDirFlag          = "validator-wallet-dir"
-	ValidatorConfigFileFlag         = "validator-config"
-	ValidatorChainConfigFileFlag    = "validator-chain-config"
 
 	// Node folder
 	MainnetFlag   = "mainnet"
