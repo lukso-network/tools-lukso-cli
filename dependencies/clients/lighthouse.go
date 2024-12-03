@@ -90,11 +90,11 @@ func (l *LighthouseClient) ParseUrl(tag, commitHash string) (url string) {
 	}
 
 	url = l.baseUrl
-	url = strings.Replace(url, "|TAG|", tag, -1)
-	url = strings.Replace(url, "|OS|", urlSystem, -1)
-	url = strings.Replace(url, "|OS-NAME|", systemName, -1) // for lighthouse
-	url = strings.Replace(url, "|COMMIT|", commitHash, -1)
-	url = strings.Replace(url, "|ARCH|", arch, -1)
+	url = strings.ReplaceAll(url, "|TAG|", tag)
+	url = strings.ReplaceAll(url, "|OS|", urlSystem)
+	url = strings.ReplaceAll(url, "|OS-NAME|", systemName) // for lighthouse
+	url = strings.ReplaceAll(url, "|COMMIT|", commitHash)
+	url = strings.ReplaceAll(url, "|ARCH|", arch)
 
 	return
 }

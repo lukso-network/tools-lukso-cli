@@ -145,10 +145,10 @@ func (n *NethermindClient) ParseUrl(tag, commitHash string) (url string) {
 		archName = "arm64"
 	}
 
-	url = strings.Replace(url, "|TAG|", tag, -1)
-	url = strings.Replace(url, "|OS|", osName, -1)
-	url = strings.Replace(url, "|COMMIT|", commitHash, -1)
-	url = strings.Replace(url, "|ARCH|", archName, -1)
+	url = strings.ReplaceAll(url, "|TAG|", tag)
+	url = strings.ReplaceAll(url, "|OS|", osName)
+	url = strings.ReplaceAll(url, "|COMMIT|", commitHash)
+	url = strings.ReplaceAll(url, "|ARCH|", archName)
 
 	return
 }

@@ -218,8 +218,8 @@ func setupJava(isUpdate bool) (err error) {
 		return
 	}
 
-	jdkURL := strings.Replace(jdkInstallURL, "|OS|", systemOs, -1)
-	jdkURL = strings.Replace(jdkURL, "|ARCH|", arch, -1)
+	jdkURL := strings.ReplaceAll(jdkInstallURL, "|OS|", systemOs)
+	jdkURL = strings.ReplaceAll(jdkURL, "|ARCH|", arch)
 
 	err = installAndExtractFromURL(jdkURL, "JDK", common.ClientDepsFolder, tarFormat, isUpdate)
 	if err != nil {

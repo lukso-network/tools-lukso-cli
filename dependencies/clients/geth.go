@@ -37,13 +37,13 @@ func (g *GethClient) ParseUrl(tag, commitHash string) (url string) {
 	url = g.baseUrl
 
 	if g.name == gethDependencyName && system.Os == system.Macos {
-		url = strings.Replace(url, "|ARCH|", "amd64", -1)
+		url = strings.ReplaceAll(url, "|ARCH|", "amd64")
 	}
 
-	url = strings.Replace(url, "|TAG|", tag, -1)
-	url = strings.Replace(url, "|OS|", system.Os, -1)
-	url = strings.Replace(url, "|COMMIT|", commitHash, -1)
-	url = strings.Replace(url, "|ARCH|", system.Arch, -1)
+	url = strings.ReplaceAll(url, "|TAG|", tag)
+	url = strings.ReplaceAll(url, "|OS|", system.Os)
+	url = strings.ReplaceAll(url, "|COMMIT|", commitHash)
+	url = strings.ReplaceAll(url, "|ARCH|", system.Arch)
 
 	return
 }
