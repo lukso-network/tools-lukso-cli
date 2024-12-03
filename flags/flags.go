@@ -52,21 +52,30 @@ var (
 		Usage: "Run for testnet",
 		Value: false,
 	}
-
-	consensusSelectedFlag = &cli.BoolFlag{
-		Name:  ConsensusFlag,
-		Usage: "Run for consensus",
-		Value: false,
+	NetworkFlags = []cli.Flag{
+		mainnetEnabledFlag,
+		testnetEnabledFlag,
 	}
+
 	executionSelectedFlag = &cli.BoolFlag{
 		Name:  ExecutionFlag,
 		Usage: "Run for execution",
+		Value: false,
+	}
+	consensusSelectedFlag = &cli.BoolFlag{
+		Name:  ConsensusFlag,
+		Usage: "Run for consensus",
 		Value: false,
 	}
 	validatorSelectedFlag = &cli.BoolFlag{
 		Name:  ValidatorFlag,
 		Usage: "Run for validator",
 		Value: false,
+	}
+	LayerFlags = []cli.Flag{
+		executionSelectedFlag,
+		consensusSelectedFlag,
+		validatorSelectedFlag,
 	}
 
 	DatadirFlags = []cli.Flag{
@@ -85,11 +94,6 @@ var (
 			Usage: "Path do execution datadir",
 			Value: configs.ValidatorMainnetDatadir,
 		},
-	}
-
-	NetworkFlags = []cli.Flag{
-		mainnetEnabledFlag,
-		testnetEnabledFlag,
 	}
 
 	ValidatorImportFlags = []cli.Flag{
