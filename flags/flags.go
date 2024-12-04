@@ -42,6 +42,9 @@ func init() {
 }
 
 var (
+	AppFlags []cli.Flag
+
+	// Network
 	mainnetEnabledFlag = &cli.BoolFlag{
 		Name:  MainnetFlag,
 		Usage: "Run for mainnet",
@@ -57,6 +60,7 @@ var (
 		testnetEnabledFlag,
 	}
 
+	// Layer
 	executionSelectedFlag = &cli.BoolFlag{
 		Name:  ExecutionFlag,
 		Usage: "Run for execution",
@@ -77,7 +81,6 @@ var (
 		consensusSelectedFlag,
 		validatorSelectedFlag,
 	}
-
 	DatadirFlags = []cli.Flag{
 		&cli.StringFlag{
 			Name:  ExecutionDatadirFlag,
@@ -96,6 +99,7 @@ var (
 		},
 	}
 
+	// Commands
 	ValidatorImportFlags = []cli.Flag{
 		&cli.StringFlag{
 			Name:   ValidatorWalletDirFlag,
@@ -157,11 +161,6 @@ var (
 			Value: false,
 		},
 	}
-	StopFlags = []cli.Flag{
-		executionSelectedFlag,
-		consensusSelectedFlag,
-		validatorSelectedFlag,
-	}
 
 	StartFlags = []cli.Flag{
 		&cli.BoolFlag{
@@ -188,6 +187,13 @@ var (
 			Usage: "Run a node with checkpoint sync feature",
 		},
 	}
+
+	StopFlags = []cli.Flag{
+		executionSelectedFlag,
+		consensusSelectedFlag,
+		validatorSelectedFlag,
+	}
+
 	LogsFlags = []cli.Flag{
 		&cli.StringFlag{
 			Name:  LogFolderFlag,
@@ -195,8 +201,7 @@ var (
 			Value: "./mainnet-logs",
 		},
 	}
-	ResetFlags       []cli.Flag
-	AppFlags         []cli.Flag
+
 	StatusPeersFlags = []cli.Flag{
 		&cli.StringFlag{
 			Name:  ExecutionClientHost,
@@ -226,6 +231,8 @@ var (
 			Usage: "Port for validator client (Defaults to: 8545: Geth, Erigon)",
 		},
 	}
+
+	ResetFlags []cli.Flag
 
 	GethInstallFlags = []cli.Flag{
 		&cli.StringFlag{
