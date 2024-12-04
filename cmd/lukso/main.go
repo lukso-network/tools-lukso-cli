@@ -57,8 +57,8 @@ REPO: https://github.com/lukso-network/tools-lukso-cli
 				&cli.Command{
 					Name:            "configs",
 					Usage:           "Updates chain configuration and CLI configuration files, without overwriting client configuration files",
-					Flags:           flags.UpdateConfigFlags,
 					Action:          commands.UpdateConfigs,
+					Flags:           flags.UpdateConfigFlags,
 					HideHelpCommand: true,
 				},
 			},
@@ -67,8 +67,8 @@ REPO: https://github.com/lukso-network/tools-lukso-cli
 			Name:            "start",
 			Usage:           "Starts all or specific clients and connects to the specified network",
 			Action:          commands.SelectNetworkFor(commands.StartClients),
-			SkipFlagParsing: true,
 			Flags:           flags.StartFlags,
+			SkipFlagParsing: true,
 			HideHelpCommand: true,
 		},
 		{
@@ -87,22 +87,22 @@ REPO: https://github.com/lukso-network/tools-lukso-cli
 				{
 					Name:            "execution",
 					Usage:           "Outputs selected execution client's logs, add the network flag, if not mainnet",
-					Flags:           flags.ExecutionLogsFlags,
 					Action:          commands.SelectNetworkFor(commands.LogLayer(configs.ExecutionLayer)),
+					Flags:           flags.ExecutionLogsFlags,
 					HideHelpCommand: true,
 				},
 				{
 					Name:            "consensus",
 					Usage:           "Outputs selected consensus client's logs, add the network flag, if not mainnet",
-					Flags:           flags.ConsensusLogsFlags,
 					Action:          commands.SelectNetworkFor(commands.LogLayer(configs.ConsensusLayer)),
+					Flags:           flags.ConsensusLogsFlags,
 					HideHelpCommand: true,
 				},
 				{
 					Name:            "validator",
 					Usage:           "Outputs selected validator client's logs, add the network flag, if not mainnet",
-					Flags:           flags.ValidatorLogsFlags,
 					Action:          commands.SelectNetworkFor(commands.LogLayer(configs.ValidatorLayer)), // named as a layer for sake of
+					Flags:           flags.ValidatorLogsFlags,
 					HideHelpCommand: true,
 				},
 			},
@@ -124,8 +124,8 @@ REPO: https://github.com/lukso-network/tools-lukso-cli
 		{
 			Name:            "reset",
 			Usage:           "Resets all or specific client data directories and logs excluding the validator keys",
-			Flags:           flags.ResetFlags,
 			Action:          commands.SelectNetworkFor(commands.ResetClients),
+			Flags:           flags.ResetFlags,
 			HideHelpCommand: true,
 		},
 		{
@@ -143,16 +143,16 @@ REPO: https://github.com/lukso-network/tools-lukso-cli
 				{
 					Name:            "list",
 					Usage:           "List your imported validator keys from the client wallet",
-					Flags:           flags.ValidatorListFlags,
 					Action:          commands.SelectNetworkFor(commands.ListValidator),
+					Flags:           flags.ValidatorListFlags,
 					SkipFlagParsing: true,
 					HideHelpCommand: true,
 				},
 				{
 					Name:            "exit",
 					Usage:           "Issue an exit for your validator",
-					Flags:           flags.ValidatorExitFlags,
 					Action:          commands.SelectNetworkFor(commands.ExitValidator),
+					Flags:           flags.ValidatorExitFlags,
 					HideHelpCommand: true,
 				},
 			},
