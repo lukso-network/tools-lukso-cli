@@ -603,6 +603,12 @@ sudo lukso validator exit --keystore "./mainnet-keystore/keystore-xxx.json"
 sudo lukso validator exit --testnet --keystore "./testnet-keystore/keystore-xxx.json"
 ```
 
+To successfully exit, a validator must first broadcast a message to the network - you can use an already existing RPC to connect to the network.
+```sh
+# Exit a validator using public LUKSO RPC
+sudo lukso validator exit --rpc-address "https://rpc.mainnet.lukso.network"
+```
+
 Note that each client that you use may have different exit process - you can read more about those on client's official documentation:
 
 - Prysm: https://docs.prylabs.network/docs/wallet/exiting-a-validator
