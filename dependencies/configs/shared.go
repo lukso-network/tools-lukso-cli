@@ -25,68 +25,68 @@ const (
 	ValidatorLayer = "validator"
 
 	// genesis file names
-	mainnetGenesisDependencyName = "mainnet genesis"
-	testnetGenesisDependencyName = "testnet genesis"
+	mainnetGenesisDependencyName = "mainnet_genesis"
+	testnetGenesisDependencyName = "testnet_genesis"
 
 	// nethermind chainspec
-	mainnetGenesisChainspecDependencyName = "mainnet genesis chainspec"
-	testnetGenesisChainspecDependencyName = "testnet genesis chainspec"
+	mainnetGenesisChainspecDependencyName = "mainnet_genesis_chainspec"
+	testnetGenesisChainspecDependencyName = "testnet_genesis_chainspec"
 
 	// genesis state file names
-	mainnetGenesisStateDependencyName = "mainnet genesis state"
-	testnetGenesisStateDependencyName = "testnet genesis state"
+	mainnetGenesisStateDependencyName = "mainnet_genesis_state"
+	testnetGenesisStateDependencyName = "testnet genesis_state"
 
 	// chain configurations
-	mainnetChainConfigDependencyName = "mainnet chain config"
-	testnetChainConfigDependencyName = "testnet chain config"
+	mainnetChainConfigDependencyName = "mainnet_chain_config"
+	testnetChainConfigDependencyName = "testnet_chain_config"
 
 	// client configurations
-	gethMainnetConfigName = "geth mainnet config"
-	gethTestnetConfigName = "geth testnet config"
+	gethMainnetConfigName = "geth_mainnet_config"
+	gethTestnetConfigName = "geth_testnet_config"
 
-	erigonMainnetConfigName = "erigon mainnet config"
-	erigonTestnetConfigName = "erigon testnet config"
+	erigonMainnetConfigName = "erigon_mainnet_config"
+	erigonTestnetConfigName = "erigon_testnet_config"
 
-	besuMainnetConfigName = "besu mainnet config"
-	besuTestnetConfigName = "besu testnet config"
+	besuMainnetConfigName = "besu_mainnet_config"
+	besuTestnetConfigName = "besu_testnet_config"
 
-	nethermindMainnetConfigName = "nethermind mainnet config"
-	nethermindTestnetConfigName = "nethermind testnet config"
+	nethermindMainnetConfigName = "nethermind_mainnet_config"
+	nethermindTestnetConfigName = "nethermind_testnet_config"
 
-	prysmMainnetConfigDependencyName = "prysm mainnet config"
-	prysmTestnetConfigDependencyName = "prysm testnet config"
+	prysmMainnetConfigDependencyName = "prysm_mainnet_config"
+	prysmTestnetConfigDependencyName = "prysm_testnet_config"
 
-	lighthouseMainnetConfigDependencyName           = "lighthouse mainnet config"
-	lighthouseTestnetConfigDependencyName           = "lighthouse testnet config"
-	deployBlockMainnetConfigDependencyName          = "mainnet deploy block"
-	deployBlockTestnetConfigDependencyName          = "testnet deploy block"
-	depositContractBlockMainnetConfigDependencyName = "mainnet deposit contract block"
-	depositContractBlockTestnetConfigDependencyName = "testnet deposit contract block"
+	lighthouseMainnetConfigDependencyName           = "lighthouse_mainnet_config"
+	lighthouseTestnetConfigDependencyName           = "lighthouse_testnet_config"
+	deployBlockMainnetConfigDependencyName          = "mainnet_deploy_block"
+	deployBlockTestnetConfigDependencyName          = "testnet_deploy_block"
+	depositContractBlockMainnetConfigDependencyName = "mainnet_deposit_contract_block"
+	depositContractBlockTestnetConfigDependencyName = "testnet_deposit_contract_block"
 
-	tekuMainnetConfigDependencyName      = "teku mainnet config"
-	tekuTestnetConfigDependencyName      = "teku testnet config"
-	tekuMainnetChainConfigDependencyName = "teku mainnet chain config"
-	tekuTestnetChainConfigDependencyName = "teku testnet chain config"
+	tekuMainnetConfigDependencyName      = "teku_mainnet_config"
+	tekuTestnetConfigDependencyName      = "teku_testnet_config"
+	tekuMainnetChainConfigDependencyName = "teku_mainnet_chain_config"
+	tekuTestnetChainConfigDependencyName = "teku_testnet_chain_config"
 
-	nimbus2MainnetConfigDependencyName                   = "nimbus2 mainnet config"
-	nimbus2TestnetConfigDependencyName                   = "nimbus2 testnet config"
-	nimbus2MainnetChainConfigDependencyName              = "nimbus2 mainnet chain config"
-	nimbus2TestnetChainConfigDependencyName              = "nimbus2 testnet chain config"
-	nimbus2MainnetDepositContractBlockHashDependencyName = "nimbus2 mainnet deposit contract block hash"
-	nimbus2TestnetDepositContractBlockHashDependencyName = "nimbus2 testnet deposit contract block hash"
-	nimbus2MainnetDeployBlockDependencyName              = "nimbus2 mainnet deploy block "
-	nimbus2TestnetDeployBlockDependencyName              = "nimbus2 testnet deploy block "
-	nimbus2MainnetBootnodesDependencyName                = "nimbus2 mainnet bootnodes"
-	nimbus2TestnetBootnodesDependencyName                = "nimbus2 testnet bootnodes"
+	nimbus2MainnetConfigDependencyName                   = "nimbus2_mainnet_config"
+	nimbus2TestnetConfigDependencyName                   = "nimbus2_testnet_config"
+	nimbus2MainnetChainConfigDependencyName              = "nimbus2_mainnet_chain_config"
+	nimbus2TestnetChainConfigDependencyName              = "nimbus2_testnet_chain_config"
+	nimbus2MainnetDepositContractBlockHashDependencyName = "nimbus2_mainnet_deposit_contract_block_hash"
+	nimbus2TestnetDepositContractBlockHashDependencyName = "nimbus2_testnet_deposit_contract_block_hash"
+	nimbus2MainnetDeployBlockDependencyName              = "nimbus2_mainnet_deploy_block "
+	nimbus2TestnetDeployBlockDependencyName              = "nimbus2_testnet_deploy_block "
+	nimbus2MainnetBootnodesDependencyName                = "nimbus2_mainnet_bootnodes"
+	nimbus2TestnetBootnodesDependencyName                = "nimbus2_testnet_bootnodes"
 
-	prysmValidatorMainnetConfigDependencyName      = "prysm validator mainnet config"
-	prysmValidatorTestnetConfigDependencyName      = "prysm validator testnet config"
-	lighthouseValidatorMainnetConfigDependencyName = "lighthouse validator mainnet config"
-	lighthouseValidatorTestnetConfigDependencyName = "lighthouse validator testnet config"
-	tekuValidatorMainnetConfigDependencyName       = "teku validator mainnet config"
-	tekuValidatorTestnetConfigDependencyName       = "teku validator testnet config"
-	nimbus2ValidatorMainnetConfigDependencyName    = "nimbus2 validator mainnet config"
-	nimbus2ValidatorTestnetConfigDependencyName    = "nimbus2 validator testnet config"
+	prysmValidatorMainnetConfigDependencyName      = "prysm_validator_mainnet_config"
+	prysmValidatorTestnetConfigDependencyName      = "prysm_validator_testnet_config"
+	lighthouseValidatorMainnetConfigDependencyName = "lighthouse_validator_mainnet_config"
+	lighthouseValidatorTestnetConfigDependencyName = "lighthouse_validator_testnet_config"
+	tekuValidatorMainnetConfigDependencyName       = "teku_validator_mainnet_config"
+	tekuValidatorTestnetConfigDependencyName       = "teku_validator_testnet_config"
+	nimbus2ValidatorMainnetConfigDependencyName    = "nimbus2_validator_mainnet_config"
+	nimbus2ValidatorTestnetConfigDependencyName    = "nimbus2_validator_testnet_config"
 
 	// PATHS
 	MainnetConfig = ConfigRootDir + "/mainnet"
@@ -293,7 +293,7 @@ func (c *clientConfig) Install(isUpdate bool) (err error) {
 }
 
 func (c *clientConfig) Name() string {
-	return c.name
+	return strings.ReplaceAll(c.name, "_", " ")
 }
 
 func (c *clientConfig) createDir() error {
