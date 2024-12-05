@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.22.0](https://github.com/lukso-network/tools-lukso-cli/compare/v0.21.1...v0.22.0) (2024-12-03)
+
+
+### Features
+
+* Add --all flag for update configs ([#261](https://github.com/lukso-network/tools-lukso-cli/issues/261)) ([f4547e8](https://github.com/lukso-network/tools-lukso-cli/commit/f4547e8bab540cf4b3303a2778ed7092109b9e83))
+* client versions command ([#267](https://github.com/lukso-network/tools-lukso-cli/issues/267)) ([5fcb212](https://github.com/lukso-network/tools-lukso-cli/commit/5fcb212f5ac495177c52838d3e8666ddaac8fd2b))
+* Nimbus integration ([#263](https://github.com/lukso-network/tools-lukso-cli/issues/263)) ([57b0262](https://github.com/lukso-network/tools-lukso-cli/commit/57b026296f58fcfd16ca1a94f1e1273234e04fad))
+* Set IP for all clients during init ([#268](https://github.com/lukso-network/tools-lukso-cli/issues/268)) ([4260ab7](https://github.com/lukso-network/tools-lukso-cli/commit/4260ab7f5d483cc6b53974e915cbeedc2d3effc7))
+* Pass Geth NAT option using flags, not TOML config ([#271](https://github.com/lukso-network/tools-lukso-cli/issues/271)) ([448efee](https://github.com/lukso-network/tools-lukso-cli/commit/448efee85b4bb5da9355adbbbc3f3cd057a6c63c))
+* Force Geth and Erigon DB init for already existing db ([#266](https://github.com/lukso-network/tools-lukso-cli/issues/266)) ([dedd012](https://github.com/lukso-network/tools-lukso-cli/commit/dedd012e003e3aff375ae39ef6e5bba7e9419107))
+* Update README with Nimbus data ([#269](https://github.com/lukso-network/tools-lukso-cli/issues/269)) ([d4ad4bb](https://github.com/lukso-network/tools-lukso-cli/commit/d4ad4bb59829bee9056bc73133e0c7e8439eb721))
+
 ## [0.21.1](https://github.com/lukso-network/tools-lukso-cli/compare/v0.21.0...v0.21.1) (2024-10-02)
 
 
