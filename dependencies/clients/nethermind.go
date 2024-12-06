@@ -141,7 +141,7 @@ func (n *NethermindClient) ParseUrl(tag, commitHash string) (url string) {
 	if archName == "x86_64" {
 		archName = "x64"
 	}
-	if archName == "arm" {
+	if archName == "arm" || archName == "aarch64" {
 		archName = "arm64"
 	}
 
