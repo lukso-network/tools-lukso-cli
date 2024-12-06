@@ -861,39 +861,6 @@ func unzipDir(dst string, r *zip.Reader) (err error) {
 	return nil
 }
 
-func getUnameArch() (arch string) {
-	fallback := func() {
-		log.Info("⚠️  Unknown OS detected: proceeding with x86_64 as a default arch")
-		arch = "x86_64"
-	}
-
-	switch system.Os {
-	case system.Ubuntu, system.Macos:
-		buf := new(bytes.Buffer)
-
-		uname := exec.Command("uname", "-m")
-		uname.Stdout = buf
-
-		err := uname.Run()
-		if err != nil {
-			fallback()
-
-			break
-		}
-
-		arch = strings.Trim(buf.String(), "\n\t ")
-
-	default:
-		fallback()
-	}
-
-	if arch != "x86_64" && arch != "aarch64" {
-		fallback()
-	}
-
-	return
-}
-
 func isJdkInstalled() bool {
 	// JDK installed outside of the CLI
 	_, isInstalled := os.LookupEnv(system.JavaHomeEnv)

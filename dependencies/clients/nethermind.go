@@ -132,7 +132,7 @@ func (n *NethermindClient) Start(ctx *cli.Context, arguments []string) (err erro
 func (n *NethermindClient) ParseUrl(tag, commitHash string) (url string) {
 	url = n.baseUrl
 	osName := system.Os
-	archName := getUnameArch()
+	archName := system.GetArch()
 
 	if osName == system.Macos {
 		osName = "macos"
@@ -141,9 +141,8 @@ func (n *NethermindClient) ParseUrl(tag, commitHash string) (url string) {
 	if archName == "x86_64" {
 		archName = "x64"
 	}
-
-	if n.name == gethDependencyName && system.Os == system.Macos {
-		url = strings.Replace(url, "|ARCH|", "amd64", -1)
+	if archName == "arm" || archName == "aarch64" {
+		archName = "arm64"
 	}
 
 	url = strings.Replace(url, "|TAG|", tag, -1)

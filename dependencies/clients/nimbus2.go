@@ -52,7 +52,10 @@ func (n *Nimbus2Client) PrepareStartFlags(ctx *cli.Context) (startFlags []string
 }
 
 func (n *Nimbus2Client) ParseUrl(tag, commitHash string) (url string) {
-	var urlSystem string
+	var (
+		urlSystem string
+		arch      = system.GetArch()
+	)
 
 	switch system.Os {
 	case system.Ubuntu:
@@ -63,11 +66,15 @@ func (n *Nimbus2Client) ParseUrl(tag, commitHash string) (url string) {
 		urlSystem = "Linux"
 	}
 
+	if arch == "arm" || arch == "aarch64" {
+		arch = "arm64v8"
+	}
+
 	url = n.baseUrl
 	url = strings.ReplaceAll(url, "|TAG|", tag)
 	url = strings.ReplaceAll(url, "|OS|", urlSystem)
 	url = strings.ReplaceAll(url, "|COMMIT|", commitHash)
-	url = strings.ReplaceAll(url, "|ARCH|", system.Arch)
+	url = strings.ReplaceAll(url, "|ARCH|", arch)
 
 	return
 }

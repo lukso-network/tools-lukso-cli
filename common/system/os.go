@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"os/exec"
 	"runtime"
+	"slices"
 	"strconv"
 	"strings"
 
@@ -21,8 +22,9 @@ const (
 )
 
 var (
-	Arch = runtime.GOARCH
-	Os   = runtime.GOOS
+	Arch           = runtime.GOARCH
+	Os             = runtime.GOOS
+	SupportedArchs = []string{"x86_64", "aarch64", "arm", "i686"}
 )
 
 func IsRoot() (isRoot bool, err error) {
@@ -68,6 +70,10 @@ func GetArch() (arch string) {
 		arch = strings.Trim(buf.String(), "\n\t ")
 
 	default:
+		fallback()
+	}
+
+	if !slices.Contains(SupportedArchs, arch) {
 		fallback()
 	}
 
