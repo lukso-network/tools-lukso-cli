@@ -12,7 +12,7 @@ The LUKSO CLI is a command line tool to install, manage and set up validators of
 
 The LUKSO CLI is able to install multiple clients for running the node.
 
-- Execution Clients: [Geth](https://geth.ethereum.org/), [Erigon](https://github.com/ledgerwatch/erigon), [Nethermind](https://github.com/NethermindEth/nethermind), [Besu](https://www.hyperledger.org/projects/besu)
+- Execution Clients: [Geth](https://geth.ethereum.org/), [Erigon](https://github.com/erigontech/erigon), [Nethermind](https://github.com/NethermindEth/nethermind), [Besu](https://www.hyperledger.org/projects/besu)
 - Consensus Clients: [Prysm](https://github.com/prysmaticlabs/prysm), [Lighthouse](https://github.com/sigp/lighthouse), [Teku](https://github.com/Consensys/teku), [Nimbus (eth-2)](https://nimbus.guide/index.html)
 - Validator Staking Clients: [Prysm](https://docs.prylabs.network/docs/how-prysm-works/prysm-validator-client), [Lighthouse](https://github.com/sigp/lighthouse), [Teku](https://github.com/Consensys/teku)
 
@@ -21,7 +21,7 @@ The LUKSO CLI is able to install multiple clients for running the node.
 | Client         | Version  | Release                                                         |
 | -------------- | -------- | --------------------------------------------------------------- |
 | Geth           | v1.14.12 | https://github.com/ethereum/go-ethereum/releases/tag/v1.14.12   |
-| Erigon         | v2.60.4  | https://github.com/ledgerwatch/erigon/releases/tag/v2.60.4      |
+| Erigon         | v2.60.4  | https://github.com/erigontech/erigon/releases/tag/v2.60.4       |
 | Nethermind     | v1.27.0  | https://github.com/NethermindEth/nethermind/releases/tag/1.27.0 |
 | Besu           | v24.7.0  | https://github.com/hyperledger/besu/releases/tag/24.7.0         |
 | Prysm          | v5.1.2   | https://github.com/prysmaticlabs/prysm/releases/tag/v5.1.2      |
@@ -379,8 +379,8 @@ Please note that this won't affect your node in any way.
 | --geth-[command]                     | The `command` will be passed to the Geth client. [See the client docs for details](https://geth.ethereum.org/docs/fundamentals/command-line-options)  |
 | --prysm-[command]                    | The `command` will be passed to the Prysm client. [See the client docs for details](https://docs.prylabs.network/docs/prysm-usage/parameters)         |
 | --lighhouse-[command]                | The `command` will be passed to the Lighthouse client. [See the client docs for details](https://lighthouse-book.sigmaprime.io/advanced-datadir.html) |
-| --erigon-[command]                   | The `command` will be passed to the Erigon client. [See the client docs for details](https://github.com/ledgerwatch/erigon)                           |
-| --teku-[command]                     | The `command` will be passed to the Teku client. [See the client docs for details](https://github.com/ledgerwatch/erigon)                             |
+| --erigon-[command]                   | The `command` will be passed to the Erigon client. [See the client docs for details](https://github.com/erigontech/erigon)                            |
+| --teku-[command]                     | The `command` will be passed to the Teku client. [See the client docs for details](https://github.com/Consensys/teku)                                 |
 | --besu-[command]                     | The `command` will be passed to the Besu client. [See the client docs for details](https://github.com/hyperledger/besu)                               |
 | --nethermind-[command]               | The `command` will be passed to the Nethermind client. [See the client docs for details](https://github.com/NethermindEth/nethermind)                 |
 | --nimbus2-[command]                  | The `command` will be passed to the Nethermind client. [See the client docs for details](https://nimbus.guide/index.html)                             |
@@ -456,7 +456,7 @@ $ lukso status peers
 Ensure that the appropriate API is enabled when starting the node, as not all clients enable peer querying by default. For specific information about each client's peers queries, visit their documentation:
 
 - [Geth Peer Interaction](https://geth.ethereum.org/docs/interacting-with-geth/rpc/ns-admin)
-- [Erigon Peer Commands](https://github.com/ledgerwatch/erigon/blob/devel/cmd/rpcdaemon/README.md#rpc-implementation-status)
+- [Erigon Peer Commands](https://github.com/erigontech/erigon/blob/devel/cmd/rpcdaemon/README.md#rpc-implementation-status)
 
 All supported consensus clients follow the [Beacon API](https://ethereum.github.io/beacon-APIs/#/Node/getPeers) standardization.
 

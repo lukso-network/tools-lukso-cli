@@ -20,7 +20,7 @@ func NewErigonClient() *ErigonClient {
 		&clientBinary{
 			name:           erigonDependencyName,
 			commandName:    "erigon",
-			baseUrl:        "https://github.com/ledgerwatch/erigon/releases/download/v|TAG|/erigon_|TAG|_|OS|_|ARCH|.tar.gz",
+			baseUrl:        "https://github.com/erigontech/erigon/releases/download/v|TAG|/erigon_|TAG|_|OS|_|ARCH|.tar.gz",
 			githubLocation: erigonGithubLocation,
 		},
 	}
