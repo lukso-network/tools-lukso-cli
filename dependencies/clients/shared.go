@@ -46,7 +46,7 @@ const (
 	gethGithubLocation          = "ethereum/go-ethereum"
 	prysmaticLabsGithubLocation = "prysmaticlabs/prysm"
 	lighthouseGithubLocation    = "sigp/lighthouse"
-	erigonGithubLocation        = "ledgerwatch/erigon"
+	erigonGithubLocation        = "erigontech/erigon"
 	tekuGithubLocation          = "Consensys/teku"
 	nethermindGithubLocation    = "NethermindEth/nethermind"
 	besuGithubLocation          = "hyperledger/besu"
