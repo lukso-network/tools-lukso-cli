@@ -308,7 +308,7 @@ func (client *clientBinary) Install(url string, isUpdate bool) (err error) {
 			case gethDependencyName:
 				targetHeader = "/" + client.CommandName()
 			case erigonDependencyName:
-				targetHeader = "erigon"
+				targetHeader = "/erigon"
 			case lighthouseDependencyName:
 				targetHeader = "lighthouse"
 			}
@@ -425,15 +425,22 @@ Which initial LYX supply do you choose?
 		}
 	}
 
-	var dataDir string
+	var (
+		dataDir string
+		cmdPath string
+	)
+
 	switch client.Name() {
 	case gethDependencyName:
 		dataDir = fmt.Sprintf("--datadir=%s", ctx.String(flags.GethDatadirFlag))
+		cmdPath = client.CommandName()
+
 	case erigonDependencyName:
 		dataDir = fmt.Sprintf("--datadir=%s", ctx.String(flags.ErigonDatadirFlag))
+		cmdPath = fmt.Sprintf("./%s/%s", client.FilePath(), client.CommandName())
 	}
 
-	command := exec.Command(client.CommandName(), "init", dataDir, ctx.String(flags.GenesisJsonFlag))
+	command := exec.Command(cmdPath, "init", dataDir, ctx.String(flags.GenesisJsonFlag))
 	command.Stdout = os.Stdout
 	command.Stderr = os.Stderr
 
@@ -696,26 +703,30 @@ func untarDir(dst string, t *tar.Reader) error {
 			return err
 		}
 
-		path := filepath.Join(dst, header.Name)
+		var (
+			path       string
+			headerName = header.Name
+		)
 
 		// for the sake of compatibility with updated versions remove the tag from the tarred file - teku/teku-xx.x.x => teku/teku, same with jdk
 		switch {
 		case strings.Contains(header.Name, "teku-"):
-			newHeader := replaceRootFolderName(header.Name, "teku")
-			path = filepath.Join(dst, newHeader)
+			headerName = replaceRootFolderName(header.Name, "teku")
 
 		case strings.Contains(header.Name, "jdk-"):
-			newHeader := replaceRootFolderName(header.Name, "jdk")
-			path = filepath.Join(dst, newHeader)
+			headerName = replaceRootFolderName(header.Name, "jdk")
 
 		case strings.Contains(header.Name, "besu-"):
-			newHeader := replaceRootFolderName(header.Name, "besu")
-			path = filepath.Join(dst, newHeader)
+			headerName = replaceRootFolderName(header.Name, "besu")
 
 		case strings.Contains(header.Name, "nimbus-eth2"):
-			newHeader := replaceRootFolderName(header.Name, "nimbus2")
-			path = filepath.Join(dst, newHeader)
+			headerName = replaceRootFolderName(header.Name, "nimbus2")
+
+		case strings.Contains(header.Name, "erigon"):
+			headerName = replaceRootFolderName(header.Name, "erigon")
 		}
+
+		path = filepath.Join(dst, headerName)
 
 		info := header.FileInfo()
 		if info.IsDir() {

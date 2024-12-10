@@ -5,7 +5,7 @@ const (
 	SlotsPerEpoch = 32
 
 	GethTag              = "1.14.12"
-	ErigonTag            = "2.60.10"
+	ErigonTag            = "v2.60.10"
 	NethermindTag        = "1.27.0"
 	PrysmTag             = "v5.1.2"
 	LighthouseTag        = "v5.2.1"
