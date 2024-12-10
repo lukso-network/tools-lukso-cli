@@ -66,8 +66,12 @@ func (n *Nimbus2Client) ParseUrl(tag, commitHash string) (url string) {
 		urlSystem = "Linux"
 	}
 
-	if arch == "arm" || arch == "aarch64" {
+	if (arch == "arm" || arch == "aarch64") && system.Os == system.Ubuntu {
 		arch = "arm64v8"
+	}
+	if arch == "x86_64" {
+		// x86_64 not present as a released tar - default to amd64 instead
+		arch = "amd64"
 	}
 
 	url = n.baseUrl
