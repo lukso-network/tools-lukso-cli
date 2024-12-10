@@ -21,7 +21,7 @@ The LUKSO CLI is able to install multiple clients for running the node.
 | Client         | Version  | Release                                                         |
 | -------------- | -------- | --------------------------------------------------------------- |
 | Geth           | v1.14.12 | https://github.com/ethereum/go-ethereum/releases/tag/v1.14.12   |
-| Erigon         | v2.60.4  | https://github.com/erigontech/erigon/releases/tag/v2.60.4       |
+| Erigon         | v2.60.10 | https://github.com/erigontech/erigon/releases/tag/v2.60.10      |
 | Nethermind     | v1.27.0  | https://github.com/NethermindEth/nethermind/releases/tag/1.27.0 |
 | Besu           | v24.7.0  | https://github.com/hyperledger/besu/releases/tag/24.7.0         |
 | Prysm          | v5.1.2   | https://github.com/prysmaticlabs/prysm/releases/tag/v5.1.2      |
@@ -206,7 +206,7 @@ $ lukso install --geth-tag 1.14.7 --geth-commit-hash aa55f5ea
 | --geth-commit-hash value       | A hash of commit that is bound to given release tag | "293a300d" |
 | --validator-tag value          | Tag for validator binary                            | "v5.1.2"   |
 | --prysm-tag value              | Tag for Prysm                                       | "v5.1.2"   |
-| --erigon-tag value             | Tag for Erigon                                      | "2.60.4"   |
+| --erigon-tag value             | Tag for Erigon                                      | "2.60.10"  |
 | --lighthouse-tag value         | Tag for Lighthouse                                  | "v5.2.1"   |
 | --teku-tag value               | Tag for Teku                                        | "24.6.1"   |
 | --besu-tag value               | Tag for Besu                                        | "24.7.0"   |
