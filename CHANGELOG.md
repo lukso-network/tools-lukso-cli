@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.23.0](https://github.com/lukso-network/tools-lukso-cli/compare/v0.22.0...v0.23.0) (2024-12-12)
+
+
+### Features
+
+* Bump erigon tag ([#274](https://github.com/lukso-network/tools-lukso-cli/issues/274)) ([9af5412](https://github.com/lukso-network/tools-lukso-cli/commit/9af541200b8fcf92a92c05ed39253abdcb4f8c97))
+
+
+### Bug Fixes
+
+* Nethermind installation errors ([#273](https://github.com/lukso-network/tools-lukso-cli/issues/273)) ([d07b652](https://github.com/lukso-network/tools-lukso-cli/commit/d07b652e8121ad9dab1fb79a19bdc941506e0637))
+
 ## [0.22.0](https://github.com/lukso-network/tools-lukso-cli/compare/v0.21.1...v0.22.0) (2024-12-03)
 
 
