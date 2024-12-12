@@ -95,6 +95,16 @@ func InstallBinaries(ctx *cli.Context) (err error) {
 	case "2":
 		selectedExecution = clients.Erigon
 		executionTag = ctx.String(flags.ErigonTagFlag)
+		// backwards compatibility - after erigon edited the repository it came with a few breaking changes
+		// New tag format (_X.Y.Z_ -> _vX.Y.Z_) in GH release was introduced in v2.60.9
+		tagVer := common.StringToSemver(executionTag)
+		erigonVer := common.StringToSemver("2.60.8")
+		if !tagVer.IsNewerThan(erigonVer) {
+			log.Warn("⚠️  Erigon has introduced changes in making new release URLs.\n" +
+				"This means that LUKSO CLI from now on will support versions from v2.60.9\n" +
+				"If you wish to install older erigon versions (not recommended), please use <=0.22.0 version of LUKSO CLI.")
+		}
+
 	case "3":
 		selectedExecution = clients.Nethermind
 		executionTag = ctx.String(flags.NethermindTagFlag)
