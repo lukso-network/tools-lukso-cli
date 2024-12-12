@@ -135,6 +135,16 @@ func (e *ErigonClient) Install(url string, isUpdate bool) (err error) {
 	return
 }
 
+func (e *ErigonClient) Update() (err error) {
+	tag := e.getVersion()
+
+	log.WithField("dependencyTag", tag).Infof("⬇️  Updating %s", e.name)
+
+	url := e.ParseUrl(tag, "")
+
+	return e.Install(url, true)
+}
+
 func (e *ErigonClient) PrepareStartFlags(ctx *cli.Context) (startFlags []string, err error) {
 	if !utils.FlagFileExists(ctx, flags.ErigonConfigFileFlag) {
 		err = errors.ErrFlagMissing

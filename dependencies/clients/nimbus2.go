@@ -111,6 +111,16 @@ func (n *Nimbus2Client) Install(url string, isUpdate bool) (err error) {
 	return
 }
 
+func (n *Nimbus2Client) Update() (err error) {
+	tag := n.getVersion()
+
+	log.WithField("dependencyTag", tag).Infof("⬇️  Updating %s", n.name)
+
+	url := n.ParseUrl(tag, common.Nimbus2CommitHash)
+
+	return n.Install(url, true)
+}
+
 func (n *Nimbus2Client) FilePath() string {
 	return nimbus2Folder
 }

@@ -96,6 +96,16 @@ func (b *BesuClient) Install(url string, isUpdate bool) (err error) {
 	return
 }
 
+func (b *BesuClient) Update() (err error) {
+	tag := b.getVersion()
+
+	log.WithField("dependencyTag", tag).Infof("⬇️  Updating %s", b.name)
+
+	url := b.ParseUrl(tag, "")
+
+	return b.Install(url, true)
+}
+
 func (b *BesuClient) FilePath() string {
 	return besuFolder
 }
