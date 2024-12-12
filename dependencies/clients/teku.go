@@ -105,6 +105,16 @@ func (t *TekuClient) Install(url string, isUpdate bool) (err error) {
 	return
 }
 
+func (t *TekuClient) Update() (err error) {
+	tag := t.getVersion()
+
+	log.WithField("dependencyTag", tag).Infof("⬇️  Updating %s", t.name)
+
+	url := t.ParseUrl(tag, "")
+
+	return t.Install(url, true)
+}
+
 func (t *TekuClient) FilePath() string {
 	return tekuFolder
 }

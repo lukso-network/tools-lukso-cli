@@ -47,7 +47,7 @@ func UpdateClients(ctx *cli.Context) (err error) {
 	toUpdate := []clients.ClientBinaryDependency{execution, consensus, validator}
 
 	for _, client := range toUpdate {
-		if client == clients.LighthouseValidator || client == clients.TekuValidator {
+		if client == clients.LighthouseValidator || client == clients.TekuValidator || client == clients.Nimbus2Validator {
 			continue
 		}
 
