@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.23.1](https://github.com/lukso-network/tools-lukso-cli/compare/v0.23.0...v0.23.1) (2024-12-12)
+
+
+### Bug Fixes
+
+* update clients in clients directory ([#276](https://github.com/lukso-network/tools-lukso-cli/issues/276)) ([57058f8](https://github.com/lukso-network/tools-lukso-cli/commit/57058f81e5c1cfb3eb4858fd0062557179f152fd))
+
 ## [0.23.0](https://github.com/lukso-network/tools-lukso-cli/compare/v0.22.0...v0.23.0) (2024-12-12)
 
 
