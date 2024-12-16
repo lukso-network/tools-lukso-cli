@@ -377,12 +377,12 @@ Please note that this won't affect your node in any way.
 | --nimbus2-validator-config [string]  | Defines the path to nimbus validator TOML config file                                                                                                 |
 | --validator-config [string]          | Defines the path to validator YAML config file                                                                                                        |
 | --geth-[command]                     | The `command` will be passed to the Geth client. [See the client docs for details](https://geth.ethereum.org/docs/fundamentals/command-line-options)  |
-| --erigon-[command]                   | The `command` will be passed to the Erigon client. [See the client docs for details](https://github.com/erigontech/erigon)                           |
+| --erigon-[command]                   | The `command` will be passed to the Erigon client. [See the client docs for details](https://github.com/erigontech/erigon)                            |
 | --nethermind-[command]               | The `command` will be passed to the Nethermind client. [See the client docs for details](https://github.com/NethermindEth/nethermind)                 |
 | --besu-[command]                     | The `command` will be passed to the Besu client. [See the client docs for details](https://github.com/hyperledger/besu)                               |
 | --prysm-[command]                    | The `command` will be passed to the Prysm client. [See the client docs for details](https://docs.prylabs.network/docs/prysm-usage/parameters)         |
 | --lighthouse-[command]               | The `command` will be passed to the Lighthouse client. [See the client docs for details](https://lighthouse-book.sigmaprime.io/advanced-datadir.html) |
-| --teku-[command]                     | The `command` will be passed to the Teku client. [See the client docs for details](https://github.com/ledgerwatch/erigon)                             |
+| --teku-[command]                     | The `command` will be passed to the Teku client. [See the client docs for details](https://github.com/Consensys/teku)                             |
 | --nimbus2-[command]                  | The `command` will be passed to the Nimbus-eth2 client. [See the client docs for details](https://nimbus.guide/index.html)                            |
 | --checkpoint-sync                    | Run a node with checkpoint sync feature                                                                                                               |
 
@@ -604,6 +604,7 @@ sudo lukso validator exit --testnet --keystore "./testnet-keystore/keystore-xxx.
 ```
 
 To successfully exit, a validator must first broadcast a message to the network - you can use an already existing RPC to connect to the network.
+
 ```sh
 # Exit a validator using public LUKSO RPC
 sudo lukso validator exit --rpc-address "https://rpc.mainnet.lukso.network"

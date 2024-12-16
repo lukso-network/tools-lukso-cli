@@ -380,17 +380,15 @@ func initClient(ctx *cli.Context, client ClientBinaryDependency) (err error) {
 	}
 
 	var (
-		dataDir string
+		dataDir = fmt.Sprintf("--datadir=%s", ctx.String(flags.ExecutionDatadirFlag))
 		cmdPath string
 	)
 
 	switch client.Name() {
 	case gethDependencyName:
-		dataDir = fmt.Sprintf("--datadir=%s", ctx.String(flags.GethDatadirFlag))
 		cmdPath = client.CommandName()
 
 	case erigonDependencyName:
-		dataDir = fmt.Sprintf("--datadir=%s", ctx.String(flags.ErigonDatadirFlag))
 		cmdPath = fmt.Sprintf("./%s/%s", client.FilePath(), client.CommandName())
 	}
 
