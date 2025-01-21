@@ -5,16 +5,16 @@ const (
 	SlotsPerEpoch = 32
 
 	GethTag              = "1.14.12"
-	ErigonTag            = "v2.60.10"
-	NethermindTag        = "1.27.0"
-	PrysmTag             = "v5.1.2"
-	LighthouseTag        = "v5.2.1"
-	TekuTag              = "24.6.1"
-	BesuTag              = "24.7.0"
-	Nimbus2Tag           = "24.10.0"
+	ErigonTag            = "v2.61.0"
+	NethermindTag        = "1.30.3"
+	PrysmTag             = "v5.2.0"
+	LighthouseTag        = "v6.0.1"
+	TekuTag              = "24.12.1"
+	BesuTag              = "24.12.2"
+	Nimbus2Tag           = "24.12.0"
 	GethCommitHash       = "293a300d"
-	NethermindCommitHash = "220b5b85"
-	Nimbus2CommitHash    = "c4037d63"
+	NethermindCommitHash = "87c86379"
+	Nimbus2CommitHash    = "4e440277"
 
 	ClientDepsFolder = "clients" // folder in which client dependencies are stored
 )
