@@ -187,7 +187,6 @@ func (n *NethermindClient) Version() (version string) {
 	cmdVer := execVersionCmd(
 		fmt.Sprintf("./%s/nethermind", n.FilePath()),
 	)
-	fmt.Println(cmdVer)
 
 	if cmdVer == VersionNotAvailable {
 		return VersionNotAvailable
@@ -217,15 +216,15 @@ func (n *NethermindClient) Version() (version string) {
 	// OS: Linux x64
 	// Runtime: .NET 8.0.6
 
+	// Regexr: https://regexr.com/8bf90
 	// Find the 'Version' line (with uppercase Version)
-	expr := regexp.MustCompile(`Version: * \d+(\.\d+){2}\+[a-f0-9]{8}`)
-	strs := expr.FindAllString(cmdVer, -1)
-	if len(strs) == 0 {
+	expr := regexp.MustCompile(fmt.Sprintf(`Version: * %s\+[a-f0-9]{8}`, common.SemverExpressionRaw))
+	s := expr.FindString(cmdVer)
+	if s == "" {
 		return VersionNotAvailable
 	}
 
-	// Version: 1.27.0+220b5b85
-	s := strs[0]
+	// s: Version: 1.27.0+220b5b85
 	// -> ...|v1.27.0+220b5b85
 	splits := strings.Split(s, " ")
 	s = splits[len(splits)-1]

@@ -1,13 +1,17 @@
 package common
 
 import (
+	"fmt"
 	"regexp"
 	"strconv"
 	"strings"
 )
 
 // https://regexr.com/89qep
-var semverExpr = regexp.MustCompile(`^v?\d+(\.\d+){2}$`)
+
+const SemverExpressionRaw = `v?\d+(\.\d+){2}`
+
+var semverExpr = regexp.MustCompile(fmt.Sprintf(`^%s$`, SemverExpressionRaw))
 
 type Semver struct {
 	major int
