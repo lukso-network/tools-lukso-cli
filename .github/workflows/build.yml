@@ -254,7 +254,7 @@ jobs:
         run: tar czvf ${{ matrix.name }} lukso
 
       - name: Notarize | Upload Notarized Binary
-        uses: aactions/upload-artifact@v4
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.name }}
           path: ${{ matrix.name }}
