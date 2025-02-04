@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"time"
 
@@ -193,6 +194,8 @@ func (n *NethermindClient) Version() (version string) {
 
 	// Nethermind version output to parse:
 
+	// < v1.30:
+
 	// 2024-11-19 11-41-29.6737|Nethermind starting initialization.
 	// 2024-11-19 11-41-29.6915|Client version: Nethermind/v1.27.0+220b5b85/linux-x64/dotnet8.0.6
 	// 2024-11-19 11-41-29.7003|Loading embedded plugins
@@ -206,11 +209,27 @@ func (n *NethermindClient) Version() (version string) {
 	// OS: Linux x64
 	// Runtime: .NET 8.0.6
 
-	// We can use the second line
-	s := strings.Split(cmdVer, "\n")[1]
-	// -> ...|v1.27.0+220b5b85|...
-	s = strings.Split(s, "/")[1]
-	return strings.Split(s, "+")[0]
+	// > v1.30:
+	// Version: 1.27.0+220b5b85
+	// Commit: 220b5b856b1530482e957c002c9b24148a25f075
+	// Build Date: 2024-06-21 11:48:18Z
+	// OS: Linux x64
+	// Runtime: .NET 8.0.6
+
+	// Regexr: https://regexr.com/8bf90
+	// Find the 'Version' line (with uppercase Version)
+	expr := regexp.MustCompile(fmt.Sprintf(`Version: * %s\+[a-f0-9]{8}`, common.SemverExpressionRaw))
+	s := expr.FindString(cmdVer)
+	if s == "" {
+		return VersionNotAvailable
+	}
+
+	// s: Version: 1.27.0+220b5b85
+	// -> ...|v1.27.0+220b5b85
+	splits := strings.Split(s, " ")
+	s = splits[len(splits)-1]
+
+	return fmt.Sprintf("v%s", strings.Split(s, "+")[0])
 }
 
 func (n *NethermindClient) FilePath() string {

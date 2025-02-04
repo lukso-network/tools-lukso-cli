@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"time"
 
@@ -190,10 +191,23 @@ func (t *TekuClient) Version() (version string) {
 		return VersionNotAvailable
 	}
 
-	// Besu version output to parse:
+	// Teku version output to parse:
 
-	// teku/v24.6.1/linux-x86_64/oracle_openjdk-java-22
-	return strings.Split(cmdVer, "/")[1]
+	// 2025-01-27T11:22:24.202228671Z main INFO Starting configuration XmlConfiguration[location=jar:file:/home/m8b-stan/update-test/clients/teku/lib/teku-infrastructure-logging-24.12.1.jar!/log4j2.xml, lastModified=2025-01-27T10:50:28.949Z]...
+	// 2025-01-27T11:22:24.203796770Z main INFO Start watching for changes to jar:file:/home/m8b-stan/update-test/clients/teku/lib/teku-infrastructure-logging-24.12.1.jar!/log4j2.xml every 0 seconds
+	// 2025-01-27T11:22:24.204058832Z main INFO Configuration XmlConfiguration[location=jar:file:/home/m8b-stan/update-test/clients/teku/lib/teku-infrastructure-logging-24.12.1.jar!/log4j2.xml, lastModified=2025-01-27T10:50:28.949Z] started.
+	// 2025-01-27T11:22:24.206286375Z main INFO Stopping configuration org.apache.logging.log4j.core.config.DefaultConfiguration@1b11171f...
+	// 2025-01-27T11:22:24.206960660Z main INFO Configuration org.apache.logging.log4j.core.config.DefaultConfiguration@1b11171f stopped.
+	// teku/v24.12.1/linux-x86_64/oracle_openjdk-java-22
+
+	// Find the line with teku
+	expr := regexp.MustCompile(fmt.Sprintf(`teku\/%s`, common.SemverExpressionRaw))
+	s := expr.FindString(cmdVer)
+	if s == "" {
+		return VersionNotAvailable
+	}
+
+	return strings.Split(s, "/")[1]
 }
 
 func setupJava(isUpdate bool) (err error) {
