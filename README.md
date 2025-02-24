@@ -24,7 +24,7 @@ The LUKSO CLI is able to install multiple clients for running the node.
 | Erigon         | v2.61.0  | https://github.com/erigontech/erigon/releases/tag/v2.61.0       |
 | Nethermind     | v1.30.3  | https://github.com/NethermindEth/nethermind/releases/tag/1.30.3 |
 | Besu           | v24.12.2 | https://github.com/hyperledger/besu/releases/tag/24.12.2        |
-| Prysm          | v5.2.0   | https://github.com/prysmaticlabs/prysm/releases/tag/v5.2.0      |
+| Prysm          | v5.3.0   | https://github.com/prysmaticlabs/prysm/releases/tag/v5.3.0      |
 | Lighthouse     | v6.0.1   | https://github.com/sigp/lighthouse/releases/tag/v6.0.1          |
 | Teku           | v24.12.1 | https://github.com/Consensys/teku/releases/tag/24.12.1          |
 | Nimbus (eth-2) | v24.12.0 | https://github.com/status-im/nimbus-eth2/releases/tag/v24.10.0  |
@@ -204,8 +204,8 @@ $ lukso install --geth-tag 1.14.7 --geth-commit-hash aa55f5ea
 | --agree-terms                  | Automatically accept Terms and Conditions           | false      |
 | --geth-tag value               | Tag for Geth                                        | "1.14.13"  |
 | --geth-commit-hash value       | A hash of commit that is bound to given release tag | "eb00f169" |
-| --validator-tag value          | Tag for validator binary                            | "v5.2.0"   |
-| --prysm-tag value              | Tag for Prysm                                       | "v5.2.0"   |
+| --validator-tag value          | Tag for validator binary                            | "v5.3.0"   |
+| --prysm-tag value              | Tag for Prysm                                       | "v5.3.0"   |
 | --erigon-tag value             | Tag for Erigon                                      | "2.61.0"   |
 | --lighthouse-tag value         | Tag for Lighthouse                                  | "v6.0.1"   |
 | --teku-tag value               | Tag for Teku                                        | "24.12.1"  |
