@@ -161,7 +161,7 @@ func (n *NethermindClient) Update() (err error) {
 
 	// this commit hash is hardcoded, but since update should only be responsible for updating the client to
 	// LUKSO supported version this is fine.
-	url := n.ParseUrl(tag, common.GethCommitHash)
+	url := n.ParseUrl(tag, common.NethermindCommitHash)
 
 	return n.Install(url, true)
 }
