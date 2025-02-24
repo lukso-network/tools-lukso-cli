@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.24.1](https://github.com/lukso-network/tools-lukso-cli/compare/v0.24.0...v0.24.1) (2025-02-24)
+
+
+### Bug Fixes
+
+* Nethermind update broken link ([#280](https://github.com/lukso-network/tools-lukso-cli/issues/280)) ([859a1c3](https://github.com/lukso-network/tools-lukso-cli/commit/859a1c3832f2b22ceef210d078f60c797adbd5dd))
+
 ## [0.24.0](https://github.com/lukso-network/tools-lukso-cli/compare/v0.23.1...v0.24.0) (2025-02-04)
 
 
