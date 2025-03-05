@@ -24,7 +24,7 @@ The LUKSO CLI is able to install multiple clients for running the node.
 | Erigon         | v2.61.0  | https://github.com/erigontech/erigon/releases/tag/v2.61.0       |
 | Nethermind     | v1.30.3  | https://github.com/NethermindEth/nethermind/releases/tag/1.30.3 |
 | Besu           | v24.12.2 | https://github.com/hyperledger/besu/releases/tag/24.12.2        |
-| Prysm          | v5.2.0   | https://github.com/prysmaticlabs/prysm/releases/tag/v5.2.0      |
+| Prysm          | v5.3.0   | https://github.com/prysmaticlabs/prysm/releases/tag/v5.3.0      |
 | Lighthouse     | v6.0.1   | https://github.com/sigp/lighthouse/releases/tag/v6.0.1          |
 | Teku           | v24.12.1 | https://github.com/Consensys/teku/releases/tag/24.12.1          |
 | Nimbus (eth-2) | v24.12.0 | https://github.com/status-im/nimbus-eth2/releases/tag/v24.10.0  |
@@ -204,8 +204,8 @@ $ lukso install --geth-tag 1.14.7 --geth-commit-hash aa55f5ea
 | --agree-terms                  | Automatically accept Terms and Conditions           | false      |
 | --geth-tag value               | Tag for Geth                                        | "1.14.13"  |
 | --geth-commit-hash value       | A hash of commit that is bound to given release tag | "eb00f169" |
-| --validator-tag value          | Tag for validator binary                            | "v5.2.0"   |
-| --prysm-tag value              | Tag for Prysm                                       | "v5.2.0"   |
+| --validator-tag value          | Tag for validator binary                            | "v5.3.0"   |
+| --prysm-tag value              | Tag for Prysm                                       | "v5.3.0"   |
 | --erigon-tag value             | Tag for Erigon                                      | "2.61.0"   |
 | --lighthouse-tag value         | Tag for Lighthouse                                  | "v6.0.1"   |
 | --teku-tag value               | Tag for Teku                                        | "24.12.1"  |
@@ -344,6 +344,14 @@ $ lukso start --testnet --lighthouse-checkpoint-sync-url=https://checkpoints.tes
 time="2024-02-27 11:32:55" level=error msg="There were some issues parsing the config from a yaml file" error="yaml: unmarshal errors:
   line 113: field DENEB_FORK_VERSION not found in type params.BeaconChainConfig
   line 119: field DENEB_FORK_EPOCH not found in type params.BeaconChainConfig"
+```
+
+A similar error can be found in later forks as well when running older versions of clients. For example, the Fulu fork, while already present in the v5.3.0, will present the following error when running older versions:
+
+```
+time="2025-03-05 14:22:19" level=error msg="There were some issues parsing the config from a yaml file" error="yaml: unmarshal errors:
+  line 137: field FULU_FORK_VERSION not found in type params.BeaconChainConfig
+  line 143: field FULU_FORK_EPOCH not found in type params.BeaconChainConfig"
 ```
 
 Please note that this won't affect your node in any way.

@@ -7,7 +7,7 @@ const (
 	GethTag              = "1.14.13"
 	ErigonTag            = "v2.61.0"
 	NethermindTag        = "1.30.3"
-	PrysmTag             = "v5.2.0"
+	PrysmTag             = "v5.3.0"
 	LighthouseTag        = "v6.0.1"
 	TekuTag              = "24.12.1"
 	BesuTag              = "24.12.2"
