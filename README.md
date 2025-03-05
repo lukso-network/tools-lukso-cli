@@ -346,6 +346,14 @@ time="2024-02-27 11:32:55" level=error msg="There were some issues parsing the c
   line 119: field DENEB_FORK_EPOCH not found in type params.BeaconChainConfig"
 ```
 
+A similar error can be found in later forks as well when running older versions of clients. For example, the Fulu fork, while already present in the v5.3.0, will present the following error when running older versions:
+
+```
+time="2025-03-05 14:22:19" level=error msg="There were some issues parsing the config from a yaml file" error="yaml: unmarshal errors:
+  line 137: field FULU_FORK_VERSION not found in type params.BeaconChainConfig
+  line 143: field FULU_FORK_EPOCH not found in type params.BeaconChainConfig"
+```
+
 Please note that this won't affect your node in any way.
 
 #### Options for `start`
