@@ -39,6 +39,8 @@ var inactiveNavbarTabBorder = lipgloss.Border{
 }
 
 var navbarBorder = lipgloss.NewStyle().
+	PaddingLeft(1).
+	PaddingRight(1).
 	BorderForeground(color.LuksoPink)
 
 var ActiveNavbarTab = navbarBorder.

@@ -6,6 +6,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 
+	"github.com/lukso-network/tools-lukso-cli/ui/binding"
 	"github.com/lukso-network/tools-lukso-cli/ui/navbar"
 	"github.com/lukso-network/tools-lukso-cli/ui/page"
 	"github.com/lukso-network/tools-lukso-cli/ui/style"
@@ -25,9 +26,12 @@ var _ tea.Model = &Model{}
 func NewModel() *Model {
 	pages := []page.Page{
 		&page.WelcomePage{},
+		&page.WelcomePage{},
+		&page.WelcomePage{},
+		&page.WelcomePage{},
 	}
-	titles := make([]string, len(pages))
 
+	titles := make([]string, len(pages))
 	for i, page := range pages {
 		titles[i] = page.Title()
 	}
@@ -47,16 +51,27 @@ func (m *Model) Init() (cmd tea.Cmd) {
 func (m *Model) Update(msg tea.Msg) (model tea.Model, cmd tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
-		m.keyPress = msg.String()
+		keyPress := msg.String()
+		m.keyPress = keyPress
 
-		switch msg.String() {
-		case "ctrl+c", "esc":
+		switch {
+		case binding.Matches(binding.Mapping.Quit, keyPress):
 			return m, tea.Quit
 
-		case "left":
-			m.counter--
-		case "right":
-			m.counter++
+		case binding.Matches(binding.Mapping.PreviousPage, keyPress):
+			m.activePageI--
+			if m.activePageI < 0 {
+				m.activePageI = len(m.pages) - 1
+			}
+
+		case binding.Matches(binding.Mapping.NextPage, keyPress):
+			m.activePageI++
+			if m.activePageI > len(m.pages)-1 {
+				m.activePageI = 0
+			}
+
+		default:
+			m.pages[m.activePageI].HandleInput(msg)
 		}
 	}
 
@@ -64,10 +79,10 @@ func (m *Model) Update(msg tea.Msg) (model tea.Model, cmd tea.Cmd) {
 }
 
 func (m *Model) View() string {
-	content := lipgloss.JoinVertical(lipgloss.Center, strconv.FormatInt(int64(m.counter), 10), m.keyPress)
+	content := lipgloss.JoinVertical(lipgloss.Center, strconv.FormatInt(int64(m.activePageI), 10), m.keyPress)
 	navbar := navbar.FromTitles(m.titles, m.activePageI)
 
 	renderedContent := style.App.Render(content)
 
-	return lipgloss.JoinHorizontal(lipgloss.Left, navbar, renderedContent)
+	return lipgloss.JoinVertical(lipgloss.Left, navbar, renderedContent)
 }

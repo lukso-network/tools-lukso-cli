@@ -8,7 +8,7 @@ import (
 )
 
 func Ui(ctx *cli.Context) (err error) {
-	m := &ui.Model{}
+	m := ui.NewModel()
 	p := tea.NewProgram(m, tea.WithAltScreen())
 
 	_, err = p.Run()
