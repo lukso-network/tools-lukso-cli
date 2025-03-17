@@ -11,20 +11,28 @@ type appBinding struct {
 	Down         keyBinding
 	NextPage     keyBinding
 	PreviousPage keyBinding
+	RightField   keyBinding
+	LeftField    keyBinding
+	UpField      keyBinding
+	DownField    keyBinding
 	Enter        keyBinding
 	Quit         keyBinding
 }
 
 // A default mapping for the app - is overriden during init
 var Mapping = appBinding{
-	Left:         []string{"left"},
-	Right:        []string{"right"},
-	Up:           []string{"up"},
-	Down:         []string{"down"},
-	NextPage:     []string{"shift+right"},
-	PreviousPage: []string{"shift+left"},
-	Enter:        []string{"enter"},
-	Quit:         []string{"esc", "ctrl+c"},
+	Left:         keyBinding{"left"},
+	Right:        keyBinding{"right"},
+	Up:           keyBinding{"up"},
+	Down:         keyBinding{"down"},
+	NextPage:     keyBinding{"shift+right"},
+	PreviousPage: keyBinding{"shift+left"},
+	RightField:   keyBinding{"ctrl+right"},
+	LeftField:    keyBinding{"ctrl+left"},
+	UpField:      keyBinding{"ctrl+up"},
+	DownField:    keyBinding{"ctrl+down"},
+	Enter:        keyBinding{"enter"},
+	Quit:         keyBinding{"esc", "ctrl+c"},
 }
 
 func init() {

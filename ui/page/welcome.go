@@ -6,6 +6,10 @@ type WelcomePage struct{}
 
 var _ Page = &WelcomePage{}
 
+func (p *WelcomePage) Title() string {
+	return "Home"
+}
+
 func (p *WelcomePage) HandleInput(msg tea.KeyMsg) {
 }
 

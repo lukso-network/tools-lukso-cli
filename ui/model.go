@@ -6,12 +6,15 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 
+	"github.com/lukso-network/tools-lukso-cli/ui/navbar"
 	"github.com/lukso-network/tools-lukso-cli/ui/page"
+	"github.com/lukso-network/tools-lukso-cli/ui/style"
 )
 
 type Model struct {
-	pages      []page.Page
-	activePage int
+	pages       []page.Page
+	activePageI int
+	titles      []string
 
 	keyPress string
 	counter  int
@@ -20,17 +23,24 @@ type Model struct {
 var _ tea.Model = &Model{}
 
 func NewModel() *Model {
+	pages := []page.Page{
+		&page.WelcomePage{},
+	}
+	titles := make([]string, len(pages))
+
+	for i, page := range pages {
+		titles[i] = page.Title()
+	}
+
 	return &Model{
-		pages: []page.Page{
-			&page.WelcomePage{},
-		},
-		activePage: 0,
-		counter:    0,
+		pages:       pages,
+		activePageI: 0,
+		titles:      titles,
+		counter:     0,
 	}
 }
 
 func (m *Model) Init() (cmd tea.Cmd) {
-	m.counter = 0
 	return nil
 }
 
@@ -54,5 +64,10 @@ func (m *Model) Update(msg tea.Msg) (model tea.Model, cmd tea.Cmd) {
 }
 
 func (m *Model) View() string {
-	return lipgloss.JoinVertical(lipgloss.Center, strconv.FormatInt(int64(m.counter), 10), m.keyPress)
+	content := lipgloss.JoinVertical(lipgloss.Center, strconv.FormatInt(int64(m.counter), 10), m.keyPress)
+	navbar := navbar.FromTitles(m.titles, m.activePageI)
+
+	renderedContent := style.App.Render(content)
+
+	return lipgloss.JoinHorizontal(lipgloss.Left, navbar, renderedContent)
 }
