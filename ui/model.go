@@ -1,8 +1,6 @@
 package ui
 
 import (
-	"strconv"
-
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 
@@ -26,9 +24,9 @@ var _ tea.Model = &Model{}
 func NewModel() *Model {
 	pages := []page.Page{
 		&page.WelcomePage{},
-		&page.WelcomePage{},
-		&page.WelcomePage{},
-		&page.WelcomePage{},
+		&page.InstallPage{},
+		&page.StartPage{},
+		&page.LogsPage{},
 	}
 
 	titles := make([]string, len(pages))
@@ -79,7 +77,7 @@ func (m *Model) Update(msg tea.Msg) (model tea.Model, cmd tea.Cmd) {
 }
 
 func (m *Model) View() string {
-	content := lipgloss.JoinVertical(lipgloss.Center, strconv.FormatInt(int64(m.activePageI), 10), m.keyPress)
+	content := lipgloss.JoinVertical(lipgloss.Center, m.pages[m.activePageI].View())
 	navbar := navbar.FromTitles(m.titles, m.activePageI)
 
 	renderedContent := style.App.Render(content)
