@@ -1,10 +1,10 @@
 package page
 
 import (
-	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 
 	"github.com/lukso-network/tools-lukso-cli/ui/common"
+	"github.com/lukso-network/tools-lukso-cli/ui/common/context"
 	"github.com/lukso-network/tools-lukso-cli/ui/style/color"
 )
 
@@ -16,7 +16,7 @@ func (p *WelcomePage) Title() string {
 	return "Home"
 }
 
-func (p *WelcomePage) HandleInput(msg tea.KeyMsg) {
+func (p *WelcomePage) Handle(ctx context.Context) {
 }
 
 func (p *WelcomePage) View() string {

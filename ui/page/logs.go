@@ -1,6 +1,6 @@
 package page
 
-import tea "github.com/charmbracelet/bubbletea"
+import "github.com/lukso-network/tools-lukso-cli/ui/common/context"
 
 type LogsPage struct{}
 
@@ -10,7 +10,7 @@ func (p *LogsPage) Title() string {
 	return "Logs"
 }
 
-func (p *LogsPage) HandleInput(msg tea.KeyMsg) {
+func (p *LogsPage) Handle(ctx context.Context) {
 }
 
 func (p *LogsPage) View() string {

@@ -5,6 +5,7 @@ import (
 	"github.com/charmbracelet/lipgloss"
 
 	"github.com/lukso-network/tools-lukso-cli/ui/binding"
+	"github.com/lukso-network/tools-lukso-cli/ui/common/context"
 	"github.com/lukso-network/tools-lukso-cli/ui/navbar"
 	"github.com/lukso-network/tools-lukso-cli/ui/page"
 	"github.com/lukso-network/tools-lukso-cli/ui/style"
@@ -27,6 +28,7 @@ func NewModel() *Model {
 		&page.InstallPage{},
 		&page.StartPage{},
 		&page.LogsPage{},
+		&page.TestPage{},
 	}
 
 	titles := make([]string, len(pages))
@@ -47,6 +49,8 @@ func (m *Model) Init() (cmd tea.Cmd) {
 }
 
 func (m *Model) Update(msg tea.Msg) (model tea.Model, cmd tea.Cmd) {
+	ctx := context.Context{}
+
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		keyPress := msg.String()
@@ -69,9 +73,12 @@ func (m *Model) Update(msg tea.Msg) (model tea.Model, cmd tea.Cmd) {
 			}
 
 		default:
-			m.pages[m.activePageI].HandleInput(msg)
 		}
 	}
+
+	ctx.Msg = msg
+
+	m.pages[m.activePageI].Handle(ctx)
 
 	return m, nil
 }

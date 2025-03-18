@@ -1,6 +1,6 @@
 package page
 
-import tea "github.com/charmbracelet/bubbletea"
+import "github.com/lukso-network/tools-lukso-cli/ui/common/context"
 
 type StartPage struct{}
 
@@ -10,7 +10,7 @@ func (p *StartPage) Title() string {
 	return "Start/Stop"
 }
 
-func (p *StartPage) HandleInput(msg tea.KeyMsg) {
+func (p *StartPage) Handle(ctx context.Context) {
 }
 
 func (p *StartPage) View() string {
