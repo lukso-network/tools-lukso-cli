@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.25.0](https://github.com/lukso-network/tools-lukso-cli/compare/v0.24.1...v0.25.0) (2025-03-19)
+
+
+### Features
+
+* Override existing pre-notarized macos builds ([#284](https://github.com/lukso-network/tools-lukso-cli/issues/284)) ([16757bc](https://github.com/lukso-network/tools-lukso-cli/commit/16757bcf6ab7bb219818feabb26c63e6c51edda7))
+
 ## [0.24.1](https://github.com/lukso-network/tools-lukso-cli/compare/v0.24.0...v0.24.1) (2025-02-24)
 
 
