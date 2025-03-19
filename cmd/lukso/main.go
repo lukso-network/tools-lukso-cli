@@ -171,6 +171,10 @@ REPO: https://github.com/lukso-network/tools-lukso-cli
 				},
 			},
 		},
+		{
+			Name:   "ui",
+			Action: commands.Ui,
+		},
 	}
 
 	app.Before = func(ctx *cli.Context) error {
