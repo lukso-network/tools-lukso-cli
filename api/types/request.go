@@ -1,8 +1,11 @@
 package types
 
+type InitArgs struct {
+	Directory string
+}
+
 type (
 	InstallArgs         struct{}
-	InitArgs            struct{}
 	UpdateArgs          struct{}
 	StartArgs           struct{}
 	StopArgs            struct{}
