@@ -24,30 +24,15 @@ func FileExists(path string) bool {
 	return !os.IsNotExist(err)
 }
 
-func CreateJwtSecret(dest string) error {
-	log.Info("🔄  Creating new JWT secret")
-	jwtDir := TruncateFileFromDir(dest)
-
-	err := os.MkdirAll(jwtDir, common.ConfigPerms)
-	if err != nil {
-		return err
-	}
-
+func CreateJwtSecret() (jwt []byte, err error) {
 	secretBytes := make([]byte, 32)
 
 	_, err = rand.Read(secretBytes)
 	if err != nil {
-		return err
+		return
 	}
 
-	err = os.WriteFile(dest, []byte(hex.EncodeToString(secretBytes)), common.ConfigPerms)
-	if err != nil {
-		return err
-	}
-
-	log.Infof("✅  New JWT secret created in %s", dest)
-
-	return nil
+	return
 }
 
 func PrepareTimestampedFile(logDir, logFileName string) (logFile string, err error) {
@@ -156,14 +141,14 @@ func ReadValidatorPassword(ctx *cli.Context) (f *os.File, err error) {
 	randPipe := hex.EncodeToString(b)
 
 	passwordPipePath := fmt.Sprintf("./.%s", randPipe)
-	err = syscall.Mkfifo(passwordPipePath, 0600)
+	err = syscall.Mkfifo(passwordPipePath, 0o600)
 	if err != nil {
 		err = Exit(fmt.Sprintf("❌  Couldn't create password pipe: %v", err), 1)
 
 		return
 	}
 
-	f, err = os.OpenFile(passwordPipePath, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0600)
+	f, err = os.OpenFile(passwordPipePath, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0o600)
 	if err != nil {
 		err = Exit(fmt.Sprintf("❌  Couldn't open password pipe: %v", err), 1)
 

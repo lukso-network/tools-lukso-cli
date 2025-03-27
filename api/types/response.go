@@ -1,7 +1,11 @@
 package types
 
+type Response interface {
+	Error() string
+}
+
 type InitResponse struct {
-	Error error
+	ErrorResponse
 }
 
 type (
