@@ -10,16 +10,16 @@ var (
 	ResetFlags          []cli.Flag
 	ExecutionResetFlags = []cli.Flag{
 		&cli.StringFlag{
-			Name:   GethDatadirFlag,
-			Usage:  "geth datadir",
+			Name:   ExecutionDatadirFlag,
+			Usage:  "execution datadir",
 			Value:  configs.ExecutionMainnetDatadir,
 			Hidden: true,
 		},
 	}
 	ConsensusResetFlags = []cli.Flag{
 		&cli.StringFlag{
-			Name:   PrysmDatadirFlag,
-			Usage:  "prysm datadir",
+			Name:   ConsensusDatadirFlag,
+			Usage:  "consensus datadir",
 			Value:  configs.ConsensusMainnetDatadir,
 			Hidden: true,
 		},
