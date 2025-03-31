@@ -3,4 +3,7 @@ package errors
 
 import "errors"
 
-var ErrAlreadyRunning = errors.New("already running")
+var (
+	ErrClientRunning = errors.New("some client/s are already running")
+	ErrCfgExists     = errors.New("config already exists")
+)

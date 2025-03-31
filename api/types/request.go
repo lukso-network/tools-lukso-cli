@@ -2,6 +2,8 @@ package types
 
 type InitArgs struct {
 	Directory string
+	Reinit    bool
+	Ip        string
 }
 
 type (

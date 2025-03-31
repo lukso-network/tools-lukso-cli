@@ -1,14 +1,14 @@
 package types
 
 type ErrorResponse struct {
-	msg string
+	err error
 }
 
 func (e ErrorResponse) Error() string {
-	return e.msg
+	return e.err.Error()
 }
 
 // Error returns an API response containing a given error
-func Error(msg string) Response {
-	return ErrorResponse{msg}
+func Error(err error) Response {
+	return ErrorResponse{err}
 }
