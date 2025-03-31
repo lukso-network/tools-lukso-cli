@@ -76,4 +76,6 @@ const (
 	ExecutionClientPort = "execution-client-port"
 	ConsensusClientPort = "consensus-client-port"
 	ValidatorClientPort = "validator-client-port"
+
+	ReinitFlag = "reinit"
 )
