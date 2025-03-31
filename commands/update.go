@@ -15,7 +15,7 @@ import (
 	"github.com/lukso-network/tools-lukso-cli/flags"
 )
 
-func UpdateClients(ctx *cli.Context) (err error) {
+func (c *commander) Update(ctx *cli.Context) (err error) {
 	isRoot, err := system.IsRoot()
 	if err != nil {
 		return utils.Exit(fmt.Sprintf("There was an error while checking user privileges: %v", err), 1)
@@ -60,7 +60,7 @@ func UpdateClients(ctx *cli.Context) (err error) {
 	return
 }
 
-func UpdateConfigs(ctx *cli.Context) (err error) {
+func (c *commander) UpdateConfigs(ctx *cli.Context) (err error) {
 	if clients.IsAnyRunning() {
 		return
 	}

@@ -22,7 +22,7 @@ import (
 const jwtSecretPath = configs.ConfigRootDir + "/shared/secrets/jwt.hex"
 
 // InitializeDirectory initializes a working directory for lukso node, with all configurations for all networks
-func InitializeDirectory(ctx *cli.Context) error {
+func (c *commander) Init(ctx *cli.Context) error {
 	if clients.IsAnyRunning() {
 		return nil
 	}

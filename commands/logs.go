@@ -14,13 +14,13 @@ import (
 	"github.com/lukso-network/tools-lukso-cli/flags"
 )
 
-func LogClients(ctx *cli.Context) error {
+func (c *commander) Logs(ctx *cli.Context) error {
 	log.Info("⚠️  Please specify your client - run 'lukso logs --help' for more info")
 
 	return nil
 }
 
-func LogLayer(layer string) func(*cli.Context) error {
+func (c *commander) LogsLayer(layer string) func(*cli.Context) error {
 	return func(ctx *cli.Context) (err error) {
 		logFileDir := ctx.String(flags.LogFolderFlag)
 		if logFileDir == "" {
