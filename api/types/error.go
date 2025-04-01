@@ -4,8 +4,8 @@ type ErrorResponse struct {
 	err error
 }
 
-func (e ErrorResponse) Error() string {
-	return e.err.Error()
+func (e ErrorResponse) Error() error {
+	return e.err
 }
 
 // Error returns an API response containing a given error

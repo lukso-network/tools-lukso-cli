@@ -13,7 +13,7 @@ import (
 	"github.com/lukso-network/tools-lukso-cli/dependencies/configs"
 )
 
-func (h *handler) Init(args types.InitArgs) types.Response {
+func (h *handler) Init(args types.InitArgs) (resp types.Response) {
 	if clients.IsAnyRunning() {
 		return types.Error(errors.ErrClientRunning)
 	}

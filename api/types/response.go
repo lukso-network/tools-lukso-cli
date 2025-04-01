@@ -1,7 +1,8 @@
 package types
 
 type Response interface {
-	Error() string
+	// This is not an errorer: it's just a way of unwraping an actual error from the API response
+	Error() error
 }
 
 type InitResponse struct {

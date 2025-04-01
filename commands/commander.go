@@ -2,6 +2,8 @@ package commands
 
 import (
 	"github.com/urfave/cli/v2"
+
+	"github.com/lukso-network/tools-lukso-cli/api"
 )
 
 // Commander is an interface holding commands that can be executed via CLI
@@ -25,7 +27,9 @@ type Commander interface {
 	VersionClients(ctx *cli.Context) error
 }
 
-type commander struct{}
+type commander struct {
+	handler api.Handler
+}
 
 var _ Commander = &commander{}
 

@@ -122,7 +122,7 @@ func (c *commander) Start(ctx *cli.Context) (err error) {
 	log.Info("🎉  Clients have been started. Checking status:")
 	log.Info("")
 
-	_ = StatClients(ctx)
+	_ = c.Status(ctx)
 
 	log.Info("")
 	log.Info("If execution and consensus clients are Running 🟢, your node is now 🆙.")
