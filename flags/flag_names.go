@@ -81,4 +81,5 @@ const (
 	ValidatorClientPort = "validator-client-port"
 
 	ReinitFlag = "reinit"
+	IpFlag     = "ip"
 )

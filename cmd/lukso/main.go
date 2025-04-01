@@ -46,6 +46,7 @@ REPO: https://github.com/lukso-network/tools-lukso-cli
 		{
 			Name:            "init",
 			Usage:           "Initializes the working directory, its structure, and network configuration",
+			Flags:           flags.InitFlags,
 			Action:          cmd.Init,
 			HideHelpCommand: true,
 		},
