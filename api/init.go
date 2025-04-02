@@ -28,18 +28,28 @@ func (h *handler) Init(args types.InitArgs) (resp types.Response) {
 
 	installClientConfigFiles(false)
 
+	// TODO: make sure there is a global identifier for selected directory
+	// Create shared folder
+	err := h.file.Mkdir("."+file.SecretsDir, common.ConfigPerms)
+	if err != nil {
+		err = fmt.Errorf("unable to create secrets directory: %w", err)
+		return types.Error(err)
+	}
+
+	// Create and Write JWT
 	jwt, err := utils.CreateJwtSecret()
 	if err != nil {
 		err = fmt.Errorf("unable to generate JWT secret: %w", err)
 		return types.Error(err)
 	}
 
-	err = h.file.Write(jwt, file.JwtSecretPath, common.ConfigPerms)
+	err = h.file.Write(jwt, "."+file.JwtSecretPath, common.ConfigPerms)
 	if err != nil {
 		err = fmt.Errorf("unable to create JWT secret file: %w", err)
 		return types.Error(err)
 	}
 
+	// Create dir for PIDs
 	err = h.file.Mkdir(file.PidDir, common.ConfigPerms)
 	if err != nil {
 		err = fmt.Errorf("unable to create PID directory: %w", err)
@@ -61,5 +71,5 @@ func (h *handler) Init(args types.InitArgs) (resp types.Response) {
 		h.log.Info(fmt.Sprintf("✅  LUKSO configuration created in %s", config.Path))
 	}
 
-	return nil
+	return types.InitResponse{}
 }

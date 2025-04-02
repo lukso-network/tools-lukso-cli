@@ -32,6 +32,8 @@ func CreateJwtSecret() (jwt []byte, err error) {
 		return
 	}
 
+	jwt = []byte(hex.EncodeToString(secretBytes))
+
 	return
 }
 

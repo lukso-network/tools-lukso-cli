@@ -28,9 +28,19 @@ type Handler interface {
 }
 
 type handler struct {
-	cfg  config.Config
+	cfg  *config.Config
 	file file.Manager
 	log  logger.Logger
 }
 
 var _ Handler = &handler{}
+
+func NewHandler() Handler {
+	log := logger.ConsoleLogger{}
+
+	return &handler{
+		cfg:  config.NewConfig(config.Path),
+		file: file.NewManager(),
+		log:  log,
+	}
+}

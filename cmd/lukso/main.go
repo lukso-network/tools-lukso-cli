@@ -9,6 +9,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 
+	"github.com/lukso-network/tools-lukso-cli/api"
 	"github.com/lukso-network/tools-lukso-cli/commands"
 	"github.com/lukso-network/tools-lukso-cli/dependencies/configs"
 	"github.com/lukso-network/tools-lukso-cli/flags"
@@ -21,7 +22,8 @@ var appName = "lukso"
 func main() {
 	log.SetFormatter(&log.TextFormatter{DisableTimestamp: true})
 
-	cmd := commands.NewCommander()
+	hndl := api.NewHandler()
+	cmd := commands.NewCommander(hndl)
 
 	app := cli.App{}
 	app.Name = appName

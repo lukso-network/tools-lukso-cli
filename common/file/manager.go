@@ -14,15 +14,12 @@ type Manager interface {
 
 type manager struct{}
 
+func NewManager() Manager {
+	return &manager{}
+}
+
 func (m *manager) Write(body []byte, dst string, perm os.FileMode) (err error) {
-	f, err := os.OpenFile(dst, os.O_RDWR, filePerms)
-	if err != nil {
-		return
-	}
-
-	_, err = f.Write(body)
-
-	return
+	return os.WriteFile(dst, body, filePerms)
 }
 
 func (m *manager) Mkdir(dst string, perm os.FileMode) (err error) {

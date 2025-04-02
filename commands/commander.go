@@ -33,6 +33,8 @@ type commander struct {
 
 var _ Commander = &commander{}
 
-func NewCommander() Commander {
-	return &commander{}
+func NewCommander(handler api.Handler) Commander {
+	return &commander{
+		handler: handler,
+	}
 }
