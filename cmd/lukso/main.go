@@ -201,9 +201,3 @@ REPO: https://github.com/lukso-network/tools-lukso-cli
 		log.Error(err.Error())
 	}
 }
-
-func displayVersion(ctx *cli.Context) error {
-	fmt.Println("Version:", Version)
-	fmt.Println("To display versions of installed clients, run 'lukso version clients' command.")
-	return nil
-}
