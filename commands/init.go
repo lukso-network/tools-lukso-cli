@@ -1,12 +1,14 @@
 package commands
 
 import (
+	"errors"
 	"io"
 	"net/http"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 
+	apierrors "github.com/lukso-network/tools-lukso-cli/api/errors"
 	"github.com/lukso-network/tools-lukso-cli/dependencies/clients"
 	"github.com/lukso-network/tools-lukso-cli/model"
 )
@@ -21,8 +23,9 @@ func (c *commander) Init(ctx *cli.Context) error {
 
 	resp := c.handler.Init(req)
 	err := resp.Error()
-	if err != nil {
-		return err
+	switch {
+	case errors.Is(err, apierrors.ErrCfgExists):
+		log.Warn("This directory has already been initialized. If you want to reinitialize it, add '--reinit' flag.")
 	}
 
 	displayNetworksHardforkTimestamps()

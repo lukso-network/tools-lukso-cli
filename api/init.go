@@ -2,6 +2,8 @@ package api
 
 import (
 	"fmt"
+	"net"
+	"strings"
 
 	"github.com/lukso-network/tools-lukso-cli/api/errors"
 	"github.com/lukso-network/tools-lukso-cli/api/types"
@@ -22,10 +24,47 @@ func (h *handler) Init(args types.InitArgs) (resp types.Response) {
 		return types.Error(errors.ErrCfgExists)
 	}
 
+	var (
+		ip  = "disabled"
+		err error
+	)
+
+	switch args.Ip {
+	case "disabled":
+		ip = "disabled"
+
+	case "auto":
+		ip, err = h.getPublicIP()
+		if err != nil {
+			h.log.Warn("unable to automatically get IP - proceeding with --ip=disabled")
+
+			break
+		}
+
+		h.log.Info("Auto IP set to " + ip)
+
+	default:
+		parsedIp := net.ParseIP(args.Ip)
+		if parsedIp == nil {
+			h.log.Warn(fmt.Sprintf("--ip=%s is not a valid IP - proceeding with --ip=disabled", ip))
+
+			break
+		}
+
+		// This means it's IPv6 - only v4 is supported
+		if strings.ContainsAny(args.Ip, ":%") {
+			h.log.Warn("--ip is an IPv6, but IPv4 is required - proceeding with --ip=disabled")
+
+			break
+		}
+
+		ip = args.Ip
+	}
+
 	h.installInitFiles(args.Reinit)
 
 	// Create shared folder
-	err := h.file.Mkdir(file.SecretsDir, common.ConfigPerms)
+	err = h.file.Mkdir(file.SecretsDir, common.ConfigPerms)
 	if err != nil {
 		err = fmt.Errorf("unable to create secrets directory: %w", err)
 		return types.Error(err)
@@ -51,20 +90,15 @@ func (h *handler) Init(args types.InitArgs) (resp types.Response) {
 		return types.Error(err)
 	}
 
-	switch h.cfg.Exists() {
-	case true:
-		h.log.Info("⚙️   LUKSO configuration already exists - continuing...")
-	case false:
-		h.log.Info("⚙️   Creating LUKSO configuration file...")
+	h.log.Info("⚙️   Creating LUKSO configuration file...")
 
-		err = h.cfg.Create("", "", "", args.Ip)
-		if err != nil {
-			err = fmt.Errorf("unable to create LUKSO config: %w", err)
-			return types.Error(err)
-		}
-
-		h.log.Info(fmt.Sprintf("✅  LUKSO configuration created in %s", config.Path))
+	err = h.cfg.Create("", "", "", ip)
+	if err != nil {
+		err = fmt.Errorf("unable to create LUKSO config: %w", err)
+		return types.Error(err)
 	}
+
+	h.log.Info(fmt.Sprintf("✅  LUKSO configuration created in %s", config.Path))
 
 	return types.InitResponse{}
 }
