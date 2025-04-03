@@ -1,8 +1,9 @@
 run:
-  skip-dirs:
-    - contracts
   timeout: 10m
   go: "1.19"
+  exclude:
+    - "mock_.*\\.go"
+
 
 linters:
   enable:
