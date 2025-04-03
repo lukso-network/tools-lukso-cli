@@ -4,6 +4,7 @@ import (
 	"github.com/lukso-network/tools-lukso-cli/api/logger"
 	"github.com/lukso-network/tools-lukso-cli/api/types"
 	"github.com/lukso-network/tools-lukso-cli/common/file"
+	"github.com/lukso-network/tools-lukso-cli/common/installer"
 	"github.com/lukso-network/tools-lukso-cli/config"
 )
 
@@ -28,19 +29,23 @@ type Handler interface {
 }
 
 type handler struct {
-	cfg  *config.Config
-	file file.Manager
-	log  logger.Logger
+	cfg       *config.Config
+	file      file.Manager
+	log       logger.Logger
+	installer installer.Installer
 }
 
 var _ Handler = &handler{}
 
 func NewHandler() Handler {
 	log := logger.ConsoleLogger{}
+	fmng := file.NewManager()
+	inst := installer.NewInstaller(fmng)
 
 	return &handler{
-		cfg:  config.NewConfig(config.Path),
-		file: file.NewManager(),
-		log:  log,
+		cfg:       config.NewConfig(config.Path),
+		file:      fmng,
+		log:       log,
+		installer: inst,
 	}
 }

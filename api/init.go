@@ -22,11 +22,7 @@ func (h *handler) Init(args types.InitArgs) (resp types.Response) {
 		return types.Error(errors.ErrCfgExists)
 	}
 
-	h.log.Info("⬇️  Downloading shared configuration files...")
-	_ = installConfigGroup(configs.SharedConfigDependencies, false) // we can omit errors - all errors are catched by cli.Exit()
-	h.log.Info("✅  Shared configuration files downloaded!\n\n")
-
-	installClientConfigFiles(false)
+	h.installInitFiles()
 
 	// TODO: make sure there is a global identifier for selected directory
 	// Create shared folder
@@ -72,4 +68,61 @@ func (h *handler) Init(args types.InitArgs) (resp types.Response) {
 	}
 
 	return types.InitResponse{}
+}
+
+func (h *handler) installInitFiles() {
+	h.log.Info("⬇️  Downloading shared configuration files...")
+	_ = h.installConfigGroup(configs.SharedConfigDependencies, false) // we can omit errors - all errors are catched by cli.Exit()
+	h.log.Info("✅  Shared configuration files downloaded!\n\n")
+
+	h.installClientConfigFiles(false)
+}
+
+func (h *handler) installConfigGroup(configDependencies map[string]configs.ClientConfigDependency, isUpdate bool) error {
+	for _, dependency := range configDependencies {
+		err := dependency.Install(isUpdate)
+		if err != nil {
+			return utils.Exit(fmt.Sprintf("❌  There was error while downloading %s file: %v", dependency.Name(), err), 1)
+		}
+	}
+
+	return nil
+}
+
+func (h *handler) installClientConfigFiles(override bool) {
+	h.log.Info("⬇️  Downloading geth configuration files...")
+	_ = h.installConfigGroup(configs.GethConfigDependencies, override)
+	h.log.Info("✅  Geth configuration files downloaded!\n\n")
+
+	h.log.Info("⬇️  Downloading erigon configuration files...")
+	_ = h.installConfigGroup(configs.ErigonConfigDependencies, override)
+	h.log.Info("✅  Erigon configuration files downloaded!\n\n")
+
+	h.log.Info("⬇️  Downloading nethermind configuration files...")
+	_ = h.installConfigGroup(configs.NethermindConfigDependencies, override)
+	h.log.Info("✅  Nethermind configuration files downloaded!\n\n")
+
+	h.log.Info("⬇️  Downloading besu configuration files...")
+	_ = h.installConfigGroup(configs.BesuConfigDependencies, override)
+	h.log.Info("✅  Besu configuration files downloaded!\n\n")
+
+	h.log.Info("⬇️  Downloading prysm configuration files...")
+	_ = h.installConfigGroup(configs.PrysmConfigDependencies, override)
+	h.log.Info("✅  Prysm configuration files downloaded!\n\n")
+
+	h.log.Info("⬇️  Downloading lighthouse configuration files...")
+	_ = h.installConfigGroup(configs.LighthouseConfigDependencies, override)
+	h.log.Info("✅  Lighthouse configuration files downloaded!\n\n")
+
+	h.log.Info("⬇️  Downloading prysm validator configuration files...")
+	_ = h.installConfigGroup(configs.PrysmValidatorConfigDependencies, override)
+	h.log.Info("✅  Prysm validator configuration files downloaded!\n\n")
+
+	h.log.Info("⬇️  Downloading teku configuration files...")
+	_ = h.installConfigGroup(configs.TekuConfigDependencies, override)
+	h.log.Info("✅  Teku configuration files downloaded!\n\n")
+
+	h.log.Info("⬇️  Downloading nimbus (eth2) configuration files...")
+	_ = h.installConfigGroup(configs.Nimbus2ConfigDependencies, override)
+	h.log.Info("✅  Nimbus configuration files downloaded!\n\n")
 }

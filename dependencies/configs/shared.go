@@ -12,6 +12,8 @@ import (
 
 	"github.com/lukso-network/tools-lukso-cli/common"
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
+	"github.com/lukso-network/tools-lukso-cli/common/file"
+	"github.com/lukso-network/tools-lukso-cli/common/installer"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
 )
 
@@ -154,66 +156,66 @@ const (
 var (
 	SharedConfigDependencies = map[string]ClientConfigDependency{
 		// ----- SHARED -----
-		mainnetGenesisDependencyName: &clientConfig{
-			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/genesis.json",
-			name:     mainnetGenesisDependencyName,
-			filePath: MainnetConfig + "/" + GenesisJsonPath,
-		},
-		mainnetGenesisStateDependencyName: &clientConfig{
-			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/genesis.ssz",
-			name:     mainnetGenesisStateDependencyName,
-			filePath: MainnetConfig + "/" + GenesisStateFilePath,
-		},
-		mainnetChainConfigDependencyName: &clientConfig{
-			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/config.yaml",
-			name:     mainnetChainConfigDependencyName,
-			filePath: MainnetConfig + "/" + ChainConfigYamlPath,
-		},
-		mainnetGenesisChainspecDependencyName: &clientConfig{
-			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/nethermind/chainspec.json",
-			name:     mainnetGenesisChainspecDependencyName,
-			filePath: MainnetConfig + "/" + GenesisChainspecPath,
-		},
-		deployBlockMainnetConfigDependencyName: &clientConfig{
-			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/lighthouse/deploy_block.txt",
-			name:     deployBlockMainnetConfigDependencyName,
-			filePath: MainnetConfig + "/" + DeployBlockPath,
-		},
-		depositContractBlockMainnetConfigDependencyName: &clientConfig{
-			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/lighthouse/deposit_contract_block.txt",
-			name:     depositContractBlockMainnetConfigDependencyName,
-			filePath: MainnetConfig + "/" + DepositContractBlockPath,
-		},
-		testnetGenesisDependencyName: &clientConfig{
-			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/shared/genesis.json",
-			name:     testnetGenesisDependencyName,
-			filePath: TestnetConfig + "/" + GenesisJsonPath,
-		},
-		testnetGenesisStateDependencyName: &clientConfig{
-			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/shared/genesis.ssz",
-			name:     testnetGenesisStateDependencyName,
-			filePath: TestnetConfig + "/" + GenesisStateFilePath,
-		},
-		testnetChainConfigDependencyName: &clientConfig{
-			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/shared/config.yaml",
-			name:     testnetChainConfigDependencyName,
-			filePath: TestnetConfig + "/" + ChainConfigYamlPath,
-		},
-		testnetGenesisChainspecDependencyName: &clientConfig{
-			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/nethermind/chainspec.json",
-			name:     mainnetGenesisChainspecDependencyName,
-			filePath: TestnetConfig + "/" + GenesisChainspecPath,
-		},
-		deployBlockTestnetConfigDependencyName: &clientConfig{
-			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/lighthouse/deploy_block.txt",
-			name:     deployBlockTestnetConfigDependencyName,
-			filePath: TestnetConfig + "/" + DeployBlockPath,
-		},
-		depositContractBlockTestnetConfigDependencyName: &clientConfig{
-			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/lighthouse/deposit_contract_block.txt",
-			name:     depositContractBlockTestnetConfigDependencyName,
-			filePath: TestnetConfig + "/" + DepositContractBlockPath,
-		},
+		mainnetGenesisDependencyName: newClientConfig(
+			"https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/genesis.json",
+			mainnetGenesisDependencyName,
+			MainnetConfig+"/"+GenesisJsonPath,
+		),
+		mainnetGenesisStateDependencyName: newClientConfig(
+			"https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/genesis.ssz",
+			mainnetGenesisStateDependencyName,
+			MainnetConfig+"/"+GenesisStateFilePath,
+		),
+		mainnetChainConfigDependencyName: newClientConfig(
+			"https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/config.yaml",
+			mainnetChainConfigDependencyName,
+			MainnetConfig+"/"+ChainConfigYamlPath,
+		),
+		mainnetGenesisChainspecDependencyName: newClientConfig(
+			"https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/nethermind/chainspec.json",
+			mainnetGenesisChainspecDependencyName,
+			MainnetConfig+"/"+GenesisChainspecPath,
+		),
+		deployBlockMainnetConfigDependencyName: newClientConfig(
+			"https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/lighthouse/deploy_block.txt",
+			deployBlockMainnetConfigDependencyName,
+			MainnetConfig+"/"+DeployBlockPath,
+		),
+		depositContractBlockMainnetConfigDependencyName: newClientConfig(
+			"https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/lighthouse/deposit_contract_block.txt",
+			depositContractBlockMainnetConfigDependencyName,
+			MainnetConfig+"/"+DepositContractBlockPath,
+		),
+		testnetGenesisDependencyName: newClientConfig(
+			"https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/shared/genesis.json",
+			testnetGenesisDependencyName,
+			TestnetConfig+"/"+GenesisJsonPath,
+		),
+		testnetGenesisStateDependencyName: newClientConfig(
+			"https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/shared/genesis.ssz",
+			testnetGenesisStateDependencyName,
+			TestnetConfig+"/"+GenesisStateFilePath,
+		),
+		testnetChainConfigDependencyName: newClientConfig(
+			"https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/shared/config.yaml",
+			testnetChainConfigDependencyName,
+			TestnetConfig+"/"+ChainConfigYamlPath,
+		),
+		testnetGenesisChainspecDependencyName: newClientConfig(
+			"https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/nethermind/chainspec.json",
+			mainnetGenesisChainspecDependencyName,
+			TestnetConfig+"/"+GenesisChainspecPath,
+		),
+		deployBlockTestnetConfigDependencyName: newClientConfig(
+			"https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/lighthouse/deploy_block.txt",
+			deployBlockTestnetConfigDependencyName,
+			TestnetConfig+"/"+DeployBlockPath,
+		),
+		depositContractBlockTestnetConfigDependencyName: newClientConfig(
+			"https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/lighthouse/deposit_contract_block.txt",
+			depositContractBlockTestnetConfigDependencyName,
+			TestnetConfig+"/"+DepositContractBlockPath,
+		),
 	}
 	UpdateConfigDependencies = map[string]ClientConfigDependency{
 		// copied existing configs
@@ -237,9 +239,24 @@ var (
 )
 
 type clientConfig struct {
-	url      string
-	name     string
-	filePath string
+	url       string
+	name      string
+	filePath  string
+	file      file.Manager
+	installer installer.Installer
+}
+
+func newClientConfig(url, name, filePath string) ClientConfigDependency {
+	mng := file.NewManager()
+	inst := installer.NewInstaller(mng)
+
+	return &clientConfig{
+		url:       url,
+		name:      name,
+		filePath:  filePath,
+		file:      mng,
+		installer: inst,
+	}
 }
 
 var _ ClientConfigDependency = &clientConfig{}
