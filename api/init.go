@@ -24,9 +24,8 @@ func (h *handler) Init(args types.InitArgs) (resp types.Response) {
 
 	h.installInitFiles(args.Reinit)
 
-	// TODO: make sure there is a global identifier for selected directory
 	// Create shared folder
-	err := h.file.Mkdir("."+file.SecretsDir, common.ConfigPerms)
+	err := h.file.Mkdir(file.SecretsDir, common.ConfigPerms)
 	if err != nil {
 		err = fmt.Errorf("unable to create secrets directory: %w", err)
 		return types.Error(err)
@@ -39,7 +38,7 @@ func (h *handler) Init(args types.InitArgs) (resp types.Response) {
 		return types.Error(err)
 	}
 
-	err = h.file.Write("."+file.JwtSecretPath, jwt, common.ConfigPerms)
+	err = h.file.Write(file.JwtSecretPath, jwt, common.ConfigPerms)
 	if err != nil {
 		err = fmt.Errorf("unable to create JWT secret file: %w", err)
 		return types.Error(err)
