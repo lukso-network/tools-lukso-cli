@@ -22,7 +22,7 @@ func (h *handler) Init(args types.InitArgs) (resp types.Response) {
 		return types.Error(errors.ErrCfgExists)
 	}
 
-	h.installInitFiles()
+	h.installInitFiles(args.Reinit)
 
 	// TODO: make sure there is a global identifier for selected directory
 	// Create shared folder
@@ -39,7 +39,7 @@ func (h *handler) Init(args types.InitArgs) (resp types.Response) {
 		return types.Error(err)
 	}
 
-	err = h.file.Write(jwt, "."+file.JwtSecretPath, common.ConfigPerms)
+	err = h.file.Write("."+file.JwtSecretPath, jwt, common.ConfigPerms)
 	if err != nil {
 		err = fmt.Errorf("unable to create JWT secret file: %w", err)
 		return types.Error(err)
@@ -70,12 +70,12 @@ func (h *handler) Init(args types.InitArgs) (resp types.Response) {
 	return types.InitResponse{}
 }
 
-func (h *handler) installInitFiles() {
+func (h *handler) installInitFiles(isUpdate bool) {
 	h.log.Info("⬇️  Downloading shared configuration files...")
-	_ = h.installConfigGroup(configs.SharedConfigDependencies, false) // we can omit errors - all errors are catched by cli.Exit()
+	_ = h.installConfigGroup(configs.SharedConfigDependencies, isUpdate) // we can omit errors - all errors are catched by cli.Exit()
 	h.log.Info("✅  Shared configuration files downloaded!\n\n")
 
-	h.installClientConfigFiles(false)
+	h.installClientConfigFiles(isUpdate)
 }
 
 func (h *handler) installConfigGroup(configDependencies map[string]configs.ClientConfigDependency, isUpdate bool) error {
@@ -89,40 +89,40 @@ func (h *handler) installConfigGroup(configDependencies map[string]configs.Clien
 	return nil
 }
 
-func (h *handler) installClientConfigFiles(override bool) {
+func (h *handler) installClientConfigFiles(isUpdate bool) {
 	h.log.Info("⬇️  Downloading geth configuration files...")
-	_ = h.installConfigGroup(configs.GethConfigDependencies, override)
+	_ = h.installConfigGroup(configs.GethConfigDependencies, isUpdate)
 	h.log.Info("✅  Geth configuration files downloaded!\n\n")
 
 	h.log.Info("⬇️  Downloading erigon configuration files...")
-	_ = h.installConfigGroup(configs.ErigonConfigDependencies, override)
+	_ = h.installConfigGroup(configs.ErigonConfigDependencies, isUpdate)
 	h.log.Info("✅  Erigon configuration files downloaded!\n\n")
 
 	h.log.Info("⬇️  Downloading nethermind configuration files...")
-	_ = h.installConfigGroup(configs.NethermindConfigDependencies, override)
+	_ = h.installConfigGroup(configs.NethermindConfigDependencies, isUpdate)
 	h.log.Info("✅  Nethermind configuration files downloaded!\n\n")
 
 	h.log.Info("⬇️  Downloading besu configuration files...")
-	_ = h.installConfigGroup(configs.BesuConfigDependencies, override)
+	_ = h.installConfigGroup(configs.BesuConfigDependencies, isUpdate)
 	h.log.Info("✅  Besu configuration files downloaded!\n\n")
 
 	h.log.Info("⬇️  Downloading prysm configuration files...")
-	_ = h.installConfigGroup(configs.PrysmConfigDependencies, override)
+	_ = h.installConfigGroup(configs.PrysmConfigDependencies, isUpdate)
 	h.log.Info("✅  Prysm configuration files downloaded!\n\n")
 
 	h.log.Info("⬇️  Downloading lighthouse configuration files...")
-	_ = h.installConfigGroup(configs.LighthouseConfigDependencies, override)
+	_ = h.installConfigGroup(configs.LighthouseConfigDependencies, isUpdate)
 	h.log.Info("✅  Lighthouse configuration files downloaded!\n\n")
 
 	h.log.Info("⬇️  Downloading prysm validator configuration files...")
-	_ = h.installConfigGroup(configs.PrysmValidatorConfigDependencies, override)
+	_ = h.installConfigGroup(configs.PrysmValidatorConfigDependencies, isUpdate)
 	h.log.Info("✅  Prysm validator configuration files downloaded!\n\n")
 
 	h.log.Info("⬇️  Downloading teku configuration files...")
-	_ = h.installConfigGroup(configs.TekuConfigDependencies, override)
+	_ = h.installConfigGroup(configs.TekuConfigDependencies, isUpdate)
 	h.log.Info("✅  Teku configuration files downloaded!\n\n")
 
 	h.log.Info("⬇️  Downloading nimbus (eth2) configuration files...")
-	_ = h.installConfigGroup(configs.Nimbus2ConfigDependencies, override)
+	_ = h.installConfigGroup(configs.Nimbus2ConfigDependencies, isUpdate)
 	h.log.Info("✅  Nimbus configuration files downloaded!\n\n")
 }

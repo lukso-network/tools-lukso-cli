@@ -8,8 +8,9 @@ var (
 )
 
 type Manager interface {
-	Write(body []byte, dst string, perm os.FileMode) (err error)
+	Write(dst string, body []byte, perm os.FileMode) (err error)
 	Mkdir(dst string, perm os.FileMode) (err error)
+	Exists(path string) bool
 }
 
 type manager struct{}
@@ -18,10 +19,15 @@ func NewManager() Manager {
 	return &manager{}
 }
 
-func (m *manager) Write(body []byte, dst string, perm os.FileMode) (err error) {
+func (m *manager) Write(dst string, body []byte, perm os.FileMode) (err error) {
 	return os.WriteFile(dst, body, filePerms)
 }
 
 func (m *manager) Mkdir(dst string, perm os.FileMode) (err error) {
 	return os.MkdirAll(dst, perm)
+}
+
+func (m *manager) Exists(path string) bool {
+	_, err := os.Stat(path)
+	return !os.IsNotExist(err)
 }

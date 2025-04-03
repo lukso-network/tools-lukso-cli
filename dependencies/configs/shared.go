@@ -1,17 +1,12 @@
 package configs
 
 import (
-	"bytes"
-	"fmt"
-	"io"
-	"net/http"
 	"os"
-	"strings"
 
 	log "github.com/sirupsen/logrus"
 
+	"github.com/lukso-network/tools-lukso-cli/api/errors"
 	"github.com/lukso-network/tools-lukso-cli/common"
-	"github.com/lukso-network/tools-lukso-cli/common/errors"
 	"github.com/lukso-network/tools-lukso-cli/common/file"
 	"github.com/lukso-network/tools-lukso-cli/common/installer"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
@@ -262,58 +257,12 @@ func newClientConfig(url, name, filePath string) ClientConfigDependency {
 var _ ClientConfigDependency = &clientConfig{}
 
 func (c *clientConfig) Install(isUpdate bool) (err error) {
-	err = c.createDir()
+	if c.file.Exists(c.filePath) && !isUpdate {
+		return errors.ErrFileExists
+	}
+
+	err = c.installer.InstallFile(c.url, c.filePath)
 	if err != nil {
-		return
-	}
-
-	if utils.FileExists(c.filePath) && !isUpdate {
-		log.Infof("  ⏩️  Skipping file %s: the file already exists", c.filePath)
-
-		return
-	}
-
-	response, err := http.Get(c.url)
-
-	if nil != err {
-		return
-	}
-
-	defer func() {
-		_ = response.Body.Close()
-	}()
-
-	if response.StatusCode == http.StatusNotFound {
-		log.Warnf("⚠️  File under URL %s not found - skipping...", c.url)
-
-		return nil
-	}
-
-	if http.StatusOK != response.StatusCode {
-		return fmt.Errorf(
-			"❌  Invalid response when downloading on file url: %s. Response code: %s",
-			c.url,
-			response.Status,
-		)
-	}
-
-	var responseReader io.Reader = response.Body
-
-	buf := new(bytes.Buffer)
-	_, err = buf.ReadFrom(responseReader)
-	if err != nil {
-		return
-	}
-
-	err = os.WriteFile(c.filePath, buf.Bytes(), common.ConfigPerms)
-
-	if err != nil && strings.Contains(err.Error(), "Permission denied") {
-		return errors.ErrNeedRoot
-	}
-
-	if err != nil {
-		log.Infof("❌  Couldn't save file: %v", err)
-
 		return
 	}
 
@@ -331,7 +280,7 @@ func (c *clientConfig) createDir() error {
 	}
 
 	if err == os.ErrPermission {
-		return errors.ErrNeedRoot
+		return errors.ErrNeedsRoot
 	}
 
 	return err
