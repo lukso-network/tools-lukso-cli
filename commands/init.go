@@ -2,6 +2,7 @@ package commands
 
 import (
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 
@@ -9,23 +10,21 @@ import (
 	"github.com/urfave/cli/v2"
 
 	apierrors "github.com/lukso-network/tools-lukso-cli/api/errors"
-	"github.com/lukso-network/tools-lukso-cli/dependencies/clients"
 	"github.com/lukso-network/tools-lukso-cli/model"
 )
 
 // InitializeDirectory initializes a working directory for lukso node, with all configurations for all networks
 func (c *commander) Init(ctx *cli.Context) error {
-	if clients.IsAnyRunning() {
-		return nil
-	}
-
 	req := model.CtxToApiInit(ctx)
 
 	resp := c.handler.Init(req)
-	err := resp.Error()
-	switch {
-	case errors.Is(err, apierrors.ErrCfgExists):
-		log.Warn("This directory has already been initialized. If you want to reinitialize it, add '--reinit' flag.")
+	err := resp.Error
+	if err != nil {
+		log.Warn(fmt.Sprintf("Unable to initialize directory: %v", err))
+
+		if errors.Is(err, apierrors.ErrCfgExists) {
+			log.Warn("To reinitialize directory, rerun the 'lukso init' command with '--reinit' flag")
+		}
 	}
 
 	displayNetworksHardforkTimestamps()

@@ -566,6 +566,16 @@ func removePrefix(arg, name string) string {
 	return fmt.Sprintf("--%s", strings.Trim(arg, "- "))
 }
 
+func RunningClients() (clients []string) {
+	for _, client := range AllClients {
+		if client.IsRunning() {
+			clients = append(clients, client.Name())
+		}
+	}
+
+	return
+}
+
 func IsAnyRunning() bool {
 	var runningClients string
 	for _, client := range AllClients {

@@ -13,19 +13,19 @@ import (
 // Since CLI and TUI will require different stdouts, each command in case of logging should has an output channel attached.
 // All handlers return types.Response instead of a specific struct like in request for better error handling.
 type Handler interface {
-	Install(types.InstallArgs) types.Response
-	Init(types.InitArgs) types.Response
-	Update(types.UpdateArgs) types.Response
-	Start(types.StartArgs) types.Response
-	Stop(types.StopArgs) types.Response
-	Status(types.StatusArgs) types.Response
-	Logs(types.LogsArgs) types.Response
-	Reset(types.ResetArgs) types.Response
-	ValidatorImport(types.ValidatorImportArgs) types.Response
-	ValidatorList(types.ValidatorListArgs) types.Response
-	ValidatorExit(types.ValidatorExitArgs) types.Response
-	Version(types.VersionArgs) types.Response
-	VersionClients(types.VersionClientsArgs) types.Response
+	Install(types.InstallArgs) types.InstallResponse
+	Init(types.InitArgs) types.InitResponse
+	Update(types.UpdateArgs) types.UpdateResponse
+	Start(types.StartArgs) types.StartResponse
+	Stop(types.StopArgs) types.StopResponse
+	Status(types.StatusArgs) types.StatusResponse
+	Logs(types.LogsArgs) types.LogsResponse
+	Reset(types.ResetArgs) types.ResetResponse
+	ValidatorImport(types.ValidatorImportArgs) types.ValidatorImportResponse
+	ValidatorList(types.ValidatorListArgs) types.ValidatorListResponse
+	ValidatorExit(types.ValidatorExitArgs) types.ValidatorExitResponse
+	Version(types.VersionArgs) types.VersionResponse
+	VersionClients(types.VersionClientsArgs) types.VersionClientsResponse
 }
 
 type handler struct {

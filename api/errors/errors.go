@@ -1,7 +1,9 @@
 // package errors is responsible for holding error values used for clear error communication in API.
 package errors
 
-import "errors"
+import (
+	"errors"
+)
 
 var (
 	// Clients
@@ -16,3 +18,16 @@ var (
 	ErrNotFound = errors.New("not found")
 	ErrNotOk    = errors.New("status code is not 2xx")
 )
+
+type ErrClientsAlreadyRunning struct {
+	Clients []string
+}
+
+func (e ErrClientsAlreadyRunning) Error() string {
+	msg := "the following clients are already running: "
+	for _, client := range e.Clients {
+		msg += client + "\n"
+	}
+
+	return msg
+}

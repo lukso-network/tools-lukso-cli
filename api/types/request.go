@@ -20,3 +20,19 @@ type (
 	VersionArgs         struct{}
 	VersionClientsArgs  struct{}
 )
+
+type Request interface {
+	InitArgs |
+		InstallArgs |
+		UpdateArgs |
+		StartArgs |
+		StopArgs |
+		StatusArgs |
+		LogsArgs |
+		ResetArgs |
+		ValidatorImportArgs |
+		ValidatorListArgs |
+		ValidatorExitArgs |
+		VersionArgs |
+		VersionClientsArgs
+}

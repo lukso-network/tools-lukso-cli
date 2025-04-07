@@ -15,13 +15,17 @@ import (
 	"github.com/lukso-network/tools-lukso-cli/dependencies/configs"
 )
 
-func (h *handler) Init(args types.InitArgs) (resp types.Response) {
-	if clients.IsAnyRunning() {
-		return types.Error(errors.ErrClientRunning)
+func (h *handler) Init(args types.InitArgs) (resp types.InitResponse) {
+	if runningClients := clients.RunningClients(); runningClients != nil {
+		return types.InitResponse{
+			Error: errors.ErrClientsAlreadyRunning{Clients: runningClients},
+		}
 	}
 
 	if h.cfg.Exists() && !args.Reinit {
-		return types.Error(errors.ErrCfgExists)
+		return types.InitResponse{
+			Error: errors.ErrCfgExists,
+		}
 	}
 
 	var (
@@ -67,27 +71,35 @@ func (h *handler) Init(args types.InitArgs) (resp types.Response) {
 	err = h.file.Mkdir(file.SecretsDir, common.ConfigPerms)
 	if err != nil {
 		err = fmt.Errorf("unable to create secrets directory: %w", err)
-		return types.Error(err)
+		return types.InitResponse{
+			Error: err,
+		}
 	}
 
 	// Create and Write JWT
 	jwt, err := utils.CreateJwtSecret()
 	if err != nil {
 		err = fmt.Errorf("unable to generate JWT secret: %w", err)
-		return types.Error(err)
+		return types.InitResponse{
+			Error: err,
+		}
 	}
 
 	err = h.file.Write(file.JwtSecretPath, jwt, common.ConfigPerms)
 	if err != nil {
 		err = fmt.Errorf("unable to create JWT secret file: %w", err)
-		return types.Error(err)
+		return types.InitResponse{
+			Error: err,
+		}
 	}
 
 	// Create dir for PIDs
 	err = h.file.Mkdir(file.PidDir, common.ConfigPerms)
 	if err != nil {
 		err = fmt.Errorf("unable to create PID directory: %w", err)
-		return types.Error(err)
+		return types.InitResponse{
+			Error: err,
+		}
 	}
 
 	h.log.Info("⚙️   Creating LUKSO configuration file...")
@@ -95,7 +107,9 @@ func (h *handler) Init(args types.InitArgs) (resp types.Response) {
 	err = h.cfg.Create("", "", "", ip)
 	if err != nil {
 		err = fmt.Errorf("unable to create LUKSO config: %w", err)
-		return types.Error(err)
+		return types.InitResponse{
+			Error: err,
+		}
 	}
 
 	h.log.Info(fmt.Sprintf("✅  LUKSO configuration created in %s", config.Path))
