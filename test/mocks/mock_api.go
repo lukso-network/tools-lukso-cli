@@ -21,20 +21,18 @@ func (_m *MockHandler) EXPECT() *MockHandler_Expecter {
 }
 
 // Init provides a mock function with given fields: _a0
-func (_m *MockHandler) Init(_a0 types.InitArgs) types.Response {
+func (_m *MockHandler) Init(_a0 types.InitArgs) types.InitResponse {
 	ret := _m.Called(_a0)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Init")
 	}
 
-	var r0 types.Response
-	if rf, ok := ret.Get(0).(func(types.InitArgs) types.Response); ok {
+	var r0 types.InitResponse
+	if rf, ok := ret.Get(0).(func(types.InitArgs) types.InitResponse); ok {
 		r0 = rf(_a0)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(types.Response)
-		}
+		r0 = ret.Get(0).(types.InitResponse)
 	}
 
 	return r0
@@ -58,31 +56,29 @@ func (_c *MockHandler_Init_Call) Run(run func(_a0 types.InitArgs)) *MockHandler_
 	return _c
 }
 
-func (_c *MockHandler_Init_Call) Return(_a0 types.Response) *MockHandler_Init_Call {
+func (_c *MockHandler_Init_Call) Return(_a0 types.InitResponse) *MockHandler_Init_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockHandler_Init_Call) RunAndReturn(run func(types.InitArgs) types.Response) *MockHandler_Init_Call {
+func (_c *MockHandler_Init_Call) RunAndReturn(run func(types.InitArgs) types.InitResponse) *MockHandler_Init_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // Install provides a mock function with given fields: _a0
-func (_m *MockHandler) Install(_a0 types.InstallArgs) types.Response {
+func (_m *MockHandler) Install(_a0 types.InstallArgs) types.InstallResponse {
 	ret := _m.Called(_a0)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Install")
 	}
 
-	var r0 types.Response
-	if rf, ok := ret.Get(0).(func(types.InstallArgs) types.Response); ok {
+	var r0 types.InstallResponse
+	if rf, ok := ret.Get(0).(func(types.InstallArgs) types.InstallResponse); ok {
 		r0 = rf(_a0)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(types.Response)
-		}
+		r0 = ret.Get(0).(types.InstallResponse)
 	}
 
 	return r0
@@ -106,31 +102,29 @@ func (_c *MockHandler_Install_Call) Run(run func(_a0 types.InstallArgs)) *MockHa
 	return _c
 }
 
-func (_c *MockHandler_Install_Call) Return(_a0 types.Response) *MockHandler_Install_Call {
+func (_c *MockHandler_Install_Call) Return(_a0 types.InstallResponse) *MockHandler_Install_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockHandler_Install_Call) RunAndReturn(run func(types.InstallArgs) types.Response) *MockHandler_Install_Call {
+func (_c *MockHandler_Install_Call) RunAndReturn(run func(types.InstallArgs) types.InstallResponse) *MockHandler_Install_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // Logs provides a mock function with given fields: _a0
-func (_m *MockHandler) Logs(_a0 types.LogsArgs) types.Response {
+func (_m *MockHandler) Logs(_a0 types.LogsArgs) types.LogsResponse {
 	ret := _m.Called(_a0)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Logs")
 	}
 
-	var r0 types.Response
-	if rf, ok := ret.Get(0).(func(types.LogsArgs) types.Response); ok {
+	var r0 types.LogsResponse
+	if rf, ok := ret.Get(0).(func(types.LogsArgs) types.LogsResponse); ok {
 		r0 = rf(_a0)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(types.Response)
-		}
+		r0 = ret.Get(0).(types.LogsResponse)
 	}
 
 	return r0
@@ -154,31 +148,29 @@ func (_c *MockHandler_Logs_Call) Run(run func(_a0 types.LogsArgs)) *MockHandler_
 	return _c
 }
 
-func (_c *MockHandler_Logs_Call) Return(_a0 types.Response) *MockHandler_Logs_Call {
+func (_c *MockHandler_Logs_Call) Return(_a0 types.LogsResponse) *MockHandler_Logs_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockHandler_Logs_Call) RunAndReturn(run func(types.LogsArgs) types.Response) *MockHandler_Logs_Call {
+func (_c *MockHandler_Logs_Call) RunAndReturn(run func(types.LogsArgs) types.LogsResponse) *MockHandler_Logs_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // Reset provides a mock function with given fields: _a0
-func (_m *MockHandler) Reset(_a0 types.ResetArgs) types.Response {
+func (_m *MockHandler) Reset(_a0 types.ResetArgs) types.ResetResponse {
 	ret := _m.Called(_a0)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Reset")
 	}
 
-	var r0 types.Response
-	if rf, ok := ret.Get(0).(func(types.ResetArgs) types.Response); ok {
+	var r0 types.ResetResponse
+	if rf, ok := ret.Get(0).(func(types.ResetArgs) types.ResetResponse); ok {
 		r0 = rf(_a0)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(types.Response)
-		}
+		r0 = ret.Get(0).(types.ResetResponse)
 	}
 
 	return r0
@@ -202,31 +194,29 @@ func (_c *MockHandler_Reset_Call) Run(run func(_a0 types.ResetArgs)) *MockHandle
 	return _c
 }
 
-func (_c *MockHandler_Reset_Call) Return(_a0 types.Response) *MockHandler_Reset_Call {
+func (_c *MockHandler_Reset_Call) Return(_a0 types.ResetResponse) *MockHandler_Reset_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockHandler_Reset_Call) RunAndReturn(run func(types.ResetArgs) types.Response) *MockHandler_Reset_Call {
+func (_c *MockHandler_Reset_Call) RunAndReturn(run func(types.ResetArgs) types.ResetResponse) *MockHandler_Reset_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // Start provides a mock function with given fields: _a0
-func (_m *MockHandler) Start(_a0 types.StartArgs) types.Response {
+func (_m *MockHandler) Start(_a0 types.StartArgs) types.StartResponse {
 	ret := _m.Called(_a0)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Start")
 	}
 
-	var r0 types.Response
-	if rf, ok := ret.Get(0).(func(types.StartArgs) types.Response); ok {
+	var r0 types.StartResponse
+	if rf, ok := ret.Get(0).(func(types.StartArgs) types.StartResponse); ok {
 		r0 = rf(_a0)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(types.Response)
-		}
+		r0 = ret.Get(0).(types.StartResponse)
 	}
 
 	return r0
@@ -250,31 +240,29 @@ func (_c *MockHandler_Start_Call) Run(run func(_a0 types.StartArgs)) *MockHandle
 	return _c
 }
 
-func (_c *MockHandler_Start_Call) Return(_a0 types.Response) *MockHandler_Start_Call {
+func (_c *MockHandler_Start_Call) Return(_a0 types.StartResponse) *MockHandler_Start_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockHandler_Start_Call) RunAndReturn(run func(types.StartArgs) types.Response) *MockHandler_Start_Call {
+func (_c *MockHandler_Start_Call) RunAndReturn(run func(types.StartArgs) types.StartResponse) *MockHandler_Start_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // Status provides a mock function with given fields: _a0
-func (_m *MockHandler) Status(_a0 types.StatusArgs) types.Response {
+func (_m *MockHandler) Status(_a0 types.StatusArgs) types.StatusResponse {
 	ret := _m.Called(_a0)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Status")
 	}
 
-	var r0 types.Response
-	if rf, ok := ret.Get(0).(func(types.StatusArgs) types.Response); ok {
+	var r0 types.StatusResponse
+	if rf, ok := ret.Get(0).(func(types.StatusArgs) types.StatusResponse); ok {
 		r0 = rf(_a0)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(types.Response)
-		}
+		r0 = ret.Get(0).(types.StatusResponse)
 	}
 
 	return r0
@@ -298,31 +286,29 @@ func (_c *MockHandler_Status_Call) Run(run func(_a0 types.StatusArgs)) *MockHand
 	return _c
 }
 
-func (_c *MockHandler_Status_Call) Return(_a0 types.Response) *MockHandler_Status_Call {
+func (_c *MockHandler_Status_Call) Return(_a0 types.StatusResponse) *MockHandler_Status_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockHandler_Status_Call) RunAndReturn(run func(types.StatusArgs) types.Response) *MockHandler_Status_Call {
+func (_c *MockHandler_Status_Call) RunAndReturn(run func(types.StatusArgs) types.StatusResponse) *MockHandler_Status_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // Stop provides a mock function with given fields: _a0
-func (_m *MockHandler) Stop(_a0 types.StopArgs) types.Response {
+func (_m *MockHandler) Stop(_a0 types.StopArgs) types.StopResponse {
 	ret := _m.Called(_a0)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Stop")
 	}
 
-	var r0 types.Response
-	if rf, ok := ret.Get(0).(func(types.StopArgs) types.Response); ok {
+	var r0 types.StopResponse
+	if rf, ok := ret.Get(0).(func(types.StopArgs) types.StopResponse); ok {
 		r0 = rf(_a0)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(types.Response)
-		}
+		r0 = ret.Get(0).(types.StopResponse)
 	}
 
 	return r0
@@ -346,31 +332,29 @@ func (_c *MockHandler_Stop_Call) Run(run func(_a0 types.StopArgs)) *MockHandler_
 	return _c
 }
 
-func (_c *MockHandler_Stop_Call) Return(_a0 types.Response) *MockHandler_Stop_Call {
+func (_c *MockHandler_Stop_Call) Return(_a0 types.StopResponse) *MockHandler_Stop_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockHandler_Stop_Call) RunAndReturn(run func(types.StopArgs) types.Response) *MockHandler_Stop_Call {
+func (_c *MockHandler_Stop_Call) RunAndReturn(run func(types.StopArgs) types.StopResponse) *MockHandler_Stop_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // Update provides a mock function with given fields: _a0
-func (_m *MockHandler) Update(_a0 types.UpdateArgs) types.Response {
+func (_m *MockHandler) Update(_a0 types.UpdateArgs) types.UpdateResponse {
 	ret := _m.Called(_a0)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Update")
 	}
 
-	var r0 types.Response
-	if rf, ok := ret.Get(0).(func(types.UpdateArgs) types.Response); ok {
+	var r0 types.UpdateResponse
+	if rf, ok := ret.Get(0).(func(types.UpdateArgs) types.UpdateResponse); ok {
 		r0 = rf(_a0)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(types.Response)
-		}
+		r0 = ret.Get(0).(types.UpdateResponse)
 	}
 
 	return r0
@@ -394,31 +378,29 @@ func (_c *MockHandler_Update_Call) Run(run func(_a0 types.UpdateArgs)) *MockHand
 	return _c
 }
 
-func (_c *MockHandler_Update_Call) Return(_a0 types.Response) *MockHandler_Update_Call {
+func (_c *MockHandler_Update_Call) Return(_a0 types.UpdateResponse) *MockHandler_Update_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockHandler_Update_Call) RunAndReturn(run func(types.UpdateArgs) types.Response) *MockHandler_Update_Call {
+func (_c *MockHandler_Update_Call) RunAndReturn(run func(types.UpdateArgs) types.UpdateResponse) *MockHandler_Update_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // ValidatorExit provides a mock function with given fields: _a0
-func (_m *MockHandler) ValidatorExit(_a0 types.ValidatorExitArgs) types.Response {
+func (_m *MockHandler) ValidatorExit(_a0 types.ValidatorExitArgs) types.ValidatorExitResponse {
 	ret := _m.Called(_a0)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ValidatorExit")
 	}
 
-	var r0 types.Response
-	if rf, ok := ret.Get(0).(func(types.ValidatorExitArgs) types.Response); ok {
+	var r0 types.ValidatorExitResponse
+	if rf, ok := ret.Get(0).(func(types.ValidatorExitArgs) types.ValidatorExitResponse); ok {
 		r0 = rf(_a0)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(types.Response)
-		}
+		r0 = ret.Get(0).(types.ValidatorExitResponse)
 	}
 
 	return r0
@@ -442,31 +424,29 @@ func (_c *MockHandler_ValidatorExit_Call) Run(run func(_a0 types.ValidatorExitAr
 	return _c
 }
 
-func (_c *MockHandler_ValidatorExit_Call) Return(_a0 types.Response) *MockHandler_ValidatorExit_Call {
+func (_c *MockHandler_ValidatorExit_Call) Return(_a0 types.ValidatorExitResponse) *MockHandler_ValidatorExit_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockHandler_ValidatorExit_Call) RunAndReturn(run func(types.ValidatorExitArgs) types.Response) *MockHandler_ValidatorExit_Call {
+func (_c *MockHandler_ValidatorExit_Call) RunAndReturn(run func(types.ValidatorExitArgs) types.ValidatorExitResponse) *MockHandler_ValidatorExit_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // ValidatorImport provides a mock function with given fields: _a0
-func (_m *MockHandler) ValidatorImport(_a0 types.ValidatorImportArgs) types.Response {
+func (_m *MockHandler) ValidatorImport(_a0 types.ValidatorImportArgs) types.ValidatorImportResponse {
 	ret := _m.Called(_a0)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ValidatorImport")
 	}
 
-	var r0 types.Response
-	if rf, ok := ret.Get(0).(func(types.ValidatorImportArgs) types.Response); ok {
+	var r0 types.ValidatorImportResponse
+	if rf, ok := ret.Get(0).(func(types.ValidatorImportArgs) types.ValidatorImportResponse); ok {
 		r0 = rf(_a0)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(types.Response)
-		}
+		r0 = ret.Get(0).(types.ValidatorImportResponse)
 	}
 
 	return r0
@@ -490,31 +470,29 @@ func (_c *MockHandler_ValidatorImport_Call) Run(run func(_a0 types.ValidatorImpo
 	return _c
 }
 
-func (_c *MockHandler_ValidatorImport_Call) Return(_a0 types.Response) *MockHandler_ValidatorImport_Call {
+func (_c *MockHandler_ValidatorImport_Call) Return(_a0 types.ValidatorImportResponse) *MockHandler_ValidatorImport_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockHandler_ValidatorImport_Call) RunAndReturn(run func(types.ValidatorImportArgs) types.Response) *MockHandler_ValidatorImport_Call {
+func (_c *MockHandler_ValidatorImport_Call) RunAndReturn(run func(types.ValidatorImportArgs) types.ValidatorImportResponse) *MockHandler_ValidatorImport_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // ValidatorList provides a mock function with given fields: _a0
-func (_m *MockHandler) ValidatorList(_a0 types.ValidatorListArgs) types.Response {
+func (_m *MockHandler) ValidatorList(_a0 types.ValidatorListArgs) types.ValidatorListResponse {
 	ret := _m.Called(_a0)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ValidatorList")
 	}
 
-	var r0 types.Response
-	if rf, ok := ret.Get(0).(func(types.ValidatorListArgs) types.Response); ok {
+	var r0 types.ValidatorListResponse
+	if rf, ok := ret.Get(0).(func(types.ValidatorListArgs) types.ValidatorListResponse); ok {
 		r0 = rf(_a0)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(types.Response)
-		}
+		r0 = ret.Get(0).(types.ValidatorListResponse)
 	}
 
 	return r0
@@ -538,31 +516,29 @@ func (_c *MockHandler_ValidatorList_Call) Run(run func(_a0 types.ValidatorListAr
 	return _c
 }
 
-func (_c *MockHandler_ValidatorList_Call) Return(_a0 types.Response) *MockHandler_ValidatorList_Call {
+func (_c *MockHandler_ValidatorList_Call) Return(_a0 types.ValidatorListResponse) *MockHandler_ValidatorList_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockHandler_ValidatorList_Call) RunAndReturn(run func(types.ValidatorListArgs) types.Response) *MockHandler_ValidatorList_Call {
+func (_c *MockHandler_ValidatorList_Call) RunAndReturn(run func(types.ValidatorListArgs) types.ValidatorListResponse) *MockHandler_ValidatorList_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // Version provides a mock function with given fields: _a0
-func (_m *MockHandler) Version(_a0 types.VersionArgs) types.Response {
+func (_m *MockHandler) Version(_a0 types.VersionArgs) types.VersionResponse {
 	ret := _m.Called(_a0)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Version")
 	}
 
-	var r0 types.Response
-	if rf, ok := ret.Get(0).(func(types.VersionArgs) types.Response); ok {
+	var r0 types.VersionResponse
+	if rf, ok := ret.Get(0).(func(types.VersionArgs) types.VersionResponse); ok {
 		r0 = rf(_a0)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(types.Response)
-		}
+		r0 = ret.Get(0).(types.VersionResponse)
 	}
 
 	return r0
@@ -586,31 +562,29 @@ func (_c *MockHandler_Version_Call) Run(run func(_a0 types.VersionArgs)) *MockHa
 	return _c
 }
 
-func (_c *MockHandler_Version_Call) Return(_a0 types.Response) *MockHandler_Version_Call {
+func (_c *MockHandler_Version_Call) Return(_a0 types.VersionResponse) *MockHandler_Version_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockHandler_Version_Call) RunAndReturn(run func(types.VersionArgs) types.Response) *MockHandler_Version_Call {
+func (_c *MockHandler_Version_Call) RunAndReturn(run func(types.VersionArgs) types.VersionResponse) *MockHandler_Version_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // VersionClients provides a mock function with given fields: _a0
-func (_m *MockHandler) VersionClients(_a0 types.VersionClientsArgs) types.Response {
+func (_m *MockHandler) VersionClients(_a0 types.VersionClientsArgs) types.VersionClientsResponse {
 	ret := _m.Called(_a0)
 
 	if len(ret) == 0 {
 		panic("no return value specified for VersionClients")
 	}
 
-	var r0 types.Response
-	if rf, ok := ret.Get(0).(func(types.VersionClientsArgs) types.Response); ok {
+	var r0 types.VersionClientsResponse
+	if rf, ok := ret.Get(0).(func(types.VersionClientsArgs) types.VersionClientsResponse); ok {
 		r0 = rf(_a0)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(types.Response)
-		}
+		r0 = ret.Get(0).(types.VersionClientsResponse)
 	}
 
 	return r0
@@ -634,12 +608,12 @@ func (_c *MockHandler_VersionClients_Call) Run(run func(_a0 types.VersionClients
 	return _c
 }
 
-func (_c *MockHandler_VersionClients_Call) Return(_a0 types.Response) *MockHandler_VersionClients_Call {
+func (_c *MockHandler_VersionClients_Call) Return(_a0 types.VersionClientsResponse) *MockHandler_VersionClients_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockHandler_VersionClients_Call) RunAndReturn(run func(types.VersionClientsArgs) types.Response) *MockHandler_VersionClients_Call {
+func (_c *MockHandler_VersionClients_Call) RunAndReturn(run func(types.VersionClientsArgs) types.VersionClientsResponse) *MockHandler_VersionClients_Call {
 	_c.Call.Return(run)
 	return _c
 }

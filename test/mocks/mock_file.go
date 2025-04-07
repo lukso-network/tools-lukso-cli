@@ -21,6 +21,52 @@ func (_m *MockManager) EXPECT() *MockManager_Expecter {
 	return &MockManager_Expecter{mock: &_m.Mock}
 }
 
+// Create provides a mock function with given fields: dst
+func (_m *MockManager) Create(dst string) error {
+	ret := _m.Called(dst)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Create")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(string) error); ok {
+		r0 = rf(dst)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockManager_Create_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Create'
+type MockManager_Create_Call struct {
+	*mock.Call
+}
+
+// Create is a helper method to define mock.On call
+//   - dst string
+func (_e *MockManager_Expecter) Create(dst interface{}) *MockManager_Create_Call {
+	return &MockManager_Create_Call{Call: _e.mock.On("Create", dst)}
+}
+
+func (_c *MockManager_Create_Call) Run(run func(dst string)) *MockManager_Create_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(string))
+	})
+	return _c
+}
+
+func (_c *MockManager_Create_Call) Return(_a0 error) *MockManager_Create_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockManager_Create_Call) RunAndReturn(run func(string) error) *MockManager_Create_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Exists provides a mock function with given fields: path
 func (_m *MockManager) Exists(path string) bool {
 	ret := _m.Called(path)
@@ -104,8 +150,8 @@ func (_c *MockManager_Mkdir_Call) Run(run func(dst string, perm os.FileMode)) *M
 	return _c
 }
 
-func (_c *MockManager_Mkdir_Call) Return(err error) *MockManager_Mkdir_Call {
-	_c.Call.Return(err)
+func (_c *MockManager_Mkdir_Call) Return(_a0 error) *MockManager_Mkdir_Call {
+	_c.Call.Return(_a0)
 	return _c
 }
 
