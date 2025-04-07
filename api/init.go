@@ -104,7 +104,16 @@ func (h *handler) Init(args types.InitArgs) (resp types.InitResponse) {
 
 	h.log.Info("⚙️   Creating LUKSO configuration file...")
 
-	err = h.cfg.Create("", "", "", ip)
+	nodeCfg := config.NodeConfig{
+		UseClients: config.UseClients{
+			ExecutionClient: "",
+			ConsensusClient: "",
+			ValidatorClient: "",
+		},
+		Ipv4: ip,
+	}
+
+	err = h.cfg.Create(nodeCfg)
 	if err != nil {
 		err = fmt.Errorf("unable to create LUKSO config: %w", err)
 		return types.InitResponse{

@@ -29,7 +29,7 @@ type Handler interface {
 }
 
 type handler struct {
-	cfg       *config.Config
+	cfg       config.Configurator
 	file      file.Manager
 	log       logger.Logger
 	installer installer.Installer
@@ -43,7 +43,7 @@ func NewHandler() Handler {
 	inst := installer.NewInstaller(fmng)
 
 	return &handler{
-		cfg:       config.NewConfig(config.Path),
+		cfg:       config.NewConfigurator(config.Path),
 		file:      fmng,
 		log:       log,
 		installer: inst,
