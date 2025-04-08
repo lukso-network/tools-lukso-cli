@@ -50,7 +50,7 @@ func (h *handler) Init(args types.InitRequest) (resp types.InitResponse) {
 	default:
 		parsedIp := net.ParseIP(args.Ip)
 		if parsedIp == nil {
-			h.log.Warn(fmt.Sprintf("--ip=%s is not a valid IP - proceeding with --ip=disabled", ip))
+			h.log.Warn(fmt.Sprintf("--ip='%s' is not a valid IP - proceeding with --ip=disabled", args.Ip))
 
 			break
 		}

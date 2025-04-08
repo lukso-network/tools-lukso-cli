@@ -1,11 +1,18 @@
 package api
 
 import (
+	"os"
 	"testing"
 
+	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
 
+	"github.com/lukso-network/tools-lukso-cli/api/logger"
 	"github.com/lukso-network/tools-lukso-cli/api/types"
+	"github.com/lukso-network/tools-lukso-cli/common"
+	"github.com/lukso-network/tools-lukso-cli/common/file"
+	"github.com/lukso-network/tools-lukso-cli/config"
+	"github.com/lukso-network/tools-lukso-cli/dependencies/configs"
 	"github.com/lukso-network/tools-lukso-cli/test/mocks"
 )
 
@@ -36,15 +43,18 @@ type HandlerSuite struct {
 
 	cfgMock       *mocks.MockConfigurator
 	fileMock      *mocks.MockManager
-	loggerMock    *mocks.MockLogger
+	loggerMock    logger.Logger // Could test log messages as well - this would mean expecting a lot of individual messages
 	installerMock *mocks.MockInstaller
 }
 
 func (h *HandlerSuite) SetupSuite() {
 	h.cfgMock = mocks.NewMockConfigurator(h.T())
 	h.fileMock = mocks.NewMockManager(h.T())
-	h.loggerMock = mocks.NewMockLogger(h.T())
+	h.loggerMock = logger.ConsoleLogger{}
 	h.installerMock = mocks.NewMockInstaller(h.T())
+
+	configs.CfgFileManager = h.fileMock
+	configs.CfgInstaller = h.installerMock
 
 	h.handler = NewHandler(
 		h.cfgMock,
@@ -55,15 +65,40 @@ func (h *HandlerSuite) SetupSuite() {
 }
 
 func (h *HandlerSuite) SetupTest() {
-	return
 }
 
 func (h *HandlerSuite) TestInit() {
 	testCases := []testCase[types.InitRequest, types.InitResponse]{
 		{
-			"successful init",
+			"new init - missing IP in request",
 			h.handler.Init,
 			func(h *HandlerSuite) {
+				h.cfgMock.EXPECT().Exists().Return(false).Once()
+				h.fileMock.EXPECT().Exists(mock.Anything).Return(false) // assume any config file is not present
+				h.installerMock.EXPECT().InstallFile(mock.Anything, mock.Anything).Return(nil)
+				h.fileMock.EXPECT().Mkdir(file.SecretsDir, os.FileMode(common.ConfigPerms)).Return(nil).Once()
+				h.fileMock.EXPECT().
+					Write(
+						file.JwtSecretPath,
+						mock.MatchedBy(func(b []byte) bool { return len(b) == 64 }), // encoded JWT has twice the amount of bytes
+						os.FileMode(common.ConfigPerms),
+					).
+					Return(nil).
+					Once()
+				h.fileMock.EXPECT().Mkdir(file.PidDir, os.FileMode(common.ConfigPerms)).Return(nil).Once()
+				h.cfgMock.EXPECT().
+					Create(
+						config.NodeConfig{
+							UseClients: config.UseClients{
+								ExecutionClient: "",
+								ConsensusClient: "",
+								ValidatorClient: "",
+							},
+							Ipv4: "disabled",
+						},
+					).
+					Return(nil).
+					Once()
 			},
 			types.InitRequest{},
 			types.InitResponse{},

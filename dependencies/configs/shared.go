@@ -149,6 +149,9 @@ const (
 )
 
 var (
+	CfgFileManager = file.NewManager()
+	CfgInstaller   = installer.NewInstaller(CfgFileManager)
+
 	SharedConfigDependencies = map[string]ClientConfigDependency{
 		// ----- SHARED -----
 		mainnetGenesisDependencyName: newClientConfig(
@@ -234,34 +237,27 @@ var (
 )
 
 type clientConfig struct {
-	url       string
-	name      string
-	filePath  string
-	file      file.Manager
-	installer installer.Installer
+	url      string
+	name     string
+	filePath string
 }
 
 func newClientConfig(url, name, filePath string) ClientConfigDependency {
-	mng := file.NewManager()
-	inst := installer.NewInstaller(mng)
-
 	return &clientConfig{
-		url:       url,
-		name:      name,
-		filePath:  filePath,
-		file:      mng,
-		installer: inst,
+		url:      url,
+		name:     name,
+		filePath: filePath,
 	}
 }
 
 var _ ClientConfigDependency = &clientConfig{}
 
 func (c *clientConfig) Install(isUpdate bool) (err error) {
-	if c.file.Exists(c.filePath) && !isUpdate {
+	if CfgFileManager.Exists(c.filePath) && !isUpdate {
 		return errors.ErrFileExists
 	}
 
-	err = c.installer.InstallFile(c.url, c.filePath)
+	err = CfgInstaller.InstallFile(c.url, c.filePath)
 	if err != nil {
 		return
 	}
