@@ -1,38 +1,38 @@
 package types
 
-type InitArgs struct {
+type InitRequest struct {
 	Directory string
 	Reinit    bool
 	Ip        string
 }
 
 type (
-	InstallArgs         struct{}
-	UpdateArgs          struct{}
-	StartArgs           struct{}
-	StopArgs            struct{}
-	StatusArgs          struct{}
-	LogsArgs            struct{}
-	ResetArgs           struct{}
-	ValidatorImportArgs struct{}
-	ValidatorListArgs   struct{}
-	ValidatorExitArgs   struct{}
-	VersionArgs         struct{}
-	VersionClientsArgs  struct{}
+	InstallRequest         struct{}
+	UpdateRequest          struct{}
+	StartRequest           struct{}
+	StopRequest            struct{}
+	StatusRequest          struct{}
+	LogsRequest            struct{}
+	ResetRequest           struct{}
+	ValidatorImportRequest struct{}
+	ValidatorListRequest   struct{}
+	ValidatorExitRequest   struct{}
+	VersionRequest         struct{}
+	VersionClientsRequest  struct{}
 )
 
 type Request interface {
-	InitArgs |
-		InstallArgs |
-		UpdateArgs |
-		StartArgs |
-		StopArgs |
-		StatusArgs |
-		LogsArgs |
-		ResetArgs |
-		ValidatorImportArgs |
-		ValidatorListArgs |
-		ValidatorExitArgs |
-		VersionArgs |
-		VersionClientsArgs
+	InitRequest |
+		InstallRequest |
+		UpdateRequest |
+		StartRequest |
+		StopRequest |
+		StatusRequest |
+		LogsRequest |
+		ResetRequest |
+		ValidatorImportRequest |
+		ValidatorListRequest |
+		ValidatorExitRequest |
+		VersionRequest |
+		VersionClientsRequest
 }

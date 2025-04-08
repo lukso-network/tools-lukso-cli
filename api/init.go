@@ -15,7 +15,7 @@ import (
 	"github.com/lukso-network/tools-lukso-cli/dependencies/configs"
 )
 
-func (h *handler) Init(args types.InitArgs) (resp types.InitResponse) {
+func (h *handler) Init(args types.InitRequest) (resp types.InitResponse) {
 	if runningClients := clients.RunningClients(); runningClients != nil {
 		return types.InitResponse{
 			Error: errors.ErrClientsAlreadyRunning{Clients: runningClients},

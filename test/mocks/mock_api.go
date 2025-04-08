@@ -21,7 +21,7 @@ func (_m *MockHandler) EXPECT() *MockHandler_Expecter {
 }
 
 // Init provides a mock function with given fields: _a0
-func (_m *MockHandler) Init(_a0 types.InitArgs) types.InitResponse {
+func (_m *MockHandler) Init(_a0 types.InitRequest) types.InitResponse {
 	ret := _m.Called(_a0)
 
 	if len(ret) == 0 {
@@ -29,7 +29,7 @@ func (_m *MockHandler) Init(_a0 types.InitArgs) types.InitResponse {
 	}
 
 	var r0 types.InitResponse
-	if rf, ok := ret.Get(0).(func(types.InitArgs) types.InitResponse); ok {
+	if rf, ok := ret.Get(0).(func(types.InitRequest) types.InitResponse); ok {
 		r0 = rf(_a0)
 	} else {
 		r0 = ret.Get(0).(types.InitResponse)
@@ -44,14 +44,14 @@ type MockHandler_Init_Call struct {
 }
 
 // Init is a helper method to define mock.On call
-//   - _a0 types.InitArgs
+//   - _a0 types.InitRequest
 func (_e *MockHandler_Expecter) Init(_a0 interface{}) *MockHandler_Init_Call {
 	return &MockHandler_Init_Call{Call: _e.mock.On("Init", _a0)}
 }
 
-func (_c *MockHandler_Init_Call) Run(run func(_a0 types.InitArgs)) *MockHandler_Init_Call {
+func (_c *MockHandler_Init_Call) Run(run func(_a0 types.InitRequest)) *MockHandler_Init_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.InitArgs))
+		run(args[0].(types.InitRequest))
 	})
 	return _c
 }
@@ -61,13 +61,13 @@ func (_c *MockHandler_Init_Call) Return(_a0 types.InitResponse) *MockHandler_Ini
 	return _c
 }
 
-func (_c *MockHandler_Init_Call) RunAndReturn(run func(types.InitArgs) types.InitResponse) *MockHandler_Init_Call {
+func (_c *MockHandler_Init_Call) RunAndReturn(run func(types.InitRequest) types.InitResponse) *MockHandler_Init_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // Install provides a mock function with given fields: _a0
-func (_m *MockHandler) Install(_a0 types.InstallArgs) types.InstallResponse {
+func (_m *MockHandler) Install(_a0 types.InstallRequest) types.InstallResponse {
 	ret := _m.Called(_a0)
 
 	if len(ret) == 0 {
@@ -75,7 +75,7 @@ func (_m *MockHandler) Install(_a0 types.InstallArgs) types.InstallResponse {
 	}
 
 	var r0 types.InstallResponse
-	if rf, ok := ret.Get(0).(func(types.InstallArgs) types.InstallResponse); ok {
+	if rf, ok := ret.Get(0).(func(types.InstallRequest) types.InstallResponse); ok {
 		r0 = rf(_a0)
 	} else {
 		r0 = ret.Get(0).(types.InstallResponse)
@@ -90,14 +90,14 @@ type MockHandler_Install_Call struct {
 }
 
 // Install is a helper method to define mock.On call
-//   - _a0 types.InstallArgs
+//   - _a0 types.InstallRequest
 func (_e *MockHandler_Expecter) Install(_a0 interface{}) *MockHandler_Install_Call {
 	return &MockHandler_Install_Call{Call: _e.mock.On("Install", _a0)}
 }
 
-func (_c *MockHandler_Install_Call) Run(run func(_a0 types.InstallArgs)) *MockHandler_Install_Call {
+func (_c *MockHandler_Install_Call) Run(run func(_a0 types.InstallRequest)) *MockHandler_Install_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.InstallArgs))
+		run(args[0].(types.InstallRequest))
 	})
 	return _c
 }
@@ -107,13 +107,13 @@ func (_c *MockHandler_Install_Call) Return(_a0 types.InstallResponse) *MockHandl
 	return _c
 }
 
-func (_c *MockHandler_Install_Call) RunAndReturn(run func(types.InstallArgs) types.InstallResponse) *MockHandler_Install_Call {
+func (_c *MockHandler_Install_Call) RunAndReturn(run func(types.InstallRequest) types.InstallResponse) *MockHandler_Install_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // Logs provides a mock function with given fields: _a0
-func (_m *MockHandler) Logs(_a0 types.LogsArgs) types.LogsResponse {
+func (_m *MockHandler) Logs(_a0 types.LogsRequest) types.LogsResponse {
 	ret := _m.Called(_a0)
 
 	if len(ret) == 0 {
@@ -121,7 +121,7 @@ func (_m *MockHandler) Logs(_a0 types.LogsArgs) types.LogsResponse {
 	}
 
 	var r0 types.LogsResponse
-	if rf, ok := ret.Get(0).(func(types.LogsArgs) types.LogsResponse); ok {
+	if rf, ok := ret.Get(0).(func(types.LogsRequest) types.LogsResponse); ok {
 		r0 = rf(_a0)
 	} else {
 		r0 = ret.Get(0).(types.LogsResponse)
@@ -136,14 +136,14 @@ type MockHandler_Logs_Call struct {
 }
 
 // Logs is a helper method to define mock.On call
-//   - _a0 types.LogsArgs
+//   - _a0 types.LogsRequest
 func (_e *MockHandler_Expecter) Logs(_a0 interface{}) *MockHandler_Logs_Call {
 	return &MockHandler_Logs_Call{Call: _e.mock.On("Logs", _a0)}
 }
 
-func (_c *MockHandler_Logs_Call) Run(run func(_a0 types.LogsArgs)) *MockHandler_Logs_Call {
+func (_c *MockHandler_Logs_Call) Run(run func(_a0 types.LogsRequest)) *MockHandler_Logs_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.LogsArgs))
+		run(args[0].(types.LogsRequest))
 	})
 	return _c
 }
@@ -153,13 +153,13 @@ func (_c *MockHandler_Logs_Call) Return(_a0 types.LogsResponse) *MockHandler_Log
 	return _c
 }
 
-func (_c *MockHandler_Logs_Call) RunAndReturn(run func(types.LogsArgs) types.LogsResponse) *MockHandler_Logs_Call {
+func (_c *MockHandler_Logs_Call) RunAndReturn(run func(types.LogsRequest) types.LogsResponse) *MockHandler_Logs_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // Reset provides a mock function with given fields: _a0
-func (_m *MockHandler) Reset(_a0 types.ResetArgs) types.ResetResponse {
+func (_m *MockHandler) Reset(_a0 types.ResetRequest) types.ResetResponse {
 	ret := _m.Called(_a0)
 
 	if len(ret) == 0 {
@@ -167,7 +167,7 @@ func (_m *MockHandler) Reset(_a0 types.ResetArgs) types.ResetResponse {
 	}
 
 	var r0 types.ResetResponse
-	if rf, ok := ret.Get(0).(func(types.ResetArgs) types.ResetResponse); ok {
+	if rf, ok := ret.Get(0).(func(types.ResetRequest) types.ResetResponse); ok {
 		r0 = rf(_a0)
 	} else {
 		r0 = ret.Get(0).(types.ResetResponse)
@@ -182,14 +182,14 @@ type MockHandler_Reset_Call struct {
 }
 
 // Reset is a helper method to define mock.On call
-//   - _a0 types.ResetArgs
+//   - _a0 types.ResetRequest
 func (_e *MockHandler_Expecter) Reset(_a0 interface{}) *MockHandler_Reset_Call {
 	return &MockHandler_Reset_Call{Call: _e.mock.On("Reset", _a0)}
 }
 
-func (_c *MockHandler_Reset_Call) Run(run func(_a0 types.ResetArgs)) *MockHandler_Reset_Call {
+func (_c *MockHandler_Reset_Call) Run(run func(_a0 types.ResetRequest)) *MockHandler_Reset_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.ResetArgs))
+		run(args[0].(types.ResetRequest))
 	})
 	return _c
 }
@@ -199,13 +199,13 @@ func (_c *MockHandler_Reset_Call) Return(_a0 types.ResetResponse) *MockHandler_R
 	return _c
 }
 
-func (_c *MockHandler_Reset_Call) RunAndReturn(run func(types.ResetArgs) types.ResetResponse) *MockHandler_Reset_Call {
+func (_c *MockHandler_Reset_Call) RunAndReturn(run func(types.ResetRequest) types.ResetResponse) *MockHandler_Reset_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // Start provides a mock function with given fields: _a0
-func (_m *MockHandler) Start(_a0 types.StartArgs) types.StartResponse {
+func (_m *MockHandler) Start(_a0 types.StartRequest) types.StartResponse {
 	ret := _m.Called(_a0)
 
 	if len(ret) == 0 {
@@ -213,7 +213,7 @@ func (_m *MockHandler) Start(_a0 types.StartArgs) types.StartResponse {
 	}
 
 	var r0 types.StartResponse
-	if rf, ok := ret.Get(0).(func(types.StartArgs) types.StartResponse); ok {
+	if rf, ok := ret.Get(0).(func(types.StartRequest) types.StartResponse); ok {
 		r0 = rf(_a0)
 	} else {
 		r0 = ret.Get(0).(types.StartResponse)
@@ -228,14 +228,14 @@ type MockHandler_Start_Call struct {
 }
 
 // Start is a helper method to define mock.On call
-//   - _a0 types.StartArgs
+//   - _a0 types.StartRequest
 func (_e *MockHandler_Expecter) Start(_a0 interface{}) *MockHandler_Start_Call {
 	return &MockHandler_Start_Call{Call: _e.mock.On("Start", _a0)}
 }
 
-func (_c *MockHandler_Start_Call) Run(run func(_a0 types.StartArgs)) *MockHandler_Start_Call {
+func (_c *MockHandler_Start_Call) Run(run func(_a0 types.StartRequest)) *MockHandler_Start_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.StartArgs))
+		run(args[0].(types.StartRequest))
 	})
 	return _c
 }
@@ -245,13 +245,13 @@ func (_c *MockHandler_Start_Call) Return(_a0 types.StartResponse) *MockHandler_S
 	return _c
 }
 
-func (_c *MockHandler_Start_Call) RunAndReturn(run func(types.StartArgs) types.StartResponse) *MockHandler_Start_Call {
+func (_c *MockHandler_Start_Call) RunAndReturn(run func(types.StartRequest) types.StartResponse) *MockHandler_Start_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // Status provides a mock function with given fields: _a0
-func (_m *MockHandler) Status(_a0 types.StatusArgs) types.StatusResponse {
+func (_m *MockHandler) Status(_a0 types.StatusRequest) types.StatusResponse {
 	ret := _m.Called(_a0)
 
 	if len(ret) == 0 {
@@ -259,7 +259,7 @@ func (_m *MockHandler) Status(_a0 types.StatusArgs) types.StatusResponse {
 	}
 
 	var r0 types.StatusResponse
-	if rf, ok := ret.Get(0).(func(types.StatusArgs) types.StatusResponse); ok {
+	if rf, ok := ret.Get(0).(func(types.StatusRequest) types.StatusResponse); ok {
 		r0 = rf(_a0)
 	} else {
 		r0 = ret.Get(0).(types.StatusResponse)
@@ -274,14 +274,14 @@ type MockHandler_Status_Call struct {
 }
 
 // Status is a helper method to define mock.On call
-//   - _a0 types.StatusArgs
+//   - _a0 types.StatusRequest
 func (_e *MockHandler_Expecter) Status(_a0 interface{}) *MockHandler_Status_Call {
 	return &MockHandler_Status_Call{Call: _e.mock.On("Status", _a0)}
 }
 
-func (_c *MockHandler_Status_Call) Run(run func(_a0 types.StatusArgs)) *MockHandler_Status_Call {
+func (_c *MockHandler_Status_Call) Run(run func(_a0 types.StatusRequest)) *MockHandler_Status_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.StatusArgs))
+		run(args[0].(types.StatusRequest))
 	})
 	return _c
 }
@@ -291,13 +291,13 @@ func (_c *MockHandler_Status_Call) Return(_a0 types.StatusResponse) *MockHandler
 	return _c
 }
 
-func (_c *MockHandler_Status_Call) RunAndReturn(run func(types.StatusArgs) types.StatusResponse) *MockHandler_Status_Call {
+func (_c *MockHandler_Status_Call) RunAndReturn(run func(types.StatusRequest) types.StatusResponse) *MockHandler_Status_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // Stop provides a mock function with given fields: _a0
-func (_m *MockHandler) Stop(_a0 types.StopArgs) types.StopResponse {
+func (_m *MockHandler) Stop(_a0 types.StopRequest) types.StopResponse {
 	ret := _m.Called(_a0)
 
 	if len(ret) == 0 {
@@ -305,7 +305,7 @@ func (_m *MockHandler) Stop(_a0 types.StopArgs) types.StopResponse {
 	}
 
 	var r0 types.StopResponse
-	if rf, ok := ret.Get(0).(func(types.StopArgs) types.StopResponse); ok {
+	if rf, ok := ret.Get(0).(func(types.StopRequest) types.StopResponse); ok {
 		r0 = rf(_a0)
 	} else {
 		r0 = ret.Get(0).(types.StopResponse)
@@ -320,14 +320,14 @@ type MockHandler_Stop_Call struct {
 }
 
 // Stop is a helper method to define mock.On call
-//   - _a0 types.StopArgs
+//   - _a0 types.StopRequest
 func (_e *MockHandler_Expecter) Stop(_a0 interface{}) *MockHandler_Stop_Call {
 	return &MockHandler_Stop_Call{Call: _e.mock.On("Stop", _a0)}
 }
 
-func (_c *MockHandler_Stop_Call) Run(run func(_a0 types.StopArgs)) *MockHandler_Stop_Call {
+func (_c *MockHandler_Stop_Call) Run(run func(_a0 types.StopRequest)) *MockHandler_Stop_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.StopArgs))
+		run(args[0].(types.StopRequest))
 	})
 	return _c
 }
@@ -337,13 +337,13 @@ func (_c *MockHandler_Stop_Call) Return(_a0 types.StopResponse) *MockHandler_Sto
 	return _c
 }
 
-func (_c *MockHandler_Stop_Call) RunAndReturn(run func(types.StopArgs) types.StopResponse) *MockHandler_Stop_Call {
+func (_c *MockHandler_Stop_Call) RunAndReturn(run func(types.StopRequest) types.StopResponse) *MockHandler_Stop_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // Update provides a mock function with given fields: _a0
-func (_m *MockHandler) Update(_a0 types.UpdateArgs) types.UpdateResponse {
+func (_m *MockHandler) Update(_a0 types.UpdateRequest) types.UpdateResponse {
 	ret := _m.Called(_a0)
 
 	if len(ret) == 0 {
@@ -351,7 +351,7 @@ func (_m *MockHandler) Update(_a0 types.UpdateArgs) types.UpdateResponse {
 	}
 
 	var r0 types.UpdateResponse
-	if rf, ok := ret.Get(0).(func(types.UpdateArgs) types.UpdateResponse); ok {
+	if rf, ok := ret.Get(0).(func(types.UpdateRequest) types.UpdateResponse); ok {
 		r0 = rf(_a0)
 	} else {
 		r0 = ret.Get(0).(types.UpdateResponse)
@@ -366,14 +366,14 @@ type MockHandler_Update_Call struct {
 }
 
 // Update is a helper method to define mock.On call
-//   - _a0 types.UpdateArgs
+//   - _a0 types.UpdateRequest
 func (_e *MockHandler_Expecter) Update(_a0 interface{}) *MockHandler_Update_Call {
 	return &MockHandler_Update_Call{Call: _e.mock.On("Update", _a0)}
 }
 
-func (_c *MockHandler_Update_Call) Run(run func(_a0 types.UpdateArgs)) *MockHandler_Update_Call {
+func (_c *MockHandler_Update_Call) Run(run func(_a0 types.UpdateRequest)) *MockHandler_Update_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.UpdateArgs))
+		run(args[0].(types.UpdateRequest))
 	})
 	return _c
 }
@@ -383,13 +383,13 @@ func (_c *MockHandler_Update_Call) Return(_a0 types.UpdateResponse) *MockHandler
 	return _c
 }
 
-func (_c *MockHandler_Update_Call) RunAndReturn(run func(types.UpdateArgs) types.UpdateResponse) *MockHandler_Update_Call {
+func (_c *MockHandler_Update_Call) RunAndReturn(run func(types.UpdateRequest) types.UpdateResponse) *MockHandler_Update_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // ValidatorExit provides a mock function with given fields: _a0
-func (_m *MockHandler) ValidatorExit(_a0 types.ValidatorExitArgs) types.ValidatorExitResponse {
+func (_m *MockHandler) ValidatorExit(_a0 types.ValidatorExitRequest) types.ValidatorExitResponse {
 	ret := _m.Called(_a0)
 
 	if len(ret) == 0 {
@@ -397,7 +397,7 @@ func (_m *MockHandler) ValidatorExit(_a0 types.ValidatorExitArgs) types.Validato
 	}
 
 	var r0 types.ValidatorExitResponse
-	if rf, ok := ret.Get(0).(func(types.ValidatorExitArgs) types.ValidatorExitResponse); ok {
+	if rf, ok := ret.Get(0).(func(types.ValidatorExitRequest) types.ValidatorExitResponse); ok {
 		r0 = rf(_a0)
 	} else {
 		r0 = ret.Get(0).(types.ValidatorExitResponse)
@@ -412,14 +412,14 @@ type MockHandler_ValidatorExit_Call struct {
 }
 
 // ValidatorExit is a helper method to define mock.On call
-//   - _a0 types.ValidatorExitArgs
+//   - _a0 types.ValidatorExitRequest
 func (_e *MockHandler_Expecter) ValidatorExit(_a0 interface{}) *MockHandler_ValidatorExit_Call {
 	return &MockHandler_ValidatorExit_Call{Call: _e.mock.On("ValidatorExit", _a0)}
 }
 
-func (_c *MockHandler_ValidatorExit_Call) Run(run func(_a0 types.ValidatorExitArgs)) *MockHandler_ValidatorExit_Call {
+func (_c *MockHandler_ValidatorExit_Call) Run(run func(_a0 types.ValidatorExitRequest)) *MockHandler_ValidatorExit_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.ValidatorExitArgs))
+		run(args[0].(types.ValidatorExitRequest))
 	})
 	return _c
 }
@@ -429,13 +429,13 @@ func (_c *MockHandler_ValidatorExit_Call) Return(_a0 types.ValidatorExitResponse
 	return _c
 }
 
-func (_c *MockHandler_ValidatorExit_Call) RunAndReturn(run func(types.ValidatorExitArgs) types.ValidatorExitResponse) *MockHandler_ValidatorExit_Call {
+func (_c *MockHandler_ValidatorExit_Call) RunAndReturn(run func(types.ValidatorExitRequest) types.ValidatorExitResponse) *MockHandler_ValidatorExit_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // ValidatorImport provides a mock function with given fields: _a0
-func (_m *MockHandler) ValidatorImport(_a0 types.ValidatorImportArgs) types.ValidatorImportResponse {
+func (_m *MockHandler) ValidatorImport(_a0 types.ValidatorImportRequest) types.ValidatorImportResponse {
 	ret := _m.Called(_a0)
 
 	if len(ret) == 0 {
@@ -443,7 +443,7 @@ func (_m *MockHandler) ValidatorImport(_a0 types.ValidatorImportArgs) types.Vali
 	}
 
 	var r0 types.ValidatorImportResponse
-	if rf, ok := ret.Get(0).(func(types.ValidatorImportArgs) types.ValidatorImportResponse); ok {
+	if rf, ok := ret.Get(0).(func(types.ValidatorImportRequest) types.ValidatorImportResponse); ok {
 		r0 = rf(_a0)
 	} else {
 		r0 = ret.Get(0).(types.ValidatorImportResponse)
@@ -458,14 +458,14 @@ type MockHandler_ValidatorImport_Call struct {
 }
 
 // ValidatorImport is a helper method to define mock.On call
-//   - _a0 types.ValidatorImportArgs
+//   - _a0 types.ValidatorImportRequest
 func (_e *MockHandler_Expecter) ValidatorImport(_a0 interface{}) *MockHandler_ValidatorImport_Call {
 	return &MockHandler_ValidatorImport_Call{Call: _e.mock.On("ValidatorImport", _a0)}
 }
 
-func (_c *MockHandler_ValidatorImport_Call) Run(run func(_a0 types.ValidatorImportArgs)) *MockHandler_ValidatorImport_Call {
+func (_c *MockHandler_ValidatorImport_Call) Run(run func(_a0 types.ValidatorImportRequest)) *MockHandler_ValidatorImport_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.ValidatorImportArgs))
+		run(args[0].(types.ValidatorImportRequest))
 	})
 	return _c
 }
@@ -475,13 +475,13 @@ func (_c *MockHandler_ValidatorImport_Call) Return(_a0 types.ValidatorImportResp
 	return _c
 }
 
-func (_c *MockHandler_ValidatorImport_Call) RunAndReturn(run func(types.ValidatorImportArgs) types.ValidatorImportResponse) *MockHandler_ValidatorImport_Call {
+func (_c *MockHandler_ValidatorImport_Call) RunAndReturn(run func(types.ValidatorImportRequest) types.ValidatorImportResponse) *MockHandler_ValidatorImport_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // ValidatorList provides a mock function with given fields: _a0
-func (_m *MockHandler) ValidatorList(_a0 types.ValidatorListArgs) types.ValidatorListResponse {
+func (_m *MockHandler) ValidatorList(_a0 types.ValidatorListRequest) types.ValidatorListResponse {
 	ret := _m.Called(_a0)
 
 	if len(ret) == 0 {
@@ -489,7 +489,7 @@ func (_m *MockHandler) ValidatorList(_a0 types.ValidatorListArgs) types.Validato
 	}
 
 	var r0 types.ValidatorListResponse
-	if rf, ok := ret.Get(0).(func(types.ValidatorListArgs) types.ValidatorListResponse); ok {
+	if rf, ok := ret.Get(0).(func(types.ValidatorListRequest) types.ValidatorListResponse); ok {
 		r0 = rf(_a0)
 	} else {
 		r0 = ret.Get(0).(types.ValidatorListResponse)
@@ -504,14 +504,14 @@ type MockHandler_ValidatorList_Call struct {
 }
 
 // ValidatorList is a helper method to define mock.On call
-//   - _a0 types.ValidatorListArgs
+//   - _a0 types.ValidatorListRequest
 func (_e *MockHandler_Expecter) ValidatorList(_a0 interface{}) *MockHandler_ValidatorList_Call {
 	return &MockHandler_ValidatorList_Call{Call: _e.mock.On("ValidatorList", _a0)}
 }
 
-func (_c *MockHandler_ValidatorList_Call) Run(run func(_a0 types.ValidatorListArgs)) *MockHandler_ValidatorList_Call {
+func (_c *MockHandler_ValidatorList_Call) Run(run func(_a0 types.ValidatorListRequest)) *MockHandler_ValidatorList_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.ValidatorListArgs))
+		run(args[0].(types.ValidatorListRequest))
 	})
 	return _c
 }
@@ -521,13 +521,13 @@ func (_c *MockHandler_ValidatorList_Call) Return(_a0 types.ValidatorListResponse
 	return _c
 }
 
-func (_c *MockHandler_ValidatorList_Call) RunAndReturn(run func(types.ValidatorListArgs) types.ValidatorListResponse) *MockHandler_ValidatorList_Call {
+func (_c *MockHandler_ValidatorList_Call) RunAndReturn(run func(types.ValidatorListRequest) types.ValidatorListResponse) *MockHandler_ValidatorList_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // Version provides a mock function with given fields: _a0
-func (_m *MockHandler) Version(_a0 types.VersionArgs) types.VersionResponse {
+func (_m *MockHandler) Version(_a0 types.VersionRequest) types.VersionResponse {
 	ret := _m.Called(_a0)
 
 	if len(ret) == 0 {
@@ -535,7 +535,7 @@ func (_m *MockHandler) Version(_a0 types.VersionArgs) types.VersionResponse {
 	}
 
 	var r0 types.VersionResponse
-	if rf, ok := ret.Get(0).(func(types.VersionArgs) types.VersionResponse); ok {
+	if rf, ok := ret.Get(0).(func(types.VersionRequest) types.VersionResponse); ok {
 		r0 = rf(_a0)
 	} else {
 		r0 = ret.Get(0).(types.VersionResponse)
@@ -550,14 +550,14 @@ type MockHandler_Version_Call struct {
 }
 
 // Version is a helper method to define mock.On call
-//   - _a0 types.VersionArgs
+//   - _a0 types.VersionRequest
 func (_e *MockHandler_Expecter) Version(_a0 interface{}) *MockHandler_Version_Call {
 	return &MockHandler_Version_Call{Call: _e.mock.On("Version", _a0)}
 }
 
-func (_c *MockHandler_Version_Call) Run(run func(_a0 types.VersionArgs)) *MockHandler_Version_Call {
+func (_c *MockHandler_Version_Call) Run(run func(_a0 types.VersionRequest)) *MockHandler_Version_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.VersionArgs))
+		run(args[0].(types.VersionRequest))
 	})
 	return _c
 }
@@ -567,13 +567,13 @@ func (_c *MockHandler_Version_Call) Return(_a0 types.VersionResponse) *MockHandl
 	return _c
 }
 
-func (_c *MockHandler_Version_Call) RunAndReturn(run func(types.VersionArgs) types.VersionResponse) *MockHandler_Version_Call {
+func (_c *MockHandler_Version_Call) RunAndReturn(run func(types.VersionRequest) types.VersionResponse) *MockHandler_Version_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // VersionClients provides a mock function with given fields: _a0
-func (_m *MockHandler) VersionClients(_a0 types.VersionClientsArgs) types.VersionClientsResponse {
+func (_m *MockHandler) VersionClients(_a0 types.VersionClientsRequest) types.VersionClientsResponse {
 	ret := _m.Called(_a0)
 
 	if len(ret) == 0 {
@@ -581,7 +581,7 @@ func (_m *MockHandler) VersionClients(_a0 types.VersionClientsArgs) types.Versio
 	}
 
 	var r0 types.VersionClientsResponse
-	if rf, ok := ret.Get(0).(func(types.VersionClientsArgs) types.VersionClientsResponse); ok {
+	if rf, ok := ret.Get(0).(func(types.VersionClientsRequest) types.VersionClientsResponse); ok {
 		r0 = rf(_a0)
 	} else {
 		r0 = ret.Get(0).(types.VersionClientsResponse)
@@ -596,14 +596,14 @@ type MockHandler_VersionClients_Call struct {
 }
 
 // VersionClients is a helper method to define mock.On call
-//   - _a0 types.VersionClientsArgs
+//   - _a0 types.VersionClientsRequest
 func (_e *MockHandler_Expecter) VersionClients(_a0 interface{}) *MockHandler_VersionClients_Call {
 	return &MockHandler_VersionClients_Call{Call: _e.mock.On("VersionClients", _a0)}
 }
 
-func (_c *MockHandler_VersionClients_Call) Run(run func(_a0 types.VersionClientsArgs)) *MockHandler_VersionClients_Call {
+func (_c *MockHandler_VersionClients_Call) Run(run func(_a0 types.VersionClientsRequest)) *MockHandler_VersionClients_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.VersionClientsArgs))
+		run(args[0].(types.VersionClientsRequest))
 	})
 	return _c
 }
@@ -613,7 +613,7 @@ func (_c *MockHandler_VersionClients_Call) Return(_a0 types.VersionClientsRespon
 	return _c
 }
 
-func (_c *MockHandler_VersionClients_Call) RunAndReturn(run func(types.VersionClientsArgs) types.VersionClientsResponse) *MockHandler_VersionClients_Call {
+func (_c *MockHandler_VersionClients_Call) RunAndReturn(run func(types.VersionClientsRequest) types.VersionClientsResponse) *MockHandler_VersionClients_Call {
 	_c.Call.Return(run)
 	return _c
 }

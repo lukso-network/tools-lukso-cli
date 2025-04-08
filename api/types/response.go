@@ -18,3 +18,19 @@ type (
 	VersionResponse         struct{}
 	VersionClientsResponse  struct{}
 )
+
+type Response interface {
+	InitResponse |
+		InstallResponse |
+		UpdateResponse |
+		StartResponse |
+		StopResponse |
+		StatusResponse |
+		LogsResponse |
+		ResetResponse |
+		ValidatorImportResponse |
+		ValidatorListResponse |
+		ValidatorExitResponse |
+		VersionResponse |
+		VersionClientsResponse
+}

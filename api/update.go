@@ -2,6 +2,6 @@ package api
 
 import "github.com/lukso-network/tools-lukso-cli/api/types"
 
-func (h *handler) Update(args types.UpdateArgs) (resp types.UpdateResponse) {
+func (h *handler) Update(args types.UpdateRequest) (resp types.UpdateResponse) {
 	return
 }

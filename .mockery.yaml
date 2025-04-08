@@ -9,6 +9,10 @@ packages:
     config:
       filename: "mock_api.go"
       all: true
+  github.com/lukso-network/tools-lukso-cli/api/logger:
+    config:
+      filename: "mock_logger.go"
+      all: true
   github.com/lukso-network/tools-lukso-cli/common/file:
     config:
       filename: "mock_file.go"

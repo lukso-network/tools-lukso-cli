@@ -7,8 +7,8 @@ import (
 	"github.com/lukso-network/tools-lukso-cli/flags"
 )
 
-func CtxToApiInit(ctx *cli.Context) (api types.InitArgs) {
-	return types.InitArgs{
+func CtxToApiInit(ctx *cli.Context) (api types.InitRequest) {
+	return types.InitRequest{
 		Reinit: ctx.Bool(flags.ReinitFlag),
 		Ip:     ctx.String(flags.IpFlag),
 	}

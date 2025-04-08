@@ -8,24 +8,26 @@ import (
 	"github.com/lukso-network/tools-lukso-cli/config"
 )
 
+type HandlerFunc[Rq types.Request, Rs types.Response] func(Rq) Rs
+
 // Handler unifies commands that are used in both CLI and TUI.
 // It serves as a list of what's possible to do with the node, e.g. start/stop, log, manage your validator etc.
 // Since CLI and TUI will require different stdouts, each command in case of logging should has an output channel attached.
 // All handlers return types.Response instead of a specific struct like in request for better error handling.
 type Handler interface {
-	Install(types.InstallArgs) types.InstallResponse
-	Init(types.InitArgs) types.InitResponse
-	Update(types.UpdateArgs) types.UpdateResponse
-	Start(types.StartArgs) types.StartResponse
-	Stop(types.StopArgs) types.StopResponse
-	Status(types.StatusArgs) types.StatusResponse
-	Logs(types.LogsArgs) types.LogsResponse
-	Reset(types.ResetArgs) types.ResetResponse
-	ValidatorImport(types.ValidatorImportArgs) types.ValidatorImportResponse
-	ValidatorList(types.ValidatorListArgs) types.ValidatorListResponse
-	ValidatorExit(types.ValidatorExitArgs) types.ValidatorExitResponse
-	Version(types.VersionArgs) types.VersionResponse
-	VersionClients(types.VersionClientsArgs) types.VersionClientsResponse
+	Install(types.InstallRequest) types.InstallResponse
+	Init(types.InitRequest) types.InitResponse
+	Update(types.UpdateRequest) types.UpdateResponse
+	Start(types.StartRequest) types.StartResponse
+	Stop(types.StopRequest) types.StopResponse
+	Status(types.StatusRequest) types.StatusResponse
+	Logs(types.LogsRequest) types.LogsResponse
+	Reset(types.ResetRequest) types.ResetResponse
+	ValidatorImport(types.ValidatorImportRequest) types.ValidatorImportResponse
+	ValidatorList(types.ValidatorListRequest) types.ValidatorListResponse
+	ValidatorExit(types.ValidatorExitRequest) types.ValidatorExitResponse
+	Version(types.VersionRequest) types.VersionResponse
+	VersionClients(types.VersionClientsRequest) types.VersionClientsResponse
 }
 
 type handler struct {
@@ -37,15 +39,16 @@ type handler struct {
 
 var _ Handler = &handler{}
 
-func NewHandler() Handler {
-	log := logger.ConsoleLogger{}
-	fmng := file.NewManager()
-	inst := installer.NewInstaller(fmng)
-
+func NewHandler(
+	cfg config.Configurator,
+	file file.Manager,
+	logger logger.Logger,
+	installer installer.Installer,
+) Handler {
 	return &handler{
-		cfg:       config.NewConfigurator(config.Path),
-		file:      fmng,
-		log:       log,
-		installer: inst,
+		cfg,
+		file,
+		logger,
+		installer,
 	}
 }
