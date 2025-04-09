@@ -3,13 +3,9 @@ package configs
 import (
 	"os"
 
-	log "github.com/sirupsen/logrus"
-
 	"github.com/lukso-network/tools-lukso-cli/api/errors"
-	"github.com/lukso-network/tools-lukso-cli/common"
 	"github.com/lukso-network/tools-lukso-cli/common/file"
 	"github.com/lukso-network/tools-lukso-cli/common/installer"
-	"github.com/lukso-network/tools-lukso-cli/common/utils"
 )
 
 const (
@@ -267,17 +263,4 @@ func (c *clientConfig) Install(isUpdate bool) (err error) {
 
 func (c *clientConfig) Name() string {
 	return c.name
-}
-
-func (c *clientConfig) createDir() error {
-	err := os.MkdirAll(utils.TruncateFileFromDir(c.filePath), common.ConfigPerms)
-	if err == os.ErrExist {
-		log.Errorf("%s already exists!", c.name)
-	}
-
-	if err == os.ErrPermission {
-		return errors.ErrNeedsRoot
-	}
-
-	return err
 }
