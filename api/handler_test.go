@@ -7,6 +7,7 @@ import (
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
 
+	"github.com/lukso-network/tools-lukso-cli/api/errors"
 	"github.com/lukso-network/tools-lukso-cli/api/logger"
 	"github.com/lukso-network/tools-lukso-cli/api/types"
 	"github.com/lukso-network/tools-lukso-cli/common"
@@ -65,6 +66,10 @@ func (h *HandlerSuite) SetupSuite() {
 }
 
 func (h *HandlerSuite) SetupTest() {
+	// Flush expectations between every test to avoid confusion and expect everything explicitly.
+	h.cfgMock.ExpectedCalls = nil
+	h.fileMock.ExpectedCalls = nil
+	h.installerMock.ExpectedCalls = nil
 }
 
 func (h *HandlerSuite) TestInit() {
@@ -102,6 +107,119 @@ func (h *HandlerSuite) TestInit() {
 			},
 			types.InitRequest{},
 			types.InitResponse{},
+		},
+		{
+			"new init - IP disabled explicitly",
+			h.handler.Init,
+			func(h *HandlerSuite) {
+				h.cfgMock.EXPECT().Exists().Return(false).Once()
+				h.fileMock.EXPECT().Exists(mock.Anything).Return(false) // assume any config file is not present
+				h.installerMock.EXPECT().InstallFile(mock.Anything, mock.Anything).Return(nil)
+				h.fileMock.EXPECT().Mkdir(file.SecretsDir, os.FileMode(common.ConfigPerms)).Return(nil).Once()
+				h.fileMock.EXPECT().
+					Write(
+						file.JwtSecretPath,
+						mock.MatchedBy(func(b []byte) bool { return len(b) == 64 }), // encoded JWT has twice the amount of bytes
+						os.FileMode(common.ConfigPerms),
+					).
+					Return(nil).
+					Once()
+				h.fileMock.EXPECT().Mkdir(file.PidDir, os.FileMode(common.ConfigPerms)).Return(nil).Once()
+				h.cfgMock.EXPECT().
+					Create(
+						config.NodeConfig{
+							UseClients: config.UseClients{
+								ExecutionClient: "",
+								ConsensusClient: "",
+								ValidatorClient: "",
+							},
+							Ipv4: "disabled",
+						},
+					).
+					Return(nil).
+					Once()
+			},
+			types.InitRequest{Ip: "disabled"},
+			types.InitResponse{},
+		},
+		{
+			"new init - IP is invalid",
+			h.handler.Init,
+			func(h *HandlerSuite) {
+				h.cfgMock.EXPECT().Exists().Return(false).Once()
+				h.fileMock.EXPECT().Exists(mock.Anything).Return(false) // assume any config file is not present
+				h.installerMock.EXPECT().InstallFile(mock.Anything, mock.Anything).Return(nil)
+				h.fileMock.EXPECT().Mkdir(file.SecretsDir, os.FileMode(common.ConfigPerms)).Return(nil).Once()
+				h.fileMock.EXPECT().
+					Write(
+						file.JwtSecretPath,
+						mock.MatchedBy(func(b []byte) bool { return len(b) == 64 }), // encoded JWT has twice the amount of bytes
+						os.FileMode(common.ConfigPerms),
+					).
+					Return(nil).
+					Once()
+				h.fileMock.EXPECT().Mkdir(file.PidDir, os.FileMode(common.ConfigPerms)).Return(nil).Once()
+				h.cfgMock.EXPECT().
+					Create(
+						config.NodeConfig{
+							UseClients: config.UseClients{
+								ExecutionClient: "",
+								ConsensusClient: "",
+								ValidatorClient: "",
+							},
+							Ipv4: "disabled",
+						},
+					).
+					Return(nil).
+					Once()
+			},
+			types.InitRequest{Ip: "invalidIp"},
+			types.InitResponse{},
+		},
+		{
+			"already initialized - reinit",
+			h.handler.Init,
+			func(h *HandlerSuite) {
+				h.cfgMock.EXPECT().Exists().Return(true).Once()
+				h.fileMock.EXPECT().Exists(mock.Anything).Return(false) // assume any config file is not present
+				h.installerMock.EXPECT().InstallFile(mock.Anything, mock.Anything).Return(nil)
+				h.fileMock.EXPECT().Mkdir(file.SecretsDir, os.FileMode(common.ConfigPerms)).Return(nil).Once()
+				h.fileMock.EXPECT().
+					Write(
+						file.JwtSecretPath,
+						mock.MatchedBy(func(b []byte) bool { return len(b) == 64 }), // encoded JWT has twice the amount of bytes
+						os.FileMode(common.ConfigPerms),
+					).
+					Return(nil).
+					Once()
+				h.fileMock.EXPECT().Mkdir(file.PidDir, os.FileMode(common.ConfigPerms)).Return(nil).Once()
+				h.cfgMock.EXPECT().
+					Create(
+						config.NodeConfig{
+							UseClients: config.UseClients{
+								ExecutionClient: "",
+								ConsensusClient: "",
+								ValidatorClient: "",
+							},
+							Ipv4: "disabled",
+						},
+					).
+					Return(nil).
+					Once()
+			},
+			types.InitRequest{Ip: "invalidIp", Reinit: true},
+			types.InitResponse{},
+		},
+		{
+			"already initialized - no reinit",
+			h.handler.Init,
+			func(h *HandlerSuite) {
+				h.cfgMock.EXPECT().Exists().Return(true).Once()
+			},
+			types.InitRequest{Reinit: false},
+			types.InitResponse{
+				Error: errors.ErrCfgExists,
+			},
 		},
 	}
 
