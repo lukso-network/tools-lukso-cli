@@ -12,7 +12,7 @@ import (
 	"github.com/lukso-network/tools-lukso-cli/flags"
 )
 
-func StopClients(ctx *cli.Context) (err error) {
+func (c *commander) Stop(ctx *cli.Context) (err error) {
 	if !cfg.Exists() {
 		return utils.Exit(errors.FolderNotInitialized, 1)
 	}

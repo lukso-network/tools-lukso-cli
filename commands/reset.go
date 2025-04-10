@@ -15,7 +15,7 @@ import (
 	"github.com/lukso-network/tools-lukso-cli/flags"
 )
 
-func ResetClients(ctx *cli.Context) (err error) {
+func (c *commander) Reset(ctx *cli.Context) (err error) {
 	if clients.IsAnyRunning() {
 		return nil
 	}

@@ -18,7 +18,7 @@ import (
 	"github.com/lukso-network/tools-lukso-cli/flags"
 )
 
-func StartClients(ctx *cli.Context) (err error) {
+func (c *commander) Start(ctx *cli.Context) (err error) {
 	log.Info("🔎  Looking for client configuration file...")
 	if !cfg.Exists() {
 		return utils.Exit(errors.FolderNotInitialized, 1)
@@ -122,7 +122,7 @@ func StartClients(ctx *cli.Context) (err error) {
 	log.Info("🎉  Clients have been started. Checking status:")
 	log.Info("")
 
-	_ = StatClients(ctx)
+	_ = c.Status(ctx)
 
 	log.Info("")
 	log.Info("If execution and consensus clients are Running 🟢, your node is now 🆙.")

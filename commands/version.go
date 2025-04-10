@@ -11,7 +11,16 @@ import (
 	"github.com/lukso-network/tools-lukso-cli/dependencies/clients"
 )
 
-func ClientVersions(ctx *cli.Context) (err error) {
+func (c *commander) Version(version string) func(ctx *cli.Context) error {
+	return func(ctx *cli.Context) error {
+		fmt.Println("Version:", version)
+		fmt.Println("To display versions of installed clients, run 'lukso version clients' command.")
+
+		return nil
+	}
+}
+
+func (c *commander) VersionClients(ctx *cli.Context) (err error) {
 	if !cfg.Exists() {
 		return utils.Exit(errors.FolderNotInitialized, 1)
 	}

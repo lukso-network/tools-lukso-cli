@@ -12,7 +12,7 @@ import (
 	"github.com/lukso-network/tools-lukso-cli/pid"
 )
 
-func StatClients(ctx *cli.Context) (err error) {
+func (c *commander) Status(ctx *cli.Context) (err error) {
 	if !cfg.Exists() {
 		return cli.Exit(errors.FolderNotInitialized, 1)
 	}
@@ -86,7 +86,7 @@ func statClient(dependencyName, layer string) func(*cli.Context) error {
 	}
 }
 
-func DisplayPeers(ctx *cli.Context) (err error) {
+func (c *commander) StatusPeers(ctx *cli.Context) (err error) {
 	if !cfg.Exists() {
 		return utils.Exit(errors.FolderNotInitialized, 1)
 	}

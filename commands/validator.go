@@ -12,7 +12,7 @@ import (
 	"github.com/lukso-network/tools-lukso-cli/flags"
 )
 
-func ImportValidator(ctx *cli.Context) (err error) {
+func (c *commander) ValidatorImport(ctx *cli.Context) (err error) {
 	if len(os.Args) < 3 {
 		return errors.ErrNotEnoughArguments
 	}
@@ -36,7 +36,7 @@ func ImportValidator(ctx *cli.Context) (err error) {
 	return
 }
 
-func ListValidator(ctx *cli.Context) (err error) {
+func (c *commander) ValidatorList(ctx *cli.Context) (err error) {
 	network := "mainnet" // Set the default network to mainnet
 
 	if ctx.Bool(flags.TestnetFlag) {
@@ -48,7 +48,7 @@ func ListValidator(ctx *cli.Context) (err error) {
 	return executeValidatorList(ctx, network)
 }
 
-func ExitValidator(ctx *cli.Context) (err error) {
+func (c *commander) ValidatorExit(ctx *cli.Context) (err error) {
 	err = cfg.Read()
 	if err != nil {
 		return utils.Exit("❌  There was an error while reading config file", 1)

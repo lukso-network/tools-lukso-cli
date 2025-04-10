@@ -3,6 +3,8 @@ module github.com/lukso-network/tools-lukso-cli
 go 1.19
 
 require (
+	github.com/charmbracelet/bubbletea v1.3.4
+	github.com/charmbracelet/lipgloss v1.0.0
 	github.com/sirupsen/logrus v1.9.0
 	github.com/spf13/viper v1.8.1
 	github.com/urfave/cli/v2 v2.23.5
@@ -10,8 +12,6 @@ require (
 
 require (
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
-	github.com/charmbracelet/bubbletea v1.3.4 // indirect
-	github.com/charmbracelet/lipgloss v1.0.0 // indirect
 	github.com/charmbracelet/x/ansi v0.8.0 // indirect
 	github.com/charmbracelet/x/term v0.2.1 // indirect
 	github.com/erikgeiser/coninput v0.0.0-20211004153227-1c3628e74d0f // indirect

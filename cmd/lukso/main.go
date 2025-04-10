@@ -9,6 +9,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 
+	"github.com/lukso-network/tools-lukso-cli/api"
 	"github.com/lukso-network/tools-lukso-cli/commands"
 	"github.com/lukso-network/tools-lukso-cli/dependencies/configs"
 	"github.com/lukso-network/tools-lukso-cli/flags"
@@ -20,6 +21,9 @@ var appName = "lukso"
 
 func main() {
 	log.SetFormatter(&log.TextFormatter{DisableTimestamp: true})
+
+	hndl := api.NewHandler()
+	cmd := commands.NewCommander(hndl)
 
 	app := cli.App{}
 	app.Name = appName
@@ -36,7 +40,7 @@ REPO: https://github.com/lukso-network/tools-lukso-cli
 	app.Commands = []*cli.Command{
 		{
 			Name:            "install",
-			Action:          commands.InstallBinaries,
+			Action:          cmd.Install,
 			Flags:           flags.InstallFlags,
 			Usage:           "Installs chosen LUKSO clients (Execution, Consensus, Validator) and their binary dependencies",
 			HideHelpCommand: true,
@@ -44,13 +48,14 @@ REPO: https://github.com/lukso-network/tools-lukso-cli
 		{
 			Name:            "init",
 			Usage:           "Initializes the working directory, its structure, and network configuration",
-			Action:          commands.InitializeDirectory,
+			Flags:           flags.InitFlags,
+			Action:          cmd.Init,
 			HideHelpCommand: true,
 		},
 		{
 			Name:            "update",
 			Usage:           "Updates all or specific clients to the latest version",
-			Action:          commands.UpdateClients,
+			Action:          cmd.Update,
 			Flags:           flags.InstallFlags,
 			HideHelpCommand: true,
 			Subcommands: cli.Commands{
@@ -58,7 +63,7 @@ REPO: https://github.com/lukso-network/tools-lukso-cli
 					Name:            "configs",
 					Usage:           "Updates chain configuration and CLI configuration files, without overwriting client configuration files",
 					Flags:           flags.UpdateConfigFlags,
-					Action:          commands.UpdateConfigs,
+					Action:          cmd.UpdateConfigs,
 					HideHelpCommand: true,
 				},
 			},
@@ -66,7 +71,7 @@ REPO: https://github.com/lukso-network/tools-lukso-cli
 		{
 			Name:            "start",
 			Usage:           "Starts all or specific clients and connects to the specified network",
-			Action:          commands.SelectNetworkFor(commands.StartClients),
+			Action:          commands.SelectNetworkFor(cmd.Start),
 			SkipFlagParsing: true,
 			Flags:           flags.StartFlags,
 			HideHelpCommand: true,
@@ -74,35 +79,35 @@ REPO: https://github.com/lukso-network/tools-lukso-cli
 		{
 			Name:            "stop",
 			Usage:           "Stops all or specific client(s) that are currently running",
-			Action:          commands.StopClients,
+			Action:          cmd.Stop,
 			Flags:           flags.StopFlags,
 			HideHelpCommand: true,
 		},
 		{
 			Name:            "logs",
 			Usage:           "Streams all logs from a specific client in the current terminal window",
-			Action:          commands.LogClients,
+			Action:          cmd.Logs,
 			HideHelpCommand: true,
 			Subcommands: []*cli.Command{
 				{
 					Name:            "execution",
 					Usage:           "Outputs selected execution client's logs, add the network flag, if not mainnet",
-					Flags:           flags.GethLogsFlags,
-					Action:          commands.SelectNetworkFor(commands.LogLayer(configs.ExecutionLayer)),
+					Flags:           flags.ExecutionLogsFlags,
+					Action:          commands.SelectNetworkFor(cmd.LogsLayer(configs.ExecutionLayer)),
 					HideHelpCommand: true,
 				},
 				{
 					Name:            "consensus",
 					Usage:           "Outputs selected consensus client's logs, add the network flag, if not mainnet",
-					Flags:           flags.PrysmLogsFlags,
-					Action:          commands.SelectNetworkFor(commands.LogLayer(configs.ConsensusLayer)),
+					Flags:           flags.ConsensusLogsFlags,
+					Action:          commands.SelectNetworkFor(cmd.LogsLayer(configs.ConsensusLayer)),
 					HideHelpCommand: true,
 				},
 				{
 					Name:            "validator",
 					Usage:           "Outputs selected validator client's logs, add the network flag, if not mainnet",
 					Flags:           flags.ValidatorLogsFlags,
-					Action:          commands.SelectNetworkFor(commands.LogLayer(configs.ValidatorLayer)), // named as a layer for sake of
+					Action:          commands.SelectNetworkFor(cmd.LogsLayer(configs.ValidatorLayer)), // named as a layer for sake of
 					HideHelpCommand: true,
 				},
 			},
@@ -110,14 +115,14 @@ REPO: https://github.com/lukso-network/tools-lukso-cli
 		{
 			Name:            "status",
 			Usage:           "Shows the client processes that are currently running",
-			Action:          commands.StatClients,
+			Action:          cmd.Status,
 			HideHelpCommand: true,
 			Subcommands: []*cli.Command{
 				{
 					Name:   "peers",
 					Usage:  "Displays number of peers that your clients have",
 					Flags:  flags.StatusPeersFlags,
-					Action: commands.DisplayPeers,
+					Action: cmd.StatusPeers,
 				},
 			},
 		},
@@ -125,7 +130,7 @@ REPO: https://github.com/lukso-network/tools-lukso-cli
 			Name:            "reset",
 			Usage:           "Resets all or specific client data directories and logs excluding the validator keys",
 			Flags:           flags.ResetFlags,
-			Action:          commands.SelectNetworkFor(commands.ResetClients),
+			Action:          commands.SelectNetworkFor(cmd.Reset),
 			HideHelpCommand: true,
 		},
 		{
@@ -137,14 +142,14 @@ REPO: https://github.com/lukso-network/tools-lukso-cli
 					Name:            "import",
 					Usage:           "Import your validator keys in the client wallet",
 					Flags:           flags.ValidatorImportFlags,
-					Action:          commands.SelectNetworkFor(commands.ImportValidator),
+					Action:          commands.SelectNetworkFor(cmd.ValidatorImport),
 					HideHelpCommand: true,
 				},
 				{
 					Name:            "list",
 					Usage:           "List your imported validator keys from the client wallet",
 					Flags:           flags.ValidatorListFlags,
-					Action:          commands.SelectNetworkFor(commands.ListValidator),
+					Action:          commands.SelectNetworkFor(cmd.ValidatorList),
 					SkipFlagParsing: true,
 					HideHelpCommand: true,
 				},
@@ -152,7 +157,7 @@ REPO: https://github.com/lukso-network/tools-lukso-cli
 					Name:            "exit",
 					Usage:           "Issue an exit for your validator",
 					Flags:           flags.ValidatorExitFlags,
-					Action:          commands.SelectNetworkFor(commands.ExitValidator),
+					Action:          commands.SelectNetworkFor(cmd.ValidatorExit),
 					HideHelpCommand: true,
 				},
 			},
@@ -160,20 +165,20 @@ REPO: https://github.com/lukso-network/tools-lukso-cli
 		{
 			Name:            "version",
 			Usage:           "Display the version of the LUKSO CLI that is currently installed",
-			Action:          displayVersion,
+			Action:          cmd.Version(Version),
 			HideHelpCommand: true,
 			Subcommands: []*cli.Command{
 				{
 					Name:            "clients",
 					Usage:           "Display supported clients' installed versions.",
-					Action:          commands.ClientVersions,
+					Action:          cmd.VersionClients,
 					HideHelpCommand: true,
 				},
 			},
 		},
 		{
 			Name:   "ui",
-			Action: commands.Ui,
+			Action: cmd.Ui,
 		},
 	}
 
@@ -195,10 +200,4 @@ REPO: https://github.com/lukso-network/tools-lukso-cli
 	if nil != err {
 		log.Error(err.Error())
 	}
-}
-
-func displayVersion(ctx *cli.Context) error {
-	fmt.Println("Version:", Version)
-	fmt.Println("To display versions of installed clients, run 'lukso version clients' command.")
-	return nil
 }

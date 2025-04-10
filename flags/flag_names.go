@@ -1,6 +1,9 @@
 package flags
 
 const (
+	ExecutionDatadirFlag = "execution-datadir"
+	ConsensusDatadirFlag = "consensus-datadir"
+
 	GethTagFlag        = "geth-tag"
 	GethCommitHashFlag = "geth-commit-hash"
 	GethDatadirFlag    = "geth-datadir"
@@ -76,4 +79,7 @@ const (
 	ExecutionClientPort = "execution-client-port"
 	ConsensusClientPort = "consensus-client-port"
 	ValidatorClientPort = "validator-client-port"
+
+	ReinitFlag = "reinit"
+	IpFlag     = "ip"
 )
