@@ -24,6 +24,8 @@ func (c *commander) Init(ctx *cli.Context) error {
 
 		if errors.Is(err, apierrors.ErrCfgExists) {
 			log.Warn("To reinitialize directory, rerun the 'lukso init' command with '--reinit' flag")
+
+			return nil
 		}
 	}
 
