@@ -156,17 +156,63 @@ func (_c *MockConfigurator_Get_Call) RunAndReturn(run func() config.NodeConfig) 
 	return _c
 }
 
-// Write provides a mock function with given fields: cfg
-func (_m *MockConfigurator) Write(cfg config.NodeConfig) error {
+// Set provides a mock function with given fields: cfg
+func (_m *MockConfigurator) Set(cfg config.NodeConfig) error {
 	ret := _m.Called(cfg)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Set")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(config.NodeConfig) error); ok {
+		r0 = rf(cfg)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockConfigurator_Set_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Set'
+type MockConfigurator_Set_Call struct {
+	*mock.Call
+}
+
+// Set is a helper method to define mock.On call
+//   - cfg config.NodeConfig
+func (_e *MockConfigurator_Expecter) Set(cfg interface{}) *MockConfigurator_Set_Call {
+	return &MockConfigurator_Set_Call{Call: _e.mock.On("Set", cfg)}
+}
+
+func (_c *MockConfigurator_Set_Call) Run(run func(cfg config.NodeConfig)) *MockConfigurator_Set_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(config.NodeConfig))
+	})
+	return _c
+}
+
+func (_c *MockConfigurator_Set_Call) Return(_a0 error) *MockConfigurator_Set_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockConfigurator_Set_Call) RunAndReturn(run func(config.NodeConfig) error) *MockConfigurator_Set_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// Write provides a mock function with no fields
+func (_m *MockConfigurator) Write() error {
+	ret := _m.Called()
 
 	if len(ret) == 0 {
 		panic("no return value specified for Write")
 	}
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(config.NodeConfig) error); ok {
-		r0 = rf(cfg)
+	if rf, ok := ret.Get(0).(func() error); ok {
+		r0 = rf()
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -180,14 +226,13 @@ type MockConfigurator_Write_Call struct {
 }
 
 // Write is a helper method to define mock.On call
-//   - cfg config.NodeConfig
-func (_e *MockConfigurator_Expecter) Write(cfg interface{}) *MockConfigurator_Write_Call {
-	return &MockConfigurator_Write_Call{Call: _e.mock.On("Write", cfg)}
+func (_e *MockConfigurator_Expecter) Write() *MockConfigurator_Write_Call {
+	return &MockConfigurator_Write_Call{Call: _e.mock.On("Write")}
 }
 
-func (_c *MockConfigurator_Write_Call) Run(run func(cfg config.NodeConfig)) *MockConfigurator_Write_Call {
+func (_c *MockConfigurator_Write_Call) Run(run func()) *MockConfigurator_Write_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(config.NodeConfig))
+		run()
 	})
 	return _c
 }
@@ -197,7 +242,7 @@ func (_c *MockConfigurator_Write_Call) Return(_a0 error) *MockConfigurator_Write
 	return _c
 }
 
-func (_c *MockConfigurator_Write_Call) RunAndReturn(run func(config.NodeConfig) error) *MockConfigurator_Write_Call {
+func (_c *MockConfigurator_Write_Call) RunAndReturn(run func() error) *MockConfigurator_Write_Call {
 	_c.Call.Return(run)
 	return _c
 }

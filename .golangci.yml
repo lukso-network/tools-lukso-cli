@@ -1,15 +1,29 @@
+version: "2"
 run:
-  timeout: 10m
   go: "1.19"
-  exclude:
-    - "mock_.*\\.go"
-
-
 linters:
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
+
+formatters:
   enable:
     - gofmt
     - goimports
+  exclusions:
+    generated: lax
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
 
-output:
-  print-issued-lines: true
-  sort-results: true
+issues:
+  new-from-rev: HEAD

@@ -26,8 +26,8 @@ var appName = "lukso"
 func main() {
 	log.SetFormatter(&log.TextFormatter{DisableTimestamp: true})
 
-	hndlCfg := config.NewConfigurator(config.Path)
 	hndlFile := file.NewManager()
+	hndlCfg := config.NewConfigurator(config.Path, hndlFile)
 	hndlInstaller := installer.NewInstaller(hndlFile)
 	hndlLogger := logger.ConsoleLogger{}
 
