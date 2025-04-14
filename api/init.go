@@ -138,7 +138,7 @@ func (h *handler) installConfigGroup(configDependencies map[string]configs.Clien
 	for _, dependency := range configDependencies {
 		err := dependency.Install(isUpdate)
 		if err != nil {
-			return utils.Exit(fmt.Sprintf("❌  There was error while downloading %s file: %v", dependency.Name(), err), 1)
+			h.log.Warn(fmt.Sprintf("Unable to download %s file: %v - continuing...", dependency.Name(), err))
 		}
 	}
 
