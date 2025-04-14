@@ -16,6 +16,8 @@ import (
 )
 
 func (h *handler) Init(args types.InitRequest) (resp types.InitResponse) {
+	h.progress.Set(float64(len(configs.AllDependencies)))
+
 	if runningClients := clients.RunningClients(); runningClients != nil {
 		return types.InitResponse{
 			Error: errors.ErrClientsAlreadyRunning{Clients: runningClients},
@@ -128,57 +130,56 @@ func (h *handler) Init(args types.InitRequest) (resp types.InitResponse) {
 
 func (h *handler) installInitFiles(isUpdate bool) {
 	h.log.Info("⬇️  Downloading shared configuration files...")
-	_ = h.installConfigGroup(configs.SharedConfigDependencies, isUpdate) // we can omit errors - all errors are catched by cli.Exit()
+	h.installConfigGroup(configs.SharedConfigDependencies, isUpdate)
 	h.log.Info("✅  Shared configuration files downloaded!\n\n")
 
 	h.installClientConfigFiles(isUpdate)
 }
 
-func (h *handler) installConfigGroup(configDependencies map[string]configs.ClientConfigDependency, isUpdate bool) error {
+func (h *handler) installConfigGroup(configDependencies map[string]configs.ClientConfigDependency, isUpdate bool) {
 	for _, dependency := range configDependencies {
 		err := dependency.Install(isUpdate)
 		if err != nil {
 			h.log.Warn(fmt.Sprintf("Unable to download %s file: %v - continuing...", dependency.Name(), err))
 		}
+		h.progress.Move(1)
 	}
-
-	return nil
 }
 
 func (h *handler) installClientConfigFiles(isUpdate bool) {
 	h.log.Info("⬇️  Downloading geth configuration files...")
-	_ = h.installConfigGroup(configs.GethConfigDependencies, isUpdate)
+	h.installConfigGroup(configs.GethConfigDependencies, isUpdate)
 	h.log.Info("✅  Geth configuration files downloaded!\n\n")
 
 	h.log.Info("⬇️  Downloading erigon configuration files...")
-	_ = h.installConfigGroup(configs.ErigonConfigDependencies, isUpdate)
+	h.installConfigGroup(configs.ErigonConfigDependencies, isUpdate)
 	h.log.Info("✅  Erigon configuration files downloaded!\n\n")
 
 	h.log.Info("⬇️  Downloading nethermind configuration files...")
-	_ = h.installConfigGroup(configs.NethermindConfigDependencies, isUpdate)
+	h.installConfigGroup(configs.NethermindConfigDependencies, isUpdate)
 	h.log.Info("✅  Nethermind configuration files downloaded!\n\n")
 
 	h.log.Info("⬇️  Downloading besu configuration files...")
-	_ = h.installConfigGroup(configs.BesuConfigDependencies, isUpdate)
+	h.installConfigGroup(configs.BesuConfigDependencies, isUpdate)
 	h.log.Info("✅  Besu configuration files downloaded!\n\n")
 
-	h.log.Info("⬇️  Downloading prysm configuration files...")
-	_ = h.installConfigGroup(configs.PrysmConfigDependencies, isUpdate)
+	h.log.Info("⬇️  Downloadingconfiguration files...")
+	h.installConfigGroup(configs.PrysmConfigDependencies, isUpdate)
 	h.log.Info("✅  Prysm configuration files downloaded!\n\n")
 
 	h.log.Info("⬇️  Downloading lighthouse configuration files...")
-	_ = h.installConfigGroup(configs.LighthouseConfigDependencies, isUpdate)
+	h.installConfigGroup(configs.LighthouseConfigDependencies, isUpdate)
 	h.log.Info("✅  Lighthouse configuration files downloaded!\n\n")
 
-	h.log.Info("⬇️  Downloading prysm validator configuration files...")
-	_ = h.installConfigGroup(configs.PrysmValidatorConfigDependencies, isUpdate)
+	h.log.Info("⬇️  Downloadingvalidator configuration files...")
+	h.installConfigGroup(configs.PrysmValidatorConfigDependencies, isUpdate)
 	h.log.Info("✅  Prysm validator configuration files downloaded!\n\n")
 
 	h.log.Info("⬇️  Downloading teku configuration files...")
-	_ = h.installConfigGroup(configs.TekuConfigDependencies, isUpdate)
+	h.installConfigGroup(configs.TekuConfigDependencies, isUpdate)
 	h.log.Info("✅  Teku configuration files downloaded!\n\n")
 
 	h.log.Info("⬇️  Downloading nimbus (eth2) configuration files...")
-	_ = h.installConfigGroup(configs.Nimbus2ConfigDependencies, isUpdate)
+	h.installConfigGroup(configs.Nimbus2ConfigDependencies, isUpdate)
 	h.log.Info("✅  Nimbus configuration files downloaded!\n\n")
 }

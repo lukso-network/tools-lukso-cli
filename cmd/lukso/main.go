@@ -14,6 +14,7 @@ import (
 	"github.com/lukso-network/tools-lukso-cli/commands"
 	"github.com/lukso-network/tools-lukso-cli/common/file"
 	"github.com/lukso-network/tools-lukso-cli/common/installer"
+	"github.com/lukso-network/tools-lukso-cli/common/progress"
 	"github.com/lukso-network/tools-lukso-cli/config"
 	"github.com/lukso-network/tools-lukso-cli/dependencies/configs"
 	"github.com/lukso-network/tools-lukso-cli/flags"
@@ -30,12 +31,14 @@ func main() {
 	hndlCfg := config.NewConfigurator(config.Path, hndlFile)
 	hndlInstaller := installer.NewInstaller(hndlFile)
 	hndlLogger := logger.ConsoleLogger{}
+	hndlProgress := progress.NewProgress()
 
 	hndl := api.NewHandler(
 		hndlCfg,
 		hndlFile,
 		hndlLogger,
 		hndlInstaller,
+		hndlProgress,
 	)
 
 	cmd := commands.NewCommander(hndl)
