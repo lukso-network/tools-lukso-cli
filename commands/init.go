@@ -6,7 +6,6 @@ import (
 	"io"
 	"net/http"
 
-	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 
 	apierrors "github.com/lukso-network/tools-lukso-cli/api/errors"
@@ -20,10 +19,10 @@ func (c *commander) Init(ctx *cli.Context) error {
 	resp := c.handler.Init(req)
 	err := resp.Error
 	if err != nil {
-		log.Warn(fmt.Sprintf("Unable to initialize directory: %v", err))
+		c.log.Warn(fmt.Sprintf("Unable to initialize directory: %v", err))
 
 		if errors.Is(err, apierrors.ErrCfgExists) {
-			log.Warn("To reinitialize directory, rerun the 'lukso init' command with '--reinit' flag")
+			c.log.Warn("To reinitialize directory, rerun the 'lukso init' command with '--reinit' flag")
 
 			return nil
 		}
@@ -31,7 +30,7 @@ func (c *commander) Init(ctx *cli.Context) error {
 
 	displayNetworksHardforkTimestamps()
 
-	log.Info("✅  Working directory initialized! \n1. ⚙️  Use 'lukso install' to install clients. \n2. ▶️  Use 'lukso start' to start your node.")
+	c.log.Info("✅  Working directory initialized! \n1. ⚙️  Use 'lukso install' to install clients. \n2. ▶️  Use 'lukso start' to start your node.")
 
 	return nil
 }

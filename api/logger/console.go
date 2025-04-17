@@ -22,6 +22,6 @@ func (c ConsoleLogger) Error(msg string) {
 	log.Error(msg)
 }
 
-func (c ConsoleLogger) IsConsole() bool {
-	return true
-}
+// Not meant for std console logging.
+func (c ConsoleLogger) Clear() {}
+func (c ConsoleLogger) Close() {}

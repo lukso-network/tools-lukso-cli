@@ -15,6 +15,7 @@ type Logger interface {
 	Warn(msg string)
 	Error(msg string)
 
-	// We want to omit ceratin messages that should be only visible in the console.
-	IsConsole() bool
+	Clear()
+	// CLose indicates that if there are blocking message listeners, they should stop listening and unblock
+	Close()
 }
