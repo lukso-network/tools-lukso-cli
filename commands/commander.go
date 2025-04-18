@@ -6,8 +6,8 @@ import (
 	"github.com/urfave/cli/v2"
 
 	"github.com/lukso-network/tools-lukso-cli/api"
-	"github.com/lukso-network/tools-lukso-cli/api/logger"
 	"github.com/lukso-network/tools-lukso-cli/common/display"
+	"github.com/lukso-network/tools-lukso-cli/common/logger"
 )
 
 // Commander is an interface holding commands that can be executed via CLI

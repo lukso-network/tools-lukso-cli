@@ -3,7 +3,7 @@ package display
 import (
 	tea "github.com/charmbracelet/bubbletea"
 
-	"github.com/lukso-network/tools-lukso-cli/api/logger"
+	"github.com/lukso-network/tools-lukso-cli/common/logger"
 )
 
 // cmdDisplay is a bubbletea program wrapper.
