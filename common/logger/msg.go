@@ -33,35 +33,19 @@ func NewMsgLogger(ch chan tea.Msg, prg progress.Progress) Logger {
 }
 
 func (l *msgLogger) Debug(msg string) {
-	l.ch <- LogMsg{
-		Msg:      msg,
-		IsClear:  false,
-		Progress: l.prg,
-	}
+	l.sendLeveledMsg(msg, LevelDebug)
 }
 
 func (l *msgLogger) Info(msg string) {
-	l.ch <- LogMsg{
-		Msg:      msg,
-		IsClear:  false,
-		Progress: l.prg,
-	}
+	l.sendLeveledMsg(msg, LevelInfo)
 }
 
 func (l *msgLogger) Warn(msg string) {
-	l.ch <- LogMsg{
-		Msg:      msg,
-		IsClear:  false,
-		Progress: l.prg,
-	}
+	l.sendLeveledMsg(msg, LevelWarn)
 }
 
 func (l *msgLogger) Error(msg string) {
-	l.ch <- LogMsg{
-		Msg:      msg,
-		IsClear:  false,
-		Progress: l.prg,
-	}
+	l.sendLeveledMsg(msg, LevelError)
 }
 
 func (l *msgLogger) Clear() {
@@ -74,5 +58,15 @@ func (l *msgLogger) Close() {
 }
 
 func (l *msgLogger) Progress() progress.Progress {
+	l.ch <- LogMsg{Progress: l.prg}
 	return l.prg
+}
+
+func (l *msgLogger) sendLeveledMsg(msg string, lvl logLvl) {
+	msg = lvlFormatters[lvl](msg)
+	l.ch <- LogMsg{
+		Msg:      msg,
+		IsClear:  false,
+		Progress: l.prg,
+	}
 }

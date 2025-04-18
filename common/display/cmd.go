@@ -31,7 +31,8 @@ func (d *cmdDisplay) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case logger.LogMsg:
 		if msg.IsClear {
 			d.logs = make([]string, 0)
-		} else {
+		}
+		if msg.Msg != "" {
 			d.logs = append(d.logs, msg.Msg)
 		}
 
