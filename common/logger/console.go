@@ -1,6 +1,10 @@
 package logger
 
-import log "github.com/sirupsen/logrus"
+import (
+	log "github.com/sirupsen/logrus"
+
+	"github.com/lukso-network/tools-lukso-cli/common/progress"
+)
 
 var _ Logger = ConsoleLogger{}
 
@@ -25,3 +29,7 @@ func (c ConsoleLogger) Error(msg string) {
 // Not meant for std console logging.
 func (c ConsoleLogger) Clear() {}
 func (c ConsoleLogger) Close() {}
+
+func (c ConsoleLogger) Progress() progress.Progress {
+	return progress.NewStubProgress()
+}

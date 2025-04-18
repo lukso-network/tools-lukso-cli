@@ -9,11 +9,16 @@ import (
 	"github.com/urfave/cli/v2"
 
 	apierrors "github.com/lukso-network/tools-lukso-cli/api/errors"
+	"github.com/lukso-network/tools-lukso-cli/dependencies/configs"
 	"github.com/lukso-network/tools-lukso-cli/model"
 )
 
 // InitializeDirectory initializes a working directory for lukso node, with all configurations for all networks
 func (c *commander) Init(ctx *cli.Context) error {
+	c.log.Progress().Set(float64(len(configs.AllDependencies)))
+	c.log.Progress().Show()
+	defer c.log.Progress().Hide()
+
 	req := model.CtxToApiInit(ctx)
 
 	resp := c.handler.Init(req)

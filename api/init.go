@@ -16,8 +16,6 @@ import (
 )
 
 func (h *handler) Init(args types.InitRequest) (resp types.InitResponse) {
-	h.progress.Set(float64(len(configs.AllDependencies)))
-
 	if runningClients := clients.RunningClients(); runningClients != nil {
 		return types.InitResponse{
 			Error: errors.ErrClientsAlreadyRunning{Clients: runningClients},
@@ -142,7 +140,7 @@ func (h *handler) installConfigGroup(configDependencies map[string]configs.Clien
 		if err != nil {
 			h.log.Warn(fmt.Sprintf("Unable to download %s file: %v - continuing...", dependency.Name(), err))
 		}
-		h.progress.Move(1)
+		h.log.Progress().Move(1)
 	}
 }
 
@@ -163,7 +161,7 @@ func (h *handler) installClientConfigFiles(isUpdate bool) {
 	h.installConfigGroup(configs.BesuConfigDependencies, isUpdate)
 	h.log.Info("✅  Besu configuration files downloaded!\n\n")
 
-	h.log.Info("⬇️  Downloadingconfiguration files...")
+	h.log.Info("⬇️  Downloading prysm configuration files...")
 	h.installConfigGroup(configs.PrysmConfigDependencies, isUpdate)
 	h.log.Info("✅  Prysm configuration files downloaded!\n\n")
 
@@ -171,7 +169,7 @@ func (h *handler) installClientConfigFiles(isUpdate bool) {
 	h.installConfigGroup(configs.LighthouseConfigDependencies, isUpdate)
 	h.log.Info("✅  Lighthouse configuration files downloaded!\n\n")
 
-	h.log.Info("⬇️  Downloadingvalidator configuration files...")
+	h.log.Info("⬇️  Downloading prysm validator configuration files...")
 	h.installConfigGroup(configs.PrysmValidatorConfigDependencies, isUpdate)
 	h.log.Info("✅  Prysm validator configuration files downloaded!\n\n")
 

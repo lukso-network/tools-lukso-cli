@@ -5,7 +5,6 @@ import (
 	"github.com/lukso-network/tools-lukso-cli/common/file"
 	"github.com/lukso-network/tools-lukso-cli/common/installer"
 	"github.com/lukso-network/tools-lukso-cli/common/logger"
-	"github.com/lukso-network/tools-lukso-cli/common/progress"
 	"github.com/lukso-network/tools-lukso-cli/config"
 )
 
@@ -30,9 +29,6 @@ type Handler interface {
 	ValidatorExit(types.ValidatorExitRequest) types.ValidatorExitResponse
 	Version(types.VersionRequest) types.VersionResponse
 	VersionClients(types.VersionClientsRequest) types.VersionClientsResponse
-
-	// Utilities
-	Progress() progress.Progress
 }
 
 type handler struct {
@@ -40,7 +36,6 @@ type handler struct {
 	file      file.Manager
 	log       logger.Logger
 	installer installer.Installer
-	progress  progress.Progress
 }
 
 var _ Handler = &handler{}
@@ -50,17 +45,11 @@ func NewHandler(
 	file file.Manager,
 	logger logger.Logger,
 	installer installer.Installer,
-	progress progress.Progress,
 ) Handler {
 	return &handler{
 		cfg,
 		file,
 		logger,
 		installer,
-		progress,
 	}
-}
-
-func (h *handler) Progress() progress.Progress {
-	return h.progress
 }

@@ -32,7 +32,8 @@ func main() {
 	// Bottom to top dependencies
 	// display for commander
 	dispCh := make(chan tea.Msg)
-	hndlLogger := logger.NewMsgLogger(dispCh)
+	prg := progress.NewProgress()
+	hndlLogger := logger.NewMsgLogger(dispCh, prg)
 	cmdDisplay := display.NewCmdDisplay(dispCh)
 
 	// file/installation management
@@ -40,14 +41,11 @@ func main() {
 	hndlCfg := config.NewConfigurator(config.Path, hndlFile)
 	hndlInstaller := installer.NewInstaller(hndlFile)
 
-	hndlProgress := progress.NewProgress()
-
 	hndl := api.NewHandler(
 		hndlCfg,
 		hndlFile,
 		hndlLogger,
 		hndlInstaller,
-		hndlProgress,
 	)
 
 	cmd := commands.NewCommander(hndl, cmdDisplay, hndlLogger)
