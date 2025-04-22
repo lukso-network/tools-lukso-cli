@@ -2,7 +2,14 @@
 package progress
 
 import (
+	"time"
+
 	bar "github.com/charmbracelet/bubbles/progress"
+	"github.com/charmbracelet/bubbles/spinner"
+	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
+
+	"github.com/lukso-network/tools-lukso-cli/ui/style/color"
 )
 
 type Progress interface {
@@ -23,20 +30,29 @@ type Progress interface {
 }
 
 type progress struct {
-	done    float64
-	goal    float64
-	bar     bar.Model
+	done     float64
+	goal     float64
+	bar      bar.Model
+	spin     spinner.Model
+	ch       chan tea.Msg
+	tickerCh chan bool
+
 	visible bool
 }
 
 // NewProgress returns a new progress with a goal of 0. Goal needs to be initialized before every progressable action.
-func NewProgress() Progress {
-	return &progress{
-		done:    0,
-		goal:    1,
-		bar:     bar.New(bar.WithDefaultGradient()),
-		visible: false,
+func NewProgress(ch chan tea.Msg) Progress {
+	p := &progress{
+		done:     0,
+		goal:     1,
+		bar:      bar.New(bar.WithSolidFill(string(color.LuksoPink))),
+		spin:     spinner.New(spinner.WithSpinner(spinner.Line)),
+		visible:  false,
+		ch:       ch,
+		tickerCh: make(chan bool),
 	}
+
+	return p
 }
 
 func (p *progress) Move(count float64) {
@@ -49,17 +65,38 @@ func (p *progress) Set(goal float64) {
 }
 
 func (p *progress) Render() string {
-	return p.bar.ViewAs(p.done / p.goal)
+	return lipgloss.JoinHorizontal(lipgloss.Center, p.spin.View()+" ", p.bar.ViewAs(p.done/p.goal))
 }
 
 func (p *progress) Show() {
+	go p.runTicker()
 	p.visible = true
 }
 
 func (p *progress) Hide() {
 	p.visible = false
+	p.stopTicker()
 }
 
 func (p *progress) Visible() bool {
 	return p.visible
+}
+
+func (p *progress) runTicker() {
+	t := time.NewTicker(time.Millisecond * 100)
+
+loop:
+	for {
+		select {
+		case <-t.C:
+			p.spin, _ = p.spin.Update(spinner.TickMsg{})
+			p.ch <- tea.Cmd(p.spin.Tick)
+		case <-p.tickerCh:
+			break loop
+		}
+	}
+}
+
+func (p *progress) stopTicker() {
+	p.tickerCh <- true
 }

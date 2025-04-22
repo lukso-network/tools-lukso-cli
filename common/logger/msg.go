@@ -19,12 +19,6 @@ type LogMsg struct {
 
 var _ Logger = &msgLogger{}
 
-func Log(ch <-chan tea.Msg) tea.Cmd {
-	return func() tea.Msg {
-		return <-ch
-	}
-}
-
 func NewMsgLogger(ch chan tea.Msg, prg progress.Progress) Logger {
 	return &msgLogger{
 		ch:  ch,

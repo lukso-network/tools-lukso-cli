@@ -6,6 +6,7 @@ import (
 
 	"github.com/lukso-network/tools-lukso-cli/common/logger"
 	"github.com/lukso-network/tools-lukso-cli/common/progress"
+	"github.com/lukso-network/tools-lukso-cli/common/utils"
 )
 
 // cmdDisplay is a bubbletea program wrapper.
@@ -23,7 +24,7 @@ func NewCmdDisplay(ch chan tea.Msg) Display {
 }
 
 func (d *cmdDisplay) Init() tea.Cmd {
-	return tea.ShowCursor
+	return nil
 }
 
 func (d *cmdDisplay) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -39,7 +40,11 @@ func (d *cmdDisplay) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		d.prg = msg.Progress
 
 	case tea.QuitMsg:
-		return d, tea.Quit
+		return d, tea.Interrupt
+
+		// In some cases, we want to execute a Cmd that is sent on the channel
+	case tea.Cmd:
+		return d, tea.Batch(msg, d.listenForMsg())
 	}
 
 	return d, d.listenForMsg()
@@ -51,7 +56,10 @@ func (d *cmdDisplay) View() string {
 
 func (d *cmdDisplay) Listen() {
 	p := tea.NewProgram(d, tea.WithInput(nil))
-	p.Run() // TODO: handle all possible terminal input SIGs
+	_, err := p.Run() // TODO: handle all possible terminal input SIGs
+	if err != nil {
+		utils.Exit("Command cancelled", 1)
+	}
 }
 
 func (d *cmdDisplay) Render() (out string) {
@@ -69,5 +77,11 @@ func (d *cmdDisplay) Render() (out string) {
 }
 
 func (d *cmdDisplay) listenForMsg() tea.Cmd {
-	return logger.Log(d.ch)
+	return ChanCmd(d.ch)
+}
+
+func ChanCmd(ch <-chan tea.Msg) tea.Cmd {
+	return func() tea.Msg {
+		return <-ch
+	}
 }
