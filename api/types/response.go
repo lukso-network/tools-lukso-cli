@@ -1,12 +1,7 @@
 package types
 
-type Response interface {
-	// This is not an errorer: it's just a way of unwraping an actual error from the API response
-	Error() error
-}
-
 type InitResponse struct {
-	ErrorResponse
+	Error error
 }
 
 type (
@@ -23,3 +18,19 @@ type (
 	VersionResponse         struct{}
 	VersionClientsResponse  struct{}
 )
+
+type Response interface {
+	InitResponse |
+		InstallResponse |
+		UpdateResponse |
+		StartResponse |
+		StopResponse |
+		StatusResponse |
+		LogsResponse |
+		ResetResponse |
+		ValidatorImportResponse |
+		ValidatorListResponse |
+		ValidatorExitResponse |
+		VersionResponse |
+		VersionClientsResponse
+}

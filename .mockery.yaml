@@ -1,0 +1,27 @@
+with-expecter: true
+resolve-type-alias: false
+disable-version-string: true
+issue-845-fix: true
+outpkg: "mocks"
+dir: "test/mocks"
+packages:
+  github.com/lukso-network/tools-lukso-cli/api:
+    config:
+      filename: "mock_api.go"
+      all: true
+  github.com/lukso-network/tools-lukso-cli/api/logger:
+    config:
+      filename: "mock_logger.go"
+      all: true
+  github.com/lukso-network/tools-lukso-cli/common/file:
+    config:
+      filename: "mock_file.go"
+      all: true
+  github.com/lukso-network/tools-lukso-cli/common/installer:
+    config:
+      filename: "mock_installer.go"
+      all: true
+  github.com/lukso-network/tools-lukso-cli/config:
+    config:
+      filename: "mock_config.go"
+      all: true

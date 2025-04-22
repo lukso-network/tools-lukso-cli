@@ -10,7 +10,11 @@ import (
 	"github.com/urfave/cli/v2"
 
 	"github.com/lukso-network/tools-lukso-cli/api"
+	"github.com/lukso-network/tools-lukso-cli/api/logger"
 	"github.com/lukso-network/tools-lukso-cli/commands"
+	"github.com/lukso-network/tools-lukso-cli/common/file"
+	"github.com/lukso-network/tools-lukso-cli/common/installer"
+	"github.com/lukso-network/tools-lukso-cli/config"
 	"github.com/lukso-network/tools-lukso-cli/dependencies/configs"
 	"github.com/lukso-network/tools-lukso-cli/flags"
 )
@@ -22,7 +26,18 @@ var appName = "lukso"
 func main() {
 	log.SetFormatter(&log.TextFormatter{DisableTimestamp: true})
 
-	hndl := api.NewHandler()
+	hndlFile := file.NewManager()
+	hndlCfg := config.NewConfigurator(config.Path, hndlFile)
+	hndlInstaller := installer.NewInstaller(hndlFile)
+	hndlLogger := logger.ConsoleLogger{}
+
+	hndl := api.NewHandler(
+		hndlCfg,
+		hndlFile,
+		hndlLogger,
+		hndlInstaller,
+	)
+
 	cmd := commands.NewCommander(hndl)
 
 	app := cli.App{}

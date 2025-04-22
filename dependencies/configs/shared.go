@@ -1,18 +1,11 @@
 package configs
 
 import (
-	"bytes"
-	"fmt"
-	"io"
-	"net/http"
 	"os"
-	"strings"
 
-	log "github.com/sirupsen/logrus"
-
-	"github.com/lukso-network/tools-lukso-cli/common"
-	"github.com/lukso-network/tools-lukso-cli/common/errors"
-	"github.com/lukso-network/tools-lukso-cli/common/utils"
+	"github.com/lukso-network/tools-lukso-cli/api/errors"
+	"github.com/lukso-network/tools-lukso-cli/common/file"
+	"github.com/lukso-network/tools-lukso-cli/common/installer"
 )
 
 const (
@@ -152,68 +145,71 @@ const (
 )
 
 var (
+	CfgFileManager = file.NewManager()
+	CfgInstaller   = installer.NewInstaller(CfgFileManager)
+
 	SharedConfigDependencies = map[string]ClientConfigDependency{
 		// ----- SHARED -----
-		mainnetGenesisDependencyName: &clientConfig{
-			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/genesis.json",
-			name:     mainnetGenesisDependencyName,
-			filePath: MainnetConfig + "/" + GenesisJsonPath,
-		},
-		mainnetGenesisStateDependencyName: &clientConfig{
-			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/genesis.ssz",
-			name:     mainnetGenesisStateDependencyName,
-			filePath: MainnetConfig + "/" + GenesisStateFilePath,
-		},
-		mainnetChainConfigDependencyName: &clientConfig{
-			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/config.yaml",
-			name:     mainnetChainConfigDependencyName,
-			filePath: MainnetConfig + "/" + ChainConfigYamlPath,
-		},
-		mainnetGenesisChainspecDependencyName: &clientConfig{
-			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/nethermind/chainspec.json",
-			name:     mainnetGenesisChainspecDependencyName,
-			filePath: MainnetConfig + "/" + GenesisChainspecPath,
-		},
-		deployBlockMainnetConfigDependencyName: &clientConfig{
-			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/lighthouse/deploy_block.txt",
-			name:     deployBlockMainnetConfigDependencyName,
-			filePath: MainnetConfig + "/" + DeployBlockPath,
-		},
-		depositContractBlockMainnetConfigDependencyName: &clientConfig{
-			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/lighthouse/deposit_contract_block.txt",
-			name:     depositContractBlockMainnetConfigDependencyName,
-			filePath: MainnetConfig + "/" + DepositContractBlockPath,
-		},
-		testnetGenesisDependencyName: &clientConfig{
-			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/shared/genesis.json",
-			name:     testnetGenesisDependencyName,
-			filePath: TestnetConfig + "/" + GenesisJsonPath,
-		},
-		testnetGenesisStateDependencyName: &clientConfig{
-			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/shared/genesis.ssz",
-			name:     testnetGenesisStateDependencyName,
-			filePath: TestnetConfig + "/" + GenesisStateFilePath,
-		},
-		testnetChainConfigDependencyName: &clientConfig{
-			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/shared/config.yaml",
-			name:     testnetChainConfigDependencyName,
-			filePath: TestnetConfig + "/" + ChainConfigYamlPath,
-		},
-		testnetGenesisChainspecDependencyName: &clientConfig{
-			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/nethermind/chainspec.json",
-			name:     mainnetGenesisChainspecDependencyName,
-			filePath: TestnetConfig + "/" + GenesisChainspecPath,
-		},
-		deployBlockTestnetConfigDependencyName: &clientConfig{
-			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/lighthouse/deploy_block.txt",
-			name:     deployBlockTestnetConfigDependencyName,
-			filePath: TestnetConfig + "/" + DeployBlockPath,
-		},
-		depositContractBlockTestnetConfigDependencyName: &clientConfig{
-			url:      "https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/lighthouse/deposit_contract_block.txt",
-			name:     depositContractBlockTestnetConfigDependencyName,
-			filePath: TestnetConfig + "/" + DepositContractBlockPath,
-		},
+		mainnetGenesisDependencyName: newClientConfig(
+			"https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/genesis.json",
+			mainnetGenesisDependencyName,
+			MainnetConfig+"/"+GenesisJsonPath,
+		),
+		mainnetGenesisStateDependencyName: newClientConfig(
+			"https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/genesis.ssz",
+			mainnetGenesisStateDependencyName,
+			MainnetConfig+"/"+GenesisStateFilePath,
+		),
+		mainnetChainConfigDependencyName: newClientConfig(
+			"https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/shared/config.yaml",
+			mainnetChainConfigDependencyName,
+			MainnetConfig+"/"+ChainConfigYamlPath,
+		),
+		mainnetGenesisChainspecDependencyName: newClientConfig(
+			"https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/nethermind/chainspec.json",
+			mainnetGenesisChainspecDependencyName,
+			MainnetConfig+"/"+GenesisChainspecPath,
+		),
+		deployBlockMainnetConfigDependencyName: newClientConfig(
+			"https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/lighthouse/deploy_block.txt",
+			deployBlockMainnetConfigDependencyName,
+			MainnetConfig+"/"+DeployBlockPath,
+		),
+		depositContractBlockMainnetConfigDependencyName: newClientConfig(
+			"https://raw.githubusercontent.com/lukso-network/network-configs/main/mainnet/lighthouse/deposit_contract_block.txt",
+			depositContractBlockMainnetConfigDependencyName,
+			MainnetConfig+"/"+DepositContractBlockPath,
+		),
+		testnetGenesisDependencyName: newClientConfig(
+			"https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/shared/genesis.json",
+			testnetGenesisDependencyName,
+			TestnetConfig+"/"+GenesisJsonPath,
+		),
+		testnetGenesisStateDependencyName: newClientConfig(
+			"https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/shared/genesis.ssz",
+			testnetGenesisStateDependencyName,
+			TestnetConfig+"/"+GenesisStateFilePath,
+		),
+		testnetChainConfigDependencyName: newClientConfig(
+			"https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/shared/config.yaml",
+			testnetChainConfigDependencyName,
+			TestnetConfig+"/"+ChainConfigYamlPath,
+		),
+		testnetGenesisChainspecDependencyName: newClientConfig(
+			"https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/nethermind/chainspec.json",
+			mainnetGenesisChainspecDependencyName,
+			TestnetConfig+"/"+GenesisChainspecPath,
+		),
+		deployBlockTestnetConfigDependencyName: newClientConfig(
+			"https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/lighthouse/deploy_block.txt",
+			deployBlockTestnetConfigDependencyName,
+			TestnetConfig+"/"+DeployBlockPath,
+		),
+		depositContractBlockTestnetConfigDependencyName: newClientConfig(
+			"https://raw.githubusercontent.com/lukso-network/network-configs/main/testnet/lighthouse/deposit_contract_block.txt",
+			depositContractBlockTestnetConfigDependencyName,
+			TestnetConfig+"/"+DepositContractBlockPath,
+		),
 	}
 	UpdateConfigDependencies = map[string]ClientConfigDependency{
 		// copied existing configs
@@ -242,61 +238,23 @@ type clientConfig struct {
 	filePath string
 }
 
+func newClientConfig(url, name, filePath string) ClientConfigDependency {
+	return &clientConfig{
+		url:      url,
+		name:     name,
+		filePath: filePath,
+	}
+}
+
 var _ ClientConfigDependency = &clientConfig{}
 
 func (c *clientConfig) Install(isUpdate bool) (err error) {
-	err = c.createDir()
+	if CfgFileManager.Exists(c.filePath) && !isUpdate {
+		return errors.ErrFileExists
+	}
+
+	err = CfgInstaller.InstallFile(c.url, c.filePath)
 	if err != nil {
-		return
-	}
-
-	if utils.FileExists(c.filePath) && !isUpdate {
-		log.Infof("  ⏩️  Skipping file %s: the file already exists", c.filePath)
-
-		return
-	}
-
-	response, err := http.Get(c.url)
-
-	if nil != err {
-		return
-	}
-
-	defer func() {
-		_ = response.Body.Close()
-	}()
-
-	if response.StatusCode == http.StatusNotFound {
-		log.Warnf("⚠️  File under URL %s not found - skipping...", c.url)
-
-		return nil
-	}
-
-	if http.StatusOK != response.StatusCode {
-		return fmt.Errorf(
-			"❌  Invalid response when downloading on file url: %s. Response code: %s",
-			c.url,
-			response.Status,
-		)
-	}
-
-	var responseReader io.Reader = response.Body
-
-	buf := new(bytes.Buffer)
-	_, err = buf.ReadFrom(responseReader)
-	if err != nil {
-		return
-	}
-
-	err = os.WriteFile(c.filePath, buf.Bytes(), common.ConfigPerms)
-
-	if err != nil && strings.Contains(err.Error(), "Permission denied") {
-		return errors.ErrNeedRoot
-	}
-
-	if err != nil {
-		log.Infof("❌  Couldn't save file: %v", err)
-
 		return
 	}
 
@@ -305,17 +263,4 @@ func (c *clientConfig) Install(isUpdate bool) (err error) {
 
 func (c *clientConfig) Name() string {
 	return c.name
-}
-
-func (c *clientConfig) createDir() error {
-	err := os.MkdirAll(utils.TruncateFileFromDir(c.filePath), common.ConfigPerms)
-	if err == os.ErrExist {
-		log.Errorf("%s already exists!", c.name)
-	}
-
-	if err == os.ErrPermission {
-		return errors.ErrNeedRoot
-	}
-
-	return err
 }

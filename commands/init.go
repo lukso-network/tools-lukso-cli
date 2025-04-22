@@ -1,28 +1,32 @@
 package commands
 
 import (
+	"errors"
+	"fmt"
 	"io"
 	"net/http"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 
-	"github.com/lukso-network/tools-lukso-cli/dependencies/clients"
+	apierrors "github.com/lukso-network/tools-lukso-cli/api/errors"
 	"github.com/lukso-network/tools-lukso-cli/model"
 )
 
 // InitializeDirectory initializes a working directory for lukso node, with all configurations for all networks
 func (c *commander) Init(ctx *cli.Context) error {
-	if clients.IsAnyRunning() {
-		return nil
-	}
-
 	req := model.CtxToApiInit(ctx)
 
 	resp := c.handler.Init(req)
-	err := resp.Error()
+	err := resp.Error
 	if err != nil {
-		return err
+		log.Warn(fmt.Sprintf("Unable to initialize directory: %v", err))
+
+		if errors.Is(err, apierrors.ErrCfgExists) {
+			log.Warn("To reinitialize directory, rerun the 'lukso init' command with '--reinit' flag")
+
+			return nil
+		}
 	}
 
 	displayNetworksHardforkTimestamps()
