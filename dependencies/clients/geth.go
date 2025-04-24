@@ -31,7 +31,7 @@ func NewGethClient() *GethClient {
 
 var Geth = NewGethClient()
 
-var _ ClientBinaryDependency = &GethClient{}
+var _ Client = &GethClient{}
 
 func (g *GethClient) ParseUrl(tag, commitHash string) (url string) {
 	url = g.baseUrl

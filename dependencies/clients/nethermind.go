@@ -42,7 +42,7 @@ func NewNethermindClient() *NethermindClient {
 
 var Nethermind = NewNethermindClient()
 
-var _ ClientBinaryDependency = &NethermindClient{}
+var _ Client = &NethermindClient{}
 
 func (n *NethermindClient) Install(url string, isUpdate bool) (err error) {
 	if utils.FileExists(n.FilePath()) && !isUpdate {
@@ -96,7 +96,7 @@ func (n *NethermindClient) Start(ctx *cli.Context, arguments []string) (err erro
 		return utils.Exit(fmt.Sprintf("%v- %s", errors.ErrFlagMissing, flags.LogFolderFlag), 1)
 	}
 
-	fullPath, err = utils.PrepareTimestampedFile(logFolder, n.CommandName())
+	fullPath, err = utils.TimestampedFile(logFolder, n.CommandName())
 	if err != nil {
 		return
 	}

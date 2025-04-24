@@ -38,7 +38,7 @@ func NewNimbus2Client() *Nimbus2Client {
 
 var Nimbus2 = NewNimbus2Client()
 
-var _ ClientBinaryDependency = &Nimbus2Client{}
+var _ Client = &Nimbus2Client{}
 
 func (n *Nimbus2Client) PrepareStartFlags(ctx *cli.Context) (startFlags []string, err error) {
 	startFlags = n.ParseUserFlags(ctx)

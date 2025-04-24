@@ -14,16 +14,17 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
-	"time"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 
 	"github.com/lukso-network/tools-lukso-cli/common"
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
+	"github.com/lukso-network/tools-lukso-cli/common/file"
+	"github.com/lukso-network/tools-lukso-cli/common/installer"
+	"github.com/lukso-network/tools-lukso-cli/common/logger"
 	"github.com/lukso-network/tools-lukso-cli/common/system"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
-	"github.com/lukso-network/tools-lukso-cli/dependencies/configs"
 	"github.com/lukso-network/tools-lukso-cli/dependencies/types/apitypes"
 	"github.com/lukso-network/tools-lukso-cli/flags"
 	"github.com/lukso-network/tools-lukso-cli/pid"
@@ -60,13 +61,13 @@ const (
 	zipFormat = "zip"
 	tarFormat = "tar"
 
-	jdkFolder = common.ClientDepsFolder + "/jdk"
+	jdkFolder = file.ClientsDir + "/jdk"
 
 	VersionNotAvailable = "Not available"
 )
 
 var (
-	AllClients = map[string]ClientBinaryDependency{
+	AllClients = map[string]Client{
 		gethDependencyName:                Geth,
 		erigonDependencyName:              Erigon,
 		prysmDependencyName:               Prysm,
@@ -111,16 +112,24 @@ var (
 	}
 )
 
+// clientBinary represents a shared logic between all clients that they share.
+// It is not, however, a client. What cannot be implemented generically (e.g. install), should be implemented explicitly by the given client.
+// The implementation should rely on build - if app is able to build, it means every method was implemented correctly.
 type clientBinary struct {
 	name           string
-	commandName    string
+	fileName       string
+	dirName        string
 	baseUrl        string
 	githubLocation string // user + repo, f.e. prysmaticlabs/prysm
+	version        string
+
+	log       logger.Logger
+	file      file.Manager
+	installer installer.Installer
+	pid       pid.Pid
 }
 
-var _ ClientBinaryDependency = &clientBinary{}
-
-func (client *clientBinary) Start(ctx *cli.Context, arguments []string) (err error) {
+func (client *clientBinary) Start(arguments []string, logDir string) (err error) {
 	if client.IsRunning() {
 		log.Infof("🔄️  %s is already running - stopping first...", client.Name())
 
@@ -132,44 +141,12 @@ func (client *clientBinary) Start(ctx *cli.Context, arguments []string) (err err
 		log.Infof("🛑  Stopped %s", client.Name())
 	}
 
-	command := exec.Command(client.CommandName(), arguments...)
+	command := exec.Command(client.FilePath(), arguments...)
 
-	if client.Name() == gethDependencyName || client.Name() == erigonDependencyName {
-		err = initClient(ctx, client)
-		if err != nil && err != errors.ErrAlreadyRunning { // if it is already running it will be caught during start
-			log.Errorf("❌  There was an error while initalizing %s. Error: %v", client.Name(), err)
-
-			return err
-		}
-	}
-
-	var (
-		logFile  *os.File
-		fullPath string
-	)
-
-	logFolder := ctx.String(flags.LogFolderFlag)
-	if logFolder == "" {
-		return utils.Exit(fmt.Sprintf("%v- %s", errors.ErrFlagMissing, flags.LogFolderFlag), 1)
-	}
-
-	fullPath, err = utils.PrepareTimestampedFile(logFolder, client.CommandName())
+	err = client.prepareLogFile(logDir, command)
 	if err != nil {
 		return
 	}
-
-	err = os.WriteFile(fullPath, []byte{}, 0o750)
-	if err != nil {
-		return
-	}
-
-	logFile, err = os.OpenFile(fullPath, os.O_RDWR, 0o750)
-	if err != nil {
-		return
-	}
-
-	command.Stdout = logFile
-	command.Stderr = logFile
 
 	log.Infof("🔄  Starting %s", client.Name())
 	err = command.Start()
@@ -177,10 +154,8 @@ func (client *clientBinary) Start(ctx *cli.Context, arguments []string) (err err
 		return
 	}
 
-	pidLocation := fmt.Sprintf("%s/%s.pid", pid.FileDir, client.CommandName())
-	err = pid.Create(pidLocation, command.Process.Pid)
-
-	time.Sleep(1 * time.Second)
+	pidLocation := fmt.Sprintf("%s/%s.pid", pid.FileDir, client.FileName())
+	err = client.pid.Create(pidLocation, command.Process.Pid)
 
 	log.Infof("✅  %s started!", client.Name())
 
@@ -188,16 +163,16 @@ func (client *clientBinary) Start(ctx *cli.Context, arguments []string) (err err
 }
 
 func (client *clientBinary) Stop() (err error) {
-	pidLocation := fmt.Sprintf("%s/%s.pid", pid.FileDir, client.CommandName())
+	pidLocation := fmt.Sprintf("%s/%s.pid", pid.FileDir, client.FileName())
 
-	pidVal, err := pid.Load(pidLocation)
+	pidVal, err := client.pid.Load(pidLocation)
 	if err != nil {
 		log.Warnf("⏭️  %s is not running - skipping...", client.Name())
 
 		return nil
 	}
 
-	err = pid.Kill(pidLocation, pidVal)
+	err = client.pid.Kill(pidLocation, pidVal)
 	if err != nil {
 		return errors.ErrProcessNotFound
 	}
@@ -231,260 +206,52 @@ func (client *clientBinary) Logs(logFilePath string) (err error) {
 	return
 }
 
-func (client *clientBinary) Reset(dataDirPath string) (err error) {
-	if dataDirPath == "" {
+func (client *clientBinary) Reset(dataDir string) (err error) {
+	if dataDir == "" {
 		return utils.Exit(fmt.Sprintf("%v", errors.ErrFlagMissing), 1)
 	}
 
-	return os.RemoveAll(dataDirPath)
-}
-
-func (client *clientBinary) Install(url string, isUpdate bool) (err error) {
-	if utils.FileExists(client.FilePath()) && !isUpdate {
-		message := fmt.Sprintf("You already have the %s client installed, do you want to override your installation? [Y/n]: ", client.Name())
-		input := utils.RegisterInputWithMessage(message)
-		if !strings.EqualFold(input, "y") && input != "" {
-			log.Info("⏭️  Skipping installation...")
-
-			return nil
-		}
-	}
-
-	response, err := http.Get(url)
-
-	if nil != err {
-		return
-	}
-
-	defer func() {
-		_ = response.Body.Close()
-	}()
-
-	if response.StatusCode == http.StatusNotFound {
-		log.Warnf("⚠️  File under URL %s not found - skipping...", url)
-
-		return nil
-	}
-
-	if http.StatusOK != response.StatusCode {
-		return fmt.Errorf(
-			"❌  Invalid response when downloading on file url: %s. Response code: %s",
-			url,
-			response.Status,
-		)
-	}
-
-	var responseReader io.Reader = response.Body
-
-	// this means that we are fetching tared client
-	switch client.Name() {
-	case gethDependencyName, erigonDependencyName, lighthouseDependencyName:
-		g, err := gzip.NewReader(response.Body)
-		if err != nil {
-			return err
-		}
-
-		defer func() {
-			_ = g.Close()
-		}()
-
-		t := tar.NewReader(g)
-		for {
-			header, err := t.Next()
-
-			switch {
-			case err == io.EOF:
-				break
-
-			case err != nil:
-				return err
-
-			default:
-
-			}
-
-			var targetHeader string
-			switch client.Name() {
-			case gethDependencyName:
-				targetHeader = "/" + client.CommandName()
-			case erigonDependencyName:
-				targetHeader = "/erigon"
-			case lighthouseDependencyName:
-				targetHeader = "lighthouse"
-			}
-
-			if header.Typeflag == tar.TypeReg && strings.Contains(header.Name, targetHeader) {
-				responseReader = t
-
-				break
-			}
-		}
-	}
-
-	buf := new(bytes.Buffer)
-	_, err = buf.ReadFrom(responseReader)
-	if err != nil {
-		return
-	}
-
-	err = os.WriteFile(client.FilePath(), buf.Bytes(), configs.BinaryPerms)
-
-	if err != nil && strings.Contains(err.Error(), "Permission denied") {
-		return errors.ErrNeedRoot
-	}
-
-	if err != nil {
-		log.Infof("❌  Couldn't save file: %v", err)
-
-		return
-	}
-
-	switch isUpdate {
-	case true:
-		log.Infof("✅  %s updated!\n\n", client.Name())
-	case false:
-		log.Infof("✅  %s downloaded!\n\n", client.Name())
-	}
-
-	return
-}
-
-func (client *clientBinary) Update() (err error) {
-	tag := client.getVersion()
-
-	log.WithField("dependencyTag", tag).Infof("⬇️  Updating %s", client.name)
-
-	url := client.ParseUrl(tag, "")
-
-	return client.Install(url, true)
+	return client.file.RemoveAll(dataDir)
 }
 
 func (client *clientBinary) IsRunning() bool {
-	pidLocation := fmt.Sprintf("%s/%s.pid", pid.FileDir, client.CommandName())
+	pidLocation := fmt.Sprintf("%s/%s.pid", pid.FileDir, client.FileName())
 
 	return pid.Exists(pidLocation)
-}
-
-func initClient(ctx *cli.Context, client ClientBinaryDependency) (err error) {
-	log.Infof("⚙️  Running %s init...", client.Name())
-
-	if client.IsRunning() {
-		return errors.ErrAlreadyRunning
-	}
-
-	if !utils.FileExists(ctx.String(flags.GenesisJsonFlag)) {
-		if ctx.Bool(flags.TestnetFlag) || ctx.Bool(flags.DevnetFlag) {
-			return errors.ErrGenesisNotFound
-		}
-
-		message := `Choose your preferred initial LYX supply!
-If you are a Genesis Validator, we recommend to choose the supply, which the majority of the Genesis Validators would choose,
-to prevent your node from running on a network that can not finalize due to missing validators!
-🗳️ See the voting results at https://deposit.mainnet.lukso.network
-
-For more information read:
-👉 https://medium.com/lukso/genesis-validators-deposit-smart-contract-freeze-and-testnet-launch-c5f7b568b1fc
-
-Which initial LYX supply do you choose?
-1: 35M LYX
-2: 42M LYX
-3: 100M LYX
-> `
-		var input string
-		for input != "1" && input != "2" && input != "3" {
-			input = utils.RegisterInputWithMessage(message)
-			switch input {
-			case "1":
-				err = ctx.Set(flags.GenesisJsonFlag, configs.MainnetConfig+"/"+configs.Genesis35JsonPath)
-				if err != nil {
-					return
-				}
-				err = ctx.Set(flags.GenesisStateFlag, configs.MainnetConfig+"/"+configs.GenesisState35FilePath)
-
-			case "2":
-				err = ctx.Set(flags.GenesisJsonFlag, configs.MainnetConfig+"/"+configs.Genesis42JsonPath)
-				if err != nil {
-					return
-				}
-				err = ctx.Set(flags.GenesisStateFlag, configs.MainnetConfig+"/"+configs.GenesisState42FilePath)
-
-			case "3":
-				err = ctx.Set(flags.GenesisJsonFlag, configs.MainnetConfig+"/"+configs.Genesis100JsonPath)
-				if err != nil {
-					return
-				}
-				err = ctx.Set(flags.GenesisStateFlag, configs.MainnetConfig+"/"+configs.GenesisState100FilePath)
-
-			default:
-				log.Warn("Please select a valid option\n\n")
-			}
-
-			if err != nil {
-				return
-			}
-		}
-	}
-
-	var (
-		dataDir string
-		cmdPath string
-	)
-
-	switch client.Name() {
-	case gethDependencyName:
-		dataDir = fmt.Sprintf("--datadir=%s", ctx.String(flags.GethDatadirFlag))
-		cmdPath = client.CommandName()
-
-	case erigonDependencyName:
-		dataDir = fmt.Sprintf("--datadir=%s", ctx.String(flags.ErigonDatadirFlag))
-		cmdPath = fmt.Sprintf("./%s/%s", client.FilePath(), client.CommandName())
-	}
-
-	command := exec.Command(cmdPath, "init", dataDir, ctx.String(flags.GenesisJsonFlag))
-	command.Stdout = os.Stdout
-	command.Stderr = os.Stderr
-
-	return command.Run()
 }
 
 func (client *clientBinary) ParseUrl(tag, commitHash string) (url string) {
 	url = client.baseUrl
 
-	url = strings.Replace(url, "|TAG|", tag, -1)
-	url = strings.Replace(url, "|OS|", system.Os, -1)
-	url = strings.Replace(url, "|COMMIT|", commitHash, -1)
-	url = strings.Replace(url, "|ARCH|", system.Arch, -1)
+	url = strings.ReplaceAll(url, "|TAG|", tag)
+	url = strings.ReplaceAll(url, "|OS|", system.Os)
+	url = strings.ReplaceAll(url, "|COMMIT|", commitHash)
+	url = strings.ReplaceAll(url, "|ARCH|", system.Arch)
 
 	return
 }
 
-func (client *clientBinary) FilePath() string {
-	return system.UnixBinDir + "/" + client.CommandName()
-}
-
-func (client *clientBinary) Name() string {
-	return client.name
-}
-
-func (client *clientBinary) CommandName() string {
-	return client.commandName
-}
-
-func (client *clientBinary) ParseUserFlags(ctx *cli.Context) (startFlags []string) {
-	name := client.commandName
-	args := ctx.Args()
-	argsLen := args.Len()
+func (client *clientBinary) ParseUserFlags(userFlags []string) (startFlags []string) {
+	name := client.FileName()
+	argsLen := len(userFlags)
 	flagsToSkip := []string{
 		flags.ValidatorFlag,
 		flags.GethConfigFileFlag,
+		flags.ErigonConfigFileFlag,
+		flags.NethermindConfigFileFlag,
+		flags.BesuConfigFileFlag,
 		flags.PrysmConfigFileFlag,
+		flags.LighthouseConfigFileFlag,
+		flags.TekuConfigFileFlag,
+		flags.Nimbus2ConfigFileFlag,
 		flags.ValidatorConfigFileFlag,
 		flags.ValidatorWalletPasswordFileFlag,
 	}
 
 	for i := 0; i < argsLen; i++ {
 		skip := false
-		arg := args.Get(i)
+		arg := userFlags[i]
+
 		for _, flagToSkip := range flagsToSkip {
 			if arg == fmt.Sprintf("--%s", flagToSkip) {
 				skip = true
@@ -502,7 +269,7 @@ func (client *clientBinary) ParseUserFlags(ctx *cli.Context) (startFlags []strin
 			}
 
 			// we found a flag for our client - now we need to check if it's a value or bool flag
-			nextArg := args.Get(i + 1)
+			nextArg := userFlags[i+1]
 			if strings.HasPrefix(nextArg, "--") { // we found a next flag, so current one is a bool
 				startFlags = append(startFlags, removePrefix(arg, name))
 
@@ -516,22 +283,62 @@ func (client *clientBinary) ParseUserFlags(ctx *cli.Context) (startFlags []strin
 	return
 }
 
-func (client *clientBinary) PrepareStartFlags(ctx *cli.Context) (startFlags []string, err error) {
-	_ = utils.Exit(fmt.Sprintf("FATAL: START FLAGS NOT CONFIGURED FOR %s CLIENT - PLEASE MARK THIS ISSUE TO THE LUKSO TEAM", client.Name()), 1)
-
-	return
+func (client *clientBinary) Name() string {
+	return client.name
 }
 
-func (client *clientBinary) Peers(ctx *cli.Context) (outbound, inbound int, err error) {
-	_ = utils.Exit(fmt.Sprintf("FATAL: STATUS PEERS NOT CONFIGURED FOR %s CLIENT - PLEASE MARK THIS ISSUE TO THE LUKSO TEAM", client.Name()), 1)
+func (client *clientBinary) FileName() string {
+	return client.fileName
+}
 
-	return
+func (client *clientBinary) FileDir() string {
+	return file.ClientsDir
+}
+
+func (client *clientBinary) FilePath() string {
+	return file.ClientsDir + "/" + client.FileName()
 }
 
 func (client *clientBinary) Version() (v string) {
-	_ = utils.Exit(fmt.Sprintf("FATAL: VERSION NOT CONFIGURED FOR %s CLIENT - PLEASE MARK THIS ISSUE TO THE LUKSO TEAM", client.Name()), 1)
+	return client.getVersion()
+}
 
-	return
+// Since most clients don't need to init and it's more of a side effect, we Init nothing by default.
+func (client *clientBinary) Init() error {
+	return nil
+}
+
+func (client *clientBinary) getVersion() string {
+	return ClientVersions[client.Name()]
+}
+
+func initClient(ctx *cli.Context, client Client) (err error) {
+	log.Infof("⚙️  Running %s init...", client.Name())
+
+	if client.IsRunning() {
+		return errors.ErrAlreadyRunning
+	}
+
+	var (
+		dataDir string
+		cmdPath string
+	)
+
+	switch client.Name() {
+	case gethDependencyName:
+		dataDir = fmt.Sprintf("--datadir=%s", ctx.String(flags.GethDatadirFlag))
+		cmdPath = client.FilePath()
+
+	case erigonDependencyName:
+		dataDir = fmt.Sprintf("--datadir=%s", ctx.String(flags.ErigonDatadirFlag))
+		cmdPath = client.FilePath()
+	}
+
+	command := exec.Command(cmdPath, "init", dataDir, ctx.String(flags.GenesisJsonFlag))
+	command.Stdout = os.Stdout
+	command.Stderr = os.Stderr
+
+	return command.Run()
 }
 
 func execVersionCmd(cmd string) (ver string) {
@@ -552,10 +359,6 @@ func execVersionCmd(cmd string) (ver string) {
 	}
 
 	return buf.String()
-}
-
-func (client *clientBinary) getVersion() string {
-	return ClientVersions[client.Name()]
 }
 
 func removePrefix(arg, name string) string {
@@ -894,28 +697,27 @@ func isJdkInstalled() bool {
 	return err == nil
 }
 
-func prepareLogFile(ctx *cli.Context, command *exec.Cmd, client string) (err error) {
+func (client *clientBinary) prepareLogFile(dir string, command *exec.Cmd) (err error) {
 	var (
 		logFile  *os.File
 		fullPath string
 	)
 
-	logFolder := ctx.String(flags.LogFolderFlag)
-	if logFolder == "" {
+	if dir == "" {
 		return utils.Exit(fmt.Sprintf("%v- %s", errors.ErrFlagMissing, flags.LogFolderFlag), 1)
 	}
 
-	fullPath, err = utils.PrepareTimestampedFile(logFolder, client)
+	fullPath, err = utils.TimestampedFile(dir, client.FileName())
 	if err != nil {
 		return
 	}
 
-	err = os.WriteFile(fullPath, []byte{}, 0o750)
+	err = client.file.Create(fullPath)
 	if err != nil {
 		return
 	}
 
-	logFile, err = os.OpenFile(fullPath, os.O_RDWR, 0o750)
+	logFile, err = client.file.Open(fullPath)
 	if err != nil {
 		return
 	}
@@ -976,4 +778,8 @@ func keystoreListWalk(walletDir string) (err error) {
 	}
 
 	return
+}
+
+func notImplemented(cmd string) error {
+	return utils.Exit(fmt.Sprintf("%v not implemented for a generic client: please mark this issue to the LUKSO team."), 1)
 }

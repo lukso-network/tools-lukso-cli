@@ -45,7 +45,7 @@ func NewTekuClient() *TekuClient {
 
 var Teku = NewTekuClient()
 
-var _ ClientBinaryDependency = &TekuClient{}
+var _ Client = &TekuClient{}
 
 func (t *TekuClient) PrepareStartFlags(ctx *cli.Context) (startFlags []string, err error) {
 	startFlags = t.ParseUserFlags(ctx)
@@ -144,7 +144,7 @@ func (t *TekuClient) Start(ctx *cli.Context, arguments []string) (err error) {
 		return utils.Exit(fmt.Sprintf("%v- %s", errors.ErrFlagMissing, flags.LogFolderFlag), 1)
 	}
 
-	fullPath, err = utils.PrepareTimestampedFile(logFolder, t.CommandName())
+	fullPath, err = utils.TimestampedFile(logFolder, t.CommandName())
 	if err != nil {
 		return
 	}

@@ -5,9 +5,22 @@ import (
 	"os"
 	"strconv"
 	"syscall"
+
+	"github.com/lukso-network/tools-lukso-cli/common/file"
 )
 
 var FileDir = "/tmp" // until a script for /tmp/lukso or other dir is provided
+
+type Pid interface {
+	Exists(path string) bool
+	Create(path string, pid int) error
+	Kill(path string, pid int) error
+	Load(path string) (pid int, err error)
+}
+
+type pid struct {
+	file file.Manager
+}
 
 func Exists(path string) bool {
 	pidVal, err := Load(path)

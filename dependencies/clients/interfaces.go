@@ -2,9 +2,15 @@ package clients
 
 import "github.com/urfave/cli/v2"
 
-type ClientBinaryDependency interface {
+type Client interface {
+	// Install installs the client with given version
+	Install(version string, isUpdate bool) error
+
+	// Update updates client to specific version
+	Update() error
+
 	// Start starts the client with given flags
-	Start(ctx *cli.Context, arguments []string) error
+	Start(arguments []string, logDir string) error
 
 	// Stop stops the client
 	Stop() error
@@ -15,14 +21,11 @@ type ClientBinaryDependency interface {
 	// Reset deletes data directories of all clients
 	Reset(datadir string) error
 
-	// Install installs the client with given version
-	Install(url string, isUpdate bool) error
-
-	// Update updates client to specific version - TODO
-	Update() error
-
 	// IsRunning determines whether the client is already running
 	IsRunning() bool
+
+	// ParseUrl replaces any missing information in install link with matching system info
+	ParseUrl(tag, commitHash string) string
 
 	// ParseUserFlags is used to trim any client prefix from flag
 	ParseUserFlags(ctx *cli.Context) []string
@@ -36,10 +39,10 @@ type ClientBinaryDependency interface {
 
 	// CommandName identifies client in all sorts of technical aspects - commands, files etc.
 	// Should be lowercase and match Name (non-case-sensitively)
-	CommandName() string
+	FileName() string
 
-	// ParseUrl replaces any missing information in install link with matching system info
-	ParseUrl(tag, commitHash string) string
+	// FileDir returns a path to client's installation directory.
+	FileDir() string
 
 	// FilePath returns path to installed binary
 	FilePath() string
@@ -50,10 +53,19 @@ type ClientBinaryDependency interface {
 	// Version returns a version of the given client as a string (different clients may vary in versioning).
 	// For compatibility with display, all clients should be preceded by 'v', e.g. Geth version: v1.14.11
 	Version() string
+
+	// Init initializes client, using internal implementations.
+	Init() error
+
+	// Each client should be able to identify what release it should install, based on the build envs.
+	tag() string
+	os() string
+	arch() string
+	commit() string
 }
 
 type ValidatorBinaryDependency interface {
-	ClientBinaryDependency
+	Client
 	Import(ctx *cli.Context) error
 	List(ctx *cli.Context) error
 	Exit(ctx *cli.Context) error

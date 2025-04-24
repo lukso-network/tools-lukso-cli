@@ -44,7 +44,7 @@ func (c *commander) Update(ctx *cli.Context) (err error) {
 		return cli.Exit(errors.ErrClientNotSupported, 1)
 	}
 
-	toUpdate := []clients.ClientBinaryDependency{execution, consensus, validator}
+	toUpdate := []clients.Client{execution, consensus, validator}
 
 	for _, client := range toUpdate {
 		if client == clients.LighthouseValidator || client == clients.TekuValidator || client == clients.Nimbus2Validator {

@@ -38,7 +38,7 @@ func NewBesuClient() *BesuClient {
 
 var Besu = NewBesuClient()
 
-var _ ClientBinaryDependency = &BesuClient{}
+var _ Client = &BesuClient{}
 
 func (b *BesuClient) PrepareStartFlags(ctx *cli.Context) (startFlags []string, err error) {
 	startFlags = b.ParseUserFlags(ctx)
@@ -134,7 +134,7 @@ func (b *BesuClient) Start(ctx *cli.Context, arguments []string) (err error) {
 		return utils.Exit(fmt.Sprintf("%v- %s", errors.ErrFlagMissing, flags.LogFolderFlag), 1)
 	}
 
-	fullPath, err = utils.PrepareTimestampedFile(logFolder, b.CommandName())
+	fullPath, err = utils.TimestampedFile(logFolder, b.CommandName())
 	if err != nil {
 		return
 	}

@@ -31,7 +31,7 @@ func NewLighthouseClient() *LighthouseClient {
 
 var Lighthouse = NewLighthouseClient()
 
-var _ ClientBinaryDependency = &LighthouseClient{}
+var _ Client = &LighthouseClient{}
 
 func (l *LighthouseClient) Update() (err error) {
 	tag := ClientVersions[l.Name()]

@@ -1,10 +1,14 @@
 package installer
 
 import (
+	"archive/tar"
+	"archive/zip"
 	"bytes"
 	"fmt"
 	"io"
 	"net/http"
+	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/lukso-network/tools-lukso-cli/api/errors"
@@ -59,7 +63,7 @@ func (i *installer) Fetch(url string) (body []byte, err error) {
 
 	if http.StatusOK != response.StatusCode {
 		return nil, fmt.Errorf(
-			"❌  Invalid response when downloading on file url: %s. Response code: %s",
+			"invalid response when downloading on file url: %s. Response code: %s",
 			url,
 			response.Status,
 		)
@@ -101,9 +105,159 @@ func (i *installer) InstallFile(url, dest string) (err error) {
 }
 
 func (i *installer) InstallTar(url, dest string) (err error) {
-	return
+	var (
+		b   []byte
+		buf *bytes.Reader
+		t   *tar.Reader
+	)
+
+	b, err = i.Fetch(url)
+	if err != nil {
+		return
+	}
+
+	buf = bytes.NewReader(b)
+	t = tar.NewReader(buf)
+	if err != nil {
+		return
+	}
+
+	for {
+		header, err := t.Next()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return err
+		}
+
+		var (
+			path       string
+			headerName = header.Name
+		)
+
+		// for the sake of compatibility with updated versions remove the tag from the tarred file - teku/teku-xx.x.x => teku/teku, same with jdk
+		switch {
+		case strings.Contains(header.Name, "teku-"):
+			headerName = replaceRootFolderName(header.Name, "teku")
+
+		case strings.Contains(header.Name, "jdk-"):
+			headerName = replaceRootFolderName(header.Name, "jdk")
+
+		case strings.Contains(header.Name, "besu-"):
+			headerName = replaceRootFolderName(header.Name, "besu")
+
+		case strings.Contains(header.Name, "nimbus-eth2"):
+			headerName = replaceRootFolderName(header.Name, "nimbus2")
+
+		case strings.Contains(header.Name, "erigon"):
+			headerName = replaceRootFolderName(header.Name, "erigon")
+		}
+
+		path = filepath.Join(dest, headerName)
+
+		info := header.FileInfo()
+		if info.IsDir() {
+			err = os.MkdirAll(path, info.Mode())
+			if err != nil {
+				return err
+			}
+
+			continue
+		}
+
+		dir := filepath.Dir(path)
+		err = os.MkdirAll(dir, info.Mode())
+		if err != nil {
+			return err
+		}
+
+		file, err := os.OpenFile(path, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, info.Mode())
+		if err != nil {
+			return err
+		}
+		defer file.Close()
+		_, err = io.Copy(file, t)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 func (i *installer) InstallZip(url, dest string) (err error) {
-	return
+	var (
+		b   []byte
+		buf *bytes.Reader
+		r   *zip.Reader
+	)
+
+	b, err = i.Fetch(url)
+	if err != nil {
+		return
+	}
+
+	buf = bytes.NewReader(b)
+	r, err = zip.NewReader(buf, int64(buf.Len()))
+	if err != nil {
+		return
+	}
+
+	for _, header := range r.File {
+		path := filepath.Join(dest, header.Name)
+
+		info := header.FileInfo()
+		if info.IsDir() {
+			err = os.MkdirAll(path, info.Mode())
+			if err != nil {
+				return err
+			}
+
+			continue
+		}
+
+		dir := filepath.Dir(path)
+		err = os.MkdirAll(dir, info.Mode())
+		if err != nil {
+			return err
+		}
+
+		file, err := os.OpenFile(path, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, info.Mode())
+		if err != nil {
+			return err
+		}
+
+		defer file.Close()
+
+		readFile, err := header.Open()
+		if err != nil {
+			return err
+		}
+
+		_, err = io.Copy(file, readFile)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func replaceRootFolderName(folder, targetRootName string) (path string) {
+	splitHeader := strings.Split(folder, "/") // this assumes no / at the beginning of folder - not the case in tarred files we are interested in
+
+	switch len(splitHeader) {
+	case 0:
+		return
+	case 1:
+		return targetRootName
+	default:
+		break
+	}
+
+	strippedHeader := splitHeader[1:]
+	splitResolvedPath := append([]string{targetRootName}, strippedHeader...)
+
+	return strings.Join(splitResolvedPath, "/")
 }

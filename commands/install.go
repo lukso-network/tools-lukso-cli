@@ -33,8 +33,8 @@ func (c *commander) Install(ctx *cli.Context) (err error) {
 	}
 
 	var (
-		selectedConsensus   clients.ClientBinaryDependency
-		selectedExecution   clients.ClientBinaryDependency
+		selectedConsensus   clients.Client
+		selectedExecution   clients.Client
 		consensusInput      string
 		executionInput      string
 		consensusTag        string

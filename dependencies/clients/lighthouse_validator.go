@@ -63,7 +63,7 @@ func (l *LighthouseValidatorClient) Start(ctx *cli.Context, args []string) (err 
 		return utils.Exit(fmt.Sprintf("%v- %s", errors.ErrFlagMissing, flags.LogFolderFlag), 1)
 	}
 
-	fullPath, err = utils.PrepareTimestampedFile(logFolder, l.CommandName())
+	fullPath, err = utils.TimestampedFile(logFolder, l.CommandName())
 	if err != nil {
 		return
 	}

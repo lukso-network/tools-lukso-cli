@@ -40,7 +40,7 @@ func NewErigonClient() *ErigonClient {
 
 var Erigon = NewErigonClient()
 
-var _ ClientBinaryDependency = &ErigonClient{}
+var _ Client = &ErigonClient{}
 
 func (e *ErigonClient) Start(ctx *cli.Context, arguments []string) (err error) {
 	if e.IsRunning() {
@@ -73,7 +73,7 @@ func (e *ErigonClient) Start(ctx *cli.Context, arguments []string) (err error) {
 		return utils.Exit(fmt.Sprintf("%v- %s", errors.ErrFlagMissing, flags.LogFolderFlag), 1)
 	}
 
-	fullPath, err = utils.PrepareTimestampedFile(logFolder, e.CommandName())
+	fullPath, err = utils.TimestampedFile(logFolder, e.CommandName())
 	if err != nil {
 		return
 	}

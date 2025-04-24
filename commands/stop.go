@@ -74,7 +74,7 @@ func (c *commander) Stop(ctx *cli.Context) (err error) {
 	return nil
 }
 
-func stopClient(client clients.ClientBinaryDependency) error {
+func stopClient(client clients.Client) error {
 	err := client.Stop()
 	if err != nil {
 		return err

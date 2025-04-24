@@ -28,7 +28,7 @@ func NewPrysmClient() *PrysmClient {
 
 var Prysm = NewPrysmClient()
 
-var _ ClientBinaryDependency = &PrysmClient{}
+var _ Client = &PrysmClient{}
 
 func (p *PrysmClient) PrepareStartFlags(ctx *cli.Context) (startFlags []string, err error) {
 	genesisExists := utils.FlagFileExists(ctx, flags.GenesisStateFlag)

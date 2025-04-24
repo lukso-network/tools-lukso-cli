@@ -73,7 +73,7 @@ func (t *TekuValidatorClient) Start(ctx *cli.Context, arguments []string) (err e
 		return utils.Exit(fmt.Sprintf("%v- %s", errors.ErrFlagMissing, flags.LogFolderFlag), 1)
 	}
 
-	fullPath, err = utils.PrepareTimestampedFile(logFolder, t.CommandName())
+	fullPath, err = utils.TimestampedFile(logFolder, t.CommandName())
 	if err != nil {
 		return
 	}
