@@ -27,7 +27,7 @@ func (c *commander) Init(ctx *cli.Context) error {
 		c.log.Warn(fmt.Sprintf("Unable to initialize directory: %v", err))
 
 		if errors.Is(err, apierrors.ErrCfgExists) {
-			c.log.Warn("To reinitialize directory, rerun the 'lukso init' command with '--reinit' flag")
+			c.log.Warn("To reinitialize directory, run 'lukso init --re-init'")
 
 			return nil
 		}
@@ -35,7 +35,7 @@ func (c *commander) Init(ctx *cli.Context) error {
 
 	displayNetworksHardforkTimestamps()
 
-	c.log.Info("✅  Working directory initialized! \n1. ⚙️  Use 'lukso install' to install clients. \n2. ▶️  Use 'lukso start' to start your node.")
+	c.log.Info("Working directory initialized! \n1. Use 'lukso install' to install clients. \n2. Use 'lukso start' to start your node.")
 
 	return nil
 }

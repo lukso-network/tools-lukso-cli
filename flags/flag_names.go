@@ -80,6 +80,6 @@ const (
 	ConsensusClientPort = "consensus-client-port"
 	ValidatorClientPort = "validator-client-port"
 
-	ReinitFlag = "reinit"
+	ReinitFlag = "re-init"
 	IpFlag     = "ip"
 )
