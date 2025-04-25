@@ -33,7 +33,8 @@ func (c *commander) Init(ctx *cli.Context) error {
 		}
 	}
 
-	displayNetworksHardforkTimestamps()
+	// TODO: After Update is connected to the commander, we can log the hardforks using its logger.
+	// displayNetworksHardforkTimestamps()
 
 	c.log.Info("Working directory initialized! \n1. Use 'lukso install' to install clients. \n2. Use 'lukso start' to start your node.")
 

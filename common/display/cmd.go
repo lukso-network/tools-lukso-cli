@@ -44,7 +44,7 @@ func (d *cmdDisplay) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		// In some cases, we want to execute a Cmd that is sent on the channel
 	case tea.Cmd:
-		return d, tea.Batch(msg, d.listenForMsg())
+		return d, msg
 	}
 
 	return d, d.listenForMsg()
