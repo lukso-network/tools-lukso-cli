@@ -14,6 +14,9 @@ import (
 
 	"github.com/lukso-network/tools-lukso-cli/common"
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
+	"github.com/lukso-network/tools-lukso-cli/common/file"
+	"github.com/lukso-network/tools-lukso-cli/common/installer"
+	"github.com/lukso-network/tools-lukso-cli/common/logger"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
 	"github.com/lukso-network/tools-lukso-cli/flags"
 	"github.com/lukso-network/tools-lukso-cli/pid"
@@ -27,18 +30,28 @@ type ErigonClient struct {
 	*clientBinary
 }
 
-func NewErigonClient() *ErigonClient {
+func NewErigonClient(
+	log logger.Logger,
+	file file.Manager,
+	installer installer.Installer,
+	pid pid.Pid,
+) *ErigonClient {
 	return &ErigonClient{
 		&clientBinary{
 			name:           erigonDependencyName,
-			commandName:    "erigon",
+			fileName:       "erigon",
 			baseUrl:        "https://github.com/erigontech/erigon/releases/download/|TAG|/erigon_|TAG|_|OS|_|ARCH|.tar.gz",
 			githubLocation: erigonGithubLocation,
+			buildInfo:      erigonBuildInfo,
+			log:            log,
+			file:           file,
+			installer:      installer,
+			pid:            pid,
 		},
 	}
 }
 
-var Erigon = NewErigonClient()
+var Erigon Client
 
 var _ Client = &ErigonClient{}
 

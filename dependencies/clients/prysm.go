@@ -7,15 +7,24 @@ import (
 	"github.com/urfave/cli/v2"
 
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
+	"github.com/lukso-network/tools-lukso-cli/common/file"
+	"github.com/lukso-network/tools-lukso-cli/common/installer"
+	"github.com/lukso-network/tools-lukso-cli/common/logger"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
 	"github.com/lukso-network/tools-lukso-cli/flags"
+	"github.com/lukso-network/tools-lukso-cli/pid"
 )
 
 type PrysmClient struct {
 	*clientBinary
 }
 
-func NewPrysmClient() *PrysmClient {
+func NewPrysmClient(
+	log logger.Logger,
+	file file.Manager,
+	installer installer.Installer,
+	pid pid.Pid,
+) *PrysmClient {
 	return &PrysmClient{
 		&clientBinary{
 			name:           prysmDependencyName,
@@ -23,11 +32,15 @@ func NewPrysmClient() *PrysmClient {
 			baseUrl:        "https://github.com/prysmaticlabs/prysm/releases/download/|TAG|/beacon-chain-|TAG|-|OS|-|ARCH|",
 			githubLocation: prysmaticLabsGithubLocation,
 			buildInfo:      prysmBuildInfo,
+			log:            log,
+			file:           file,
+			installer:      installer,
+			pid:            pid,
 		},
 	}
 }
 
-var Prysm = NewPrysmClient()
+var Prysm Client
 
 var _ Client = &PrysmClient{}
 

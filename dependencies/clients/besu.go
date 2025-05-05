@@ -14,6 +14,9 @@ import (
 
 	"github.com/lukso-network/tools-lukso-cli/common"
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
+	"github.com/lukso-network/tools-lukso-cli/common/file"
+	"github.com/lukso-network/tools-lukso-cli/common/installer"
+	"github.com/lukso-network/tools-lukso-cli/common/logger"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
 	"github.com/lukso-network/tools-lukso-cli/flags"
 	"github.com/lukso-network/tools-lukso-cli/pid"
@@ -25,7 +28,12 @@ type BesuClient struct {
 	*clientBinary
 }
 
-func NewBesuClient() *BesuClient {
+func NewBesuClient(
+	log logger.Logger,
+	file file.Manager,
+	installer installer.Installer,
+	pid pid.Pid,
+) *BesuClient {
 	return &BesuClient{
 		&clientBinary{
 			name:           besuDependencyName,
@@ -33,11 +41,15 @@ func NewBesuClient() *BesuClient {
 			baseUrl:        "https://github.com/hyperledger/besu/releases/download/|TAG|/besu-|TAG|.tar.gz",
 			githubLocation: besuGithubLocation,
 			buildInfo:      besuBuildInfo,
+			log:            log,
+			file:           file,
+			installer:      installer,
+			pid:            pid,
 		},
 	}
 }
 
-var Besu = NewBesuClient()
+var Besu Client
 
 var _ Client = &BesuClient{}
 

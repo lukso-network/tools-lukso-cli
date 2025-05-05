@@ -11,16 +11,25 @@ import (
 	"github.com/urfave/cli/v2"
 
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
+	"github.com/lukso-network/tools-lukso-cli/common/file"
+	"github.com/lukso-network/tools-lukso-cli/common/installer"
+	"github.com/lukso-network/tools-lukso-cli/common/logger"
 	"github.com/lukso-network/tools-lukso-cli/common/system"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
 	"github.com/lukso-network/tools-lukso-cli/flags"
+	"github.com/lukso-network/tools-lukso-cli/pid"
 )
 
 type PrysmValidatorClient struct {
 	*clientBinary
 }
 
-func NewPrysmValidatorClient() *PrysmValidatorClient {
+func NewPrysmValidatorClient(
+	log logger.Logger,
+	file file.Manager,
+	installer installer.Installer,
+	pid pid.Pid,
+) *PrysmValidatorClient {
 	return &PrysmValidatorClient{
 		&clientBinary{
 			name:           prysmValidatorDependencyName,
@@ -28,11 +37,15 @@ func NewPrysmValidatorClient() *PrysmValidatorClient {
 			baseUrl:        "https://github.com/prysmaticlabs/prysm/releases/download/|TAG|/validator-|TAG|-|OS|-|ARCH|",
 			githubLocation: prysmaticLabsGithubLocation,
 			buildInfo:      prysmBuildInfo,
+			log:            log,
+			file:           file,
+			installer:      installer,
+			pid:            pid,
 		},
 	}
 }
 
-var PrysmValidator = NewPrysmValidatorClient()
+var PrysmValidator ValidatorBinaryDependency
 
 var _ ValidatorBinaryDependency = &PrysmValidatorClient{}
 

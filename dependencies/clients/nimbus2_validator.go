@@ -9,6 +9,9 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 
+	"github.com/lukso-network/tools-lukso-cli/common/file"
+	"github.com/lukso-network/tools-lukso-cli/common/installer"
+	"github.com/lukso-network/tools-lukso-cli/common/logger"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
 	"github.com/lukso-network/tools-lukso-cli/flags"
 	"github.com/lukso-network/tools-lukso-cli/pid"
@@ -18,7 +21,12 @@ type Nimbus2ValidatorClient struct {
 	*clientBinary
 }
 
-func NewNimbus2ValidatorClient() *Nimbus2ValidatorClient {
+func NewNimbus2ValidatorClient(
+	log logger.Logger,
+	file file.Manager,
+	installer installer.Installer,
+	pid pid.Pid,
+) *Nimbus2ValidatorClient {
 	return &Nimbus2ValidatorClient{
 		&clientBinary{
 			name:           nimbus2ValidatorDependencyName,
@@ -26,11 +34,15 @@ func NewNimbus2ValidatorClient() *Nimbus2ValidatorClient {
 			baseUrl:        "",
 			githubLocation: nimbus2GithubLocation,
 			buildInfo:      nimbus2BuildInfo,
+			log:            log,
+			file:           file,
+			installer:      installer,
+			pid:            pid,
 		},
 	}
 }
 
-var Nimbus2Validator = NewNimbus2ValidatorClient()
+var Nimbus2Validator ValidatorBinaryDependency
 
 var _ ValidatorBinaryDependency = &Nimbus2ValidatorClient{}
 

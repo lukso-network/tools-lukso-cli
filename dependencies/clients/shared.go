@@ -518,7 +518,7 @@ func defaultConsensusPeers(ctx *cli.Context, defaultPort int) (outbound, inbound
 	return
 }
 
-func untarDir(dst string, t *tar.Reader) error {
+func (client *clientBinary) untarDir(dst, pattern string, t *tar.Reader) error {
 	for {
 		header, err := t.Next()
 		if err == io.EOF {
@@ -534,21 +534,8 @@ func untarDir(dst string, t *tar.Reader) error {
 		)
 
 		// for the sake of compatibility with updated versions remove the tag from the tarred file - teku/teku-xx.x.x => teku/teku, same with jdk
-		switch {
-		case strings.Contains(header.Name, "teku-"):
-			headerName = replaceRootFolderName(header.Name, "teku")
-
-		case strings.Contains(header.Name, "jdk-"):
-			headerName = replaceRootFolderName(header.Name, "jdk")
-
-		case strings.Contains(header.Name, "besu-"):
-			headerName = replaceRootFolderName(header.Name, "besu")
-
-		case strings.Contains(header.Name, "nimbus-eth2"):
-			headerName = replaceRootFolderName(header.Name, "nimbus2")
-
-		case strings.Contains(header.Name, "erigon"):
-			headerName = replaceRootFolderName(header.Name, "erigon")
+		if strings.Contains(header.Name, pattern) {
+			headerName = replaceRootFolderName(header.Name, client.FileName())
 		}
 
 		path = filepath.Join(dst, headerName)
@@ -656,7 +643,7 @@ func installAndExtractFromURL(url, name, dst, format string, isUpdate bool) (err
 	return
 }
 
-func unzipDir(dst string, r *zip.Reader) (err error) {
+func (client *clientBinary) unzipDir(dst string, r *zip.Reader) (err error) {
 	for _, header := range r.File {
 		path := filepath.Join(dst, header.Name)
 
@@ -790,4 +777,25 @@ func keystoreListWalk(walletDir string) (err error) {
 	}
 
 	return
+}
+
+// Setup populates clients with external dependencies: file management, logger etc.
+func Setup() {
+	// Execution
+	Geth = NewGethClient()
+	Erigon = NewErigonClient()
+	Nethermind = NewNethermindClient()
+	Besu = NewBesuClient()
+
+	// Consensus
+	Prysm = NewPrysmClient()
+	Lighthouse = NewLighthouseClient()
+	Teku = NewTekuClient()
+	Nimbus2 = NewNimbus2Client()
+
+	// Validators
+	PrysmValidator = NewPrysmValidatorClient()
+	LighthouseValidator = NewLighthouseValidatorClient()
+	TekuValidator = NewTekuValidatorClient()
+	Nimbus2Validator = NewNimbus2ValidatorClient()
 }

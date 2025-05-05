@@ -15,6 +15,9 @@ import (
 
 	"github.com/lukso-network/tools-lukso-cli/common"
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
+	"github.com/lukso-network/tools-lukso-cli/common/file"
+	"github.com/lukso-network/tools-lukso-cli/common/installer"
+	"github.com/lukso-network/tools-lukso-cli/common/logger"
 	"github.com/lukso-network/tools-lukso-cli/common/system"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
 	"github.com/lukso-network/tools-lukso-cli/flags"
@@ -29,7 +32,12 @@ type NethermindClient struct {
 	*clientBinary
 }
 
-func NewNethermindClient() *NethermindClient {
+func NewNethermindClient(
+	log logger.Logger,
+	file file.Manager,
+	installer installer.Installer,
+	pid pid.Pid,
+) *NethermindClient {
 	return &NethermindClient{
 		&clientBinary{
 			name:           nethermindDependencyName,
@@ -37,11 +45,15 @@ func NewNethermindClient() *NethermindClient {
 			baseUrl:        "https://github.com/NethermindEth/nethermind/releases/download/|TAG|/nethermind-|TAG|-|COMMIT|-|OS|-|ARCH|.zip",
 			githubLocation: nethermindGithubLocation,
 			buildInfo:      nethermindBuildInfo,
+			log:            log,
+			file:           file,
+			installer:      installer,
+			pid:            pid,
 		},
 	}
 }
 
-var Nethermind = NewNethermindClient()
+var Nethermind Client
 
 var _ Client = &NethermindClient{}
 

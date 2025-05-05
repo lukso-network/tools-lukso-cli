@@ -9,16 +9,25 @@ import (
 
 	"github.com/lukso-network/tools-lukso-cli/common"
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
+	"github.com/lukso-network/tools-lukso-cli/common/file"
+	"github.com/lukso-network/tools-lukso-cli/common/installer"
+	"github.com/lukso-network/tools-lukso-cli/common/logger"
 	"github.com/lukso-network/tools-lukso-cli/common/system"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
 	"github.com/lukso-network/tools-lukso-cli/flags"
+	"github.com/lukso-network/tools-lukso-cli/pid"
 )
 
 type GethClient struct {
 	*clientBinary
 }
 
-func NewGethClient() *GethClient {
+func NewGethClient(
+	log logger.Logger,
+	file file.Manager,
+	installer installer.Installer,
+	pid pid.Pid,
+) *GethClient {
 	return &GethClient{
 		&clientBinary{
 			name:           gethDependencyName,
@@ -26,11 +35,15 @@ func NewGethClient() *GethClient {
 			baseUrl:        "https://gethstore.blob.core.windows.net/builds/geth-|OS|-|ARCH|-|TAG|-|COMMIT|.tar.gz",
 			githubLocation: gethGithubLocation,
 			buildInfo:      gethBuildInfo,
+			log:            log,
+			file:           file,
+			installer:      installer,
+			pid:            pid,
 		},
 	}
 }
 
-var Geth = NewGethClient()
+var Geth Client
 
 var _ Client = &GethClient{}
 

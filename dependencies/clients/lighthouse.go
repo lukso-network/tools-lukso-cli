@@ -9,16 +9,25 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 
+	"github.com/lukso-network/tools-lukso-cli/common/file"
+	"github.com/lukso-network/tools-lukso-cli/common/installer"
+	"github.com/lukso-network/tools-lukso-cli/common/logger"
 	"github.com/lukso-network/tools-lukso-cli/common/system"
 	"github.com/lukso-network/tools-lukso-cli/config"
 	"github.com/lukso-network/tools-lukso-cli/flags"
+	"github.com/lukso-network/tools-lukso-cli/pid"
 )
 
 type LighthouseClient struct {
 	*clientBinary
 }
 
-func NewLighthouseClient() *LighthouseClient {
+func NewLighthouseClient(
+	log logger.Logger,
+	file file.Manager,
+	installer installer.Installer,
+	pid pid.Pid,
+) *LighthouseClient {
 	return &LighthouseClient{
 		&clientBinary{
 			name:           lighthouseDependencyName,
@@ -26,11 +35,15 @@ func NewLighthouseClient() *LighthouseClient {
 			baseUrl:        "https://github.com/sigp/lighthouse/releases/download/|TAG|/lighthouse-|TAG|-|ARCH|-|OS-NAME|-|OS|.tar.gz",
 			githubLocation: lighthouseGithubLocation,
 			buildInfo:      lighthouseBuildInfo,
+			log:            log,
+			file:           file,
+			installer:      installer,
+			pid:            pid,
 		},
 	}
 }
 
-var Lighthouse = NewLighthouseClient()
+var Lighthouse Client
 
 var _ Client = &LighthouseClient{}
 

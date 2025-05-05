@@ -15,6 +15,9 @@ import (
 
 	"github.com/lukso-network/tools-lukso-cli/common"
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
+	"github.com/lukso-network/tools-lukso-cli/common/file"
+	"github.com/lukso-network/tools-lukso-cli/common/installer"
+	"github.com/lukso-network/tools-lukso-cli/common/logger"
 	"github.com/lukso-network/tools-lukso-cli/common/system"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
 	"github.com/lukso-network/tools-lukso-cli/flags"
@@ -32,7 +35,12 @@ type TekuClient struct {
 	*clientBinary
 }
 
-func NewTekuClient() *TekuClient {
+func NewTekuClient(
+	log logger.Logger,
+	file file.Manager,
+	installer installer.Installer,
+	pid pid.Pid,
+) *TekuClient {
 	return &TekuClient{
 		&clientBinary{
 			name:           tekuDependencyName,
@@ -40,11 +48,15 @@ func NewTekuClient() *TekuClient {
 			baseUrl:        tekuInstallURL,
 			githubLocation: tekuGithubLocation,
 			buildInfo:      tekuBuildInfo,
+			log:            log,
+			file:           file,
+			installer:      installer,
+			pid:            pid,
 		},
 	}
 }
 
-var Teku = NewTekuClient()
+var Teku Client
 
 var _ Client = &TekuClient{}
 

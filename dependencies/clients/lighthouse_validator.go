@@ -10,6 +10,9 @@ import (
 	"github.com/urfave/cli/v2"
 
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
+	"github.com/lukso-network/tools-lukso-cli/common/file"
+	"github.com/lukso-network/tools-lukso-cli/common/installer"
+	"github.com/lukso-network/tools-lukso-cli/common/logger"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
 	"github.com/lukso-network/tools-lukso-cli/config"
 	"github.com/lukso-network/tools-lukso-cli/flags"
@@ -20,7 +23,12 @@ type LighthouseValidatorClient struct {
 	*clientBinary
 }
 
-func NewLighthouseValidatorClient() *LighthouseValidatorClient {
+func NewLighthouseValidatorClient(
+	log logger.Logger,
+	file file.Manager,
+	installer installer.Installer,
+	pid pid.Pid,
+) *LighthouseValidatorClient {
 	return &LighthouseValidatorClient{
 		&clientBinary{
 			name:           lighthouseValidatorDependencyName,
@@ -28,11 +36,15 @@ func NewLighthouseValidatorClient() *LighthouseValidatorClient {
 			baseUrl:        "",             // no separate client for lighthouse validator - lighthouse_beacon for reference
 			githubLocation: "",
 			buildInfo:      lighthouseBuildInfo,
+			log:            log,
+			file:           file,
+			installer:      installer,
+			pid:            pid,
 		},
 	}
 }
 
-var LighthouseValidator = NewLighthouseValidatorClient()
+var LighthouseValidator ValidatorBinaryDependency
 
 var _ ValidatorBinaryDependency = &LighthouseValidatorClient{}
 

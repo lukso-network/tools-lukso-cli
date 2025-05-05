@@ -13,6 +13,9 @@ import (
 	"github.com/urfave/cli/v2"
 
 	"github.com/lukso-network/tools-lukso-cli/common"
+	"github.com/lukso-network/tools-lukso-cli/common/file"
+	"github.com/lukso-network/tools-lukso-cli/common/installer"
+	"github.com/lukso-network/tools-lukso-cli/common/logger"
 	"github.com/lukso-network/tools-lukso-cli/common/system"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
 	"github.com/lukso-network/tools-lukso-cli/flags"
@@ -25,7 +28,12 @@ type Nimbus2Client struct {
 	*clientBinary
 }
 
-func NewNimbus2Client() *Nimbus2Client {
+func NewNimbus2Client(
+	log logger.Logger,
+	file file.Manager,
+	installer installer.Installer,
+	pid pid.Pid,
+) *Nimbus2Client {
 	return &Nimbus2Client{
 		&clientBinary{
 			name:           nimbus2DependencyName,
@@ -33,11 +41,15 @@ func NewNimbus2Client() *Nimbus2Client {
 			baseUrl:        "https://github.com/status-im/nimbus-eth2/releases/download/v|TAG|/nimbus-eth2_|OS|_|ARCH|_|TAG|_|COMMIT|.tar.gz",
 			githubLocation: nimbus2GithubLocation,
 			buildInfo:      nimbus2BuildInfo,
+			log:            log,
+			file:           file,
+			installer:      installer,
+			pid:            pid,
 		},
 	}
 }
 
-var Nimbus2 = NewNimbus2Client()
+var Nimbus2 Client
 
 var _ Client = &Nimbus2Client{}
 

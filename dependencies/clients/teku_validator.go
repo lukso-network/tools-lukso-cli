@@ -15,6 +15,9 @@ import (
 	"golang.org/x/term"
 
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
+	"github.com/lukso-network/tools-lukso-cli/common/file"
+	"github.com/lukso-network/tools-lukso-cli/common/installer"
+	"github.com/lukso-network/tools-lukso-cli/common/logger"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
 	"github.com/lukso-network/tools-lukso-cli/flags"
 	"github.com/lukso-network/tools-lukso-cli/pid"
@@ -24,7 +27,12 @@ type TekuValidatorClient struct {
 	*clientBinary
 }
 
-func NewTekuValidatorClient() *TekuValidatorClient {
+func NewTekuValidatorClient(
+	log logger.Logger,
+	file file.Manager,
+	installer installer.Installer,
+	pid pid.Pid,
+) *TekuValidatorClient {
 	return &TekuValidatorClient{
 		&clientBinary{
 			name:           tekuValidatorDependencyName,
@@ -32,11 +40,15 @@ func NewTekuValidatorClient() *TekuValidatorClient {
 			baseUrl:        "",
 			githubLocation: tekuGithubLocation,
 			buildInfo:      tekuBuildInfo,
+			log:            log,
+			file:           file,
+			installer:      installer,
+			pid:            pid,
 		},
 	}
 }
 
-var TekuValidator = NewTekuValidatorClient()
+var TekuValidator ValidatorBinaryDependency
 
 var _ ValidatorBinaryDependency = &TekuValidatorClient{}
 
