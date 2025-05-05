@@ -118,10 +118,9 @@ var (
 type clientBinary struct {
 	name           string
 	fileName       string
-	dirName        string
 	baseUrl        string
 	githubLocation string // user + repo, f.e. prysmaticlabs/prysm
-	version        string
+	buildInfo      buildInfo
 
 	log       logger.Logger
 	file      file.Manager
@@ -129,7 +128,7 @@ type clientBinary struct {
 	pid       pid.Pid
 }
 
-func (client *clientBinary) Start(arguments []string, logDir string) (err error) {
+func (client *clientBinary) Start(ctx *cli.Context, arguments []string) (err error) {
 	if client.IsRunning() {
 		log.Infof("🔄️  %s is already running - stopping first...", client.Name())
 
@@ -143,7 +142,7 @@ func (client *clientBinary) Start(arguments []string, logDir string) (err error)
 
 	command := exec.Command(client.FilePath(), arguments...)
 
-	err = client.prepareLogFile(logDir, command)
+	err = client.logFile(ctx.String(flags.LogFolderFlag), command)
 	if err != nil {
 		return
 	}
@@ -223,17 +222,18 @@ func (client *clientBinary) IsRunning() bool {
 func (client *clientBinary) ParseUrl(tag, commitHash string) (url string) {
 	url = client.baseUrl
 
-	url = strings.ReplaceAll(url, "|TAG|", tag)
-	url = strings.ReplaceAll(url, "|OS|", system.Os)
-	url = strings.ReplaceAll(url, "|COMMIT|", commitHash)
-	url = strings.ReplaceAll(url, "|ARCH|", system.Arch)
+	url = strings.ReplaceAll(url, "|TAG|", client.tag())
+	url = strings.ReplaceAll(url, "|OS|", client.os())
+	url = strings.ReplaceAll(url, "|COMMIT|", client.commit())
+	url = strings.ReplaceAll(url, "|ARCH|", client.arch())
 
 	return
 }
 
-func (client *clientBinary) ParseUserFlags(userFlags []string) (startFlags []string) {
+func (client *clientBinary) ParseUserFlags(ctx *cli.Context) (startFlags []string) {
 	name := client.FileName()
-	argsLen := len(userFlags)
+	args := ctx.Args()
+	argsLen := args.Len()
 	flagsToSkip := []string{
 		flags.ValidatorFlag,
 		flags.GethConfigFileFlag,
@@ -250,7 +250,7 @@ func (client *clientBinary) ParseUserFlags(userFlags []string) (startFlags []str
 
 	for i := 0; i < argsLen; i++ {
 		skip := false
-		arg := userFlags[i]
+		arg := args.Get(i)
 
 		for _, flagToSkip := range flagsToSkip {
 			if arg == fmt.Sprintf("--%s", flagToSkip) {
@@ -269,7 +269,7 @@ func (client *clientBinary) ParseUserFlags(userFlags []string) (startFlags []str
 			}
 
 			// we found a flag for our client - now we need to check if it's a value or bool flag
-			nextArg := userFlags[i+1]
+			nextArg := args.Get(i + 1)
 			if strings.HasPrefix(nextArg, "--") { // we found a next flag, so current one is a bool
 				startFlags = append(startFlags, removePrefix(arg, name))
 
@@ -292,15 +292,15 @@ func (client *clientBinary) FileName() string {
 }
 
 func (client *clientBinary) FileDir() string {
-	return file.ClientsDir
-}
-
-func (client *clientBinary) FilePath() string {
 	return file.ClientsDir + "/" + client.FileName()
 }
 
+func (client *clientBinary) FilePath() string {
+	return client.FileDir() + client.FileName()
+}
+
 func (client *clientBinary) Version() (v string) {
-	return client.getVersion()
+	return client.tag()
 }
 
 // Since most clients don't need to init and it's more of a side effect, we Init nothing by default.
@@ -308,8 +308,20 @@ func (client *clientBinary) Init() error {
 	return nil
 }
 
-func (client *clientBinary) getVersion() string {
+func (client *clientBinary) tag() string {
 	return ClientVersions[client.Name()]
+}
+
+func (client *clientBinary) commit() string {
+	return ""
+}
+
+func (client *clientBinary) os() string {
+	return ""
+}
+
+func (client *clientBinary) arch() string {
+	return ""
 }
 
 func initClient(ctx *cli.Context, client Client) (err error) {
@@ -697,7 +709,7 @@ func isJdkInstalled() bool {
 	return err == nil
 }
 
-func (client *clientBinary) prepareLogFile(dir string, command *exec.Cmd) (err error) {
+func (client *clientBinary) logFile(dir string, command *exec.Cmd) (err error) {
 	var (
 		logFile  *os.File
 		fullPath string
@@ -778,8 +790,4 @@ func keystoreListWalk(walletDir string) (err error) {
 	}
 
 	return
-}
-
-func notImplemented(cmd string) error {
-	return utils.Exit(fmt.Sprintf("%v not implemented for a generic client: please mark this issue to the LUKSO team."), 1)
 }

@@ -29,9 +29,10 @@ func NewBesuClient() *BesuClient {
 	return &BesuClient{
 		&clientBinary{
 			name:           besuDependencyName,
-			commandName:    "besu",
+			fileName:       "besu",
 			baseUrl:        "https://github.com/hyperledger/besu/releases/download/|TAG|/besu-|TAG|.tar.gz",
 			githubLocation: besuGithubLocation,
+			buildInfo:      besuBuildInfo,
 		},
 	}
 }
@@ -97,7 +98,7 @@ func (b *BesuClient) Install(url string, isUpdate bool) (err error) {
 }
 
 func (b *BesuClient) Update() (err error) {
-	tag := b.getVersion()
+	tag := b.tag()
 
 	log.WithField("dependencyTag", tag).Infof("⬇️  Updating %s", b.name)
 
@@ -134,7 +135,7 @@ func (b *BesuClient) Start(ctx *cli.Context, arguments []string) (err error) {
 		return utils.Exit(fmt.Sprintf("%v- %s", errors.ErrFlagMissing, flags.LogFolderFlag), 1)
 	}
 
-	fullPath, err = utils.TimestampedFile(logFolder, b.CommandName())
+	fullPath, err = utils.TimestampedFile(logFolder, b.FileName())
 	if err != nil {
 		return
 	}
@@ -158,7 +159,7 @@ func (b *BesuClient) Start(ctx *cli.Context, arguments []string) (err error) {
 		return
 	}
 
-	pidLocation := fmt.Sprintf("%s/%s.pid", pid.FileDir, b.CommandName())
+	pidLocation := fmt.Sprintf("%s/%s.pid", pid.FileDir, b.FileName())
 	err = pid.Create(pidLocation, command.Process.Pid)
 
 	time.Sleep(1 * time.Second)

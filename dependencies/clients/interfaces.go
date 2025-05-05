@@ -10,7 +10,7 @@ type Client interface {
 	Update() error
 
 	// Start starts the client with given flags
-	Start(arguments []string, logDir string) error
+	Start(ctx *cli.Context, arguments []string) error
 
 	// Stop stops the client
 	Stop() error
@@ -59,9 +59,9 @@ type Client interface {
 
 	// Each client should be able to identify what release it should install, based on the build envs.
 	tag() string
+	commit() string
 	os() string
 	arch() string
-	commit() string
 }
 
 type ValidatorBinaryDependency interface {
