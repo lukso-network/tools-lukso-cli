@@ -2,10 +2,8 @@ package clients
 
 import (
 	"fmt"
-	"io/fs"
 	"os"
 	"os/exec"
-	"path/filepath"
 	"strings"
 	"time"
 
@@ -86,7 +84,7 @@ func (e *ErigonClient) Start(ctx *cli.Context, arguments []string) (err error) {
 		return utils.Exit(fmt.Sprintf("%v- %s", errors.ErrFlagMissing, flags.LogFolderFlag), 1)
 	}
 
-	fullPath, err = utils.TimestampedFile(logFolder, e.CommandName())
+	fullPath, err = utils.TimestampedFile(logFolder, e.FileName())
 	if err != nil {
 		return
 	}
@@ -110,7 +108,7 @@ func (e *ErigonClient) Start(ctx *cli.Context, arguments []string) (err error) {
 		return
 	}
 
-	pidLocation := fmt.Sprintf("%s/%s.pid", pid.FileDir, e.CommandName())
+	pidLocation := fmt.Sprintf("%s/%s.pid", pid.FileDir, e.FileName())
 	err = pid.Create(pidLocation, command.Process.Pid)
 
 	time.Sleep(1 * time.Second)
@@ -120,42 +118,18 @@ func (e *ErigonClient) Start(ctx *cli.Context, arguments []string) (err error) {
 	return
 }
 
-func (e *ErigonClient) Install(url string, isUpdate bool) (err error) {
-	if utils.FileExists(e.FilePath()) && !isUpdate {
-		message := fmt.Sprintf("You already have the %s client installed, do you want to override your installation? [Y/n]: ", e.Name())
-		input := utils.RegisterInputWithMessage(message)
-		if !strings.EqualFold(input, "y") && input != "" {
-			log.Info("⏭️  Skipping installation...")
+func (e *ErigonClient) Install(version string, isUpdate bool) (err error) {
+	url := e.ParseUrl(version, e.commit())
 
-			return nil
-		}
-	}
-
-	err = installAndExtractFromURL(url, e.name, common.ClientDepsFolder, tarFormat, isUpdate)
-	if err != nil {
-		return
-	}
-
-	permFunc := func(path string, d fs.DirEntry, err error) error {
-		return os.Chmod(path, fs.ModePerm)
-	}
-
-	err = filepath.WalkDir(e.FilePath(), permFunc)
-	if err != nil {
-		return
-	}
-
-	return
+	return e.installer.InstallTar(url, e.FileDir())
 }
 
 func (e *ErigonClient) Update() (err error) {
-	tag := e.getVersion()
+	tag := e.tag()
 
 	log.WithField("dependencyTag", tag).Infof("⬇️  Updating %s", e.name)
 
-	url := e.ParseUrl(tag, "")
-
-	return e.Install(url, true)
+	return e.Install(tag, true)
 }
 
 func (e *ErigonClient) PrepareStartFlags(ctx *cli.Context) (startFlags []string, err error) {
@@ -181,7 +155,7 @@ func (e *ErigonClient) Peers(ctx *cli.Context) (outbound, inbound int, err error
 
 func (e *ErigonClient) Version() (version string) {
 	cmdVer := execVersionCmd(
-		fmt.Sprintf("./%s/%s", e.FilePath(), e.CommandName()),
+		e.FilePath(),
 	)
 
 	if cmdVer == VersionNotAvailable {

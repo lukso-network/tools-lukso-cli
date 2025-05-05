@@ -1,10 +1,7 @@
 package clients
 
 import (
-	"archive/tar"
-	"archive/zip"
 	"bytes"
-	"compress/gzip"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -60,8 +57,6 @@ const (
 	// distinct between zip and tar archives
 	zipFormat = "zip"
 	tarFormat = "tar"
-
-	jdkFolder = file.ClientsDir + "/jdk"
 
 	VersionNotAvailable = "Not available"
 )
@@ -518,172 +513,6 @@ func defaultConsensusPeers(ctx *cli.Context, defaultPort int) (outbound, inbound
 	return
 }
 
-func (client *clientBinary) untarDir(dst, pattern string, t *tar.Reader) error {
-	for {
-		header, err := t.Next()
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			return err
-		}
-
-		var (
-			path       string
-			headerName = header.Name
-		)
-
-		// for the sake of compatibility with updated versions remove the tag from the tarred file - teku/teku-xx.x.x => teku/teku, same with jdk
-		if strings.Contains(header.Name, pattern) {
-			headerName = replaceRootFolderName(header.Name, client.FileName())
-		}
-
-		path = filepath.Join(dst, headerName)
-
-		info := header.FileInfo()
-		if info.IsDir() {
-			err = os.MkdirAll(path, info.Mode())
-			if err != nil {
-				return err
-			}
-
-			continue
-		}
-
-		dir := filepath.Dir(path)
-		err = os.MkdirAll(dir, info.Mode())
-		if err != nil {
-			return err
-		}
-
-		file, err := os.OpenFile(path, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, info.Mode())
-		if err != nil {
-			return err
-		}
-		defer file.Close()
-		_, err = io.Copy(file, t)
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
-func installAndExtractFromURL(url, name, dst, format string, isUpdate bool) (err error) {
-	response, err := http.Get(url)
-	if nil != err {
-		return
-	}
-
-	defer func() {
-		_ = response.Body.Close()
-	}()
-
-	if response.StatusCode == http.StatusNotFound {
-		log.Warnf("⚠️  File under URL %s not found - skipping...", url)
-
-		return nil
-	}
-
-	if http.StatusOK != response.StatusCode {
-		return fmt.Errorf(
-			"❌  Invalid response when downloading file at URL: %s. Response code: %s",
-			url,
-			response.Status,
-		)
-	}
-
-	switch format {
-	case tarFormat:
-		var g *gzip.Reader
-		g, err = gzip.NewReader(response.Body)
-		if err != nil {
-			return
-		}
-
-		defer func() {
-			_ = g.Close()
-		}()
-
-		tarReader := tar.NewReader(g)
-
-		err = untarDir(dst, tarReader)
-		if err != nil {
-			return
-		}
-
-	case zipFormat:
-		b, err := io.ReadAll(response.Body)
-		if err != nil {
-			return err
-		}
-
-		buf := bytes.NewReader(b)
-		var r *zip.Reader
-
-		r, err = zip.NewReader(buf, int64(buf.Len()))
-		if err != nil {
-			return err
-		}
-
-		err = unzipDir(dst, r)
-		if err != nil {
-			return err
-		}
-	}
-
-	switch isUpdate {
-	case true:
-		log.Infof("✅  %s updated!\n\n", name)
-	case false:
-		log.Infof("✅  %s downloaded!\n\n", name)
-	}
-
-	return
-}
-
-func (client *clientBinary) unzipDir(dst string, r *zip.Reader) (err error) {
-	for _, header := range r.File {
-		path := filepath.Join(dst, header.Name)
-
-		info := header.FileInfo()
-		if info.IsDir() {
-			err = os.MkdirAll(path, info.Mode())
-			if err != nil {
-				return err
-			}
-
-			continue
-		}
-
-		dir := filepath.Dir(path)
-		err = os.MkdirAll(dir, info.Mode())
-		if err != nil {
-			return err
-		}
-
-		file, err := os.OpenFile(path, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, info.Mode())
-		if err != nil {
-			return err
-		}
-
-		defer file.Close()
-
-		readFile, err := header.Open()
-		if err != nil {
-			return err
-		}
-
-		_, err = io.Copy(file, readFile)
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
 func isJdkInstalled() bool {
 	// JDK installed outside of the CLI
 	_, isInstalled := os.LookupEnv(system.JavaHomeEnv)
@@ -780,22 +609,27 @@ func keystoreListWalk(walletDir string) (err error) {
 }
 
 // Setup populates clients with external dependencies: file management, logger etc.
-func Setup() {
+func Setup(
+	log logger.Logger,
+	file file.Manager,
+	installer installer.Installer,
+	pid pid.Pid,
+) {
 	// Execution
-	Geth = NewGethClient()
-	Erigon = NewErigonClient()
-	Nethermind = NewNethermindClient()
-	Besu = NewBesuClient()
+	Geth = NewGethClient(log, file, installer, pid)
+	Erigon = NewErigonClient(log, file, installer, pid)
+	Nethermind = NewNethermindClient(log, file, installer, pid)
+	Besu = NewBesuClient(log, file, installer, pid)
 
 	// Consensus
-	Prysm = NewPrysmClient()
-	Lighthouse = NewLighthouseClient()
-	Teku = NewTekuClient()
-	Nimbus2 = NewNimbus2Client()
+	Prysm = NewPrysmClient(log, file, installer, pid)
+	Lighthouse = NewLighthouseClient(log, file, installer, pid)
+	Teku = NewTekuClient(log, file, installer, pid)
+	Nimbus2 = NewNimbus2Client(log, file, installer, pid)
 
 	// Validators
-	PrysmValidator = NewPrysmValidatorClient()
-	LighthouseValidator = NewLighthouseValidatorClient()
-	TekuValidator = NewTekuValidatorClient()
-	Nimbus2Validator = NewNimbus2ValidatorClient()
+	PrysmValidator = NewPrysmValidatorClient(log, file, installer, pid)
+	LighthouseValidator = NewLighthouseValidatorClient(log, file, installer, pid)
+	TekuValidator = NewTekuValidatorClient(log, file, installer, pid)
+	Nimbus2Validator = NewNimbus2ValidatorClient(log, file, installer, pid)
 }

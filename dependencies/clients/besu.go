@@ -2,10 +2,8 @@ package clients
 
 import (
 	"fmt"
-	"io/fs"
 	"os"
 	"os/exec"
-	"path/filepath"
 	"strings"
 	"time"
 
@@ -53,60 +51,10 @@ var Besu Client
 
 var _ Client = &BesuClient{}
 
-func (b *BesuClient) PrepareStartFlags(ctx *cli.Context) (startFlags []string, err error) {
-	startFlags = b.ParseUserFlags(ctx)
+func (b *BesuClient) Install(version string, isUpdate bool) (err error) {
+	url := b.ParseUrl(version, b.commit())
 
-	startFlags = append(startFlags, fmt.Sprintf("--config-file=%s", ctx.String(flags.BesuConfigFileFlag)))
-
-	return
-}
-
-func (b *BesuClient) Install(url string, isUpdate bool) (err error) {
-	if utils.FileExists(b.FilePath()) && !isUpdate {
-		message := fmt.Sprintf("You already have the %s client installed, do you want to override your installation? [Y/n]: ", b.Name())
-		input := utils.RegisterInputWithMessage(message)
-		if !strings.EqualFold(input, "y") && input != "" {
-			log.Info("⏭️  Skipping installation...")
-
-			return nil
-		}
-	}
-
-	err = installAndExtractFromURL(url, b.name, common.ClientDepsFolder, tarFormat, isUpdate)
-	if err != nil {
-		return
-	}
-
-	permFunc := func(path string, d fs.DirEntry, err error) error {
-		return os.Chmod(path, fs.ModePerm)
-	}
-
-	err = filepath.WalkDir(b.FilePath(), permFunc)
-	if err != nil {
-		return
-	}
-
-	isInstalled := isJdkInstalled()
-	if !isInstalled {
-		message := "Besu is written in Java. This means that to use it you need to have:\n" +
-			"- JDK installed on your computer\n" +
-			"- JAVA_HOME environment variable set\n" +
-			"Do you want to install and set up JDK along with Besu? [Y/n]\n>"
-
-		input := utils.RegisterInputWithMessage(message)
-		if !strings.EqualFold(input, "y") && input != "" {
-			log.Info("⏭️  Skipping installation...")
-
-			return
-		}
-
-		err = setupJava(isUpdate)
-		if err != nil {
-			return
-		}
-	}
-
-	return
+	return b.installer.InstallTar(url, b.FileDir())
 }
 
 func (b *BesuClient) Update() (err error) {
@@ -114,9 +62,15 @@ func (b *BesuClient) Update() (err error) {
 
 	log.WithField("dependencyTag", tag).Infof("⬇️  Updating %s", b.name)
 
-	url := b.ParseUrl(tag, "")
+	return b.Install(tag, true)
+}
 
-	return b.Install(url, true)
+func (b *BesuClient) PrepareStartFlags(ctx *cli.Context) (startFlags []string, err error) {
+	startFlags = b.ParseUserFlags(ctx)
+
+	startFlags = append(startFlags, fmt.Sprintf("--config-file=%s", ctx.String(flags.BesuConfigFileFlag)))
+
+	return
 }
 
 func (b *BesuClient) FilePath() string {

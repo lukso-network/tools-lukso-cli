@@ -2,6 +2,27 @@ package clients
 
 import "github.com/urfave/cli/v2"
 
+// There are a few types of dependencies that we have as a
+
+type Installer interface {
+	Install(version string, isUpdate bool) error
+	Update() error
+}
+
+type FileIdentifier interface {
+	FileName() string
+	FileDir() string
+	FilePath() string
+}
+
+type UrlBuilder interface {
+	ParseUrl(tag, commitHash string) string
+	tag() string
+	commit() string
+	os() string
+	arch() string
+}
+
 type Client interface {
 	// Install installs the client with given version
 	Install(version string, isUpdate bool) error

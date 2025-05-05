@@ -47,13 +47,18 @@ var Lighthouse Client
 
 var _ Client = &LighthouseClient{}
 
+func (l *LighthouseClient) Install(version string, isUpdate bool) error {
+	url := l.ParseUrl(version, l.commit())
+
+	return l.installer.InstallFile(url, l.FilePath())
+}
+
 func (l *LighthouseClient) Update() (err error) {
-	tag := ClientVersions[l.Name()]
+	tag := l.tag()
+
 	log.WithField("dependencyTag", tag).Infof("⬇️  Updating %s", l.name)
 
-	url := l.ParseUrl(tag, "")
-
-	return l.Install(url, true)
+	return l.Install(tag, true)
 }
 
 func (l *LighthouseClient) ParseUrl(tag, commitHash string) (url string) {
@@ -147,7 +152,7 @@ func (l *LighthouseClient) Peers(ctx *cli.Context) (outbound, inbound int, err e
 
 func (l *LighthouseClient) Version() (version string) {
 	cmdVer := execVersionCmd(
-		l.CommandName(),
+		l.FilePath(),
 	)
 
 	if cmdVer == VersionNotAvailable {

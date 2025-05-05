@@ -2,10 +2,8 @@ package clients
 
 import (
 	"fmt"
-	"io/fs"
 	"os"
 	"os/exec"
-	"path/filepath"
 	"strings"
 	"time"
 
@@ -17,7 +15,6 @@ import (
 	"github.com/lukso-network/tools-lukso-cli/common/installer"
 	"github.com/lukso-network/tools-lukso-cli/common/logger"
 	"github.com/lukso-network/tools-lukso-cli/common/system"
-	"github.com/lukso-network/tools-lukso-cli/common/utils"
 	"github.com/lukso-network/tools-lukso-cli/flags"
 	"github.com/lukso-network/tools-lukso-cli/pid"
 )
@@ -52,6 +49,20 @@ func NewNimbus2Client(
 var Nimbus2 Client
 
 var _ Client = &Nimbus2Client{}
+
+func (n *Nimbus2Client) Install(version string, isUpdate bool) (err error) {
+	url := n.ParseUrl(version, n.commit())
+
+	return n.installer.InstallTar(url, n.FileDir())
+}
+
+func (n *Nimbus2Client) Update() (err error) {
+	tag := n.tag()
+
+	log.WithField("dependencyTag", tag).Infof("⬇️  Updating %s", n.name)
+
+	return n.Install(tag, true)
+}
 
 func (n *Nimbus2Client) PrepareStartFlags(ctx *cli.Context) (startFlags []string, err error) {
 	startFlags = n.ParseUserFlags(ctx)
@@ -94,44 +105,6 @@ func (n *Nimbus2Client) ParseUrl(tag, commitHash string) (url string) {
 	url = strings.ReplaceAll(url, "|ARCH|", arch)
 
 	return
-}
-
-func (n *Nimbus2Client) Install(url string, isUpdate bool) (err error) {
-	if utils.FileExists(n.FilePath()) && !isUpdate {
-		message := fmt.Sprintf("You already have the %s client installed, do you want to override your installation? [Y/n]: ", n.Name())
-		input := utils.RegisterInputWithMessage(message)
-		if !strings.EqualFold(input, "y") && input != "" {
-			log.Info("⏭️  Skipping installation...")
-
-			return nil
-		}
-	}
-
-	err = installAndExtractFromURL(url, n.name, common.ClientDepsFolder, tarFormat, isUpdate)
-	if err != nil {
-		return
-	}
-
-	permFunc := func(path string, d fs.DirEntry, err error) error {
-		return os.Chmod(path, fs.ModePerm)
-	}
-
-	err = filepath.WalkDir(n.FilePath(), permFunc)
-	if err != nil {
-		return
-	}
-
-	return
-}
-
-func (n *Nimbus2Client) Update() (err error) {
-	tag := n.getVersion()
-
-	log.WithField("dependencyTag", tag).Infof("⬇️  Updating %s", n.name)
-
-	url := n.ParseUrl(tag, common.Nimbus2CommitHash)
-
-	return n.Install(url, true)
 }
 
 func (n *Nimbus2Client) FilePath() string {
@@ -180,7 +153,7 @@ func (n *Nimbus2Client) Start(ctx *cli.Context, arguments []string) (err error) 
 
 	command := exec.Command(fmt.Sprintf("./%s/build/nimbus_beacon_node", n.FilePath()), arguments...)
 
-	err = prepareLogFile(ctx, command, n.CommandName())
+	err = n.logFile(n.FileName(), command)
 	if err != nil {
 		log.Errorf("There was an error while preparing a log file for %s: %v", n.Name(), err)
 	}
@@ -191,7 +164,7 @@ func (n *Nimbus2Client) Start(ctx *cli.Context, arguments []string) (err error) 
 		return
 	}
 
-	pidLocation := fmt.Sprintf("%s/%s.pid", pid.FileDir, n.CommandName())
+	pidLocation := fmt.Sprintf("%s/%s.pid", pid.FileDir, n.FileName())
 	err = pid.Create(pidLocation, command.Process.Pid)
 
 	time.Sleep(1 * time.Second)

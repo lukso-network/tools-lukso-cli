@@ -2,10 +2,8 @@ package clients
 
 import (
 	"fmt"
-	"io/fs"
 	"os"
 	"os/exec"
-	"path/filepath"
 	"regexp"
 	"strings"
 	"time"
@@ -57,32 +55,18 @@ var Nethermind Client
 
 var _ Client = &NethermindClient{}
 
-func (n *NethermindClient) Install(url string, isUpdate bool) (err error) {
-	if utils.FileExists(n.FilePath()) && !isUpdate {
-		message := fmt.Sprintf("You already have the %s client installed, do you want to override your installation? [Y/n]: ", n.Name())
-		input := utils.RegisterInputWithMessage(message)
-		if !strings.EqualFold(input, "y") && input != "" {
-			log.Info("⏭️  Skipping installation...")
+func (n *NethermindClient) Install(version string, isUpdate bool) (err error) {
+	url := n.ParseUrl(version, n.commit())
 
-			return nil
-		}
-	}
+	return n.installer.InstallZip(url, n.FileDir())
+}
 
-	err = installAndExtractFromURL(url, n.name, nethermindFolder, zipFormat, isUpdate)
-	if err != nil {
-		return
-	}
+func (n *NethermindClient) Update() (err error) {
+	tag := n.tag()
 
-	permFunc := func(path string, d fs.DirEntry, err error) error {
-		return os.Chmod(path, fs.ModePerm)
-	}
+	log.WithField("dependencyTag", tag).Infof("⬇️  Updating %s", n.name)
 
-	err = filepath.WalkDir(n.FilePath(), permFunc)
-	if err != nil {
-		return
-	}
-
-	return
+	return n.Install(tag, true)
 }
 
 func (n *NethermindClient) Start(ctx *cli.Context, arguments []string) (err error) {
@@ -109,7 +93,7 @@ func (n *NethermindClient) Start(ctx *cli.Context, arguments []string) (err erro
 		return utils.Exit(fmt.Sprintf("%v- %s", errors.ErrFlagMissing, flags.LogFolderFlag), 1)
 	}
 
-	fullPath, err = utils.TimestampedFile(logFolder, n.CommandName())
+	fullPath, err = utils.TimestampedFile(logFolder, n.FileName())
 	if err != nil {
 		return
 	}
@@ -133,7 +117,7 @@ func (n *NethermindClient) Start(ctx *cli.Context, arguments []string) (err erro
 		return
 	}
 
-	pidLocation := fmt.Sprintf("%s/%s.pid", pid.FileDir, n.CommandName())
+	pidLocation := fmt.Sprintf("%s/%s.pid", pid.FileDir, n.FileName())
 	err = pid.Create(pidLocation, command.Process.Pid)
 
 	time.Sleep(1 * time.Second)
@@ -165,18 +149,6 @@ func (n *NethermindClient) ParseUrl(tag, commitHash string) (url string) {
 	url = strings.Replace(url, "|ARCH|", archName, -1)
 
 	return
-}
-
-func (n *NethermindClient) Update() (err error) {
-	tag := n.getVersion()
-
-	log.WithField("dependencyTag", tag).Infof("⬇️  Updating %s", n.name)
-
-	// this commit hash is hardcoded, but since update should only be responsible for updating the client to
-	// LUKSO supported version this is fine.
-	url := n.ParseUrl(tag, common.NethermindCommitHash)
-
-	return n.Install(url, true)
 }
 
 func (n *NethermindClient) PrepareStartFlags(ctx *cli.Context) (startFlags []string, err error) {

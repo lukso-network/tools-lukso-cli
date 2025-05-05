@@ -49,6 +49,20 @@ var PrysmValidator ValidatorBinaryDependency
 
 var _ ValidatorBinaryDependency = &PrysmValidatorClient{}
 
+func (p *PrysmValidatorClient) Install(version string, isUpdate bool) error {
+	url := p.ParseUrl(version, p.commit())
+
+	return p.installer.InstallFile(url, p.FilePath())
+}
+
+func (p *PrysmValidatorClient) Update() (err error) {
+	tag := p.tag()
+
+	log.WithField("dependencyTag", tag).Infof("⬇️  Updating %s", p.name)
+
+	return p.Install(tag, true)
+}
+
 func (p *PrysmValidatorClient) PrepareStartFlags(ctx *cli.Context) (startFlags []string, err error) {
 	validatorConfigExists := utils.FlagFileExists(ctx, flags.ValidatorConfigFileFlag)
 	chainConfigExists := utils.FlagFileExists(ctx, flags.PrysmChainConfigFileFlag)
@@ -127,9 +141,13 @@ func (p *PrysmValidatorClient) Import(ctx *cli.Context) (err error) {
 	return nil
 }
 
+func (p *PrysmValidatorClient) Peers(ctx *cli.Context) (outbound int, inbound int, err error) {
+	return
+}
+
 func (p *PrysmValidatorClient) Version() (version string) {
 	cmdVer := execVersionCmd(
-		p.CommandName(),
+		p.FilePath(),
 	)
 
 	if cmdVer == VersionNotAvailable {

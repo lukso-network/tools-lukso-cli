@@ -48,6 +48,10 @@ var LighthouseValidator ValidatorBinaryDependency
 
 var _ ValidatorBinaryDependency = &LighthouseValidatorClient{}
 
+func (l *LighthouseValidatorClient) Install(version string, isUpdate bool) error {
+	return nil
+}
+
 func (l *LighthouseValidatorClient) Update() error {
 	return nil
 }
@@ -64,7 +68,7 @@ func (l *LighthouseValidatorClient) Start(ctx *cli.Context, args []string) (err 
 		log.Infof("🛑  Stopped %s", l.Name())
 	}
 
-	command := exec.Command(Lighthouse.commandName, args...)
+	command := exec.Command(Lighthouse.FilePath(), args...)
 
 	var (
 		logFile  *os.File
@@ -76,7 +80,7 @@ func (l *LighthouseValidatorClient) Start(ctx *cli.Context, args []string) (err 
 		return utils.Exit(fmt.Sprintf("%v- %s", errors.ErrFlagMissing, flags.LogFolderFlag), 1)
 	}
 
-	fullPath, err = utils.TimestampedFile(logFolder, l.CommandName())
+	fullPath, err = utils.TimestampedFile(logFolder, l.FileName())
 	if err != nil {
 		return
 	}
@@ -100,7 +104,7 @@ func (l *LighthouseValidatorClient) Start(ctx *cli.Context, args []string) (err 
 		return
 	}
 
-	pidLocation := fmt.Sprintf("%s/%s.pid", pid.FileDir, l.CommandName())
+	pidLocation := fmt.Sprintf("%s/%s.pid", pid.FileDir, l.FileName())
 	err = pid.Create(pidLocation, command.Process.Pid)
 
 	time.Sleep(1 * time.Second)
@@ -151,7 +155,7 @@ func (l *LighthouseValidatorClient) Import(ctx *cli.Context) (err error) {
 		args = append(args, "--password-file", passwordFile, "--reuse-password")
 	}
 
-	initCommand := exec.Command(Lighthouse.CommandName(), args...)
+	initCommand := exec.Command(Lighthouse.FilePath(), args...)
 
 	initCommand.Stdout = os.Stdout
 	initCommand.Stderr = os.Stderr
@@ -167,7 +171,7 @@ func (l *LighthouseValidatorClient) Import(ctx *cli.Context) (err error) {
 
 func (l *LighthouseValidatorClient) List(ctx *cli.Context) (err error) {
 	walletDir := ctx.String(flags.ValidatorWalletDirFlag)
-	cmd := exec.Command(Lighthouse.CommandName(), "am", "validator", "list", "--datadir", walletDir)
+	cmd := exec.Command(Lighthouse.FilePath(), "am", "validator", "list", "--datadir", walletDir)
 
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
@@ -196,7 +200,7 @@ func (l *LighthouseValidatorClient) Exit(ctx *cli.Context) (err error) {
 
 	args = append(args, "--beacon-node", rpc)
 
-	exitCommand := exec.Command(Lighthouse.CommandName(), args...)
+	exitCommand := exec.Command(Lighthouse.FilePath(), args...)
 
 	exitCommand.Stdout = os.Stdout
 	exitCommand.Stderr = os.Stderr
@@ -207,6 +211,10 @@ func (l *LighthouseValidatorClient) Exit(ctx *cli.Context) (err error) {
 		return utils.Exit(fmt.Sprintf("❌  There was an error while exiting validator: %v", err), 1)
 	}
 
+	return
+}
+
+func (l *LighthouseValidatorClient) Peers(ctx *cli.Context) (outbound int, inbound int, err error) {
 	return
 }
 

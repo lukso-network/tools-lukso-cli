@@ -52,6 +52,14 @@ var TekuValidator ValidatorBinaryDependency
 
 var _ ValidatorBinaryDependency = &TekuValidatorClient{}
 
+func (t *TekuValidatorClient) Install(version string, isUpdate bool) error {
+	return nil
+}
+
+func (t *TekuValidatorClient) Update() (err error) {
+	return nil
+}
+
 func (t *TekuValidatorClient) PrepareStartFlags(ctx *cli.Context) (startFlags []string, err error) {
 	startFlags = t.ParseUserFlags(ctx)
 
@@ -86,7 +94,7 @@ func (t *TekuValidatorClient) Start(ctx *cli.Context, arguments []string) (err e
 		return utils.Exit(fmt.Sprintf("%v- %s", errors.ErrFlagMissing, flags.LogFolderFlag), 1)
 	}
 
-	fullPath, err = utils.TimestampedFile(logFolder, t.CommandName())
+	fullPath, err = utils.TimestampedFile(logFolder, t.FileName())
 	if err != nil {
 		return
 	}
@@ -110,13 +118,17 @@ func (t *TekuValidatorClient) Start(ctx *cli.Context, arguments []string) (err e
 		return
 	}
 
-	pidLocation := fmt.Sprintf("%s/%s.pid", pid.FileDir, t.CommandName())
+	pidLocation := fmt.Sprintf("%s/%s.pid", pid.FileDir, t.FileName())
 	err = pid.Create(pidLocation, command.Process.Pid)
 
 	time.Sleep(1 * time.Second)
 
 	log.Infof("✅  %s started!", t.Name())
 
+	return
+}
+
+func (t *TekuValidatorClient) Peers(ctx *cli.Context) (outbound, inbound int, err error) {
 	return
 }
 

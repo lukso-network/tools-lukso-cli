@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
@@ -43,6 +44,20 @@ func NewPrysmClient(
 var Prysm Client
 
 var _ Client = &PrysmClient{}
+
+func (p *PrysmClient) Install(version string, isUpdate bool) error {
+	url := p.ParseUrl(version, p.commit())
+
+	return p.installer.InstallFile(url, p.FilePath())
+}
+
+func (p *PrysmClient) Update() (err error) {
+	tag := p.tag()
+
+	log.WithField("dependencyTag", tag).Infof("⬇️  Updating %s", p.name)
+
+	return p.Install(tag, true)
+}
 
 func (p *PrysmClient) PrepareStartFlags(ctx *cli.Context) (startFlags []string, err error) {
 	genesisExists := utils.FlagFileExists(ctx, flags.GenesisStateFlag)
@@ -86,7 +101,7 @@ func (p *PrysmClient) Peers(ctx *cli.Context) (outbound, inbound int, err error)
 
 func (p *PrysmClient) Version() (version string) {
 	cmdVer := execVersionCmd(
-		p.CommandName(),
+		p.FilePath(),
 	)
 
 	if cmdVer == VersionNotAvailable {

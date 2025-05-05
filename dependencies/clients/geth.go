@@ -12,7 +12,6 @@ import (
 	"github.com/lukso-network/tools-lukso-cli/common/file"
 	"github.com/lukso-network/tools-lukso-cli/common/installer"
 	"github.com/lukso-network/tools-lukso-cli/common/logger"
-	"github.com/lukso-network/tools-lukso-cli/common/system"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
 	"github.com/lukso-network/tools-lukso-cli/flags"
 	"github.com/lukso-network/tools-lukso-cli/pid"
@@ -47,31 +46,20 @@ var Geth Client
 
 var _ Client = &GethClient{}
 
-func (g *GethClient) ParseUrl(tag, commitHash string) (url string) {
-	url = g.baseUrl
-
-	if g.name == gethDependencyName && system.Os == system.Macos {
-		url = strings.Replace(url, "|ARCH|", "amd64", -1)
-	}
-
-	url = strings.Replace(url, "|TAG|", tag, -1)
-	url = strings.Replace(url, "|OS|", system.Os, -1)
-	url = strings.Replace(url, "|COMMIT|", commitHash, -1)
-	url = strings.Replace(url, "|ARCH|", system.Arch, -1)
-
-	return
+func (g *GethClient) Install(version string, isUpdate bool) error {
+	url := g.ParseUrl(version, g.commit())
+	return g.installer.InstallFile(url, g.FilePath())
 }
 
 func (g *GethClient) Update() (err error) {
-	tag := g.getVersion()
+	tag := g.tag()
 
 	log.WithField("dependencyTag", tag).Infof("⬇️  Updating %s", g.name)
 
 	// this commit hash is hardcoded, but since update should only be responsible for updating the client to
 	// LUKSO supported version this is fine.
-	url := g.ParseUrl(tag, common.GethCommitHash)
 
-	return g.Install(url, true)
+	return g.Install(tag, true)
 }
 
 func (g *GethClient) PrepareStartFlags(ctx *cli.Context) (startFlags []string, err error) {
@@ -86,6 +74,7 @@ func (g *GethClient) PrepareStartFlags(ctx *cli.Context) (startFlags []string, e
 	startFlags = g.ParseUserFlags(ctx)
 	startFlags = append(startFlags, fmt.Sprintf("--config=%s", ctx.String(flags.GethConfigFileFlag)))
 	startFlags = append(startFlags, fmt.Sprintf("--nat=extip:%s", ip))
+
 	return
 }
 
@@ -95,7 +84,7 @@ func (g *GethClient) Peers(ctx *cli.Context) (outbound, inbound int, err error) 
 
 func (g *GethClient) Version() (version string) {
 	cmdVer := execVersionCmd(
-		g.CommandName(),
+		g.FilePath(),
 	)
 
 	if cmdVer == VersionNotAvailable {

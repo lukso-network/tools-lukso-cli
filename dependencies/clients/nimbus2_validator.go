@@ -46,6 +46,14 @@ var Nimbus2Validator ValidatorBinaryDependency
 
 var _ ValidatorBinaryDependency = &Nimbus2ValidatorClient{}
 
+func (n *Nimbus2ValidatorClient) Install(version string, isUpdate bool) error {
+	return nil
+}
+
+func (n *Nimbus2ValidatorClient) Update() error {
+	return nil
+}
+
 func (n *Nimbus2ValidatorClient) PrepareStartFlags(ctx *cli.Context) (startFlags []string, err error) {
 	startFlags = n.ParseUserFlags(ctx)
 
@@ -69,7 +77,7 @@ func (n *Nimbus2ValidatorClient) Start(ctx *cli.Context, arguments []string) (er
 
 	command := exec.Command(fmt.Sprintf("./%s/build/nimbus_validator_client", nimbus2Folder), arguments...)
 
-	err = prepareLogFile(ctx, command, n.CommandName())
+	err = n.logFile(n.FileName(), command)
 	if err != nil {
 		log.Errorf("There was an error while preparing a log file for %s: %v", n.Name(), err)
 	}
@@ -80,13 +88,17 @@ func (n *Nimbus2ValidatorClient) Start(ctx *cli.Context, arguments []string) (er
 		return
 	}
 
-	pidLocation := fmt.Sprintf("%s/%s.pid", pid.FileDir, n.CommandName())
+	pidLocation := fmt.Sprintf("%s/%s.pid", pid.FileDir, n.FileName())
 	err = pid.Create(pidLocation, command.Process.Pid)
 
 	time.Sleep(1 * time.Second)
 
 	log.Infof("✅  %s started!", n.Name())
 
+	return
+}
+
+func (n *Nimbus2ValidatorClient) Peers(ctx *cli.Context) (outbound int, inbound int, err error) {
 	return
 }
 
