@@ -24,9 +24,10 @@ func NewPrysmValidatorClient() *PrysmValidatorClient {
 	return &PrysmValidatorClient{
 		&clientBinary{
 			name:           prysmValidatorDependencyName,
-			commandName:    "validator",
+			fileName:       "validator_pr",
 			baseUrl:        "https://github.com/prysmaticlabs/prysm/releases/download/|TAG|/validator-|TAG|-|OS|-|ARCH|",
 			githubLocation: prysmaticLabsGithubLocation,
+			buildInfo:      prysmBuildInfo,
 		},
 	}
 }
@@ -198,12 +199,12 @@ func installPrysmctl() (err error) {
 	}
 
 	prysmctlBin := clientBinary{
-		name:        "prysmctl",
-		commandName: "prysmctl",
-		baseUrl:     "https://github.com/prysmaticlabs/prysm/releases/download/|TAG|/prysmctl-|TAG|-|OS|-|ARCH|",
+		name:     "prysmctl",
+		fileName: "prysmctl",
+		baseUrl:  "https://github.com/prysmaticlabs/prysm/releases/download/|TAG|/prysmctl-|TAG|-|OS|-|ARCH|",
 	}
 
-	versionCommand := exec.Command(PrysmValidator.CommandName(), "--version")
+	versionCommand := exec.Command(PrysmValidator.FileName(), "--version")
 	buf := new(bytes.Buffer)
 
 	versionCommand.Stdout = buf

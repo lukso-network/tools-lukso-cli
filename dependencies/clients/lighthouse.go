@@ -22,9 +22,10 @@ func NewLighthouseClient() *LighthouseClient {
 	return &LighthouseClient{
 		&clientBinary{
 			name:           lighthouseDependencyName,
-			commandName:    "lighthouse",
+			fileName:       "lighthouse",
 			baseUrl:        "https://github.com/sigp/lighthouse/releases/download/|TAG|/lighthouse-|TAG|-|ARCH|-|OS-NAME|-|OS|.tar.gz",
 			githubLocation: lighthouseGithubLocation,
+			buildInfo:      lighthouseBuildInfo,
 		},
 	}
 }

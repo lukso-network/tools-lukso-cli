@@ -29,9 +29,10 @@ func NewNimbus2Client() *Nimbus2Client {
 	return &Nimbus2Client{
 		&clientBinary{
 			name:           nimbus2DependencyName,
-			commandName:    "nimbus2",
+			fileName:       "nimbus2",
 			baseUrl:        "https://github.com/status-im/nimbus-eth2/releases/download/v|TAG|/nimbus-eth2_|OS|_|ARCH|_|TAG|_|COMMIT|.tar.gz",
 			githubLocation: nimbus2GithubLocation,
+			buildInfo:      nimbus2BuildInfo,
 		},
 	}
 }

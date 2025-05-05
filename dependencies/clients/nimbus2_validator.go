@@ -22,9 +22,10 @@ func NewNimbus2ValidatorClient() *Nimbus2ValidatorClient {
 	return &Nimbus2ValidatorClient{
 		&clientBinary{
 			name:           nimbus2ValidatorDependencyName,
-			commandName:    "validator_nimbus",
+			fileName:       "validator_nimbus",
 			baseUrl:        "",
 			githubLocation: nimbus2GithubLocation,
+			buildInfo:      nimbus2BuildInfo,
 		},
 	}
 }

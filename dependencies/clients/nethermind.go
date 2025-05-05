@@ -33,9 +33,10 @@ func NewNethermindClient() *NethermindClient {
 	return &NethermindClient{
 		&clientBinary{
 			name:           nethermindDependencyName,
-			commandName:    "nethermind",
+			fileName:       "nethermind",
 			baseUrl:        "https://github.com/NethermindEth/nethermind/releases/download/|TAG|/nethermind-|TAG|-|COMMIT|-|OS|-|ARCH|.zip",
 			githubLocation: nethermindGithubLocation,
+			buildInfo:      nethermindBuildInfo,
 		},
 	}
 }

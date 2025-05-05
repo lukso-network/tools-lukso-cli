@@ -22,9 +22,10 @@ func NewGethClient() *GethClient {
 	return &GethClient{
 		&clientBinary{
 			name:           gethDependencyName,
-			commandName:    "geth",
+			fileName:       "geth",
 			baseUrl:        "https://gethstore.blob.core.windows.net/builds/geth-|OS|-|ARCH|-|TAG|-|COMMIT|.tar.gz",
 			githubLocation: gethGithubLocation,
+			buildInfo:      gethBuildInfo,
 		},
 	}
 }
