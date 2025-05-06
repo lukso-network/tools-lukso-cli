@@ -11,8 +11,8 @@ import (
 	"github.com/lukso-network/tools-lukso-cli/common/network"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
 	"github.com/lukso-network/tools-lukso-cli/config"
-	"github.com/lukso-network/tools-lukso-cli/dependencies/configs"
-	"github.com/lukso-network/tools-lukso-cli/dependencies/types"
+	"github.com/lukso-network/tools-lukso-cli/dep/configs"
+	"github.com/lukso-network/tools-lukso-cli/dep/types"
 )
 
 var cfg = config.NewConfig(config.Path)

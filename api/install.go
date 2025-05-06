@@ -5,7 +5,7 @@ import (
 
 	"github.com/lukso-network/tools-lukso-cli/api/errors"
 	"github.com/lukso-network/tools-lukso-cli/api/types"
-	"github.com/lukso-network/tools-lukso-cli/dependencies/clients"
+	"github.com/lukso-network/tools-lukso-cli/dep/clients"
 )
 
 func (h *handler) Install(args types.InstallRequest) (resp types.InstallResponse) {

@@ -13,7 +13,7 @@ import (
 	"github.com/lukso-network/tools-lukso-cli/common/file"
 	"github.com/lukso-network/tools-lukso-cli/common/logger"
 	"github.com/lukso-network/tools-lukso-cli/config"
-	"github.com/lukso-network/tools-lukso-cli/dependencies/configs"
+	"github.com/lukso-network/tools-lukso-cli/dep/configs"
 	"github.com/lukso-network/tools-lukso-cli/test/mocks"
 )
 

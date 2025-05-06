@@ -11,7 +11,7 @@ import (
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
 	"github.com/lukso-network/tools-lukso-cli/common/system"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
-	"github.com/lukso-network/tools-lukso-cli/dependencies/clients"
+	"github.com/lukso-network/tools-lukso-cli/dep/clients"
 	"github.com/lukso-network/tools-lukso-cli/flags"
 )
 
