@@ -11,37 +11,63 @@ import (
 
 	"github.com/lukso-network/tools-lukso-cli/common"
 	"github.com/lukso-network/tools-lukso-cli/common/file"
-	"github.com/lukso-network/tools-lukso-cli/common/system"
+	"github.com/lukso-network/tools-lukso-cli/common/installer"
+	"github.com/lukso-network/tools-lukso-cli/common/logger"
+	"github.com/lukso-network/tools-lukso-cli/dep"
 )
 
 const jdkFolder = file.ClientsDir + "/jdk"
 
-func setupJava(isUpdate bool) (err error) {
-	log.Info("⬇️  Downloading JDK...")
+type JdkDep struct {
+	baseUrl   string
+	buildInfo buildInfo
+	sourceDir string
 
-	var systemOs, arch string
-	switch system.Os {
-	case system.Ubuntu:
-		systemOs = "linux"
-	case system.Macos:
-		systemOs = "macos"
-	}
+	log       logger.Logger
+	installer installer.Installer
+}
 
-	arch = system.GetArch()
+var (
+	Jdk JdkDep
+	_   dep.Installer = &JdkDep{}
+)
 
-	if arch == "x86_64" {
-		arch = "x64"
-	}
-	if arch != "aarch64" && arch != "x64" {
-		log.Warnf("⚠️  x64 or aarch64 architecture is required to continue - skipping ...")
+func NewJdk() *JdkDep {
+	return &JdkDep{}
+}
 
-		return
-	}
+func (j *JdkDep) ParseUrl(tag, commitHash string) (url string) {
+	url = j.baseUrl
 
-	jdkURL := strings.Replace(jdkInstallURL, "|OS|", systemOs, -1)
-	jdkURL = strings.Replace(jdkURL, "|ARCH|", arch, -1)
+	url = strings.ReplaceAll(url, "|TAG|", tag)
+	url = strings.ReplaceAll(url, "|COMMIT|", commitHash)
+	url = strings.ReplaceAll(url, "|OS|", j.Os())
+	url = strings.ReplaceAll(url, "|ARCH|", j.Arch())
 
-	err = installAndExtractFromURL(jdkURL, "JDK", common.ClientDepsFolder, tarFormat, isUpdate)
+	return
+}
+
+func (j *JdkDep) Tag() string {
+	return common.JdkTag
+}
+
+func (j *JdkDep) Commit() string {
+	return common.JdkCommitHash
+}
+
+func (j *JdkDep) Os() string {
+	return j.buildInfo.Os()
+}
+
+func (j *JdkDep) Arch() string {
+	return j.buildInfo.Arch()
+}
+
+func (j *JdkDep) Install(version string, isUpdate bool) (err error) {
+	j.log.Info("⬇️  Downloading JDK...")
+
+	url := j.ParseUrl(j.Tag(), j.Commit())
+	err = j.installer.InstallTar(url, j.sourceDir)
 	if err != nil {
 		return err
 	}
@@ -68,4 +94,8 @@ func setupJava(isUpdate bool) (err error) {
 		"To the bash startup file of your choosing (like .bashrc)", javaHomeVal)
 
 	return
+}
+
+func (j *JdkDep) Update() error {
+	return nil
 }

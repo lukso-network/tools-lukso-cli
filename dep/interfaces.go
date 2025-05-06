@@ -41,15 +41,21 @@ type Client interface {
 	Name() string
 }
 
+type Peer interface {
+	Peers(ctx *cli.Context) (outbound int, inbound int, err error)
+	IsRunning() bool
+	Name() string
+}
+
 type ExecutionClient interface {
 	Client
-	Peers(ctx *cli.Context) (outbound int, inbound int, err error)
+	Peer
 	Init() error
 }
 
 type ConsensusClient interface {
 	Client
-	Peers(ctx *cli.Context) (outbound int, inbound int, err error)
+	Peer
 }
 
 type ValidatorClient interface {

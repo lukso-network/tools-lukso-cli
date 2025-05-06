@@ -143,10 +143,6 @@ func (p *PrysmValidatorClient) Import(ctx *cli.Context) (err error) {
 	return nil
 }
 
-func (p *PrysmValidatorClient) Peers(ctx *cli.Context) (outbound int, inbound int, err error) {
-	return
-}
-
 func (p *PrysmValidatorClient) Version() (version string) {
 	cmdVer := execVersionCmd(
 		p.FilePath(),
@@ -231,11 +227,11 @@ func installPrysmctl() (err error) {
 		os.Exit(0)
 	}
 
-	prysmctlBin := clientBinary{
-		name:     "prysmctl",
-		fileName: "prysmctl",
-		baseUrl:  "https://github.com/prysmaticlabs/prysm/releases/download/|TAG|/prysmctl-|TAG|-|OS|-|ARCH|",
-	}
+	// prysmctlBin := clientBinary{
+	// 	name:     "prysmctl",
+	// 	fileName: "prysmctl",
+	// 	baseUrl:  "https://github.com/prysmaticlabs/prysm/releases/download/|TAG|/prysmctl-|TAG|-|OS|-|ARCH|",
+	// }
 
 	versionCommand := exec.Command(PrysmValidator.FileName(), "--version")
 	buf := new(bytes.Buffer)
@@ -247,13 +243,13 @@ func installPrysmctl() (err error) {
 		return utils.Exit(fmt.Sprintf("❌  There was an error while getting prysm version: %v", err), 1)
 	}
 
-	versionOutput := buf.String()
-	version := strings.Split(versionOutput, "/")[1]
+	// versionOutput := buf.String()
+	// version := strings.Split(versionOutput, "/")[1]
 
-	url := prysmctlBin.ParseUrl(version, "")
+	// url := prysmctlBin.ParseUrl(version, "")
 
 	log.Info("⬇️  Downloading prysmctl...")
-	err = prysmctlBin.Install(url, false)
+	// err = prysmctlbin.install(url, false)
 
 	return
 }

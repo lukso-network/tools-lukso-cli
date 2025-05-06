@@ -100,10 +100,6 @@ func (n *Nimbus2ValidatorClient) Start(ctx *cli.Context, arguments []string) (er
 	return
 }
 
-func (n *Nimbus2ValidatorClient) Peers(ctx *cli.Context) (outbound int, inbound int, err error) {
-	return
-}
-
 func (n *Nimbus2ValidatorClient) Version() (version string) {
 	return Nimbus2.Version()
 }

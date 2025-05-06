@@ -8,6 +8,7 @@ import (
 
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
+	"github.com/lukso-network/tools-lukso-cli/dep"
 	"github.com/lukso-network/tools-lukso-cli/dep/clients"
 	"github.com/lukso-network/tools-lukso-cli/flags"
 )
@@ -74,7 +75,7 @@ func (c *commander) Stop(ctx *cli.Context) (err error) {
 	return nil
 }
 
-func stopClient(client clients.Client) error {
+func stopClient(client dep.Client) error {
 	err := client.Stop()
 	if err != nil {
 		return err

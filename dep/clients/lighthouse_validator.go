@@ -216,10 +216,6 @@ func (l *LighthouseValidatorClient) Exit(ctx *cli.Context) (err error) {
 	return
 }
 
-func (l *LighthouseValidatorClient) Peers(ctx *cli.Context) (outbound int, inbound int, err error) {
-	return
-}
-
 func (l *LighthouseValidatorClient) Version() (version string) {
 	return Lighthouse.Version() // same binary
 }

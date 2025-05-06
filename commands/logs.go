@@ -54,7 +54,7 @@ func (c *commander) LogsLayer(layer string) func(*cli.Context) error {
 			return utils.Exit(errors.ErrClientNotSupported.Error(), 1)
 		}
 
-		latestFile, err := utils.GetLastFile(logFileDir, client.CommandName())
+		latestFile, err := utils.GetLastFile(logFileDir, client.FileName())
 		if latestFile == "" && err == nil {
 			return nil
 		}

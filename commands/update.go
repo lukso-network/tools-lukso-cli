@@ -10,6 +10,7 @@ import (
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
 	"github.com/lukso-network/tools-lukso-cli/common/system"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
+	"github.com/lukso-network/tools-lukso-cli/dep"
 	"github.com/lukso-network/tools-lukso-cli/dep/clients"
 	"github.com/lukso-network/tools-lukso-cli/dep/configs"
 	"github.com/lukso-network/tools-lukso-cli/flags"
@@ -44,7 +45,7 @@ func (c *commander) Update(ctx *cli.Context) (err error) {
 		return cli.Exit(errors.ErrClientNotSupported, 1)
 	}
 
-	toUpdate := []clients.Client{execution, consensus, validator}
+	toUpdate := []dep.Client{execution, consensus, validator}
 
 	for _, client := range toUpdate {
 		if client == clients.LighthouseValidator || client == clients.TekuValidator || client == clients.Nimbus2Validator {

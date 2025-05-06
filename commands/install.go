@@ -11,6 +11,7 @@ import (
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
 	"github.com/lukso-network/tools-lukso-cli/common/system"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
+	"github.com/lukso-network/tools-lukso-cli/dep"
 	"github.com/lukso-network/tools-lukso-cli/dep/clients"
 	"github.com/lukso-network/tools-lukso-cli/flags"
 )
@@ -33,8 +34,8 @@ func (c *commander) Install(ctx *cli.Context) (err error) {
 	}
 
 	var (
-		selectedConsensus   clients.Client
-		selectedExecution   clients.Client
+		selectedConsensus   dep.ConsensusClient
+		selectedExecution   dep.ExecutionClient
 		consensusInput      string
 		executionInput      string
 		consensusTag        string
@@ -152,7 +153,7 @@ func (c *commander) Install(ctx *cli.Context) (err error) {
 		return utils.Exit(fmt.Sprintf("❌  There was an error while downloading %s: %v", selectedConsensus.Name(), err), 1)
 	}
 
-	var selectedValidator clients.ValidatorBinaryDependency = clients.LighthouseValidator
+	var selectedValidator dep.ValidatorClient = clients.LighthouseValidator
 
 	if selectedConsensus == clients.Prysm {
 		selectedValidator = clients.PrysmValidator

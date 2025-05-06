@@ -239,9 +239,9 @@ func (client *clientBinary) IsRunning() bool {
 func (client *clientBinary) ParseUrl(tag, commitHash string) (url string) {
 	url = client.baseUrl
 
-	url = strings.ReplaceAll(url, "|TAG|", client.Tag())
+	url = strings.ReplaceAll(url, "|TAG|", tag)
+	url = strings.ReplaceAll(url, "|COMMIT|", commitHash)
 	url = strings.ReplaceAll(url, "|OS|", client.Os())
-	url = strings.ReplaceAll(url, "|COMMIT|", client.Commit())
 	url = strings.ReplaceAll(url, "|ARCH|", client.Arch())
 
 	return
@@ -339,35 +339,6 @@ func (client *clientBinary) Os() string {
 
 func (client *clientBinary) Arch() string {
 	return ""
-}
-
-func initClient(ctx *cli.Context, client Client) (err error) {
-	log.Infof("⚙️  Running %s init...", client.Name())
-
-	if client.IsRunning() {
-		return errors.ErrAlreadyRunning
-	}
-
-	var (
-		dataDir string
-		cmdPath string
-	)
-
-	switch client.Name() {
-	case gethDependencyName:
-		dataDir = fmt.Sprintf("--datadir=%s", ctx.String(flags.GethDatadirFlag))
-		cmdPath = client.FilePath()
-
-	case erigonDependencyName:
-		dataDir = fmt.Sprintf("--datadir=%s", ctx.String(flags.ErigonDatadirFlag))
-		cmdPath = client.FilePath()
-	}
-
-	command := exec.Command(cmdPath, "init", dataDir, ctx.String(flags.GenesisJsonFlag))
-	command.Stdout = os.Stdout
-	command.Stderr = os.Stderr
-
-	return command.Run()
 }
 
 func execVersionCmd(cmd string) (ver string) {

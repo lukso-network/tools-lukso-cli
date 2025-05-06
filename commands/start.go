@@ -14,6 +14,7 @@ import (
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
 	"github.com/lukso-network/tools-lukso-cli/common/network"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
+	"github.com/lukso-network/tools-lukso-cli/dep"
 	"github.com/lukso-network/tools-lukso-cli/dep/clients"
 	"github.com/lukso-network/tools-lukso-cli/flags"
 )
@@ -137,7 +138,7 @@ func startValidator(ctx *cli.Context) (err error) {
 		return utils.Exit(fmt.Sprintf("❌  There was an error while reading config: %v", err), 1)
 	}
 
-	var validatorClient clients.ValidatorBinaryDependency
+	var validatorClient dep.ValidatorClient
 	consensusClient, ok := clients.AllClients[cfg.Consensus()]
 	if !ok {
 		return utils.Exit(errors.ErrClientNotSupported.Error(), 1)
@@ -200,7 +201,7 @@ func startValidator(ctx *cli.Context) (err error) {
 		log.Info("⚙️  Please wait a few seconds while your password is being validated...")
 		time.Sleep(time.Second * 10) // should be enough
 
-		logFile, err := utils.GetLastFile(ctx.String(flags.LogFolderFlag), validatorClient.CommandName())
+		logFile, err := utils.GetLastFile(ctx.String(flags.LogFolderFlag), validatorClient.FileName())
 		if err != nil {
 			return utils.Exit(fmt.Sprintf("❌  There was an error while getting latest log file: %v", err), 1)
 		}

@@ -130,10 +130,6 @@ func (t *TekuValidatorClient) Start(ctx *cli.Context, arguments []string) (err e
 	return
 }
 
-func (t *TekuValidatorClient) Peers(ctx *cli.Context) (outbound, inbound int, err error) {
-	return
-}
-
 func (t *TekuValidatorClient) Version() (version string) {
 	return Teku.Version()
 }

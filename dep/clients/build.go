@@ -1,5 +1,7 @@
 package clients
 
+import "runtime"
+
 // Since we can build CLI for multiple platforms, each client should handle the platform data separately, using build info.
 // Possible variations include (according to build.yml action):
 // a) OS:
@@ -141,4 +143,27 @@ var nimbus2BuildInfo = buildInfo{
 		`386`:      `386`,
 		`fallback`: `fallback`,
 	},
+}
+
+var jdkBuildInfo = buildInfo{
+	os: osBuildInfo{
+		`linux`:    `linux`,
+		`darwin`:   `darwin`,
+		`fallback`: `fallback`,
+	},
+	arch: archBuildInfo{
+		`amd64`:    `amd64`,
+		`arm64`:    `arm64`,
+		`arm`:      `arm`,
+		`386`:      `386`,
+		`fallback`: `fallback`,
+	},
+}
+
+func (b buildInfo) Os() string {
+	return b.os[runtime.GOOS]
+}
+
+func (b buildInfo) Arch() string {
+	return b.os[runtime.GOARCH]
 }

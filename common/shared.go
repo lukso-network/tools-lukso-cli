@@ -15,6 +15,8 @@ const (
 	GethCommitHash       = "eb00f169"
 	NethermindCommitHash = "87c86379"
 	Nimbus2CommitHash    = "4e440277"
+	JdkTag               = ""
+	JdkCommitHash        = ""
 
 	ClientDepsFolder = "clients" // folder in which client dependencies are stored
 )

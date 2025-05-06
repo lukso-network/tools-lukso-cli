@@ -8,6 +8,7 @@ import (
 
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
+	"github.com/lukso-network/tools-lukso-cli/dep"
 	"github.com/lukso-network/tools-lukso-cli/dep/clients"
 	"github.com/lukso-network/tools-lukso-cli/pid"
 )
@@ -67,7 +68,7 @@ func statClient(dependencyName, layer string) func(*cli.Context) error {
 		}
 
 		if isRunning {
-			pidLocation := fmt.Sprintf("%s/%s.pid", pid.FileDir, client.CommandName())
+			pidLocation := fmt.Sprintf("%s/%s.pid", pid.FileDir, client.FileName())
 
 			// since we now that process is, in fact, running (from previous checks) this shouldn't fail
 			pidVal, err := pid.Load(pidLocation)
@@ -96,8 +97,17 @@ func (c *commander) StatusPeers(ctx *cli.Context) (err error) {
 		return utils.Exit(fmt.Sprintf("❌  Couldn't read from config file: %v", err), 1)
 	}
 
-	executionClient := cfg.Execution()
-	consensusClient := cfg.Consensus()
+	executionName := cfg.Execution()
+	executionClient, ok := clients.ExecutionClients[executionName]
+	if !ok {
+		log.Error(errors.ErrClientNotSupported)
+	}
+
+	consensusName := cfg.Consensus()
+	consensusClient, ok := clients.ConsensusClients[consensusName]
+	if !ok {
+		log.Error(errors.ErrClientNotSupported)
+	}
 
 	clientPeers(ctx, executionClient, "Execution")
 	clientPeers(ctx, consensusClient, "Consensus")
@@ -105,20 +115,7 @@ func (c *commander) StatusPeers(ctx *cli.Context) (err error) {
 	return
 }
 
-func clientPeers(ctx *cli.Context, clientName, layer string) {
-	if clientName == "" {
-		log.Warnf("%s (none): Stopped 🔘", layer)
-
-		return
-	}
-
-	client, ok := clients.AllClients[clientName]
-	if !ok {
-		log.Error(errors.ErrClientNotSupported)
-
-		return
-	}
-
+func clientPeers(ctx *cli.Context, client dep.Peer, layer string) {
 	if !client.IsRunning() {
 		log.Warnf("%s (%s): Stopped 🔘", layer, client.Name())
 
