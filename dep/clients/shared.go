@@ -22,6 +22,7 @@ import (
 	"github.com/lukso-network/tools-lukso-cli/common/logger"
 	"github.com/lukso-network/tools-lukso-cli/common/system"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
+	"github.com/lukso-network/tools-lukso-cli/dep"
 	"github.com/lukso-network/tools-lukso-cli/dep/types/apitypes"
 	"github.com/lukso-network/tools-lukso-cli/flags"
 	"github.com/lukso-network/tools-lukso-cli/pid"
@@ -62,7 +63,28 @@ const (
 )
 
 var (
-	AllClients = map[string]Client{
+	ExecutionClients = map[string]dep.ExecutionClient{
+		gethDependencyName:       Geth,
+		erigonDependencyName:     Erigon,
+		nethermindDependencyName: Nethermind,
+		besuDependencyName:       Besu,
+	}
+
+	ConsensusClients = map[string]dep.ConsensusClient{
+		prysmDependencyName:      Prysm,
+		lighthouseDependencyName: Lighthouse,
+		tekuDependencyName:       Teku,
+		nimbus2DependencyName:    Nimbus2,
+	}
+
+	ValidatorClients = map[string]dep.ValidatorClient{
+		prysmValidatorDependencyName:      PrysmValidator,
+		lighthouseValidatorDependencyName: LighthouseValidator,
+		tekuValidatorDependencyName:       TekuValidator,
+		nimbus2ValidatorDependencyName:    Nimbus2Validator,
+	}
+
+	AllClients = map[string]dep.Client{
 		gethDependencyName:                Geth,
 		erigonDependencyName:              Erigon,
 		prysmDependencyName:               Prysm,
@@ -217,10 +239,10 @@ func (client *clientBinary) IsRunning() bool {
 func (client *clientBinary) ParseUrl(tag, commitHash string) (url string) {
 	url = client.baseUrl
 
-	url = strings.ReplaceAll(url, "|TAG|", client.tag())
-	url = strings.ReplaceAll(url, "|OS|", client.os())
-	url = strings.ReplaceAll(url, "|COMMIT|", client.commit())
-	url = strings.ReplaceAll(url, "|ARCH|", client.arch())
+	url = strings.ReplaceAll(url, "|TAG|", client.Tag())
+	url = strings.ReplaceAll(url, "|OS|", client.Os())
+	url = strings.ReplaceAll(url, "|COMMIT|", client.Commit())
+	url = strings.ReplaceAll(url, "|ARCH|", client.Arch())
 
 	return
 }
@@ -295,7 +317,7 @@ func (client *clientBinary) FilePath() string {
 }
 
 func (client *clientBinary) Version() (v string) {
-	return client.tag()
+	return client.Tag()
 }
 
 // Since most clients don't need to init and it's more of a side effect, we Init nothing by default.
@@ -303,19 +325,19 @@ func (client *clientBinary) Init() error {
 	return nil
 }
 
-func (client *clientBinary) tag() string {
+func (client *clientBinary) Tag() string {
 	return ClientVersions[client.Name()]
 }
 
-func (client *clientBinary) commit() string {
+func (client *clientBinary) Commit() string {
 	return ""
 }
 
-func (client *clientBinary) os() string {
+func (client *clientBinary) Os() string {
 	return ""
 }
 
-func (client *clientBinary) arch() string {
+func (client *clientBinary) Arch() string {
 	return ""
 }
 

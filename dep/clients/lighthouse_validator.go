@@ -15,6 +15,7 @@ import (
 	"github.com/lukso-network/tools-lukso-cli/common/logger"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
 	"github.com/lukso-network/tools-lukso-cli/config"
+	"github.com/lukso-network/tools-lukso-cli/dep"
 	"github.com/lukso-network/tools-lukso-cli/flags"
 	"github.com/lukso-network/tools-lukso-cli/pid"
 )
@@ -44,9 +45,10 @@ func NewLighthouseValidatorClient(
 	}
 }
 
-var LighthouseValidator ValidatorBinaryDependency
-
-var _ ValidatorBinaryDependency = &LighthouseValidatorClient{}
+var (
+	LighthouseValidator dep.ValidatorClient
+	_                   dep.ValidatorClient = &LighthouseValidatorClient{}
+)
 
 func (l *LighthouseValidatorClient) Install(version string, isUpdate bool) error {
 	return nil

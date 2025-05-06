@@ -16,6 +16,7 @@ import (
 	"github.com/lukso-network/tools-lukso-cli/common/logger"
 	"github.com/lukso-network/tools-lukso-cli/common/system"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
+	"github.com/lukso-network/tools-lukso-cli/dep"
 	"github.com/lukso-network/tools-lukso-cli/flags"
 	"github.com/lukso-network/tools-lukso-cli/pid"
 )
@@ -45,18 +46,19 @@ func NewPrysmValidatorClient(
 	}
 }
 
-var PrysmValidator ValidatorBinaryDependency
-
-var _ ValidatorBinaryDependency = &PrysmValidatorClient{}
+var (
+	PrysmValidator dep.ValidatorClient
+	_              dep.ValidatorClient = &PrysmValidatorClient{}
+)
 
 func (p *PrysmValidatorClient) Install(version string, isUpdate bool) error {
-	url := p.ParseUrl(version, p.commit())
+	url := p.ParseUrl(version, p.Commit())
 
 	return p.installer.InstallFile(url, p.FilePath())
 }
 
 func (p *PrysmValidatorClient) Update() (err error) {
-	tag := p.tag()
+	tag := p.Tag()
 
 	log.WithField("dependencyTag", tag).Infof("⬇️  Updating %s", p.name)
 

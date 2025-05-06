@@ -13,6 +13,7 @@ import (
 	"github.com/lukso-network/tools-lukso-cli/common/installer"
 	"github.com/lukso-network/tools-lukso-cli/common/logger"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
+	"github.com/lukso-network/tools-lukso-cli/dep"
 	"github.com/lukso-network/tools-lukso-cli/flags"
 	"github.com/lukso-network/tools-lukso-cli/pid"
 )
@@ -42,9 +43,10 @@ func NewNimbus2ValidatorClient(
 	}
 }
 
-var Nimbus2Validator ValidatorBinaryDependency
-
-var _ ValidatorBinaryDependency = &Nimbus2ValidatorClient{}
+var (
+	Nimbus2Validator dep.ValidatorClient
+	_                dep.ValidatorClient = &Nimbus2ValidatorClient{}
+)
 
 func (n *Nimbus2ValidatorClient) Install(version string, isUpdate bool) error {
 	return nil

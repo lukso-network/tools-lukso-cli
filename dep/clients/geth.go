@@ -13,6 +13,7 @@ import (
 	"github.com/lukso-network/tools-lukso-cli/common/installer"
 	"github.com/lukso-network/tools-lukso-cli/common/logger"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
+	"github.com/lukso-network/tools-lukso-cli/dep"
 	"github.com/lukso-network/tools-lukso-cli/flags"
 	"github.com/lukso-network/tools-lukso-cli/pid"
 )
@@ -42,17 +43,18 @@ func NewGethClient(
 	}
 }
 
-var Geth Client
-
-var _ Client = &GethClient{}
+var (
+	Geth dep.ExecutionClient
+	_    dep.ExecutionClient = &GethClient{}
+)
 
 func (g *GethClient) Install(version string, isUpdate bool) error {
-	url := g.ParseUrl(version, g.commit())
+	url := g.ParseUrl(version, g.Commit())
 	return g.installer.InstallFile(url, g.FilePath())
 }
 
 func (g *GethClient) Update() (err error) {
-	tag := g.tag()
+	tag := g.Tag()
 
 	log.WithField("dependencyTag", tag).Infof("⬇️  Updating %s", g.name)
 

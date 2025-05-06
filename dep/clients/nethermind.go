@@ -18,6 +18,7 @@ import (
 	"github.com/lukso-network/tools-lukso-cli/common/logger"
 	"github.com/lukso-network/tools-lukso-cli/common/system"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
+	"github.com/lukso-network/tools-lukso-cli/dep"
 	"github.com/lukso-network/tools-lukso-cli/flags"
 	"github.com/lukso-network/tools-lukso-cli/pid"
 )
@@ -51,18 +52,19 @@ func NewNethermindClient(
 	}
 }
 
-var Nethermind Client
-
-var _ Client = &NethermindClient{}
+var (
+	Nethermind dep.ExecutionClient
+	_          dep.ExecutionClient = &NethermindClient{}
+)
 
 func (n *NethermindClient) Install(version string, isUpdate bool) (err error) {
-	url := n.ParseUrl(version, n.commit())
+	url := n.ParseUrl(version, n.Commit())
 
 	return n.installer.InstallZip(url, n.FileDir())
 }
 
 func (n *NethermindClient) Update() (err error) {
-	tag := n.tag()
+	tag := n.Tag()
 
 	log.WithField("dependencyTag", tag).Infof("⬇️  Updating %s", n.name)
 

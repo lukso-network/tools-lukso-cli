@@ -16,6 +16,7 @@ import (
 	"github.com/lukso-network/tools-lukso-cli/common/installer"
 	"github.com/lukso-network/tools-lukso-cli/common/logger"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
+	"github.com/lukso-network/tools-lukso-cli/dep"
 	"github.com/lukso-network/tools-lukso-cli/flags"
 	"github.com/lukso-network/tools-lukso-cli/pid"
 )
@@ -49,9 +50,10 @@ func NewErigonClient(
 	}
 }
 
-var Erigon Client
-
-var _ Client = &ErigonClient{}
+var (
+	Erigon dep.ExecutionClient
+	_      dep.ExecutionClient = &ErigonClient{}
+)
 
 func (e *ErigonClient) Start(ctx *cli.Context, arguments []string) (err error) {
 	if e.IsRunning() {
@@ -65,7 +67,7 @@ func (e *ErigonClient) Start(ctx *cli.Context, arguments []string) (err error) {
 		log.Infof("🛑  Stopped %s", e.Name())
 	}
 
-	err = initClient(ctx, e)
+	err = e.Init()
 	if err != nil && err != errors.ErrAlreadyRunning { // if it is already running it will be caught during start
 		log.Errorf("❌  There was an error while initalizing %s. Error: %v", e.Name(), err)
 
@@ -119,13 +121,13 @@ func (e *ErigonClient) Start(ctx *cli.Context, arguments []string) (err error) {
 }
 
 func (e *ErigonClient) Install(version string, isUpdate bool) (err error) {
-	url := e.ParseUrl(version, e.commit())
+	url := e.ParseUrl(version, e.Commit())
 
 	return e.installer.InstallTar(url, e.FileDir())
 }
 
 func (e *ErigonClient) Update() (err error) {
-	tag := e.tag()
+	tag := e.Tag()
 
 	log.WithField("dependencyTag", tag).Infof("⬇️  Updating %s", e.name)
 

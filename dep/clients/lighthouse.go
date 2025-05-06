@@ -14,6 +14,7 @@ import (
 	"github.com/lukso-network/tools-lukso-cli/common/logger"
 	"github.com/lukso-network/tools-lukso-cli/common/system"
 	"github.com/lukso-network/tools-lukso-cli/config"
+	"github.com/lukso-network/tools-lukso-cli/dep"
 	"github.com/lukso-network/tools-lukso-cli/flags"
 	"github.com/lukso-network/tools-lukso-cli/pid"
 )
@@ -43,18 +44,19 @@ func NewLighthouseClient(
 	}
 }
 
-var Lighthouse Client
-
-var _ Client = &LighthouseClient{}
+var (
+	Lighthouse dep.ConsensusClient
+	_          dep.ConsensusClient = &LighthouseClient{}
+)
 
 func (l *LighthouseClient) Install(version string, isUpdate bool) error {
-	url := l.ParseUrl(version, l.commit())
+	url := l.ParseUrl(version, l.Commit())
 
 	return l.installer.InstallFile(url, l.FilePath())
 }
 
 func (l *LighthouseClient) Update() (err error) {
-	tag := l.tag()
+	tag := l.Tag()
 
 	log.WithField("dependencyTag", tag).Infof("⬇️  Updating %s", l.name)
 

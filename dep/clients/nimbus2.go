@@ -15,6 +15,7 @@ import (
 	"github.com/lukso-network/tools-lukso-cli/common/installer"
 	"github.com/lukso-network/tools-lukso-cli/common/logger"
 	"github.com/lukso-network/tools-lukso-cli/common/system"
+	"github.com/lukso-network/tools-lukso-cli/dep"
 	"github.com/lukso-network/tools-lukso-cli/flags"
 	"github.com/lukso-network/tools-lukso-cli/pid"
 )
@@ -46,18 +47,19 @@ func NewNimbus2Client(
 	}
 }
 
-var Nimbus2 Client
-
-var _ Client = &Nimbus2Client{}
+var (
+	Nimbus2 dep.ConsensusClient
+	_       dep.ConsensusClient = &Nimbus2Client{}
+)
 
 func (n *Nimbus2Client) Install(version string, isUpdate bool) (err error) {
-	url := n.ParseUrl(version, n.commit())
+	url := n.ParseUrl(version, n.Commit())
 
 	return n.installer.InstallTar(url, n.FileDir())
 }
 
 func (n *Nimbus2Client) Update() (err error) {
-	tag := n.tag()
+	tag := n.Tag()
 
 	log.WithField("dependencyTag", tag).Infof("⬇️  Updating %s", n.name)
 

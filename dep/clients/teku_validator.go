@@ -19,6 +19,7 @@ import (
 	"github.com/lukso-network/tools-lukso-cli/common/installer"
 	"github.com/lukso-network/tools-lukso-cli/common/logger"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
+	"github.com/lukso-network/tools-lukso-cli/dep"
 	"github.com/lukso-network/tools-lukso-cli/flags"
 	"github.com/lukso-network/tools-lukso-cli/pid"
 )
@@ -48,9 +49,10 @@ func NewTekuValidatorClient(
 	}
 }
 
-var TekuValidator ValidatorBinaryDependency
-
-var _ ValidatorBinaryDependency = &TekuValidatorClient{}
+var (
+	TekuValidator dep.ValidatorClient
+	_             dep.ValidatorClient = &TekuValidatorClient{}
+)
 
 func (t *TekuValidatorClient) Install(version string, isUpdate bool) error {
 	return nil

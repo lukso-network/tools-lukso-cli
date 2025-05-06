@@ -17,6 +17,7 @@ import (
 	"github.com/lukso-network/tools-lukso-cli/common/installer"
 	"github.com/lukso-network/tools-lukso-cli/common/logger"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
+	"github.com/lukso-network/tools-lukso-cli/dep"
 	"github.com/lukso-network/tools-lukso-cli/flags"
 	"github.com/lukso-network/tools-lukso-cli/pid"
 )
@@ -53,18 +54,19 @@ func NewTekuClient(
 	}
 }
 
-var Teku Client
-
-var _ Client = &TekuClient{}
+var (
+	Teku dep.ConsensusClient
+	_    dep.ConsensusClient = &TekuClient{}
+)
 
 func (t *TekuClient) Install(version string, isUpdate bool) (err error) {
-	url := t.ParseUrl(version, t.commit())
+	url := t.ParseUrl(version, t.Commit())
 
 	return t.installer.InstallTar(url, t.FileDir())
 }
 
 func (t *TekuClient) Update() (err error) {
-	tag := t.tag()
+	tag := t.Tag()
 
 	log.WithField("dependencyTag", tag).Infof("⬇️  Updating %s", t.name)
 

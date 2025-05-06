@@ -5,10 +5,10 @@ import "github.com/urfave/cli/v2"
 // UrlBuilder is responsible for parsing a URL for multiple OS options.
 type UrlBuilder interface {
 	ParseUrl(tag, commitHash string) string
-	tag() string
-	commit() string
-	os() string
-	arch() string
+	Tag() string
+	Commit() string
+	Os() string
+	Arch() string
 }
 
 // Installer represents a dependency that can be installed and updated.
@@ -29,6 +29,7 @@ type FileIdentifier interface {
 // use ExecutionClient, ConsensusClient or ValidatorClient
 type Client interface {
 	Installer
+	FileIdentifier
 	Start(ctx *cli.Context, arguments []string) error
 	Stop() error
 	Logs(logsDirPath string) error
@@ -37,6 +38,7 @@ type Client interface {
 	ParseUserFlags(ctx *cli.Context) []string
 	PrepareStartFlags(ctx *cli.Context) ([]string, error)
 	Version() string
+	Name() string
 }
 
 type ExecutionClient interface {

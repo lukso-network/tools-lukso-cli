@@ -12,6 +12,7 @@ import (
 	"github.com/lukso-network/tools-lukso-cli/common/installer"
 	"github.com/lukso-network/tools-lukso-cli/common/logger"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
+	"github.com/lukso-network/tools-lukso-cli/dep"
 	"github.com/lukso-network/tools-lukso-cli/flags"
 	"github.com/lukso-network/tools-lukso-cli/pid"
 )
@@ -41,18 +42,19 @@ func NewPrysmClient(
 	}
 }
 
-var Prysm Client
-
-var _ Client = &PrysmClient{}
+var (
+	Prysm dep.ConsensusClient
+	_     dep.ConsensusClient = &PrysmClient{}
+)
 
 func (p *PrysmClient) Install(version string, isUpdate bool) error {
-	url := p.ParseUrl(version, p.commit())
+	url := p.ParseUrl(version, p.Commit())
 
 	return p.installer.InstallFile(url, p.FilePath())
 }
 
 func (p *PrysmClient) Update() (err error) {
-	tag := p.tag()
+	tag := p.Tag()
 
 	log.WithField("dependencyTag", tag).Infof("⬇️  Updating %s", p.name)
 

@@ -16,6 +16,7 @@ import (
 	"github.com/lukso-network/tools-lukso-cli/common/installer"
 	"github.com/lukso-network/tools-lukso-cli/common/logger"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
+	"github.com/lukso-network/tools-lukso-cli/dep"
 	"github.com/lukso-network/tools-lukso-cli/flags"
 	"github.com/lukso-network/tools-lukso-cli/pid"
 )
@@ -47,18 +48,19 @@ func NewBesuClient(
 	}
 }
 
-var Besu Client
-
-var _ Client = &BesuClient{}
+var (
+	Besu dep.ExecutionClient
+	_    dep.ExecutionClient = &BesuClient{}
+)
 
 func (b *BesuClient) Install(version string, isUpdate bool) (err error) {
-	url := b.ParseUrl(version, b.commit())
+	url := b.ParseUrl(version, b.Commit())
 
 	return b.installer.InstallTar(url, b.FileDir())
 }
 
 func (b *BesuClient) Update() (err error) {
-	tag := b.tag()
+	tag := b.Tag()
 
 	log.WithField("dependencyTag", tag).Infof("⬇️  Updating %s", b.name)
 
