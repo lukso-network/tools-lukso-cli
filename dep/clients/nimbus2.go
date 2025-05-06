@@ -55,7 +55,7 @@ var (
 func (n *Nimbus2Client) Install(version string, isUpdate bool) (err error) {
 	url := n.ParseUrl(version, n.Commit())
 
-	return n.installer.InstallTar(url, n.FileDir())
+	return n.installer.InstallTar(url, file.ClientsDir, n.FileName(), "nimbus2")
 }
 
 func (n *Nimbus2Client) Update() (err error) {

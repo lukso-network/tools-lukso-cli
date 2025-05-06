@@ -14,6 +14,8 @@ import "runtime"
 // - arm64
 // - arm
 // - 386
+// Please bear in mind that some clients don't support that many platforms.
+// CLI will try to adjust the missing os/arch to some closest available setup.
 
 type buildInfo struct {
 	os   osBuildInfo
@@ -28,48 +30,49 @@ type (
 var gethBuildInfo = buildInfo{
 	os: osBuildInfo{
 		`linux`:    `linux`,
-		`darwin`:   `darwin`,
-		`fallback`: `fallback`,
+		`darwin`:   `linux`,
+		`fallback`: `linux`,
 	},
 	arch: archBuildInfo{
 		`amd64`:    `amd64`,
 		`arm64`:    `arm64`,
-		`arm`:      `arm`,
+		`arm`:      `arm5`,
 		`386`:      `386`,
-		`fallback`: `fallback`,
+		`fallback`: `amd64`,
 	},
 }
 
 var erigonBuildInfo = buildInfo{
 	os: osBuildInfo{
 		`linux`:    `linux`,
-		`darwin`:   `darwin`,
-		`fallback`: `fallback`,
+		`darwin`:   `linux`,
+		`fallback`: `linux`,
 	},
 	arch: archBuildInfo{
 		`amd64`:    `amd64`,
 		`arm64`:    `arm64`,
-		`arm`:      `arm`,
-		`386`:      `386`,
-		`fallback`: `fallback`,
+		`arm`:      `arm64`,
+		`386`:      `amd64`,
+		`fallback`: `amd64`,
 	},
 }
 
 var nethermindBuildInfo = buildInfo{
 	os: osBuildInfo{
 		`linux`:    `linux`,
-		`darwin`:   `darwin`,
-		`fallback`: `fallback`,
+		`darwin`:   `macos`,
+		`fallback`: `linux`,
 	},
 	arch: archBuildInfo{
-		`amd64`:    `amd64`,
+		`amd64`:    `x64`,
 		`arm64`:    `arm64`,
-		`arm`:      `arm`,
-		`386`:      `386`,
-		`fallback`: `fallback`,
+		`arm`:      `x64`,
+		`386`:      `x64`,
+		`fallback`: `x64`,
 	},
 }
 
+// Since besu runs on JVM there is no need for platform.
 var besuBuildInfo = buildInfo{
 	os: osBuildInfo{
 		`linux`:    `linux`,
@@ -89,32 +92,33 @@ var prysmBuildInfo = buildInfo{
 	os: osBuildInfo{
 		`linux`:    `linux`,
 		`darwin`:   `darwin`,
-		`fallback`: `fallback`,
+		`fallback`: `linux`,
 	},
 	arch: archBuildInfo{
 		`amd64`:    `amd64`,
 		`arm64`:    `arm64`,
-		`arm`:      `arm`,
-		`386`:      `386`,
-		`fallback`: `fallback`,
+		`arm`:      `arm64`,
+		`386`:      `amd64`,
+		`fallback`: `amd64`,
 	},
 }
 
 var lighthouseBuildInfo = buildInfo{
 	os: osBuildInfo{
-		`linux`:    `linux`,
-		`darwin`:   `darwin`,
+		`linux`:    `unknown-linux`,
+		`darwin`:   `apple-darwin`,
 		`fallback`: `fallback`,
 	},
 	arch: archBuildInfo{
-		`amd64`:    `amd64`,
-		`arm64`:    `arm64`,
-		`arm`:      `arm`,
-		`386`:      `386`,
-		`fallback`: `fallback`,
+		`amd64`:    `x86_64`,
+		`arm64`:    `aarch64`,
+		`arm`:      `aarch64`,
+		`386`:      `x86_64`,
+		`fallback`: `x86_64`,
 	},
 }
 
+// Since teku runs on JVM there is no need for platform.
 var tekuBuildInfo = buildInfo{
 	os: osBuildInfo{
 		`linux`:    `linux`,
@@ -132,16 +136,16 @@ var tekuBuildInfo = buildInfo{
 
 var nimbus2BuildInfo = buildInfo{
 	os: osBuildInfo{
-		`linux`:    `linux`,
-		`darwin`:   `darwin`,
+		`linux`:    `Linux`,
+		`darwin`:   `macOS`,
 		`fallback`: `fallback`,
 	},
 	arch: archBuildInfo{
 		`amd64`:    `amd64`,
-		`arm64`:    `arm64`,
-		`arm`:      `arm`,
-		`386`:      `386`,
-		`fallback`: `fallback`,
+		`arm64`:    `arm64v8`,
+		`arm`:      `arm32v7`,
+		`386`:      `amd64`,
+		`fallback`: `amd64`,
 	},
 }
 
@@ -165,5 +169,5 @@ func (b buildInfo) Os() string {
 }
 
 func (b buildInfo) Arch() string {
-	return b.os[runtime.GOARCH]
+	return b.arch[runtime.GOARCH]
 }

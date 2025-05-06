@@ -123,7 +123,7 @@ func (e *ErigonClient) Start(ctx *cli.Context, arguments []string) (err error) {
 func (e *ErigonClient) Install(version string, isUpdate bool) (err error) {
 	url := e.ParseUrl(version, e.Commit())
 
-	return e.installer.InstallTar(url, e.FileDir())
+	return e.installer.InstallTar(url, file.ClientsDir, e.FileName(), "erigon-")
 }
 
 func (e *ErigonClient) Update() (err error) {

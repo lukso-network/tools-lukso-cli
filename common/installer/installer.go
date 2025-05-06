@@ -4,12 +4,15 @@ import (
 	"archive/tar"
 	"archive/zip"
 	"bytes"
+	"compress/gzip"
 	"fmt"
 	"io"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/lukso-network/tools-lukso-cli/api/errors"
 	"github.com/lukso-network/tools-lukso-cli/common"
@@ -27,7 +30,7 @@ type Installer interface {
 	InstallFile(url, dest string) (err error)
 
 	// InstallFile uses HTTP GET to fetch data from the url and writes decompressed tar archive to dest. It also creates any path to it if necessary.
-	InstallTar(url, dest string) (err error)
+	InstallTar(url, dest, archiveName, pattern string) (err error)
 
 	// InstallFile uses HTTP GET to fetch data from the url and writes decompressed zip archive to dest. It also creates any path to it if necessary.
 	InstallZip(url, dest string) (err error)
@@ -48,6 +51,7 @@ func NewInstaller(mng file.Manager) Installer {
 }
 
 func (i *installer) Fetch(url string) (body []byte, err error) {
+	log.Info(url)
 	response, err := http.Get(url)
 	if err != nil {
 		return
@@ -104,10 +108,12 @@ func (i *installer) InstallFile(url, dest string) (err error) {
 	return
 }
 
-func (i *installer) InstallTar(url, dest string) (err error) {
+// InstallTar
+func (i *installer) InstallTar(url, dest, archiveName, pattern string) (err error) {
 	var (
 		b   []byte
 		buf *bytes.Reader
+		g   *gzip.Reader
 		t   *tar.Reader
 	)
 
@@ -117,7 +123,9 @@ func (i *installer) InstallTar(url, dest string) (err error) {
 	}
 
 	buf = bytes.NewReader(b)
-	t = tar.NewReader(buf)
+	g, err = gzip.NewReader(buf)
+
+	t = tar.NewReader(g)
 	if err != nil {
 		return
 	}
@@ -131,27 +139,15 @@ func (i *installer) InstallTar(url, dest string) (err error) {
 			return err
 		}
 
+		log.Info(header.Name)
 		var (
 			path       string
 			headerName = header.Name
 		)
 
 		// for the sake of compatibility with updated versions remove the tag from the tarred file - teku/teku-xx.x.x => teku/teku, same with jdk
-		switch {
-		case strings.Contains(header.Name, "teku-"):
-			headerName = replaceRootFolderName(header.Name, "teku")
-
-		case strings.Contains(header.Name, "jdk-"):
-			headerName = replaceRootFolderName(header.Name, "jdk")
-
-		case strings.Contains(header.Name, "besu-"):
-			headerName = replaceRootFolderName(header.Name, "besu")
-
-		case strings.Contains(header.Name, "nimbus-eth2"):
-			headerName = replaceRootFolderName(header.Name, "nimbus2")
-
-		case strings.Contains(header.Name, "erigon"):
-			headerName = replaceRootFolderName(header.Name, "erigon")
+		if strings.Contains(header.Name, pattern) {
+			headerName = replaceRootFolderName(header.Name, archiveName)
 		}
 
 		path = filepath.Join(dest, headerName)

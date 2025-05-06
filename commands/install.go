@@ -34,15 +34,13 @@ func (c *commander) Install(ctx *cli.Context) (err error) {
 	}
 
 	var (
-		selectedConsensus   dep.ConsensusClient
-		selectedExecution   dep.ExecutionClient
-		consensusInput      string
-		executionInput      string
-		consensusTag        string
-		executionTag        string
-		executionCommitHash string
-		consensusCommitHash string
-		isSetupClientsDir   bool = false
+		selectedConsensus dep.ConsensusClient
+		selectedExecution dep.ExecutionClient
+		consensusInput    string
+		executionInput    string
+		consensusTag      string
+		executionTag      string
+		isSetupClientsDir bool = false
 	)
 
 	consensusMessage := "\nWhich consensus client do you want to install?\n" +
@@ -78,7 +76,6 @@ func (c *commander) Install(ctx *cli.Context) (err error) {
 	case "4":
 		selectedConsensus = clients.Nimbus2
 		consensusTag = ctx.String(flags.Nimbus2TagFlag)
-		consensusCommitHash = ctx.String(flags.Nimbus2CommitHashFlag)
 		isSetupClientsDir = true
 
 	}
@@ -92,7 +89,6 @@ func (c *commander) Install(ctx *cli.Context) (err error) {
 	case "1":
 		selectedExecution = clients.Geth
 		executionTag = ctx.String(flags.GethTagFlag)
-		executionCommitHash = ctx.String(flags.GethCommitHashFlag)
 	case "2":
 		selectedExecution = clients.Erigon
 		executionTag = ctx.String(flags.ErigonTagFlag)
@@ -109,7 +105,6 @@ func (c *commander) Install(ctx *cli.Context) (err error) {
 	case "3":
 		selectedExecution = clients.Nethermind
 		executionTag = ctx.String(flags.NethermindTagFlag)
-		executionCommitHash = ctx.String(flags.NethermindCommitHashFlag)
 		isSetupClientsDir = true
 	case "4":
 		selectedExecution = clients.Besu
@@ -142,13 +137,13 @@ func (c *commander) Install(ctx *cli.Context) (err error) {
 	}
 
 	log.Infof("⬇️  Downloading %s...", selectedExecution.Name())
-	err = selectedExecution.Install(selectedExecution.ParseUrl(executionTag, executionCommitHash), false)
+	err = selectedExecution.Install(executionTag, false)
 	if err != nil {
 		return utils.Exit(fmt.Sprintf("❌  There was an error while downloading %s: %v", selectedExecution.Name(), err), 1)
 	}
 
 	log.Infof("⬇️  Downloading %s...", selectedConsensus.Name())
-	err = selectedConsensus.Install(selectedConsensus.ParseUrl(consensusTag, consensusCommitHash), false)
+	err = selectedConsensus.Install(consensusTag, false)
 	if err != nil {
 		return utils.Exit(fmt.Sprintf("❌  There was an error while downloading %s: %v", selectedConsensus.Name(), err), 1)
 	}
@@ -158,7 +153,7 @@ func (c *commander) Install(ctx *cli.Context) (err error) {
 	if selectedConsensus == clients.Prysm {
 		selectedValidator = clients.PrysmValidator
 		log.Infof("⬇️  Downloading %s...", selectedValidator.Name())
-		err = selectedValidator.Install(selectedValidator.ParseUrl(consensusTag, ""), false)
+		err = selectedValidator.Install(consensusTag, false)
 		if err != nil {
 			return utils.Exit(fmt.Sprintf("❌  There was an error while downloading validator: %v", err), 1)
 		}

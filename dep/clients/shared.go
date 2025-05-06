@@ -63,41 +63,10 @@ const (
 )
 
 var (
-	ExecutionClients = map[string]dep.ExecutionClient{
-		gethDependencyName:       Geth,
-		erigonDependencyName:     Erigon,
-		nethermindDependencyName: Nethermind,
-		besuDependencyName:       Besu,
-	}
-
-	ConsensusClients = map[string]dep.ConsensusClient{
-		prysmDependencyName:      Prysm,
-		lighthouseDependencyName: Lighthouse,
-		tekuDependencyName:       Teku,
-		nimbus2DependencyName:    Nimbus2,
-	}
-
-	ValidatorClients = map[string]dep.ValidatorClient{
-		prysmValidatorDependencyName:      PrysmValidator,
-		lighthouseValidatorDependencyName: LighthouseValidator,
-		tekuValidatorDependencyName:       TekuValidator,
-		nimbus2ValidatorDependencyName:    Nimbus2Validator,
-	}
-
-	AllClients = map[string]dep.Client{
-		gethDependencyName:                Geth,
-		erigonDependencyName:              Erigon,
-		prysmDependencyName:               Prysm,
-		lighthouseDependencyName:          Lighthouse,
-		prysmValidatorDependencyName:      PrysmValidator,
-		lighthouseValidatorDependencyName: LighthouseValidator,
-		tekuDependencyName:                Teku,
-		tekuValidatorDependencyName:       TekuValidator,
-		nethermindDependencyName:          Nethermind,
-		besuDependencyName:                Besu,
-		nimbus2DependencyName:             Nimbus2,
-		nimbus2ValidatorDependencyName:    Nimbus2Validator,
-	}
+	ExecutionClients map[string]dep.ExecutionClient
+	ConsensusClients map[string]dep.ConsensusClient
+	ValidatorClients map[string]dep.ValidatorClient
+	AllClients       map[string]dep.Client
 
 	ClientVersions = map[string]string{
 		gethDependencyName:                common.GethTag,
@@ -110,6 +79,19 @@ var (
 		tekuDependencyName:                common.TekuTag,
 		besuDependencyName:                common.BesuTag,
 		nimbus2DependencyName:             common.Nimbus2Tag,
+	}
+
+	ClientCommits = map[string]string{
+		gethDependencyName:                common.GethCommitHash,
+		erigonDependencyName:              common.ErigonCommitHash,
+		nethermindDependencyName:          common.NethermindCommitHash,
+		prysmDependencyName:               common.PrysmCommitHash,
+		lighthouseDependencyName:          common.LighthouseCommitHash,
+		prysmValidatorDependencyName:      common.PrysmCommitHash,
+		lighthouseValidatorDependencyName: common.LighthouseCommitHash,
+		tekuDependencyName:                common.TekuCommitHash,
+		besuDependencyName:                common.BesuCommitHash,
+		nimbus2DependencyName:             common.Nimbus2CommitHash,
 	}
 
 	// for ordered actions
@@ -313,7 +295,7 @@ func (client *clientBinary) FileDir() string {
 }
 
 func (client *clientBinary) FilePath() string {
-	return client.FileDir() + client.FileName()
+	return client.FileDir() + "/" + client.FileName()
 }
 
 func (client *clientBinary) Version() (v string) {
@@ -330,15 +312,15 @@ func (client *clientBinary) Tag() string {
 }
 
 func (client *clientBinary) Commit() string {
-	return ""
+	return ClientCommits[client.Name()]
 }
 
 func (client *clientBinary) Os() string {
-	return ""
+	return client.buildInfo.Os()
 }
 
 func (client *clientBinary) Arch() string {
-	return ""
+	return client.buildInfo.Arch()
 }
 
 func execVersionCmd(cmd string) (ver string) {
@@ -625,4 +607,40 @@ func Setup(
 	LighthouseValidator = NewLighthouseValidatorClient(log, file, installer, pid)
 	TekuValidator = NewTekuValidatorClient(log, file, installer, pid)
 	Nimbus2Validator = NewNimbus2ValidatorClient(log, file, installer, pid)
+
+	ExecutionClients = map[string]dep.ExecutionClient{
+		gethDependencyName:       Geth,
+		erigonDependencyName:     Erigon,
+		nethermindDependencyName: Nethermind,
+		besuDependencyName:       Besu,
+	}
+
+	ConsensusClients = map[string]dep.ConsensusClient{
+		prysmDependencyName:      Prysm,
+		lighthouseDependencyName: Lighthouse,
+		tekuDependencyName:       Teku,
+		nimbus2DependencyName:    Nimbus2,
+	}
+
+	ValidatorClients = map[string]dep.ValidatorClient{
+		prysmValidatorDependencyName:      PrysmValidator,
+		lighthouseValidatorDependencyName: LighthouseValidator,
+		tekuValidatorDependencyName:       TekuValidator,
+		nimbus2ValidatorDependencyName:    Nimbus2Validator,
+	}
+
+	AllClients = map[string]dep.Client{
+		gethDependencyName:                Geth,
+		erigonDependencyName:              Erigon,
+		prysmDependencyName:               Prysm,
+		lighthouseDependencyName:          Lighthouse,
+		prysmValidatorDependencyName:      PrysmValidator,
+		lighthouseValidatorDependencyName: LighthouseValidator,
+		tekuDependencyName:                Teku,
+		tekuValidatorDependencyName:       TekuValidator,
+		nethermindDependencyName:          Nethermind,
+		besuDependencyName:                Besu,
+		nimbus2DependencyName:             Nimbus2,
+		nimbus2ValidatorDependencyName:    Nimbus2Validator,
+	}
 }

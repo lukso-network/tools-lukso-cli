@@ -67,7 +67,8 @@ func (j *JdkDep) Install(version string, isUpdate bool) (err error) {
 	j.log.Info("⬇️  Downloading JDK...")
 
 	url := j.ParseUrl(j.Tag(), j.Commit())
-	err = j.installer.InstallTar(url, j.sourceDir)
+
+	err = j.installer.InstallTar(url, file.ClientsDir, "jdk", "jdk-")
 	if err != nil {
 		return err
 	}
