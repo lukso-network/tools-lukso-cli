@@ -37,7 +37,8 @@ func NewTekuValidatorClient(
 	return &TekuValidatorClient{
 		&clientBinary{
 			name:           tekuValidatorDependencyName,
-			fileName:       "validator_tk",
+			fileName:       tekuValidatorFileName,
+			commandPath:    tekuValidatorCommandPath,
 			baseUrl:        "",
 			githubLocation: tekuGithubLocation,
 			buildInfo:      tekuBuildInfo,

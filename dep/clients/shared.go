@@ -42,6 +42,32 @@ const (
 	nimbus2DependencyName             = "Nimbus2"
 	nimbus2ValidatorDependencyName    = "Nimbus2 Validator"
 
+	gethCommandPath                = file.ClientsDir + "/geth/geth"
+	prysmCommandPath               = file.ClientsDir + "/prysm/prysm"
+	prysmValidatorCommandPath      = file.ClientsDir + "/validator/validator"
+	lighthouseCommandPath          = file.ClientsDir + "/lighthouse/lighthouse"
+	lighthouseValidatorCommandPath = file.ClientsDir + "/lighthouse/lighthouse"
+	erigonCommandPath              = file.ClientsDir + "/erigon/erigon"
+	tekuCommandPath                = file.ClientsDir + "/teku/teku"
+	tekuValidatorCommandPath       = file.ClientsDir + "/teku/teku"
+	nethermindCommandPath          = file.ClientsDir + "/nethermind/nethermind"
+	besuCommandPath                = file.ClientsDir + "/besu/bin/besu"
+	nimbus2CommandPath             = file.ClientsDir + "/nimbus2/nimbus2"
+	nimbus2ValidatorCommandPath    = file.ClientsDir + "/nimbus2/nimbus2"
+
+	gethFileName                = "geth"
+	prysmFileName               = "prysm"
+	prysmValidatorFileName      = "validator_pr"
+	lighthouseFileName          = "lighthouse"
+	lighthouseValidatorFileName = "validator_lh"
+	erigonFileName              = "erigon"
+	tekuFileName                = "teku"
+	tekuValidatorFileName       = "validator_tk"
+	nethermindFileName          = "nethermind"
+	besuFileName                = "besu"
+	nimbus2FileName             = "nimbus2"
+	nimbus2ValidatorFileName    = "validator_nim2"
+
 	gethGithubLocation          = "ethereum/go-ethereum"
 	prysmaticLabsGithubLocation = "prysmaticlabs/prysm"
 	lighthouseGithubLocation    = "sigp/lighthouse"
@@ -117,6 +143,7 @@ var (
 type clientBinary struct {
 	name           string
 	fileName       string
+	commandPath    string
 	baseUrl        string
 	githubLocation string // user + repo, f.e. prysmaticlabs/prysm
 	buildInfo      buildInfo
@@ -139,7 +166,7 @@ func (client *clientBinary) Start(ctx *cli.Context, arguments []string) (err err
 		log.Infof("🛑  Stopped %s", client.Name())
 	}
 
-	command := exec.Command(client.FilePath(), arguments...)
+	command := exec.Command(client.CommandPath(), arguments...)
 
 	err = client.logFile(ctx.String(flags.LogFolderFlag), command)
 	if err != nil {
@@ -296,6 +323,10 @@ func (client *clientBinary) FileDir() string {
 
 func (client *clientBinary) FilePath() string {
 	return client.FileDir() + "/" + client.FileName()
+}
+
+func (client *clientBinary) CommandPath() string {
+	return client.commandPath
 }
 
 func (client *clientBinary) Version() (v string) {

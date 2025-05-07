@@ -34,7 +34,8 @@ func NewPrysmValidatorClient(
 	return &PrysmValidatorClient{
 		&clientBinary{
 			name:           prysmValidatorDependencyName,
-			fileName:       "validator_pr",
+			fileName:       prysmValidatorFileName,
+			commandPath:    prysmValidatorCommandPath,
 			baseUrl:        "https://github.com/prysmaticlabs/prysm/releases/download/|TAG|/validator-|TAG|-|OS|-|ARCH|",
 			githubLocation: prysmaticLabsGithubLocation,
 			buildInfo:      prysmBuildInfo,

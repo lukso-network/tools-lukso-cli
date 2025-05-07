@@ -12,8 +12,6 @@ import (
 	"path/filepath"
 	"strings"
 
-	log "github.com/sirupsen/logrus"
-
 	"github.com/lukso-network/tools-lukso-cli/api/errors"
 	"github.com/lukso-network/tools-lukso-cli/common"
 	"github.com/lukso-network/tools-lukso-cli/common/file"
@@ -51,7 +49,6 @@ func NewInstaller(mng file.Manager) Installer {
 }
 
 func (i *installer) Fetch(url string) (body []byte, err error) {
-	log.Info(url)
 	response, err := http.Get(url)
 	if err != nil {
 		return
@@ -139,7 +136,6 @@ func (i *installer) InstallTar(url, dest, archiveName, pattern string) (err erro
 			return err
 		}
 
-		log.Info(header.Name)
 		var (
 			path       string
 			headerName = header.Name

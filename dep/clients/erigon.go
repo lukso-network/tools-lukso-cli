@@ -2,10 +2,7 @@ package clients
 
 import (
 	"fmt"
-	"os"
-	"os/exec"
 	"strings"
-	"time"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
@@ -38,7 +35,8 @@ func NewErigonClient(
 	return &ErigonClient{
 		&clientBinary{
 			name:           erigonDependencyName,
-			fileName:       "erigon",
+			fileName:       erigonFileName,
+			commandPath:    erigonCommandPath,
 			baseUrl:        "https://github.com/erigontech/erigon/releases/download/|TAG|/erigon_|TAG|_|OS|_|ARCH|.tar.gz",
 			githubLocation: erigonGithubLocation,
 			buildInfo:      erigonBuildInfo,
@@ -54,71 +52,6 @@ var (
 	Erigon dep.ExecutionClient
 	_      dep.ExecutionClient = &ErigonClient{}
 )
-
-func (e *ErigonClient) Start(ctx *cli.Context, arguments []string) (err error) {
-	if e.IsRunning() {
-		log.Infof("🔄️  %s is already running - stopping first...", e.Name())
-
-		err = e.Stop()
-		if err != nil {
-			return
-		}
-
-		log.Infof("🛑  Stopped %s", e.Name())
-	}
-
-	err = e.Init()
-	if err != nil && err != errors.ErrAlreadyRunning { // if it is already running it will be caught during start
-		log.Errorf("❌  There was an error while initalizing %s. Error: %v", e.Name(), err)
-
-		return err
-	}
-
-	command := exec.Command(fmt.Sprintf("./%s/erigon", e.FilePath()), arguments...)
-
-	var (
-		logFile  *os.File
-		fullPath string
-	)
-
-	logFolder := ctx.String(flags.LogFolderFlag)
-	if logFolder == "" {
-		return utils.Exit(fmt.Sprintf("%v- %s", errors.ErrFlagMissing, flags.LogFolderFlag), 1)
-	}
-
-	fullPath, err = utils.TimestampedFile(logFolder, e.FileName())
-	if err != nil {
-		return
-	}
-
-	err = os.WriteFile(fullPath, []byte{}, 0o750)
-	if err != nil {
-		return
-	}
-
-	logFile, err = os.OpenFile(fullPath, os.O_RDWR, 0o750)
-	if err != nil {
-		return
-	}
-
-	command.Stdout = logFile
-	command.Stderr = logFile
-
-	log.Infof("🔄  Starting %s", e.Name())
-	err = command.Start()
-	if err != nil {
-		return
-	}
-
-	pidLocation := fmt.Sprintf("%s/%s.pid", pid.FileDir, e.FileName())
-	err = pid.Create(pidLocation, command.Process.Pid)
-
-	time.Sleep(1 * time.Second)
-
-	log.Infof("✅  %s started!", e.Name())
-
-	return
-}
 
 func (e *ErigonClient) Install(version string, isUpdate bool) (err error) {
 	url := e.ParseUrl(version, e.Commit())
@@ -157,7 +90,7 @@ func (e *ErigonClient) Peers(ctx *cli.Context) (outbound, inbound int, err error
 
 func (e *ErigonClient) Version() (version string) {
 	cmdVer := execVersionCmd(
-		e.FilePath(),
+		e.CommandPath(),
 	)
 
 	if cmdVer == VersionNotAvailable {

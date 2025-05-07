@@ -14,7 +14,6 @@ import (
 	"github.com/lukso-network/tools-lukso-cli/common/file"
 	"github.com/lukso-network/tools-lukso-cli/common/installer"
 	"github.com/lukso-network/tools-lukso-cli/common/logger"
-	"github.com/lukso-network/tools-lukso-cli/common/system"
 	"github.com/lukso-network/tools-lukso-cli/dep"
 	"github.com/lukso-network/tools-lukso-cli/flags"
 	"github.com/lukso-network/tools-lukso-cli/pid"
@@ -35,7 +34,8 @@ func NewNimbus2Client(
 	return &Nimbus2Client{
 		&clientBinary{
 			name:           nimbus2DependencyName,
-			fileName:       "nimbus2",
+			fileName:       nimbus2FileName,
+			commandPath:    nimbus2CommandPath,
 			baseUrl:        "https://github.com/status-im/nimbus-eth2/releases/download/v|TAG|/nimbus-eth2_|OS|_|ARCH|_|TAG|_|COMMIT|.tar.gz",
 			githubLocation: nimbus2GithubLocation,
 			buildInfo:      nimbus2BuildInfo,
@@ -73,38 +73,6 @@ func (n *Nimbus2Client) PrepareStartFlags(ctx *cli.Context) (startFlags []string
 	if ctx.String(flags.TransactionFeeRecipientFlag) != "" {
 		startFlags = append(startFlags, fmt.Sprintf("--suggested-fee-recipient=%s", ctx.String(flags.TransactionFeeRecipientFlag)))
 	}
-
-	return
-}
-
-func (n *Nimbus2Client) ParseUrl(tag, commitHash string) (url string) {
-	var (
-		urlSystem string
-		arch      = system.GetArch()
-	)
-
-	switch system.Os {
-	case system.Ubuntu:
-		urlSystem = "Linux"
-	case system.Macos:
-		urlSystem = "macOS"
-	default:
-		urlSystem = "Linux"
-	}
-
-	if (arch == "arm" || arch == "aarch64") && system.Os == system.Ubuntu {
-		arch = "arm64v8"
-	}
-	if arch == "x86_64" {
-		// x86_64 not present as a released tar - default to amd64 instead
-		arch = "amd64"
-	}
-
-	url = n.baseUrl
-	url = strings.ReplaceAll(url, "|TAG|", tag)
-	url = strings.ReplaceAll(url, "|OS|", urlSystem)
-	url = strings.ReplaceAll(url, "|COMMIT|", commitHash)
-	url = strings.ReplaceAll(url, "|ARCH|", arch)
 
 	return
 }
@@ -182,7 +150,7 @@ func (n *Nimbus2Client) Peers(ctx *cli.Context) (outbound, inbound int, err erro
 
 func (n *Nimbus2Client) Version() (version string) {
 	cmdVer := execVersionCmd(
-		fmt.Sprintf("./%s/build/nimbus_beacon_node", n.FilePath()),
+		n.CommandPath(),
 	)
 
 	if cmdVer == VersionNotAvailable {

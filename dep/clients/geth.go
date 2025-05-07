@@ -31,7 +31,8 @@ func NewGethClient(
 	return &GethClient{
 		&clientBinary{
 			name:           gethDependencyName,
-			fileName:       "geth",
+			fileName:       gethFileName,
+			commandPath:    gethCommandPath,
 			baseUrl:        "https://gethstore.blob.core.windows.net/builds/geth-|OS|-|ARCH|-|TAG|-|COMMIT|.tar.gz",
 			githubLocation: gethGithubLocation,
 			buildInfo:      gethBuildInfo,
@@ -87,7 +88,7 @@ func (g *GethClient) Peers(ctx *cli.Context) (outbound, inbound int, err error) 
 
 func (g *GethClient) Version() (version string) {
 	cmdVer := execVersionCmd(
-		g.FilePath(),
+		g.CommandPath(),
 	)
 
 	if cmdVer == VersionNotAvailable {

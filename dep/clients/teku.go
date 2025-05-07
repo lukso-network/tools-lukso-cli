@@ -42,7 +42,8 @@ func NewTekuClient(
 	return &TekuClient{
 		&clientBinary{
 			name:           tekuDependencyName,
-			fileName:       "teku",
+			fileName:       tekuFileName,
+			commandPath:    tekuCommandPath,
 			baseUrl:        tekuInstallURL,
 			githubLocation: tekuGithubLocation,
 			buildInfo:      tekuBuildInfo,

@@ -2,11 +2,8 @@ package clients
 
 import (
 	"fmt"
-	"os"
-	"os/exec"
 	"regexp"
 	"strings"
-	"time"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
@@ -16,7 +13,6 @@ import (
 	"github.com/lukso-network/tools-lukso-cli/common/file"
 	"github.com/lukso-network/tools-lukso-cli/common/installer"
 	"github.com/lukso-network/tools-lukso-cli/common/logger"
-	"github.com/lukso-network/tools-lukso-cli/common/system"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
 	"github.com/lukso-network/tools-lukso-cli/dep"
 	"github.com/lukso-network/tools-lukso-cli/flags"
@@ -40,7 +36,8 @@ func NewNethermindClient(
 	return &NethermindClient{
 		&clientBinary{
 			name:           nethermindDependencyName,
-			fileName:       "nethermind",
+			fileName:       nethermindFileName,
+			commandPath:    nethermindCommandPath,
 			baseUrl:        "https://github.com/NethermindEth/nethermind/releases/download/|TAG|/nethermind-|TAG|-|COMMIT|-|OS|-|ARCH|.zip",
 			githubLocation: nethermindGithubLocation,
 			buildInfo:      nethermindBuildInfo,
@@ -71,88 +68,6 @@ func (n *NethermindClient) Update() (err error) {
 	return n.Install(tag, true)
 }
 
-func (n *NethermindClient) Start(ctx *cli.Context, arguments []string) (err error) {
-	if n.IsRunning() {
-		log.Infof("🔄️  %s is already running - stopping first...", n.Name())
-
-		err = n.Stop()
-		if err != nil {
-			return
-		}
-
-		log.Infof("🛑  Stopped %s", n.Name())
-	}
-
-	command := exec.Command(fmt.Sprintf("./%s/nethermind", n.FilePath()), arguments...)
-
-	var (
-		logFile  *os.File
-		fullPath string
-	)
-
-	logFolder := ctx.String(flags.LogFolderFlag)
-	if logFolder == "" {
-		return utils.Exit(fmt.Sprintf("%v- %s", errors.ErrFlagMissing, flags.LogFolderFlag), 1)
-	}
-
-	fullPath, err = utils.TimestampedFile(logFolder, n.FileName())
-	if err != nil {
-		return
-	}
-
-	err = os.WriteFile(fullPath, []byte{}, 0o750)
-	if err != nil {
-		return
-	}
-
-	logFile, err = os.OpenFile(fullPath, os.O_RDWR, 0o750)
-	if err != nil {
-		return
-	}
-
-	command.Stdout = logFile
-	command.Stderr = logFile
-
-	log.Infof("🔄  Starting %s", n.Name())
-	err = command.Start()
-	if err != nil {
-		return
-	}
-
-	pidLocation := fmt.Sprintf("%s/%s.pid", pid.FileDir, n.FileName())
-	err = pid.Create(pidLocation, command.Process.Pid)
-
-	time.Sleep(1 * time.Second)
-
-	log.Infof("✅  %s started!", n.Name())
-
-	return
-}
-
-func (n *NethermindClient) ParseUrl(tag, commitHash string) (url string) {
-	url = n.baseUrl
-	osName := system.Os
-	archName := system.GetArch()
-
-	if osName == system.Macos {
-		osName = "macos"
-	}
-
-	if archName == "x86_64" {
-		archName = "x64"
-	}
-	if archName == "arm" || archName == "aarch64" {
-		archName = "arm64"
-	}
-
-	url = strings.Replace(url, "|TAG|", tag, -1)
-	url = strings.Replace(url, "|OS|", osName, -1)
-	url = strings.Replace(url, "|COMMIT|", commitHash, -1)
-	url = strings.Replace(url, "|ARCH|", archName, -1)
-
-	return
-}
-
 func (n *NethermindClient) PrepareStartFlags(ctx *cli.Context) (startFlags []string, err error) {
 	if !utils.FlagFileExists(ctx, flags.NethermindConfigFileFlag) {
 		err = errors.ErrFlagMissing
@@ -172,7 +87,7 @@ func (n *NethermindClient) Peers(ctx *cli.Context) (outbound, inbound int, err e
 
 func (n *NethermindClient) Version() (version string) {
 	cmdVer := execVersionCmd(
-		fmt.Sprintf("./%s/nethermind", n.FilePath()),
+		n.CommandPath(),
 	)
 
 	if cmdVer == VersionNotAvailable {

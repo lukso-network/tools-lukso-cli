@@ -9,7 +9,6 @@ import (
 
 	"github.com/lukso-network/tools-lukso-cli/common"
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
-	"github.com/lukso-network/tools-lukso-cli/common/system"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
 	"github.com/lukso-network/tools-lukso-cli/dep"
 	"github.com/lukso-network/tools-lukso-cli/dep/clients"
@@ -23,14 +22,6 @@ func (c *commander) Install(ctx *cli.Context) (err error) {
 
 	if !cfg.Exists() {
 		return utils.Exit(errors.FolderNotInitialized, 1)
-	}
-
-	isRoot, err := system.IsRoot()
-	if err != nil {
-		return utils.Exit(fmt.Sprintf("There was an error while checking user privileges: %v", err), 1)
-	}
-	if !isRoot {
-		return utils.Exit(errors.ErrNeedRoot.Error(), 1)
 	}
 
 	var (

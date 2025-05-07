@@ -4,9 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
-	"time"
 
-	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
@@ -33,8 +31,9 @@ func NewLighthouseValidatorClient(
 	return &LighthouseValidatorClient{
 		&clientBinary{
 			name:           lighthouseValidatorDependencyName,
-			fileName:       "validator_lh", // we run it using lighthouse bin
-			baseUrl:        "",             // no separate client for lighthouse validator - lighthouse_beacon for reference
+			fileName:       lighthouseValidatorFileName, // we run it using lighthouse bin
+			commandPath:    lighthouseValidatorCommandPath,
+			baseUrl:        "", // no separate client for lighthouse validator - lighthouse_beacon for reference
 			githubLocation: "",
 			buildInfo:      lighthouseBuildInfo,
 			log:            log,
@@ -56,64 +55,6 @@ func (l *LighthouseValidatorClient) Install(version string, isUpdate bool) error
 
 func (l *LighthouseValidatorClient) Update() error {
 	return nil
-}
-
-func (l *LighthouseValidatorClient) Start(ctx *cli.Context, args []string) (err error) {
-	if l.IsRunning() {
-		log.Infof("🔄️  %s is already running - stopping first...", l.Name())
-
-		err = l.Stop()
-		if err != nil {
-			return
-		}
-
-		log.Infof("🛑  Stopped %s", l.Name())
-	}
-
-	command := exec.Command(Lighthouse.FilePath(), args...)
-
-	var (
-		logFile  *os.File
-		fullPath string
-	)
-
-	logFolder := ctx.String(flags.LogFolderFlag)
-	if logFolder == "" {
-		return utils.Exit(fmt.Sprintf("%v- %s", errors.ErrFlagMissing, flags.LogFolderFlag), 1)
-	}
-
-	fullPath, err = utils.TimestampedFile(logFolder, l.FileName())
-	if err != nil {
-		return
-	}
-
-	err = os.WriteFile(fullPath, []byte{}, 0o750)
-	if err != nil {
-		return
-	}
-
-	logFile, err = os.OpenFile(fullPath, os.O_RDWR, 0o750)
-	if err != nil {
-		return
-	}
-
-	command.Stdout = logFile
-	command.Stderr = logFile
-
-	log.Infof("🔄  Starting %s", l.Name())
-	err = command.Start()
-	if err != nil {
-		return
-	}
-
-	pidLocation := fmt.Sprintf("%s/%s.pid", pid.FileDir, l.FileName())
-	err = pid.Create(pidLocation, command.Process.Pid)
-
-	time.Sleep(1 * time.Second)
-
-	log.Infof("✅  %s started!", l.Name())
-
-	return
 }
 
 func (l *LighthouseValidatorClient) PrepareStartFlags(ctx *cli.Context) (startFlags []string, err error) {

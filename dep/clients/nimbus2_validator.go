@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
-	"time"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
@@ -31,7 +30,8 @@ func NewNimbus2ValidatorClient(
 	return &Nimbus2ValidatorClient{
 		&clientBinary{
 			name:           nimbus2ValidatorDependencyName,
-			fileName:       "validator_nimbus",
+			fileName:       nimbus2ValidatorFileName,
+			commandPath:    nimbus2ValidatorCommandPath,
 			baseUrl:        "",
 			githubLocation: nimbus2GithubLocation,
 			buildInfo:      nimbus2BuildInfo,
@@ -61,41 +61,6 @@ func (n *Nimbus2ValidatorClient) PrepareStartFlags(ctx *cli.Context) (startFlags
 
 	startFlags = append(startFlags, fmt.Sprintf("--config-file=%s", ctx.String(flags.Nimbus2ValidatorConfigFileFlag)))
 	startFlags = append(startFlags, fmt.Sprintf("--suggested-fee-recipient=%s", ctx.String(flags.TransactionFeeRecipientFlag)))
-
-	return
-}
-
-func (n *Nimbus2ValidatorClient) Start(ctx *cli.Context, arguments []string) (err error) {
-	if n.IsRunning() {
-		log.Infof("🔄️  %s is already running - stopping first...", n.Name())
-
-		err = n.Stop()
-		if err != nil {
-			return
-		}
-
-		log.Infof("🛑  Stopped %s", n.Name())
-	}
-
-	command := exec.Command(fmt.Sprintf("./%s/build/nimbus_validator_client", nimbus2Folder), arguments...)
-
-	err = n.logFile(n.FileName(), command)
-	if err != nil {
-		log.Errorf("There was an error while preparing a log file for %s: %v", n.Name(), err)
-	}
-
-	log.Infof("🔄  Starting %s", n.Name())
-	err = command.Start()
-	if err != nil {
-		return
-	}
-
-	pidLocation := fmt.Sprintf("%s/%s.pid", pid.FileDir, n.FileName())
-	err = pid.Create(pidLocation, command.Process.Pid)
-
-	time.Sleep(1 * time.Second)
-
-	log.Infof("✅  %s started!", n.Name())
 
 	return
 }

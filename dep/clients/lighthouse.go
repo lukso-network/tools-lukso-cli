@@ -1,9 +1,7 @@
 package clients
 
 import (
-	"bytes"
 	"fmt"
-	"os/exec"
 	"strings"
 
 	log "github.com/sirupsen/logrus"
@@ -12,7 +10,6 @@ import (
 	"github.com/lukso-network/tools-lukso-cli/common/file"
 	"github.com/lukso-network/tools-lukso-cli/common/installer"
 	"github.com/lukso-network/tools-lukso-cli/common/logger"
-	"github.com/lukso-network/tools-lukso-cli/common/system"
 	"github.com/lukso-network/tools-lukso-cli/config"
 	"github.com/lukso-network/tools-lukso-cli/dep"
 	"github.com/lukso-network/tools-lukso-cli/flags"
@@ -32,8 +29,9 @@ func NewLighthouseClient(
 	return &LighthouseClient{
 		&clientBinary{
 			name:           lighthouseDependencyName,
-			fileName:       "lighthouse",
-			baseUrl:        "https://github.com/sigp/lighthouse/releases/download/|TAG|/lighthouse-|TAG|-|ARCH|-|OS-NAME|-|OS|.tar.gz",
+			fileName:       lighthouseFileName,
+			commandPath:    lighthouseCommandPath,
+			baseUrl:        "https://github.com/sigp/lighthouse/releases/download/|TAG|/lighthouse-|TAG|-|ARCH|-|OS|.tar.gz",
 			githubLocation: lighthouseGithubLocation,
 			buildInfo:      lighthouseBuildInfo,
 			log:            log,
@@ -61,63 +59,6 @@ func (l *LighthouseClient) Update() (err error) {
 	log.WithField("dependencyTag", tag).Infof("⬇️  Updating %s", l.name)
 
 	return l.Install(tag, true)
-}
-
-func (l *LighthouseClient) ParseUrl(tag, commitHash string) (url string) {
-	var (
-		systemName string
-		urlSystem  = system.Os
-		arch       string
-	)
-
-	fallback := func() {
-		log.Info("⚠️  Unknown OS detected: proceeding with x86_64 as a default arch")
-		arch = "x86_64"
-	}
-
-	switch system.Os {
-	case system.Ubuntu:
-		systemName = "unknown"
-		urlSystem += "-gnu"
-	case system.Macos:
-		systemName = "apple"
-	default:
-		systemName = "unknown"
-		urlSystem += "-gnu"
-	}
-
-	switch system.Os {
-	case system.Ubuntu, system.Macos:
-		buf := new(bytes.Buffer)
-
-		uname := exec.Command("uname", "-m")
-		uname.Stdout = buf
-
-		err := uname.Run()
-		if err != nil {
-			fallback()
-
-			break
-		}
-
-		arch = strings.Trim(buf.String(), "\n\t ")
-
-	default:
-		fallback()
-	}
-
-	if arch != "x86_64" && arch != "aarch64" {
-		fallback()
-	}
-
-	url = l.baseUrl
-	url = strings.Replace(url, "|TAG|", tag, -1)
-	url = strings.Replace(url, "|OS|", urlSystem, -1)
-	url = strings.Replace(url, "|OS-NAME|", systemName, -1) // for lighthouse
-	url = strings.Replace(url, "|COMMIT|", commitHash, -1)
-	url = strings.Replace(url, "|ARCH|", arch, -1)
-
-	return
 }
 
 func (l *LighthouseClient) PrepareStartFlags(ctx *cli.Context) (startFlags []string, err error) {
@@ -154,7 +95,7 @@ func (l *LighthouseClient) Peers(ctx *cli.Context) (outbound, inbound int, err e
 
 func (l *LighthouseClient) Version() (version string) {
 	cmdVer := execVersionCmd(
-		l.FilePath(),
+		l.CommandPath(),
 	)
 
 	if cmdVer == VersionNotAvailable {

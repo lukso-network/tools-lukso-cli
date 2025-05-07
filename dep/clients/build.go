@@ -105,7 +105,7 @@ var prysmBuildInfo = buildInfo{
 
 var lighthouseBuildInfo = buildInfo{
 	os: osBuildInfo{
-		`linux`:    `unknown-linux`,
+		`linux`:    `unknown-linux-gnu`,
 		`darwin`:   `apple-darwin`,
 		`fallback`: `fallback`,
 	},

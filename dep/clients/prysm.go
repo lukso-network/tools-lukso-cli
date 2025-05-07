@@ -30,7 +30,8 @@ func NewPrysmClient(
 	return &PrysmClient{
 		&clientBinary{
 			name:           prysmDependencyName,
-			fileName:       "prysm",
+			fileName:       prysmFileName,
+			commandPath:    prysmCommandPath,
 			baseUrl:        "https://github.com/prysmaticlabs/prysm/releases/download/|TAG|/beacon-chain-|TAG|-|OS|-|ARCH|",
 			githubLocation: prysmaticLabsGithubLocation,
 			buildInfo:      prysmBuildInfo,

@@ -20,9 +20,12 @@ type Installer interface {
 
 // FileIdentifier ensures that the installed dependency can be located in the file system.
 type FileIdentifier interface {
+	// FileName is and identifier for any files related to the FileIdentifier, like logs, PIDs etc.
 	FileName() string
 	FileDir() string
 	FilePath() string
+	// CommandPath returns a path to a resource entrypoint, e.g. a client binary.
+	CommandPath() string
 }
 
 // Client is a generic interface for a client dependency. For a specific layer,
