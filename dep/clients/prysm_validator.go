@@ -114,6 +114,10 @@ func (p *PrysmValidatorClient) PrepareStartFlags(ctx *cli.Context) (startFlags [
 	return
 }
 
+func (p *PrysmValidatorClient) FilePath() string {
+	return p.CommandPath()
+}
+
 func (p *PrysmValidatorClient) Import(ctx *cli.Context) (err error) {
 	args := []string{
 		"accounts",

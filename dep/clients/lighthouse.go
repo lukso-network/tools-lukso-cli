@@ -50,7 +50,7 @@ var (
 func (l *LighthouseClient) Install(version string, isUpdate bool) error {
 	url := l.ParseUrl(version, l.Commit())
 
-	return l.installer.InstallTar(url, file.ClientsDir, l.FileName(), "lighthouse-")
+	return l.installer.InstallTar(url, l.FileDir(), l.FileName(), "lighthouse-")
 }
 
 func (l *LighthouseClient) Update() (err error) {
