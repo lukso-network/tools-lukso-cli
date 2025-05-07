@@ -1,10 +1,10 @@
 package api
 
 import (
-	"github.com/lukso-network/tools-lukso-cli/api/logger"
 	"github.com/lukso-network/tools-lukso-cli/api/types"
 	"github.com/lukso-network/tools-lukso-cli/common/file"
 	"github.com/lukso-network/tools-lukso-cli/common/installer"
+	"github.com/lukso-network/tools-lukso-cli/common/logger"
 	"github.com/lukso-network/tools-lukso-cli/config"
 )
 
@@ -15,6 +15,7 @@ type HandlerFunc[Rq types.Request, Rs types.Response] func(Rq) Rs
 // Since CLI and TUI will require different stdouts, each command in case of logging should has an output channel attached.
 // All handlers return types.Response instead of a specific struct like in request for better error handling.
 type Handler interface {
+	// Handlers
 	Install(types.InstallRequest) types.InstallResponse
 	Init(types.InitRequest) types.InitResponse
 	Update(types.UpdateRequest) types.UpdateResponse

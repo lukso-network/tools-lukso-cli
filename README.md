@@ -181,7 +181,7 @@ The `init` command will also install any necessary configs required to run a LUK
 To reinitialize already initialized folder, run:
 
 ```sh
-$ lukso init --reinit
+$ lukso init --re-init
 ```
 
 This will reinitialize your folder, downloading any missing confifuration files.
@@ -204,7 +204,7 @@ $ lukso init --ip '10.10.10.10' # make sure to escape dots.
 
 | Option     | Description                                                                                                                                                                       | Default    |
 | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
-| --reinit   | Reinitialize directory                                                                                                                                                            | false      |
+| --re-init  | Reinitialize directory                                                                                                                                                            | false      |
 | --ip       | IP used by clients for P2P communication. Can be set to 'auto' for automatic IP configuration, 'disabled' for skipping the IP configuration and '[ipv4]' for manual configuration | "disabled" |
 | --help, -h | show help                                                                                                                                                                         | false      |
 

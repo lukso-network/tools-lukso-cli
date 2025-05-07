@@ -6,32 +6,37 @@ import (
 	"io"
 	"net/http"
 
-	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 
 	apierrors "github.com/lukso-network/tools-lukso-cli/api/errors"
+	"github.com/lukso-network/tools-lukso-cli/dependencies/configs"
 	"github.com/lukso-network/tools-lukso-cli/model"
 )
 
 // InitializeDirectory initializes a working directory for lukso node, with all configurations for all networks
 func (c *commander) Init(ctx *cli.Context) error {
+	c.log.Progress().Set(float64(len(configs.AllDependencies)))
+	c.log.Progress().Show()
+	defer c.log.Progress().Hide()
+
 	req := model.CtxToApiInit(ctx)
 
 	resp := c.handler.Init(req)
 	err := resp.Error
 	if err != nil {
-		log.Warn(fmt.Sprintf("Unable to initialize directory: %v", err))
+		c.log.Warn(fmt.Sprintf("Unable to initialize directory: %v", err))
 
 		if errors.Is(err, apierrors.ErrCfgExists) {
-			log.Warn("To reinitialize directory, rerun the 'lukso init' command with '--reinit' flag")
+			c.log.Warn("To reinitialize directory, run 'lukso init --re-init'")
 
 			return nil
 		}
 	}
 
-	displayNetworksHardforkTimestamps()
+	// TODO: After Update is connected to the commander, we can log the hardforks using its logger.
+	// displayNetworksHardforkTimestamps()
 
-	log.Info("✅  Working directory initialized! \n1. ⚙️  Use 'lukso install' to install clients. \n2. ▶️  Use 'lukso start' to start your node.")
+	c.log.Info("Working directory initialized! \n1. Use 'lukso install' to install clients. \n2. Use 'lukso start' to start your node.")
 
 	return nil
 }

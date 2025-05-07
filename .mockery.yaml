@@ -21,6 +21,10 @@ packages:
     config:
       filename: "mock_installer.go"
       all: true
+  github.com/lukso-network/tools-lukso-cli/common/progress:
+    config:
+      filename: "mock_progress.go"
+      all: true
   github.com/lukso-network/tools-lukso-cli/config:
     config:
       filename: "mock_config.go"

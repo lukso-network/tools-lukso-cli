@@ -1,7 +1,9 @@
 package configs
 
 import (
+	"maps"
 	"os"
+	"slices"
 
 	"github.com/lukso-network/tools-lukso-cli/api/errors"
 	"github.com/lukso-network/tools-lukso-cli/common/file"
@@ -230,6 +232,9 @@ var (
 		nimbus2MainnetChainConfigDependencyName:         Nimbus2ConfigDependencies[nimbus2MainnetChainConfigDependencyName],
 		nimbus2TestnetChainConfigDependencyName:         Nimbus2ConfigDependencies[nimbus2TestnetChainConfigDependencyName],
 	}
+
+	// An array of all unique configs, shared and client specific - used for progress calculations
+	AllDependencies = makeAllDependencies()
 )
 
 type clientConfig struct {
@@ -263,4 +268,24 @@ func (c *clientConfig) Install(isUpdate bool) (err error) {
 
 func (c *clientConfig) Name() string {
 	return c.name
+}
+
+func makeAllDependencies() (deps []ClientConfigDependency) {
+	depsMap := []map[string]ClientConfigDependency{
+		SharedConfigDependencies,
+		GethConfigDependencies,
+		ErigonConfigDependencies,
+		NethermindConfigDependencies,
+		BesuConfigDependencies,
+		PrysmConfigDependencies,
+		LighthouseConfigDependencies,
+		TekuConfigDependencies,
+		Nimbus2ConfigDependencies,
+	}
+
+	for _, dep := range depsMap {
+		deps = append(deps, slices.Collect(maps.Values(dep))...)
+	}
+
+	return
 }

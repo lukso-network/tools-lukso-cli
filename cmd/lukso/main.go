@@ -6,14 +6,17 @@ import (
 	"runtime"
 	runtimeDebug "runtime/debug"
 
+	tea "github.com/charmbracelet/bubbletea"
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 
 	"github.com/lukso-network/tools-lukso-cli/api"
-	"github.com/lukso-network/tools-lukso-cli/api/logger"
 	"github.com/lukso-network/tools-lukso-cli/commands"
+	"github.com/lukso-network/tools-lukso-cli/common/display"
 	"github.com/lukso-network/tools-lukso-cli/common/file"
 	"github.com/lukso-network/tools-lukso-cli/common/installer"
+	"github.com/lukso-network/tools-lukso-cli/common/logger"
+	"github.com/lukso-network/tools-lukso-cli/common/progress"
 	"github.com/lukso-network/tools-lukso-cli/config"
 	"github.com/lukso-network/tools-lukso-cli/dependencies/configs"
 	"github.com/lukso-network/tools-lukso-cli/flags"
@@ -26,10 +29,17 @@ var appName = "lukso"
 func main() {
 	log.SetFormatter(&log.TextFormatter{DisableTimestamp: true})
 
+	// Bottom to top dependencies
+	// display for commander
+	dispCh := make(chan tea.Msg)
+	prg := progress.NewProgress(dispCh)
+	hndlLogger := logger.NewMsgLogger(dispCh, prg)
+	cmdDisplay := display.NewCmdDisplay(dispCh)
+
+	// file/installation management
 	hndlFile := file.NewManager()
 	hndlCfg := config.NewConfigurator(config.Path, hndlFile)
 	hndlInstaller := installer.NewInstaller(hndlFile)
-	hndlLogger := logger.ConsoleLogger{}
 
 	hndl := api.NewHandler(
 		hndlCfg,
@@ -38,7 +48,7 @@ func main() {
 		hndlInstaller,
 	)
 
-	cmd := commands.NewCommander(hndl)
+	cmd := commands.NewCommander(hndl, cmdDisplay, hndlLogger)
 
 	app := cli.App{}
 	app.Name = appName
@@ -64,7 +74,9 @@ REPO: https://github.com/lukso-network/tools-lukso-cli
 			Name:            "init",
 			Usage:           "Initializes the working directory, its structure, and network configuration",
 			Flags:           flags.InitFlags,
+			Before:          cmd.Before,
 			Action:          cmd.Init,
+			After:           cmd.After,
 			HideHelpCommand: true,
 		},
 		{
