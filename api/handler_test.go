@@ -80,7 +80,7 @@ func (h *HandlerSuite) TestInit() {
 			func(h *HandlerSuite) {
 				h.cfgMock.EXPECT().Exists().Return(false).Once()
 				h.fileMock.EXPECT().Exists(mock.Anything).Return(false) // assume any config file is not present
-				h.installerMock.EXPECT().InstallFile(mock.Anything, mock.Anything).Return(nil)
+				h.installerMock.EXPECT().InstallFile(mock.Anything, mock.Anything, false).Return(nil)
 				h.fileMock.EXPECT().Mkdir(file.SecretsDir, os.FileMode(common.ConfigPerms)).Return(nil).Once()
 				h.fileMock.EXPECT().
 					Write(
@@ -114,7 +114,7 @@ func (h *HandlerSuite) TestInit() {
 			func(h *HandlerSuite) {
 				h.cfgMock.EXPECT().Exists().Return(false).Once()
 				h.fileMock.EXPECT().Exists(mock.Anything).Return(false) // assume any config file is not present
-				h.installerMock.EXPECT().InstallFile(mock.Anything, mock.Anything).Return(nil)
+				h.installerMock.EXPECT().InstallFile(mock.Anything, mock.Anything, mock.Anything).Return(nil)
 				h.fileMock.EXPECT().Mkdir(file.SecretsDir, os.FileMode(common.ConfigPerms)).Return(nil).Once()
 				h.fileMock.EXPECT().
 					Write(
@@ -148,7 +148,7 @@ func (h *HandlerSuite) TestInit() {
 			func(h *HandlerSuite) {
 				h.cfgMock.EXPECT().Exists().Return(false).Once()
 				h.fileMock.EXPECT().Exists(mock.Anything).Return(false) // assume any config file is not present
-				h.installerMock.EXPECT().InstallFile(mock.Anything, mock.Anything).Return(nil)
+				h.installerMock.EXPECT().InstallFile(mock.Anything, mock.Anything, mock.Anything).Return(nil)
 				h.fileMock.EXPECT().Mkdir(file.SecretsDir, os.FileMode(common.ConfigPerms)).Return(nil).Once()
 				h.fileMock.EXPECT().
 					Write(
@@ -182,7 +182,7 @@ func (h *HandlerSuite) TestInit() {
 			func(h *HandlerSuite) {
 				h.cfgMock.EXPECT().Exists().Return(true).Once()
 				h.fileMock.EXPECT().Exists(mock.Anything).Return(false) // assume any config file is not present
-				h.installerMock.EXPECT().InstallFile(mock.Anything, mock.Anything).Return(nil)
+				h.installerMock.EXPECT().InstallFile(mock.Anything, mock.Anything, mock.Anything).Return(nil)
 				h.fileMock.EXPECT().Mkdir(file.SecretsDir, os.FileMode(common.ConfigPerms)).Return(nil).Once()
 				h.fileMock.EXPECT().
 					Write(
