@@ -2,7 +2,6 @@ package commands
 
 import (
 	"fmt"
-	"os"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
@@ -31,7 +30,6 @@ func (c *commander) Install(ctx *cli.Context) (err error) {
 		executionInput    string
 		consensusTag      string
 		executionTag      string
-		isSetupClientsDir bool = false
 	)
 
 	consensusMessage := "\nWhich consensus client do you want to install?\n" +
@@ -63,11 +61,9 @@ func (c *commander) Install(ctx *cli.Context) (err error) {
 	case "3":
 		selectedConsensus = clients.Teku
 		consensusTag = ctx.String(flags.TekuTagFlag)
-		isSetupClientsDir = true
 	case "4":
 		selectedConsensus = clients.Nimbus2
 		consensusTag = ctx.String(flags.Nimbus2TagFlag)
-		isSetupClientsDir = true
 
 	}
 
@@ -96,11 +92,9 @@ func (c *commander) Install(ctx *cli.Context) (err error) {
 	case "3":
 		selectedExecution = clients.Nethermind
 		executionTag = ctx.String(flags.NethermindTagFlag)
-		isSetupClientsDir = true
 	case "4":
 		selectedExecution = clients.Besu
 		executionTag = ctx.String(flags.BesuTagFlag)
-		isSetupClientsDir = true
 	}
 
 	if selectedConsensus == clients.Prysm {
@@ -116,44 +110,47 @@ func (c *commander) Install(ctx *cli.Context) (err error) {
 		}
 	}
 
-	if isSetupClientsDir {
-		log.Infof("⚙️   Preparing clients directory")
-
-		err = setupClientsDir()
+	if selectedExecution.Exists() {
+		log.Infof("%s is already installed - continuing...", selectedExecution.Name())
+	} else {
+		log.Infof("⬇️  Downloading %s...", selectedExecution.Name())
+		err = selectedExecution.Install(executionTag, false)
 		if err != nil {
-			log.Warnf("⚠️  There was an error while creating clients directory: %v", err)
-		} else {
-			log.Infof("✅  Clients directory prepared successfully")
+			return utils.Exit(fmt.Sprintf("❌  There was an error while downloading %s: %v", selectedExecution.Name(), err), 1)
 		}
 	}
 
-	log.Infof("⬇️  Downloading %s...", selectedExecution.Name())
-	err = selectedExecution.Install(executionTag, false)
-	if err != nil {
-		return utils.Exit(fmt.Sprintf("❌  There was an error while downloading %s: %v", selectedExecution.Name(), err), 1)
+	if selectedConsensus.Exists() {
+		log.Infof("%s is already installed - continuing...", selectedConsensus.Name())
+	} else {
+		log.Infof("⬇️  Downloading %s...", selectedConsensus.Name())
+		err = selectedConsensus.Install(consensusTag, false)
+		if err != nil {
+			return utils.Exit(fmt.Sprintf("❌  There was an error while downloading %s: %v", selectedConsensus.Name(), err), 1)
+		}
 	}
 
-	log.Infof("⬇️  Downloading %s...", selectedConsensus.Name())
-	err = selectedConsensus.Install(consensusTag, false)
-	if err != nil {
-		return utils.Exit(fmt.Sprintf("❌  There was an error while downloading %s: %v", selectedConsensus.Name(), err), 1)
-	}
+	var selectedValidator dep.ValidatorClient
 
-	var selectedValidator dep.ValidatorClient = clients.LighthouseValidator
-
-	if selectedConsensus == clients.Prysm {
+	switch selectedConsensus {
+	case clients.Prysm:
 		selectedValidator = clients.PrysmValidator
+	case clients.Lighthouse:
+		selectedValidator = clients.LighthouseValidator
+	case clients.Teku:
+		selectedValidator = clients.TekuValidator
+	case clients.Nimbus2:
+		selectedValidator = clients.Nimbus2Validator
+	}
+
+	if selectedValidator.Exists() {
+		log.Infof("%s is already installed - continuing...", selectedValidator.Name())
+	} else {
 		log.Infof("⬇️  Downloading %s...", selectedValidator.Name())
 		err = selectedValidator.Install(consensusTag, false)
 		if err != nil {
 			return utils.Exit(fmt.Sprintf("❌  There was an error while downloading validator: %v", err), 1)
 		}
-	}
-	if selectedConsensus == clients.Teku {
-		selectedValidator = clients.TekuValidator
-	}
-	if selectedConsensus == clients.Nimbus2 {
-		selectedValidator = clients.Nimbus2Validator
 	}
 
 	err = cfg.WriteExecution(selectedExecution.Name())
@@ -174,23 +171,6 @@ func (c *commander) Install(ctx *cli.Context) (err error) {
 	log.Info("✅  Configuration files created!")
 	log.Info("✅  Clients have been successfully installed.")
 	log.Info("➡️  Start your node using 'lukso start'")
-
-	return
-}
-
-func setupClientsDir() (err error) {
-	var f os.FileInfo
-
-	f, err = os.Stat(common.ClientDepsFolder)
-	if err != nil {
-		err = os.Mkdir(common.ClientDepsFolder, os.ModePerm)
-
-		return
-	}
-
-	if f.Mode() != os.ModePerm {
-		err = os.Chmod(common.ClientDepsFolder, os.ModePerm)
-	}
 
 	return
 }

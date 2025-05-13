@@ -325,6 +325,10 @@ func (client *clientBinary) FilePath() string {
 	return client.FileDir() + "/" + client.FileName()
 }
 
+func (client *clientBinary) Exists() bool {
+	return client.file.Exists(client.CommandPath())
+}
+
 func (client *clientBinary) CommandPath() string {
 	return client.commandPath
 }

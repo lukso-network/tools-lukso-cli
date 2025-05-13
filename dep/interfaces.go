@@ -26,6 +26,7 @@ type FileIdentifier interface {
 	FilePath() string
 	// CommandPath returns a path to a resource entrypoint, e.g. a client binary.
 	CommandPath() string
+	Exists() bool
 }
 
 // Client is a generic interface for a client dependency. For a specific layer,
