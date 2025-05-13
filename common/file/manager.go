@@ -42,7 +42,7 @@ func (m *manager) Exists(path string) bool {
 }
 
 func (m *manager) Open(path string) (f *os.File, err error) {
-	return os.Open(path)
+	return os.OpenFile(path, os.O_RDWR, 0)
 }
 
 func (m *manager) Remove(path string) (err error) {
