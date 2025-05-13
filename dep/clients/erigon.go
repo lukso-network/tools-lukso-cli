@@ -56,7 +56,13 @@ var (
 func (e *ErigonClient) Install(version string, isUpdate bool) (err error) {
 	url := e.ParseUrl(version, e.Commit())
 
-	return e.installer.InstallTar(url, file.ClientsDir, e.FileName(), "erigon_")
+	return e.installer.InstallTar(
+		url,
+		file.ClientsDir,
+		e.FileName(),
+		"erigon_",
+		isUpdate,
+	)
 }
 
 func (e *ErigonClient) Update() (err error) {

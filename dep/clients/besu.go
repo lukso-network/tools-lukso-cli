@@ -52,7 +52,13 @@ var (
 func (b *BesuClient) Install(version string, isUpdate bool) (err error) {
 	url := b.ParseUrl(version, b.Commit())
 
-	return b.installer.InstallTar(url, file.ClientsDir, b.FileName(), "besu-")
+	return b.installer.InstallTar(
+		url,
+		file.ClientsDir,
+		b.FileName(),
+		"besu-",
+		isUpdate,
+	)
 }
 
 func (b *BesuClient) Update() (err error) {

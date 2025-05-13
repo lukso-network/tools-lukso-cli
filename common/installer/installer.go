@@ -25,13 +25,14 @@ type Installer interface {
 	Fetch(url string) (body []byte, err error)
 
 	// InstallFile uses HTTP GET to fetch data from the url and writes it to dest file. It also creates any path to it if necessary.
-	InstallFile(url, dest string) (err error)
+	// If the overwrite is set to true, it will overwrite any existing files.
+	InstallFile(url, dest string, overwrite bool) (err error)
 
-	// InstallFile uses HTTP GET to fetch data from the url and writes decompressed tar archive to dest. It also creates any path to it if necessary.
-	InstallTar(url, dest, archiveName, pattern string) (err error)
+	// InstallTar uses HTTP GET to fetch data from the url and writes decompressed tar archive to dest. It also creates any path to it if necessary.
+	InstallTar(url, dest, archiveName, pattern string, overwrite bool) (err error)
 
-	// InstallFile uses HTTP GET to fetch data from the url and writes decompressed zip archive to dest. It also creates any path to it if necessary.
-	InstallZip(url, dest string) (err error)
+	// InstallZip uses HTTP GET to fetch data from the url and writes decompressed zip archive to dest. It also creates any path to it if necessary.
+	InstallZip(url, dest string, overwrite bool) (err error)
 }
 
 type installer struct {
@@ -82,7 +83,11 @@ func (i *installer) Fetch(url string) (body []byte, err error) {
 	return buf.Bytes(), nil
 }
 
-func (i *installer) InstallFile(url, dest string) (err error) {
+func (i *installer) InstallFile(url, dest string, overwrite bool) (err error) {
+	if !overwrite {
+		return errors.ErrFileExists
+	}
+
 	body, err := i.Fetch(url)
 	if err != nil {
 		return
@@ -106,7 +111,11 @@ func (i *installer) InstallFile(url, dest string) (err error) {
 }
 
 // InstallTar
-func (i *installer) InstallTar(url, dest, archiveName, pattern string) (err error) {
+func (i *installer) InstallTar(url, dest, archiveName, pattern string, overwrite bool) (err error) {
+	if !overwrite {
+		return errors.ErrFileExists
+	}
+
 	var (
 		b   []byte
 		buf *bytes.Reader
@@ -178,7 +187,11 @@ func (i *installer) InstallTar(url, dest, archiveName, pattern string) (err erro
 	return nil
 }
 
-func (i *installer) InstallZip(url, dest string) (err error) {
+func (i *installer) InstallZip(url, dest string, overwrite bool) (err error) {
+	if !overwrite {
+		return errors.ErrFileExists
+	}
+
 	var (
 		b   []byte
 		buf *bytes.Reader

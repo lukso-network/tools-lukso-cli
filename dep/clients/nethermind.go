@@ -57,7 +57,7 @@ var (
 func (n *NethermindClient) Install(version string, isUpdate bool) (err error) {
 	url := n.ParseUrl(version, n.Commit())
 
-	return n.installer.InstallZip(url, n.FileDir())
+	return n.installer.InstallZip(url, n.FileDir(), isUpdate)
 }
 
 func (n *NethermindClient) Update() (err error) {

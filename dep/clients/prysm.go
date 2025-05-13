@@ -51,7 +51,7 @@ var (
 func (p *PrysmClient) Install(version string, isUpdate bool) error {
 	url := p.ParseUrl(version, p.Commit())
 
-	return p.installer.InstallFile(url, p.FilePath())
+	return p.installer.InstallFile(url, p.FilePath(), isUpdate)
 }
 
 func (p *PrysmClient) Update() (err error) {

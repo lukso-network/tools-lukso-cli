@@ -55,7 +55,7 @@ var (
 func (p *PrysmValidatorClient) Install(version string, isUpdate bool) error {
 	url := p.ParseUrl(version, p.Commit())
 
-	return p.installer.InstallFile(url, p.FilePath())
+	return p.installer.InstallFile(url, p.FilePath(), isUpdate)
 }
 
 func (p *PrysmValidatorClient) Update() (err error) {

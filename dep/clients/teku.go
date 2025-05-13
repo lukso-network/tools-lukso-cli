@@ -63,7 +63,13 @@ var (
 func (t *TekuClient) Install(version string, isUpdate bool) (err error) {
 	url := t.ParseUrl(version, t.Commit())
 
-	return t.installer.InstallTar(url, file.ClientsDir, t.FileName(), "teku-")
+	return t.installer.InstallTar(
+		url,
+		file.ClientsDir,
+		t.FileName(),
+		"teku-",
+		isUpdate,
+	)
 }
 
 func (t *TekuClient) Update() (err error) {

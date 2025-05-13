@@ -52,7 +52,13 @@ var (
 func (g *GethClient) Install(version string, isUpdate bool) error {
 	url := g.ParseUrl(version, g.Commit())
 
-	return g.installer.InstallTar(url, file.ClientsDir, g.FileName(), "geth-")
+	return g.installer.InstallTar(
+		url,
+		file.ClientsDir,
+		g.FileName(),
+		"geth-",
+		isUpdate,
+	)
 }
 
 func (g *GethClient) Update() (err error) {
