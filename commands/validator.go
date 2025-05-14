@@ -8,7 +8,7 @@ import (
 
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
-	"github.com/lukso-network/tools-lukso-cli/dependencies/clients"
+	"github.com/lukso-network/tools-lukso-cli/dep/clients"
 	"github.com/lukso-network/tools-lukso-cli/flags"
 )
 
@@ -23,7 +23,7 @@ func (c *commander) ValidatorImport(ctx *cli.Context) (err error) {
 	}
 
 	selectedValidator := cfg.Validator()
-	validatorClient, ok := clients.AllClients[selectedValidator].(clients.ValidatorBinaryDependency)
+	validatorClient, ok := clients.ValidatorClients[selectedValidator]
 	if !ok {
 		return utils.Exit(errors.SelectedClientsNotFound, 1)
 	}
@@ -55,7 +55,7 @@ func (c *commander) ValidatorExit(ctx *cli.Context) (err error) {
 	}
 
 	selectedValidator := cfg.Validator()
-	validatorClient, ok := clients.AllClients[selectedValidator].(clients.ValidatorBinaryDependency)
+	validatorClient, ok := clients.ValidatorClients[selectedValidator]
 	if !ok {
 		return utils.Exit(errors.SelectedClientsNotFound, 1)
 	}
@@ -75,7 +75,7 @@ func executeValidatorList(ctx *cli.Context, network string) (err error) {
 	}
 
 	selectedValidator := cfg.Validator()
-	validatorClient, ok := clients.AllClients[selectedValidator].(clients.ValidatorBinaryDependency)
+	validatorClient, ok := clients.ValidatorClients[selectedValidator]
 	if !ok {
 		return utils.Exit(errors.SelectedClientsNotFound, 1)
 	}

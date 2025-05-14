@@ -15,7 +15,11 @@ import (
 	"golang.org/x/term"
 
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
+	"github.com/lukso-network/tools-lukso-cli/common/file"
+	"github.com/lukso-network/tools-lukso-cli/common/installer"
+	"github.com/lukso-network/tools-lukso-cli/common/logger"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
+	"github.com/lukso-network/tools-lukso-cli/dep"
 	"github.com/lukso-network/tools-lukso-cli/flags"
 	"github.com/lukso-network/tools-lukso-cli/pid"
 )
@@ -24,20 +28,40 @@ type TekuValidatorClient struct {
 	*clientBinary
 }
 
-func NewTekuValidatorClient() *TekuValidatorClient {
+func NewTekuValidatorClient(
+	log logger.Logger,
+	file file.Manager,
+	installer installer.Installer,
+	pid pid.Pid,
+) *TekuValidatorClient {
 	return &TekuValidatorClient{
 		&clientBinary{
 			name:           tekuValidatorDependencyName,
-			commandName:    "validator_tk",
+			fileName:       tekuValidatorFileName,
+			commandPath:    tekuValidatorCommandPath,
 			baseUrl:        "",
 			githubLocation: tekuGithubLocation,
+			buildInfo:      tekuBuildInfo,
+			log:            log,
+			file:           file,
+			installer:      installer,
+			pid:            pid,
 		},
 	}
 }
 
-var TekuValidator = NewTekuValidatorClient()
+var (
+	TekuValidator dep.ValidatorClient
+	_             dep.ValidatorClient = &TekuValidatorClient{}
+)
 
-var _ ValidatorBinaryDependency = &TekuValidatorClient{}
+func (t *TekuValidatorClient) Install(version string, isUpdate bool) error {
+	return nil
+}
+
+func (t *TekuValidatorClient) Update() (err error) {
+	return nil
+}
 
 func (t *TekuValidatorClient) PrepareStartFlags(ctx *cli.Context) (startFlags []string, err error) {
 	startFlags = t.ParseUserFlags(ctx)
@@ -73,7 +97,7 @@ func (t *TekuValidatorClient) Start(ctx *cli.Context, arguments []string) (err e
 		return utils.Exit(fmt.Sprintf("%v- %s", errors.ErrFlagMissing, flags.LogFolderFlag), 1)
 	}
 
-	fullPath, err = utils.PrepareTimestampedFile(logFolder, t.CommandName())
+	fullPath, err = utils.TimestampedFile(logFolder, t.FileName())
 	if err != nil {
 		return
 	}
@@ -97,7 +121,7 @@ func (t *TekuValidatorClient) Start(ctx *cli.Context, arguments []string) (err e
 		return
 	}
 
-	pidLocation := fmt.Sprintf("%s/%s.pid", pid.FileDir, t.CommandName())
+	pidLocation := fmt.Sprintf("%s/%s.pid", pid.FileDir, t.FileName())
 	err = pid.Create(pidLocation, command.Process.Pid)
 
 	time.Sleep(1 * time.Second)

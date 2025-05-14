@@ -11,8 +11,8 @@ import (
 	"github.com/lukso-network/tools-lukso-cli/common/file"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
 	"github.com/lukso-network/tools-lukso-cli/config"
-	"github.com/lukso-network/tools-lukso-cli/dependencies/clients"
-	"github.com/lukso-network/tools-lukso-cli/dependencies/configs"
+	"github.com/lukso-network/tools-lukso-cli/dep/clients"
+	"github.com/lukso-network/tools-lukso-cli/dep/configs"
 )
 
 func (h *handler) Init(args types.InitRequest) (resp types.InitResponse) {

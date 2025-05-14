@@ -9,7 +9,7 @@ import (
 	"github.com/urfave/cli/v2"
 
 	apierrors "github.com/lukso-network/tools-lukso-cli/api/errors"
-	"github.com/lukso-network/tools-lukso-cli/dependencies/configs"
+	"github.com/lukso-network/tools-lukso-cli/dep/configs"
 	"github.com/lukso-network/tools-lukso-cli/model"
 )
 

@@ -37,7 +37,7 @@ func CreateJwtSecret() (jwt []byte, err error) {
 	return
 }
 
-func PrepareTimestampedFile(logDir, logFileName string) (logFile string, err error) {
+func TimestampedFile(logDir, logFileName string) (logFile string, err error) {
 	err = os.MkdirAll(logDir, common.ConfigPerms)
 	if err != nil {
 		return

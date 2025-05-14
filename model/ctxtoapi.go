@@ -13,3 +13,7 @@ func CtxToApiInit(ctx *cli.Context) (api types.InitRequest) {
 		Ip:     ctx.String(flags.IpFlag),
 	}
 }
+
+func CtxToArgs(ctx *cli.Context) (args []string) {
+	return
+}

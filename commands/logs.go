@@ -9,8 +9,8 @@ import (
 
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
-	"github.com/lukso-network/tools-lukso-cli/dependencies/clients"
-	"github.com/lukso-network/tools-lukso-cli/dependencies/configs"
+	"github.com/lukso-network/tools-lukso-cli/dep/clients"
+	"github.com/lukso-network/tools-lukso-cli/dep/configs"
 	"github.com/lukso-network/tools-lukso-cli/flags"
 )
 
@@ -54,7 +54,7 @@ func (c *commander) LogsLayer(layer string) func(*cli.Context) error {
 			return utils.Exit(errors.ErrClientNotSupported.Error(), 1)
 		}
 
-		latestFile, err := utils.GetLastFile(logFileDir, client.CommandName())
+		latestFile, err := utils.GetLastFile(logFileDir, client.FileName())
 		if latestFile == "" && err == nil {
 			return nil
 		}

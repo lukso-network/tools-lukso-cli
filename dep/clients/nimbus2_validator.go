@@ -4,12 +4,15 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
-	"time"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 
+	"github.com/lukso-network/tools-lukso-cli/common/file"
+	"github.com/lukso-network/tools-lukso-cli/common/installer"
+	"github.com/lukso-network/tools-lukso-cli/common/logger"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
+	"github.com/lukso-network/tools-lukso-cli/dep"
 	"github.com/lukso-network/tools-lukso-cli/flags"
 	"github.com/lukso-network/tools-lukso-cli/pid"
 )
@@ -18,61 +21,46 @@ type Nimbus2ValidatorClient struct {
 	*clientBinary
 }
 
-func NewNimbus2ValidatorClient() *Nimbus2ValidatorClient {
+func NewNimbus2ValidatorClient(
+	log logger.Logger,
+	file file.Manager,
+	installer installer.Installer,
+	pid pid.Pid,
+) *Nimbus2ValidatorClient {
 	return &Nimbus2ValidatorClient{
 		&clientBinary{
 			name:           nimbus2ValidatorDependencyName,
-			commandName:    "validator_nimbus",
+			fileName:       nimbus2ValidatorFileName,
+			commandPath:    nimbus2ValidatorCommandPath,
 			baseUrl:        "",
 			githubLocation: nimbus2GithubLocation,
+			buildInfo:      nimbus2BuildInfo,
+			log:            log,
+			file:           file,
+			installer:      installer,
+			pid:            pid,
 		},
 	}
 }
 
-var Nimbus2Validator = NewNimbus2ValidatorClient()
+var (
+	Nimbus2Validator dep.ValidatorClient
+	_                dep.ValidatorClient = &Nimbus2ValidatorClient{}
+)
 
-var _ ValidatorBinaryDependency = &Nimbus2ValidatorClient{}
+func (n *Nimbus2ValidatorClient) Install(version string, isUpdate bool) error {
+	return nil
+}
+
+func (n *Nimbus2ValidatorClient) Update() error {
+	return nil
+}
 
 func (n *Nimbus2ValidatorClient) PrepareStartFlags(ctx *cli.Context) (startFlags []string, err error) {
 	startFlags = n.ParseUserFlags(ctx)
 
 	startFlags = append(startFlags, fmt.Sprintf("--config-file=%s", ctx.String(flags.Nimbus2ValidatorConfigFileFlag)))
 	startFlags = append(startFlags, fmt.Sprintf("--suggested-fee-recipient=%s", ctx.String(flags.TransactionFeeRecipientFlag)))
-
-	return
-}
-
-func (n *Nimbus2ValidatorClient) Start(ctx *cli.Context, arguments []string) (err error) {
-	if n.IsRunning() {
-		log.Infof("🔄️  %s is already running - stopping first...", n.Name())
-
-		err = n.Stop()
-		if err != nil {
-			return
-		}
-
-		log.Infof("🛑  Stopped %s", n.Name())
-	}
-
-	command := exec.Command(fmt.Sprintf("./%s/build/nimbus_validator_client", nimbus2Folder), arguments...)
-
-	err = prepareLogFile(ctx, command, n.CommandName())
-	if err != nil {
-		log.Errorf("There was an error while preparing a log file for %s: %v", n.Name(), err)
-	}
-
-	log.Infof("🔄  Starting %s", n.Name())
-	err = command.Start()
-	if err != nil {
-		return
-	}
-
-	pidLocation := fmt.Sprintf("%s/%s.pid", pid.FileDir, n.CommandName())
-	err = pid.Create(pidLocation, command.Process.Pid)
-
-	time.Sleep(1 * time.Second)
-
-	log.Infof("✅  %s started!", n.Name())
 
 	return
 }

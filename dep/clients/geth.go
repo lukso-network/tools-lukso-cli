@@ -9,55 +9,67 @@ import (
 
 	"github.com/lukso-network/tools-lukso-cli/common"
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
-	"github.com/lukso-network/tools-lukso-cli/common/system"
+	"github.com/lukso-network/tools-lukso-cli/common/file"
+	"github.com/lukso-network/tools-lukso-cli/common/installer"
+	"github.com/lukso-network/tools-lukso-cli/common/logger"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
+	"github.com/lukso-network/tools-lukso-cli/dep"
 	"github.com/lukso-network/tools-lukso-cli/flags"
+	"github.com/lukso-network/tools-lukso-cli/pid"
 )
 
 type GethClient struct {
 	*clientBinary
 }
 
-func NewGethClient() *GethClient {
+func NewGethClient(
+	log logger.Logger,
+	file file.Manager,
+	installer installer.Installer,
+	pid pid.Pid,
+) *GethClient {
 	return &GethClient{
 		&clientBinary{
 			name:           gethDependencyName,
-			commandName:    "geth",
+			fileName:       gethFileName,
+			commandPath:    gethCommandPath,
 			baseUrl:        "https://gethstore.blob.core.windows.net/builds/geth-|OS|-|ARCH|-|TAG|-|COMMIT|.tar.gz",
 			githubLocation: gethGithubLocation,
+			buildInfo:      gethBuildInfo,
+			log:            log,
+			file:           file,
+			installer:      installer,
+			pid:            pid,
 		},
 	}
 }
 
-var Geth = NewGethClient()
+var (
+	Geth dep.ExecutionClient
+	_    dep.ExecutionClient = &GethClient{}
+)
 
-var _ ClientBinaryDependency = &GethClient{}
+func (g *GethClient) Install(version string, isUpdate bool) error {
+	url := g.ParseUrl(version, g.Commit())
 
-func (g *GethClient) ParseUrl(tag, commitHash string) (url string) {
-	url = g.baseUrl
-
-	if g.name == gethDependencyName && system.Os == system.Macos {
-		url = strings.Replace(url, "|ARCH|", "amd64", -1)
-	}
-
-	url = strings.Replace(url, "|TAG|", tag, -1)
-	url = strings.Replace(url, "|OS|", system.Os, -1)
-	url = strings.Replace(url, "|COMMIT|", commitHash, -1)
-	url = strings.Replace(url, "|ARCH|", system.Arch, -1)
-
-	return
+	return g.installer.InstallTar(
+		url,
+		file.ClientsDir,
+		g.FileName(),
+		"geth-",
+		isUpdate,
+	)
 }
 
 func (g *GethClient) Update() (err error) {
-	tag := g.getVersion()
+	tag := g.Tag()
 
 	log.WithField("dependencyTag", tag).Infof("⬇️  Updating %s", g.name)
 
 	// this commit hash is hardcoded, but since update should only be responsible for updating the client to
 	// LUKSO supported version this is fine.
-	url := g.ParseUrl(tag, common.GethCommitHash)
 
-	return g.Install(url, true)
+	return g.Install(tag, true)
 }
 
 func (g *GethClient) PrepareStartFlags(ctx *cli.Context) (startFlags []string, err error) {
@@ -72,6 +84,7 @@ func (g *GethClient) PrepareStartFlags(ctx *cli.Context) (startFlags []string, e
 	startFlags = g.ParseUserFlags(ctx)
 	startFlags = append(startFlags, fmt.Sprintf("--config=%s", ctx.String(flags.GethConfigFileFlag)))
 	startFlags = append(startFlags, fmt.Sprintf("--nat=extip:%s", ip))
+
 	return
 }
 
@@ -81,7 +94,7 @@ func (g *GethClient) Peers(ctx *cli.Context) (outbound, inbound int, err error) 
 
 func (g *GethClient) Version() (version string) {
 	cmdVer := execVersionCmd(
-		g.CommandName(),
+		g.CommandPath(),
 	)
 
 	if cmdVer == VersionNotAvailable {

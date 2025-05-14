@@ -2,10 +2,8 @@ package clients
 
 import (
 	"fmt"
-	"io/fs"
 	"os"
 	"os/exec"
-	"path/filepath"
 	"regexp"
 	"strings"
 	"time"
@@ -15,8 +13,11 @@ import (
 
 	"github.com/lukso-network/tools-lukso-cli/common"
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
-	"github.com/lukso-network/tools-lukso-cli/common/system"
+	"github.com/lukso-network/tools-lukso-cli/common/file"
+	"github.com/lukso-network/tools-lukso-cli/common/installer"
+	"github.com/lukso-network/tools-lukso-cli/common/logger"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
+	"github.com/lukso-network/tools-lukso-cli/dep"
 	"github.com/lukso-network/tools-lukso-cli/flags"
 	"github.com/lukso-network/tools-lukso-cli/pid"
 )
@@ -32,20 +33,52 @@ type TekuClient struct {
 	*clientBinary
 }
 
-func NewTekuClient() *TekuClient {
+func NewTekuClient(
+	log logger.Logger,
+	file file.Manager,
+	installer installer.Installer,
+	pid pid.Pid,
+) *TekuClient {
 	return &TekuClient{
 		&clientBinary{
 			name:           tekuDependencyName,
-			commandName:    "teku",
+			fileName:       tekuFileName,
+			commandPath:    tekuCommandPath,
 			baseUrl:        tekuInstallURL,
 			githubLocation: tekuGithubLocation,
+			buildInfo:      tekuBuildInfo,
+			log:            log,
+			file:           file,
+			installer:      installer,
+			pid:            pid,
 		},
 	}
 }
 
-var Teku = NewTekuClient()
+var (
+	Teku dep.ConsensusClient
+	_    dep.ConsensusClient = &TekuClient{}
+)
 
-var _ ClientBinaryDependency = &TekuClient{}
+func (t *TekuClient) Install(version string, isUpdate bool) (err error) {
+	url := t.ParseUrl(version, t.Commit())
+
+	return t.installer.InstallTar(
+		url,
+		file.ClientsDir,
+		t.FileName(),
+		"teku-",
+		isUpdate,
+	)
+}
+
+func (t *TekuClient) Update() (err error) {
+	tag := t.Tag()
+
+	log.WithField("dependencyTag", tag).Infof("⬇️  Updating %s", t.name)
+
+	return t.Install(tag, true)
+}
 
 func (t *TekuClient) PrepareStartFlags(ctx *cli.Context) (startFlags []string, err error) {
 	startFlags = t.ParseUserFlags(ctx)
@@ -56,64 +89,6 @@ func (t *TekuClient) PrepareStartFlags(ctx *cli.Context) (startFlags []string, e
 	}
 
 	return
-}
-
-func (t *TekuClient) Install(url string, isUpdate bool) (err error) {
-	if utils.FileExists(t.FilePath()) && !isUpdate {
-		message := fmt.Sprintf("You already have the %s client installed, do you want to override your installation? [Y/n]: ", t.Name())
-		input := utils.RegisterInputWithMessage(message)
-		if !strings.EqualFold(input, "y") && input != "" {
-			log.Info("⏭️  Skipping installation...")
-
-			return nil
-		}
-	}
-
-	err = installAndExtractFromURL(url, t.name, common.ClientDepsFolder, tarFormat, isUpdate)
-	if err != nil {
-		return
-	}
-
-	permFunc := func(path string, d fs.DirEntry, err error) error {
-		return os.Chmod(path, fs.ModePerm)
-	}
-
-	err = filepath.WalkDir(t.FilePath(), permFunc)
-	if err != nil {
-		return
-	}
-
-	isInstalled := isJdkInstalled()
-	if !isInstalled {
-		message := "Teku is written in Java. This means that to use it you need to have:\n" +
-			"- JDK installed on your computer\n" +
-			"- JAVA_HOME environment variable set\n" +
-			"Do you want to install and set up JDK along with Teku? [Y/n]\n>"
-
-		input := utils.RegisterInputWithMessage(message)
-		if !strings.EqualFold(input, "y") && input != "" {
-			log.Info("⏭️  Skipping installation...")
-
-			return
-		}
-
-		err = setupJava(isUpdate)
-		if err != nil {
-			return
-		}
-	}
-
-	return
-}
-
-func (t *TekuClient) Update() (err error) {
-	tag := t.getVersion()
-
-	log.WithField("dependencyTag", tag).Infof("⬇️  Updating %s", t.name)
-
-	url := t.ParseUrl(tag, "")
-
-	return t.Install(url, true)
 }
 
 func (t *TekuClient) FilePath() string {
@@ -144,7 +119,7 @@ func (t *TekuClient) Start(ctx *cli.Context, arguments []string) (err error) {
 		return utils.Exit(fmt.Sprintf("%v- %s", errors.ErrFlagMissing, flags.LogFolderFlag), 1)
 	}
 
-	fullPath, err = utils.PrepareTimestampedFile(logFolder, t.CommandName())
+	fullPath, err = utils.TimestampedFile(logFolder, t.FileName())
 	if err != nil {
 		return
 	}
@@ -168,7 +143,7 @@ func (t *TekuClient) Start(ctx *cli.Context, arguments []string) (err error) {
 		return
 	}
 
-	pidLocation := fmt.Sprintf("%s/%s.pid", pid.FileDir, t.CommandName())
+	pidLocation := fmt.Sprintf("%s/%s.pid", pid.FileDir, t.FileName())
 	err = pid.Create(pidLocation, command.Process.Pid)
 
 	time.Sleep(1 * time.Second)
@@ -184,7 +159,7 @@ func (t *TekuClient) Peers(ctx *cli.Context) (outbound, inbound int, err error) 
 
 func (t *TekuClient) Version() (version string) {
 	cmdVer := execVersionCmd(
-		fmt.Sprintf("./%s/bin/teku", t.FilePath()),
+		t.FilePath(),
 	)
 
 	if cmdVer == VersionNotAvailable {
@@ -208,60 +183,6 @@ func (t *TekuClient) Version() (version string) {
 	}
 
 	return strings.Split(s, "/")[1]
-}
-
-func setupJava(isUpdate bool) (err error) {
-	log.Info("⬇️  Downloading JDK...")
-
-	var systemOs, arch string
-	switch system.Os {
-	case system.Ubuntu:
-		systemOs = "linux"
-	case system.Macos:
-		systemOs = "macos"
-	}
-
-	arch = system.GetArch()
-
-	if arch == "x86_64" {
-		arch = "x64"
-	}
-	if arch != "aarch64" && arch != "x64" {
-		log.Warnf("⚠️  x64 or aarch64 architecture is required to continue - skipping ...")
-
-		return
-	}
-
-	jdkURL := strings.Replace(jdkInstallURL, "|OS|", systemOs, -1)
-	jdkURL = strings.Replace(jdkURL, "|ARCH|", arch, -1)
-
-	err = installAndExtractFromURL(jdkURL, "JDK", common.ClientDepsFolder, tarFormat, isUpdate)
-	if err != nil {
-		return err
-	}
-
-	luksoNodeDir, err := os.Getwd()
-	if err != nil {
-		return
-	}
-
-	javaHomeVal := fmt.Sprintf("%s/%s", luksoNodeDir, jdkFolder)
-
-	permFunc := func(path string, d fs.DirEntry, err error) error {
-		return os.Chmod(path, fs.ModePerm)
-	}
-
-	err = filepath.WalkDir(jdkFolder, permFunc)
-	if err != nil {
-		return
-	}
-
-	log.Infof("⚙️  To continue working with Java clients please export the JAVA_HOME environment variable.\n"+
-		"The recommended way is to add the following line:\n\n"+
-		"export JAVA_HOME=%s\n\n"+
-		"To the bash startup file of your choosing (like .bashrc)", javaHomeVal)
-
-	return
 }
 
 func replaceRootFolderName(folder, targetRootName string) (path string) {

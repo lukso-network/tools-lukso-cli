@@ -1,102 +1,70 @@
 package clients
 
 import (
-	"bytes"
 	"fmt"
-	"os/exec"
 	"strings"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 
-	"github.com/lukso-network/tools-lukso-cli/common/system"
+	"github.com/lukso-network/tools-lukso-cli/common/file"
+	"github.com/lukso-network/tools-lukso-cli/common/installer"
+	"github.com/lukso-network/tools-lukso-cli/common/logger"
 	"github.com/lukso-network/tools-lukso-cli/config"
+	"github.com/lukso-network/tools-lukso-cli/dep"
 	"github.com/lukso-network/tools-lukso-cli/flags"
+	"github.com/lukso-network/tools-lukso-cli/pid"
 )
 
 type LighthouseClient struct {
 	*clientBinary
 }
 
-func NewLighthouseClient() *LighthouseClient {
+func NewLighthouseClient(
+	log logger.Logger,
+	file file.Manager,
+	installer installer.Installer,
+	pid pid.Pid,
+) *LighthouseClient {
 	return &LighthouseClient{
 		&clientBinary{
 			name:           lighthouseDependencyName,
-			commandName:    "lighthouse",
-			baseUrl:        "https://github.com/sigp/lighthouse/releases/download/|TAG|/lighthouse-|TAG|-|ARCH|-|OS-NAME|-|OS|.tar.gz",
+			fileName:       lighthouseFileName,
+			commandPath:    lighthouseCommandPath,
+			baseUrl:        "https://github.com/sigp/lighthouse/releases/download/|TAG|/lighthouse-|TAG|-|ARCH|-|OS|.tar.gz",
 			githubLocation: lighthouseGithubLocation,
+			buildInfo:      lighthouseBuildInfo,
+			log:            log,
+			file:           file,
+			installer:      installer,
+			pid:            pid,
 		},
 	}
 }
 
-var Lighthouse = NewLighthouseClient()
+var (
+	Lighthouse dep.ConsensusClient
+	_          dep.ConsensusClient = &LighthouseClient{}
+)
 
-var _ ClientBinaryDependency = &LighthouseClient{}
+func (l *LighthouseClient) Install(version string, isUpdate bool) error {
+	url := l.ParseUrl(version, l.Commit())
 
-func (l *LighthouseClient) Update() (err error) {
-	tag := ClientVersions[l.Name()]
-	log.WithField("dependencyTag", tag).Infof("⬇️  Updating %s", l.name)
-
-	url := l.ParseUrl(tag, "")
-
-	return l.Install(url, true)
+	return l.installer.InstallTar(
+		url,
+		l.FileDir(),
+		l.FileName(),
+		"lighthouse-",
+		isUpdate,
+	)
 }
 
-func (l *LighthouseClient) ParseUrl(tag, commitHash string) (url string) {
-	var (
-		systemName string
-		urlSystem  = system.Os
-		arch       string
-	)
+func (l *LighthouseClient) Update() (err error) {
+	tag := l.Tag()
 
-	fallback := func() {
-		log.Info("⚠️  Unknown OS detected: proceeding with x86_64 as a default arch")
-		arch = "x86_64"
-	}
+	log.WithField("dependencyTag", tag).Infof("⬇️  Updating %s", l.name)
 
-	switch system.Os {
-	case system.Ubuntu:
-		systemName = "unknown"
-		urlSystem += "-gnu"
-	case system.Macos:
-		systemName = "apple"
-	default:
-		systemName = "unknown"
-		urlSystem += "-gnu"
-	}
-
-	switch system.Os {
-	case system.Ubuntu, system.Macos:
-		buf := new(bytes.Buffer)
-
-		uname := exec.Command("uname", "-m")
-		uname.Stdout = buf
-
-		err := uname.Run()
-		if err != nil {
-			fallback()
-
-			break
-		}
-
-		arch = strings.Trim(buf.String(), "\n\t ")
-
-	default:
-		fallback()
-	}
-
-	if arch != "x86_64" && arch != "aarch64" {
-		fallback()
-	}
-
-	url = l.baseUrl
-	url = strings.Replace(url, "|TAG|", tag, -1)
-	url = strings.Replace(url, "|OS|", urlSystem, -1)
-	url = strings.Replace(url, "|OS-NAME|", systemName, -1) // for lighthouse
-	url = strings.Replace(url, "|COMMIT|", commitHash, -1)
-	url = strings.Replace(url, "|ARCH|", arch, -1)
-
-	return
+	return l.Install(tag, true)
 }
 
 func (l *LighthouseClient) PrepareStartFlags(ctx *cli.Context) (startFlags []string, err error) {
@@ -133,7 +101,7 @@ func (l *LighthouseClient) Peers(ctx *cli.Context) (outbound, inbound int, err e
 
 func (l *LighthouseClient) Version() (version string) {
 	cmdVer := execVersionCmd(
-		l.CommandName(),
+		l.CommandPath(),
 	)
 
 	if cmdVer == VersionNotAvailable {

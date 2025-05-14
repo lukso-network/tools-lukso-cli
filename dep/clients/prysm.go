@@ -4,31 +4,63 @@ import (
 	"fmt"
 	"strings"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
+	"github.com/lukso-network/tools-lukso-cli/common/file"
+	"github.com/lukso-network/tools-lukso-cli/common/installer"
+	"github.com/lukso-network/tools-lukso-cli/common/logger"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
+	"github.com/lukso-network/tools-lukso-cli/dep"
 	"github.com/lukso-network/tools-lukso-cli/flags"
+	"github.com/lukso-network/tools-lukso-cli/pid"
 )
 
 type PrysmClient struct {
 	*clientBinary
 }
 
-func NewPrysmClient() *PrysmClient {
+func NewPrysmClient(
+	log logger.Logger,
+	file file.Manager,
+	installer installer.Installer,
+	pid pid.Pid,
+) *PrysmClient {
 	return &PrysmClient{
 		&clientBinary{
 			name:           prysmDependencyName,
-			commandName:    "prysm",
+			fileName:       prysmFileName,
+			commandPath:    prysmCommandPath,
 			baseUrl:        "https://github.com/prysmaticlabs/prysm/releases/download/|TAG|/beacon-chain-|TAG|-|OS|-|ARCH|",
 			githubLocation: prysmaticLabsGithubLocation,
+			buildInfo:      prysmBuildInfo,
+			log:            log,
+			file:           file,
+			installer:      installer,
+			pid:            pid,
 		},
 	}
 }
 
-var Prysm = NewPrysmClient()
+var (
+	Prysm dep.ConsensusClient
+	_     dep.ConsensusClient = &PrysmClient{}
+)
 
-var _ ClientBinaryDependency = &PrysmClient{}
+func (p *PrysmClient) Install(version string, isUpdate bool) error {
+	url := p.ParseUrl(version, p.Commit())
+
+	return p.installer.InstallFile(url, p.FilePath(), isUpdate)
+}
+
+func (p *PrysmClient) Update() (err error) {
+	tag := p.Tag()
+
+	log.WithField("dependencyTag", tag).Infof("⬇️  Updating %s", p.name)
+
+	return p.Install(tag, true)
+}
 
 func (p *PrysmClient) PrepareStartFlags(ctx *cli.Context) (startFlags []string, err error) {
 	genesisExists := utils.FlagFileExists(ctx, flags.GenesisStateFlag)
@@ -72,7 +104,7 @@ func (p *PrysmClient) Peers(ctx *cli.Context) (outbound, inbound int, err error)
 
 func (p *PrysmClient) Version() (version string) {
 	cmdVer := execVersionCmd(
-		p.CommandName(),
+		p.FilePath(),
 	)
 
 	if cmdVer == VersionNotAvailable {

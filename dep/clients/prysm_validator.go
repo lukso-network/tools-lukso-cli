@@ -11,29 +11,60 @@ import (
 	"github.com/urfave/cli/v2"
 
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
+	"github.com/lukso-network/tools-lukso-cli/common/file"
+	"github.com/lukso-network/tools-lukso-cli/common/installer"
+	"github.com/lukso-network/tools-lukso-cli/common/logger"
 	"github.com/lukso-network/tools-lukso-cli/common/system"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
+	"github.com/lukso-network/tools-lukso-cli/dep"
 	"github.com/lukso-network/tools-lukso-cli/flags"
+	"github.com/lukso-network/tools-lukso-cli/pid"
 )
 
 type PrysmValidatorClient struct {
 	*clientBinary
 }
 
-func NewPrysmValidatorClient() *PrysmValidatorClient {
+func NewPrysmValidatorClient(
+	log logger.Logger,
+	file file.Manager,
+	installer installer.Installer,
+	pid pid.Pid,
+) *PrysmValidatorClient {
 	return &PrysmValidatorClient{
 		&clientBinary{
 			name:           prysmValidatorDependencyName,
-			commandName:    "validator",
+			fileName:       prysmValidatorFileName,
+			commandPath:    prysmValidatorCommandPath,
 			baseUrl:        "https://github.com/prysmaticlabs/prysm/releases/download/|TAG|/validator-|TAG|-|OS|-|ARCH|",
 			githubLocation: prysmaticLabsGithubLocation,
+			buildInfo:      prysmBuildInfo,
+			log:            log,
+			file:           file,
+			installer:      installer,
+			pid:            pid,
 		},
 	}
 }
 
-var PrysmValidator = NewPrysmValidatorClient()
+var (
+	PrysmValidator dep.ValidatorClient
+	_              dep.ValidatorClient = &PrysmValidatorClient{}
+)
 
-var _ ValidatorBinaryDependency = &PrysmValidatorClient{}
+func (p *PrysmValidatorClient) Install(version string, isUpdate bool) error {
+	url := p.ParseUrl(version, p.Commit())
+
+	return p.installer.InstallFile(url, p.FilePath(), isUpdate)
+}
+
+func (p *PrysmValidatorClient) Update() (err error) {
+	tag := p.Tag()
+
+	log.WithField("dependencyTag", tag).Infof("⬇️  Updating %s", p.name)
+
+	return p.Install(tag, true)
+}
 
 func (p *PrysmValidatorClient) PrepareStartFlags(ctx *cli.Context) (startFlags []string, err error) {
 	validatorConfigExists := utils.FlagFileExists(ctx, flags.ValidatorConfigFileFlag)
@@ -83,6 +114,10 @@ func (p *PrysmValidatorClient) PrepareStartFlags(ctx *cli.Context) (startFlags [
 	return
 }
 
+func (p *PrysmValidatorClient) FilePath() string {
+	return p.CommandPath()
+}
+
 func (p *PrysmValidatorClient) Import(ctx *cli.Context) (err error) {
 	args := []string{
 		"accounts",
@@ -115,7 +150,7 @@ func (p *PrysmValidatorClient) Import(ctx *cli.Context) (err error) {
 
 func (p *PrysmValidatorClient) Version() (version string) {
 	cmdVer := execVersionCmd(
-		p.CommandName(),
+		p.FilePath(),
 	)
 
 	if cmdVer == VersionNotAvailable {
@@ -197,13 +232,13 @@ func installPrysmctl() (err error) {
 		os.Exit(0)
 	}
 
-	prysmctlBin := clientBinary{
-		name:        "prysmctl",
-		commandName: "prysmctl",
-		baseUrl:     "https://github.com/prysmaticlabs/prysm/releases/download/|TAG|/prysmctl-|TAG|-|OS|-|ARCH|",
-	}
+	// prysmctlBin := clientBinary{
+	// 	name:     "prysmctl",
+	// 	fileName: "prysmctl",
+	// 	baseUrl:  "https://github.com/prysmaticlabs/prysm/releases/download/|TAG|/prysmctl-|TAG|-|OS|-|ARCH|",
+	// }
 
-	versionCommand := exec.Command(PrysmValidator.CommandName(), "--version")
+	versionCommand := exec.Command(PrysmValidator.FileName(), "--version")
 	buf := new(bytes.Buffer)
 
 	versionCommand.Stdout = buf
@@ -213,13 +248,13 @@ func installPrysmctl() (err error) {
 		return utils.Exit(fmt.Sprintf("❌  There was an error while getting prysm version: %v", err), 1)
 	}
 
-	versionOutput := buf.String()
-	version := strings.Split(versionOutput, "/")[1]
+	// versionOutput := buf.String()
+	// version := strings.Split(versionOutput, "/")[1]
 
-	url := prysmctlBin.ParseUrl(version, "")
+	// url := prysmctlBin.ParseUrl(version, "")
 
 	log.Info("⬇️  Downloading prysmctl...")
-	err = prysmctlBin.Install(url, false)
+	// err = prysmctlbin.install(url, false)
 
 	return
 }

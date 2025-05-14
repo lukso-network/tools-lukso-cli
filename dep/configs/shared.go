@@ -258,7 +258,7 @@ func (c *clientConfig) Install(isUpdate bool) (err error) {
 		return errors.ErrFileExists
 	}
 
-	err = CfgInstaller.InstallFile(c.url, c.filePath)
+	err = CfgInstaller.InstallFile(c.url, c.filePath, isUpdate)
 	if err != nil {
 		return
 	}
