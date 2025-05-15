@@ -84,7 +84,7 @@ func (i *installer) Fetch(url string) (body []byte, err error) {
 }
 
 func (i *installer) InstallFile(url, dest string, overwrite bool) (err error) {
-	if !overwrite {
+	if !overwrite && i.file.Exists(dest) {
 		return errors.ErrFileExists
 	}
 

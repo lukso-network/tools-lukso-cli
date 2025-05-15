@@ -42,16 +42,16 @@ type msgFormat func(msg string) string
 
 type Logger interface {
 	Debug(msg string)
-	Debugf(msg string, args ...string)
+	Debugf(msg string, args ...any)
 
 	Info(msg string)
-	Infof(msg string, args ...string)
+	Infof(msg string, args ...any)
 
 	Warn(msg string)
-	Warnf(msg string, args ...string)
+	Warnf(msg string, args ...any)
 
 	Error(msg string)
-	Errorf(msg string, args ...string)
+	Errorf(msg string, args ...any)
 
 	// Clear clears ther log msg buffer.
 	Clear()

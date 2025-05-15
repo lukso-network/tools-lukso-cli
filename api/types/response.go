@@ -4,8 +4,11 @@ type InitResponse struct {
 	Error error
 }
 
+type InstallResponse struct {
+	Error error
+}
+
 type (
-	InstallResponse         struct{}
 	UpdateResponse          struct{}
 	StartResponse           struct{}
 	StopResponse            struct{}

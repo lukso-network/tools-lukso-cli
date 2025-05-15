@@ -7,6 +7,7 @@ import (
 	"github.com/urfave/cli/v2"
 
 	"github.com/lukso-network/tools-lukso-cli/common"
+	"github.com/lukso-network/tools-lukso-cli/common/display/input"
 	"github.com/lukso-network/tools-lukso-cli/common/errors"
 	"github.com/lukso-network/tools-lukso-cli/common/utils"
 	"github.com/lukso-network/tools-lukso-cli/dep"
@@ -22,6 +23,14 @@ func (c *commander) Install(ctx *cli.Context) (err error) {
 	if !cfg.Exists() {
 		return utils.Exit(errors.FolderNotInitialized, 1)
 	}
+
+	c.display.AddInputHandler(input.ClientInstallHandler())
+	cls, ok := c.display.InputHandler().Get().([]string)
+	if !ok {
+		return
+	}
+
+	c.log.Infof("%v\n", cls)
 
 	var (
 		selectedConsensus dep.ConsensusClient

@@ -6,8 +6,16 @@ type InitRequest struct {
 	Ip        string
 }
 
+type InstallRequest struct {
+	Clients []Client
+}
+
+type Client struct {
+	Name    string
+	Version string
+}
+
 type (
-	InstallRequest         struct{}
 	UpdateRequest          struct{}
 	StartRequest           struct{}
 	StopRequest            struct{}

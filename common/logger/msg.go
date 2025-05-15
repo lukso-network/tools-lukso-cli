@@ -32,7 +32,7 @@ func (l *msgLogger) Debug(msg string) {
 	l.sendLeveledMsg(msg, LevelDebug)
 }
 
-func (l *msgLogger) Debugf(msg string, args ...string) {
+func (l *msgLogger) Debugf(msg string, args ...any) {
 	l.sendLeveledMsg(fmt.Sprintf(msg, args), LevelDebug)
 }
 
@@ -40,7 +40,7 @@ func (l *msgLogger) Info(msg string) {
 	l.sendLeveledMsg(msg, LevelInfo)
 }
 
-func (l *msgLogger) Infof(msg string, args ...string) {
+func (l *msgLogger) Infof(msg string, args ...any) {
 	l.sendLeveledMsg(fmt.Sprintf(msg, args), LevelInfo)
 }
 
@@ -48,7 +48,7 @@ func (l *msgLogger) Warn(msg string) {
 	l.sendLeveledMsg(msg, LevelWarn)
 }
 
-func (l *msgLogger) Warnf(msg string, args ...string) {
+func (l *msgLogger) Warnf(msg string, args ...any) {
 	l.sendLeveledMsg(fmt.Sprintf(msg, args), LevelWarn)
 }
 
@@ -56,7 +56,7 @@ func (l *msgLogger) Error(msg string) {
 	l.sendLeveledMsg(msg, LevelError)
 }
 
-func (l *msgLogger) Errorf(msg string, args ...string) {
+func (l *msgLogger) Errorf(msg string, args ...any) {
 	l.sendLeveledMsg(fmt.Sprintf(msg, args), LevelError)
 }
 

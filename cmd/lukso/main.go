@@ -36,7 +36,7 @@ func main() {
 	dispCh := make(chan tea.Msg)
 	prg := progress.NewProgress(dispCh)
 	hndlLogger := logger.NewMsgLogger(dispCh, prg)
-	cmdDisplay := display.NewCmdDisplay(dispCh)
+	cmdDisplay := display.NewCmdDisplay(dispCh, nil)
 
 	// file/installation management
 	hndlFile := file.NewManager()
