@@ -75,8 +75,10 @@ REPO: https://github.com/lukso-network/tools-lukso-cli
 	app.Commands = []*cli.Command{
 		{
 			Name:            "install",
-			Action:          cmd.Install,
 			Flags:           flags.InstallFlags,
+			Before:          cmd.Before,
+			Action:          cmd.Install,
+			After:           cmd.After,
 			Usage:           "Installs chosen LUKSO clients (Execution, Consensus, Validator) and their binary dependencies",
 			HideHelpCommand: true,
 		},

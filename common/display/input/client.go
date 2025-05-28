@@ -63,11 +63,13 @@ func ClientInstallHandler() Handler {
 	}
 
 	return &clientInstallHandler{
-		hoverI:        0,
-		consensusOpts: consOpts,
-		executionOpts: execOpts,
-		visible:       false,
-		ch:            make(chan any),
+		hoverI:             0,
+		consensusOpts:      consOpts,
+		executionOpts:      execOpts,
+		selectingConsensus: true,
+		selectingExecution: false,
+		visible:            false,
+		ch:                 make(chan any),
 	}
 }
 
@@ -84,6 +86,23 @@ func (h *clientInstallHandler) Visible() bool {
 }
 
 func (h *clientInstallHandler) Handle(msg tea.Msg) tea.Cmd {
+	switch msg := msg.(type) {
+	case tea.KeyMsg:
+		switch msg.String() {
+		case "up":
+			h.hoverI--
+			if h.hoverI < 0 {
+				h.hoverI = len(h.consensusOpts) - 1
+			}
+
+		case "down":
+			h.hoverI++
+			if h.hoverI >= len(h.consensusOpts) {
+				h.hoverI = 0
+			}
+		}
+	}
+
 	return nil
 }
 

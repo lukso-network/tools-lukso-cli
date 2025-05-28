@@ -27,9 +27,11 @@ func (c *commander) Install(ctx *cli.Context) (err error) {
 	c.display.AddInputHandler(input.ClientInstallHandler())
 	cls, ok := c.display.InputHandler().Get().([]string)
 	if !ok {
+		fmt.Println("NOT OK")
 		return
 	}
 
+	fmt.Println("Got the list!")
 	c.log.Infof("%v\n", cls)
 
 	var (
