@@ -18,7 +18,9 @@ type clientInstallHandler struct {
 	executionOpts      []clientOption
 	selectingConsensus bool
 	selectingExecution bool
-	selectedClients    []string
+
+	selectedConsensus string
+	selectedExecution string
 
 	ch chan any
 }
@@ -100,6 +102,19 @@ func (h *clientInstallHandler) Handle(msg tea.Msg) tea.Cmd {
 			if h.hoverI >= len(h.consensusOpts) {
 				h.hoverI = 0
 			}
+
+		case "enter":
+			if h.selectingConsensus {
+				h.selectingConsensus = false
+				h.selectingExecution = true
+
+				h.selectedConsensus = h.consensusOpts[h.hoverI].codeName
+			}
+
+			if h.selectingExecution {
+				h.selectedExecution = h.executionOpts[h.hoverI].codeName
+				h.Send([]string{h.selectedConsensus, h.selectedExecution})
+			}
 		}
 	}
 
@@ -132,6 +147,7 @@ func (h *clientInstallHandler) View() (msg string) {
 
 func (h *clientInstallHandler) Send(resp any) {
 	h.ch <- resp
+	h.visible = false
 }
 
 func (h *clientInstallHandler) Get() any {

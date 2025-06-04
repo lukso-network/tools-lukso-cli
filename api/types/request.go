@@ -13,6 +13,7 @@ type InstallRequest struct {
 type Client struct {
 	Name    string
 	Version string
+	Commit  string
 }
 
 type (

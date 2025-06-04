@@ -5,7 +5,7 @@ import (
 
 	"github.com/lukso-network/tools-lukso-cli/api/errors"
 	"github.com/lukso-network/tools-lukso-cli/api/types"
-	"github.com/lukso-network/tools-lukso-cli/dep"
+	"github.com/lukso-network/tools-lukso-cli/common/utils"
 	"github.com/lukso-network/tools-lukso-cli/dep/clients"
 )
 
@@ -22,22 +22,38 @@ func (h *handler) Install(args types.InstallRequest) (resp types.InstallResponse
 		}
 	}
 
-	selectedClients := make([]dep.Client, 0)
+	for _, selectedClient := range args.Clients {
+		n := selectedClient.Name
+		v := selectedClient.Version
 
-	for _, reqClient := range args.Clients {
-		c, ok := clients.AllClients[reqClient.Name]
+		c, ok := clients.AllClients[n]
 		if !ok {
+			h.log.Warn(fmt.Sprintf("Client %s not supported - skipping...", c.Name()))
+
 			continue
 		}
 
-		selectedClients = append(selectedClients, c)
+		err := c.Install(v, false)
+		if err != nil {
+			h.log.Warn(fmt.Sprintf("Unable to download %s file: %v - continuing...", c.Name(), err))
+
+			continue
+		}
 	}
 
-	for _, selectedClient := range selectedClients {
-		err := selectedClient.Install(selectedClient.Version(), false)
-		if err != nil {
-			h.log.Warn(fmt.Sprintf("Unable to download %s file: %v - continuing...", selectedClient.Name(), err))
-		}
+	err = cfg.WriteExecution(selectedExecution.Name())
+	if err != nil {
+		return utils.Exit(fmt.Sprintf("❌  There was an error while writing execution client: %v", err), 1)
+	}
+
+	err = cfg.WriteConsensus(selectedConsensus.Name())
+	if err != nil {
+		return utils.Exit(fmt.Sprintf("❌  There was an error while writing consensus client: %v", err), 1)
+	}
+
+	err = cfg.WriteValidator(selectedValidator.Name())
+	if err != nil {
+		return utils.Exit(fmt.Sprintf("❌  There was an error while writing validator client: %v", err), 1)
 	}
 
 	return
