@@ -109,9 +109,7 @@ func (h *clientInstallHandler) Handle(msg tea.Msg) tea.Cmd {
 				h.selectingExecution = true
 
 				h.selectedConsensus = h.consensusOpts[h.hoverI].codeName
-			}
-
-			if h.selectingExecution {
+			} else if h.selectingExecution {
 				h.selectedExecution = h.executionOpts[h.hoverI].codeName
 				h.Send([]string{h.selectedConsensus, h.selectedExecution})
 			}

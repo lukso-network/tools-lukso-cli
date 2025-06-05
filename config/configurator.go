@@ -14,11 +14,11 @@ import (
 )
 
 type Configurator interface {
-	Create(cfg NodeConfig) error
-	Write() error
-	Get() (cfg NodeConfig)
-	Set(cfg NodeConfig) error
-	Exists() bool
+	create(cfg NodeConfig) error
+	write() error
+	get() (cfg NodeConfig)
+	set(cfg NodeConfig) error
+	exists() bool
 }
 
 type config struct {
@@ -33,7 +33,10 @@ type config struct {
 	valMap map[string]any
 }
 
-var _ Configurator = &config{}
+var (
+	_            Configurator = &config{}
+	configurator Configurator
+)
 
 // NodeConfig represents the structure of the node folder configuration.
 // Even tho the config file is in YAML format, we use JSON tags for quick unmarshalling between types.
@@ -46,6 +49,10 @@ type UseClients struct {
 	ExecutionClient string `json:"execution"`
 	ConsensusClient string `json:"consensus"`
 	ValidatorClient string `json:"validator"`
+}
+
+func UseConfigurator(c Configurator) {
+	configurator = c
 }
 
 func NewConfigurator(path string, file file.Manager) Configurator {
@@ -62,9 +69,29 @@ func NewConfigurator(path string, file file.Manager) Configurator {
 	}
 }
 
+func Create(cfg NodeConfig) error {
+	return configurator.create(cfg)
+}
+
+func Write() error {
+	return configurator.write()
+}
+
+func Get() (cfg NodeConfig) {
+	return configurator.get()
+}
+
+func Set(cfg NodeConfig) error {
+	return configurator.set(cfg)
+}
+
+func Exists() bool {
+	return configurator.exists()
+}
+
 // Create creates a new config that keeps track of selected dependencies and writes to it.
 // By default, this file should be present in root of initialized lukso directory
-func (c *config) Create(cfg NodeConfig) (err error) {
+func (c *config) create(cfg NodeConfig) (err error) {
 	err = c.file.Create(c.path)
 	if err != nil {
 		return
@@ -75,22 +102,22 @@ func (c *config) Create(cfg NodeConfig) (err error) {
 		return
 	}
 
-	err = c.Set(cfg)
+	err = c.set(cfg)
 	if err != nil {
 		return
 	}
 
-	return c.Write()
+	return c.write()
 }
 
-func (c *config) Exists() bool {
+func (c *config) exists() bool {
 	_, err := os.Stat(c.path)
 
 	return err == nil
 }
 
 // Write writes the in-memory map to a file.
-func (c *config) Write() (err error) {
+func (c *config) write() (err error) {
 	parsed, err := c.k.Marshal(c.parser)
 	if err != nil {
 		return
@@ -100,7 +127,7 @@ func (c *config) Write() (err error) {
 }
 
 // Read reads from config file passed during config instance into c and returns the config
-func (c *config) Read() (err error) {
+func (c *config) read() (err error) {
 	err = c.k.Load(c.fileProvider, c.parser)
 	if err != nil {
 		return
@@ -127,12 +154,12 @@ func (c *config) Read() (err error) {
 }
 
 // Get returns the in memory config.
-func (c *config) Get() NodeConfig {
+func (c *config) get() NodeConfig {
 	return c.cfg
 }
 
 // Set writes the config to the in memory state.
-func (c *config) Set(cfg NodeConfig) (err error) {
+func (c *config) set(cfg NodeConfig) (err error) {
 	b, err := json.Marshal(c.cfg)
 	if err != nil {
 		return

@@ -22,7 +22,7 @@ func (h *handler) Init(args types.InitRequest) (resp types.InitResponse) {
 		}
 	}
 
-	if h.cfg.Exists() && !args.Reinit {
+	if config.Exists() && !args.Reinit {
 		return types.InitResponse{
 			Error: errors.ErrCfgExists,
 		}
@@ -113,7 +113,7 @@ func (h *handler) Init(args types.InitRequest) (resp types.InitResponse) {
 		Ipv4: ip,
 	}
 
-	err = h.cfg.Create(nodeCfg)
+	err = config.Create(nodeCfg)
 	if err != nil {
 		err = fmt.Errorf("unable to create LUKSO config: %w", err)
 		return types.InitResponse{

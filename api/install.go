@@ -3,22 +3,22 @@ package api
 import (
 	"fmt"
 
-	"github.com/lukso-network/tools-lukso-cli/api/errors"
+	apierrors "github.com/lukso-network/tools-lukso-cli/api/errors"
 	"github.com/lukso-network/tools-lukso-cli/api/types"
-	"github.com/lukso-network/tools-lukso-cli/common/utils"
+	"github.com/lukso-network/tools-lukso-cli/config"
 	"github.com/lukso-network/tools-lukso-cli/dep/clients"
 )
 
 func (h *handler) Install(args types.InstallRequest) (resp types.InstallResponse) {
 	if runningClients := clients.RunningClients(); runningClients != nil {
 		return types.InstallResponse{
-			Error: errors.ErrClientsAlreadyRunning{Clients: runningClients},
+			Error: apierrors.ErrClientsAlreadyRunning{Clients: runningClients},
 		}
 	}
 
-	if !h.cfg.Exists() {
+	if !config.Exists() {
 		return types.InstallResponse{
-			Error: errors.ErrCfgMissing,
+			Error: apierrors.ErrCfgMissing,
 		}
 	}
 
@@ -41,19 +41,26 @@ func (h *handler) Install(args types.InstallRequest) (resp types.InstallResponse
 		}
 	}
 
-	err = cfg.WriteExecution(selectedExecution.Name())
-	if err != nil {
-		return utils.Exit(fmt.Sprintf("❌  There was an error while writing execution client: %v", err), 1)
+	cfg := config.NodeConfig{
+		UseClients: config.UseClients{
+			ExecutionClient: args.Clients[0].Name,
+			ConsensusClient: args.Clients[1].Name,
+			ValidatorClient: args.Clients[2].Name,
+		},
 	}
 
-	err = cfg.WriteConsensus(selectedConsensus.Name())
+	err := config.Set(cfg)
 	if err != nil {
-		return utils.Exit(fmt.Sprintf("❌  There was an error while writing consensus client: %v", err), 1)
+		return types.InstallResponse{
+			Error: fmt.Errorf("unable to set clients in the config: %v", err),
+		}
 	}
 
-	err = cfg.WriteValidator(selectedValidator.Name())
+	err = config.Write()
 	if err != nil {
-		return utils.Exit(fmt.Sprintf("❌  There was an error while writing validator client: %v", err), 1)
+		return types.InstallResponse{
+			Error: fmt.Errorf("unable to write the config: %v", err),
+		}
 	}
 
 	return

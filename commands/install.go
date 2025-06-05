@@ -1,7 +1,6 @@
 package commands
 
 import (
-	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 
 	"github.com/lukso-network/tools-lukso-cli/api/types"
@@ -91,10 +90,13 @@ func (c *commander) Install(ctx *cli.Context) (err error) {
 	}
 
 	r := c.handler.Install(req)
+	if r.Error != nil {
+		return utils.Exit(r.Error.Error(), 1)
+	}
 
-	log.Info("✅  Configuration files created!")
-	log.Info("✅  Clients have been successfully installed.")
-	log.Info("➡️  Start your node using 'lukso start'")
+	c.log.Info("✅  Configuration files created!")
+	c.log.Info("✅  Clients have been successfully installed.")
+	c.log.Info("➡️  Start your node using 'lukso start'")
 
 	return
 }

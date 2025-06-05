@@ -40,12 +40,12 @@ func main() {
 
 	// file/installation management
 	hndlFile := file.NewManager()
-	hndlCfg := config.NewConfigurator(config.Path, hndlFile)
 	hndlInstaller := installer.NewInstaller(hndlFile)
+	cfg := config.NewConfigurator(config.Path, hndlFile)
 	p := pid.NewPid(hndlFile)
+	config.UseConfigurator(cfg)
 
 	hndl := api.NewHandler(
-		hndlCfg,
 		hndlFile,
 		hndlLogger,
 		hndlInstaller,

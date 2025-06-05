@@ -5,7 +5,6 @@ import (
 	"github.com/lukso-network/tools-lukso-cli/common/file"
 	"github.com/lukso-network/tools-lukso-cli/common/installer"
 	"github.com/lukso-network/tools-lukso-cli/common/logger"
-	"github.com/lukso-network/tools-lukso-cli/config"
 )
 
 type HandlerFunc[Rq types.Request, Rs types.Response] func(Rq) Rs
@@ -32,7 +31,6 @@ type Handler interface {
 }
 
 type handler struct {
-	cfg       config.Configurator
 	file      file.Manager
 	log       logger.Logger
 	installer installer.Installer
@@ -41,13 +39,11 @@ type handler struct {
 var _ Handler = &handler{}
 
 func NewHandler(
-	cfg config.Configurator,
 	file file.Manager,
 	logger logger.Logger,
 	installer installer.Installer,
 ) Handler {
 	return &handler{
-		cfg,
 		file,
 		logger,
 		installer,
