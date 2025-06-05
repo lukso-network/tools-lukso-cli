@@ -110,9 +110,8 @@ func (i *installer) InstallFile(url, dest string, overwrite bool) (err error) {
 	return
 }
 
-// InstallTar
 func (i *installer) InstallTar(url, dest, archiveName, pattern string, overwrite bool) (err error) {
-	if !overwrite {
+	if !overwrite && i.file.Exists(dest+"/"+archiveName) {
 		return errors.ErrFileExists
 	}
 
@@ -188,7 +187,7 @@ func (i *installer) InstallTar(url, dest, archiveName, pattern string, overwrite
 }
 
 func (i *installer) InstallZip(url, dest string, overwrite bool) (err error) {
-	if !overwrite {
+	if !overwrite && i.file.Exists(dest) {
 		return errors.ErrFileExists
 	}
 

@@ -33,6 +33,7 @@ func (h *handler) Install(args types.InstallRequest) (resp types.InstallResponse
 			continue
 		}
 
+		h.log.Infof("Installing %s...", c.Name())
 		err := c.Install(v, false)
 		if err != nil {
 			h.log.Warn(fmt.Sprintf("Unable to download %s file: %v - continuing...", c.Name(), err))

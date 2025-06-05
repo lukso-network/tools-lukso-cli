@@ -16,7 +16,7 @@ type cmdDisplay struct {
 	msgCh        <-chan tea.Msg
 	inputCh      chan any
 	inputHandler input.Handler
-	logs         []string
+	logs         []logger.LogMsg
 	prg          progress.Progress
 }
 
@@ -25,7 +25,7 @@ func NewCmdDisplay(ch chan tea.Msg, inputCh chan any) Display {
 		msgCh:        ch,
 		inputCh:      inputCh,
 		inputHandler: input.PassthroughHandler(),
-		logs:         make([]string, 0),
+		logs:         make([]logger.LogMsg, 0),
 	}
 }
 
@@ -46,10 +46,10 @@ func (d *cmdDisplay) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case logger.LogMsg:
 		if msg.IsClear {
-			d.logs = make([]string, 0)
+			d.logs = make([]logger.LogMsg, 0)
 		}
 		if msg.Msg != "" {
-			d.logs = append(d.logs, msg.Msg)
+			d.logs = insertSeq(msg, d.logs)
 		}
 
 		d.prg = msg.Progress
@@ -85,7 +85,7 @@ func (d *cmdDisplay) Render() (out string) {
 		out = d.inputHandler.View()
 	} else {
 		for _, log := range d.logs {
-			out += log + "\n"
+			out += log.Msg + "\n"
 		}
 	}
 
@@ -116,4 +116,15 @@ func ChanCmd(ch <-chan tea.Msg) tea.Cmd {
 	return func() tea.Msg {
 		return <-ch
 	}
+}
+
+// insertSeq ensures the sequential order for displayed logs.
+func insertSeq(log logger.LogMsg, logs []logger.LogMsg) []logger.LogMsg {
+	for i, presLog := range logs {
+		if log.Seq < presLog.Seq {
+			return utils.InsertAt(log, i, logs)
+		}
+	}
+
+	return append(logs, log)
 }

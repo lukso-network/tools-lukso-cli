@@ -55,3 +55,16 @@ func EthEpochToTimestamp(ethEpoch, epochZeroTimestamp uint64) (t time.Time, isVa
 
 	return
 }
+
+// InsertAt inserts the v at index i, moving the slice values to the right.
+func InsertAt[T any](v T, i int, s []T) []T {
+	if i < 0 || i > len(s) {
+		return s
+	}
+
+	s = append(s, *new(T))
+	copy(s[i+1:], s[i:])
+	s[i] = v
+
+	return s
+}

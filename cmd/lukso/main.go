@@ -33,7 +33,7 @@ func main() {
 
 	// Bottom to top dependencies
 	// display for commander
-	dispCh := make(chan tea.Msg)
+	dispCh := make(chan tea.Msg, 10000)
 	prg := progress.NewProgress(dispCh)
 	hndlLogger := logger.NewMsgLogger(dispCh, prg)
 	cmdDisplay := display.NewCmdDisplay(dispCh, nil)

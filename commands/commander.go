@@ -58,6 +58,8 @@ func (c *commander) Before(ctx *cli.Context) error {
 }
 
 func (c *commander) After(ctx *cli.Context) error {
+	// Ensure sleeps give time to release stdin/out/err.
+	time.Sleep(time.Millisecond * 50)
 	c.log.Close()
 	time.Sleep(time.Millisecond * 50)
 	return nil
