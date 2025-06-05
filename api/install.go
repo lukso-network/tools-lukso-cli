@@ -42,22 +42,11 @@ func (h *handler) Install(args types.InstallRequest) (resp types.InstallResponse
 		}
 	}
 
-	cfg := config.NodeConfig{
-		UseClients: config.UseClients{
-			ExecutionClient: args.Clients[0].Name,
-			ConsensusClient: args.Clients[1].Name,
-			ValidatorClient: args.Clients[2].Name,
-		},
-	}
+	config.Set("useclients.execution", args.Clients[0].Name)
+	config.Set("useclients.consensus", args.Clients[1].Name)
+	config.Set("useclients.validator", args.Clients[2].Name)
 
-	err := config.Set(cfg)
-	if err != nil {
-		return types.InstallResponse{
-			Error: fmt.Errorf("unable to set clients in the config: %v", err),
-		}
-	}
-
-	err = config.Write()
+	err := config.Write()
 	if err != nil {
 		return types.InstallResponse{
 			Error: fmt.Errorf("unable to write the config: %v", err),

@@ -43,7 +43,14 @@ func main() {
 	hndlInstaller := installer.NewInstaller(hndlFile)
 	cfg := config.NewConfigurator(config.Path, hndlFile)
 	p := pid.NewPid(hndlFile)
+
 	config.UseConfigurator(cfg)
+	if config.Exists() {
+		err := config.Read()
+		if err != nil {
+			panic("unable to read config file: %v")
+		}
+	}
 
 	hndl := api.NewHandler(
 		hndlFile,

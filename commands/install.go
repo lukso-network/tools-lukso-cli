@@ -41,16 +41,16 @@ func (c *commander) Install(ctx *cli.Context) (err error) {
 
 	case clients.Lighthouse.Name():
 		consensusTag = ctx.String(flags.LighthouseTagFlag)
-		validatorName = clients.PrysmValidator.Name()
+		validatorName = clients.LighthouseValidator.Name()
 
 	case clients.Teku.Name():
 		consensusTag = ctx.String(flags.TekuTagFlag)
-		validatorName = clients.PrysmValidator.Name()
+		validatorName = clients.TekuValidator.Name()
 
 	case clients.Nimbus2.Name():
 		consensusTag = ctx.String(flags.Nimbus2TagFlag)
 		consensusCommit = ctx.String(flags.Nimbus2CommitHashFlag)
-		validatorName = clients.PrysmValidator.Name()
+		validatorName = clients.Nimbus2Validator.Name()
 	}
 
 	switch cls[1] {

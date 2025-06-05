@@ -7,6 +7,7 @@ import (
 	"github.com/knadh/koanf/parsers/yaml"
 	"github.com/knadh/koanf/providers/confmap"
 	kfile "github.com/knadh/koanf/providers/file"
+	"github.com/knadh/koanf/providers/structs"
 	"github.com/knadh/koanf/v2"
 
 	"github.com/lukso-network/tools-lukso-cli/common"
@@ -15,9 +16,10 @@ import (
 
 type Configurator interface {
 	create(cfg NodeConfig) error
+	set(key string, val any) error
 	write() error
+	read() error
 	get() (cfg NodeConfig)
-	set(cfg NodeConfig) error
 	exists() bool
 }
 
@@ -41,14 +43,14 @@ var (
 // NodeConfig represents the structure of the node folder configuration.
 // Even tho the config file is in YAML format, we use JSON tags for quick unmarshalling between types.
 type NodeConfig struct {
-	UseClients UseClients `json:"useclients"`
-	Ipv4       string     `json:"ipv4"`
+	UseClients UseClients `json:"useclients,omitempty"`
+	Ipv4       string     `json:"ipv4,omitempty"`
 }
 
 type UseClients struct {
-	ExecutionClient string `json:"execution"`
-	ConsensusClient string `json:"consensus"`
-	ValidatorClient string `json:"validator"`
+	ExecutionClient string `json:"execution,omitempty"`
+	ConsensusClient string `json:"consensus,omitempty"`
+	ValidatorClient string `json:"validator,omitempty"`
 }
 
 func UseConfigurator(c Configurator) {
@@ -81,8 +83,12 @@ func Get() (cfg NodeConfig) {
 	return configurator.get()
 }
 
-func Set(cfg NodeConfig) error {
-	return configurator.set(cfg)
+func Read() error {
+	return configurator.read()
+}
+
+func Set(key string, val any) error {
+	return configurator.set(key, val)
 }
 
 func Exists() bool {
@@ -97,17 +103,18 @@ func (c *config) create(cfg NodeConfig) (err error) {
 		return
 	}
 
+	c.k.Load(structs.Provider(cfg, "json"), nil)
 	err = c.k.Load(c.fileProvider, c.parser)
 	if err != nil {
 		return
 	}
 
-	err = c.set(cfg)
+	parsed, err := c.k.Marshal(yaml.Parser())
 	if err != nil {
 		return
 	}
 
-	return c.write()
+	return c.file.Write(c.path, parsed, common.ConfigPerms)
 }
 
 func (c *config) exists() bool {
@@ -118,7 +125,7 @@ func (c *config) exists() bool {
 
 // Write writes the in-memory map to a file.
 func (c *config) write() (err error) {
-	parsed, err := c.k.Marshal(c.parser)
+	parsed, err := c.k.Marshal(yaml.Parser())
 	if err != nil {
 		return
 	}
@@ -155,27 +162,12 @@ func (c *config) read() (err error) {
 
 // Get returns the in memory config.
 func (c *config) get() NodeConfig {
+	c.read()
+
 	return c.cfg
 }
 
 // Set writes the config to the in memory state.
-func (c *config) set(cfg NodeConfig) (err error) {
-	b, err := json.Marshal(c.cfg)
-	if err != nil {
-		return
-	}
-
-	err = json.Unmarshal(b, &c.valMap)
-	if err != nil {
-		return
-	}
-
-	err = c.k.Load(confmap.Provider(c.valMap, "."), nil)
-	if err != nil {
-		return
-	}
-
-	c.cfg = cfg
-
-	return
+func (c *config) set(key string, val any) (err error) {
+	return c.k.Set(key, val)
 }
