@@ -8,16 +8,11 @@ import (
 	"github.com/lukso-network/tools-lukso-cli/ui/style/color"
 )
 
-type clientOption struct {
-	name     string
-	codeName string
-}
-
 type clientInstallHandler struct {
 	hoverI             int
 	visible            bool
-	consensusOpts      []clientOption
-	executionOpts      []clientOption
+	consensusOpts      []ClientOption
+	executionOpts      []ClientOption
 	selectingConsensus bool
 	selectingExecution bool
 
@@ -28,7 +23,7 @@ type clientInstallHandler struct {
 }
 
 func ClientInstallHandler() Handler {
-	consOpts := []clientOption{
+	consOpts := []ClientOption{
 		{
 			"Prysm",
 			clients.Prysm.Name(),
@@ -47,7 +42,7 @@ func ClientInstallHandler() Handler {
 		},
 	}
 
-	execOpts := []clientOption{
+	execOpts := []ClientOption{
 		{
 			"Geth",
 			clients.Geth.Name(),
