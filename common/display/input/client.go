@@ -2,33 +2,19 @@ package input
 
 import (
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
 
 	"github.com/lukso-network/tools-lukso-cli/dep/clients"
-	"github.com/lukso-network/tools-lukso-cli/ui/style/color"
 )
 
-type clientOption struct {
-	name     string
-	codeName string
-}
-
 type clientInstallHandler struct {
-	hoverI             int
-	visible            bool
-	consensusOpts      []clientOption
-	executionOpts      []clientOption
-	selectingConsensus bool
-	selectingExecution bool
-
-	selectedConsensus string
-	selectedExecution string
+	visible bool
+	sects   *SectionGroup
 
 	ch chan any
 }
 
 func ClientInstallHandler() Handler {
-	consOpts := []clientOption{
+	consOpts := []ClientOption{
 		{
 			"Prysm",
 			clients.Prysm.Name(),
@@ -47,7 +33,7 @@ func ClientInstallHandler() Handler {
 		},
 	}
 
-	execOpts := []clientOption{
+	execOpts := []ClientOption{
 		{
 			"Geth",
 			clients.Geth.Name(),
@@ -66,14 +52,18 @@ func ClientInstallHandler() Handler {
 		},
 	}
 
+	sects := NewSectionGroup(
+		"Please select the clients that you want to install on your node:",
+		[]Section{
+			NewSection("Consensus", consOpts),
+			NewSection("Execution", execOpts),
+		},
+	)
+
 	return &clientInstallHandler{
-		hoverI:             0,
-		consensusOpts:      consOpts,
-		executionOpts:      execOpts,
-		selectingConsensus: true,
-		selectingExecution: false,
-		visible:            false,
-		ch:                 make(chan any),
+		sects:   sects,
+		visible: false,
+		ch:      make(chan any),
 	}
 }
 
@@ -94,26 +84,15 @@ func (h *clientInstallHandler) Handle(msg tea.Msg) tea.Cmd {
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "up":
-			h.hoverI--
-			if h.hoverI < 0 {
-				h.hoverI = len(h.consensusOpts) - 1
-			}
+			h.sects.PrevOption()
 
 		case "down":
-			h.hoverI++
-			if h.hoverI >= len(h.consensusOpts) {
-				h.hoverI = 0
-			}
+			h.sects.NextOption()
 
 		case "enter":
-			if h.selectingConsensus {
-				h.selectingConsensus = false
-				h.selectingExecution = true
-
-				h.selectedConsensus = h.consensusOpts[h.hoverI].codeName
-			} else if h.selectingExecution {
-				h.selectedExecution = h.executionOpts[h.hoverI].codeName
-				h.Send([]string{h.selectedConsensus, h.selectedExecution})
+			res := h.sects.NextSection()
+			if res != nil {
+				h.Send(res)
 			}
 		}
 	}
@@ -122,48 +101,7 @@ func (h *clientInstallHandler) Handle(msg tea.Msg) tea.Cmd {
 }
 
 func (h *clientInstallHandler) View() (msg string) {
-	var c lipgloss.TerminalColor = color.InactiveGrey
-	var defC lipgloss.TerminalColor = color.InactiveGrey
-
-	msg += "Select the client that you want to install:"
-	msg += "\n\nConsensus:\n"
-
-	if h.selectingConsensus {
-		defC = lipgloss.NoColor{}
-	} else {
-		defC = color.InactiveGrey
-	}
-
-	for i, opt := range h.consensusOpts {
-		c = defC
-		ind := "- "
-		if i == h.hoverI && h.selectingConsensus {
-			ind = "> "
-			c = color.HoverGreen
-		}
-
-		msg += lipgloss.NewStyle().Foreground(c).Render(ind + opt.name + "\n")
-	}
-
-	if h.selectingExecution {
-		defC = lipgloss.NoColor{}
-	} else {
-		defC = color.InactiveGrey
-	}
-
-	msg += "\n\nExecution\n"
-	for i, opt := range h.executionOpts {
-		c = defC
-		ind := "- "
-		if i == h.hoverI && h.selectingExecution {
-			ind = "> "
-			c = color.HoverGreen
-		}
-
-		msg += lipgloss.NewStyle().Foreground(c).Render(ind + opt.name + "\n")
-	}
-
-	return
+	return h.sects.View()
 }
 
 func (h *clientInstallHandler) Send(resp any) {
