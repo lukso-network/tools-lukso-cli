@@ -7,6 +7,7 @@ import (
 	"github.com/knadh/koanf/parsers/yaml"
 	"github.com/knadh/koanf/providers/confmap"
 	kfile "github.com/knadh/koanf/providers/file"
+	"github.com/knadh/koanf/providers/structs"
 	"github.com/knadh/koanf/v2"
 
 	"github.com/lukso-network/tools-lukso-cli/common"
@@ -14,11 +15,12 @@ import (
 )
 
 type Configurator interface {
-	Create(cfg NodeConfig) error
-	Write() error
-	Get() (cfg NodeConfig)
-	Set(cfg NodeConfig) error
-	Exists() bool
+	create(cfg NodeConfig) error
+	set(key string, val any) error
+	write() error
+	read() error
+	get() (cfg NodeConfig)
+	exists() bool
 }
 
 type config struct {
@@ -33,19 +35,26 @@ type config struct {
 	valMap map[string]any
 }
 
-var _ Configurator = &config{}
+var (
+	_            Configurator = &config{}
+	configurator Configurator
+)
 
 // NodeConfig represents the structure of the node folder configuration.
 // Even tho the config file is in YAML format, we use JSON tags for quick unmarshalling between types.
 type NodeConfig struct {
-	UseClients UseClients `json:"useclients"`
-	Ipv4       string     `json:"ipv4"`
+	UseClients UseClients `json:"useclients,omitempty"`
+	Ipv4       string     `json:"ipv4,omitempty"`
 }
 
 type UseClients struct {
-	ExecutionClient string `json:"execution"`
-	ConsensusClient string `json:"consensus"`
-	ValidatorClient string `json:"validator"`
+	ExecutionClient string `json:"execution,omitempty"`
+	ConsensusClient string `json:"consensus,omitempty"`
+	ValidatorClient string `json:"validator,omitempty"`
+}
+
+func UseConfigurator(c Configurator) {
+	configurator = c
 }
 
 func NewConfigurator(path string, file file.Manager) Configurator {
@@ -62,36 +71,61 @@ func NewConfigurator(path string, file file.Manager) Configurator {
 	}
 }
 
+func Create(cfg NodeConfig) error {
+	return configurator.create(cfg)
+}
+
+func Write() error {
+	return configurator.write()
+}
+
+func Get() (cfg NodeConfig) {
+	return configurator.get()
+}
+
+func Read() error {
+	return configurator.read()
+}
+
+func Set(key string, val any) error {
+	return configurator.set(key, val)
+}
+
+func Exists() bool {
+	return configurator.exists()
+}
+
 // Create creates a new config that keeps track of selected dependencies and writes to it.
 // By default, this file should be present in root of initialized lukso directory
-func (c *config) Create(cfg NodeConfig) (err error) {
+func (c *config) create(cfg NodeConfig) (err error) {
 	err = c.file.Create(c.path)
 	if err != nil {
 		return
 	}
 
+	c.k.Load(structs.Provider(cfg, "json"), nil)
 	err = c.k.Load(c.fileProvider, c.parser)
 	if err != nil {
 		return
 	}
 
-	err = c.Set(cfg)
+	parsed, err := c.k.Marshal(yaml.Parser())
 	if err != nil {
 		return
 	}
 
-	return c.Write()
+	return c.file.Write(c.path, parsed, common.ConfigPerms)
 }
 
-func (c *config) Exists() bool {
+func (c *config) exists() bool {
 	_, err := os.Stat(c.path)
 
 	return err == nil
 }
 
 // Write writes the in-memory map to a file.
-func (c *config) Write() (err error) {
-	parsed, err := c.k.Marshal(c.parser)
+func (c *config) write() (err error) {
+	parsed, err := c.k.Marshal(yaml.Parser())
 	if err != nil {
 		return
 	}
@@ -100,7 +134,7 @@ func (c *config) Write() (err error) {
 }
 
 // Read reads from config file passed during config instance into c and returns the config
-func (c *config) Read() (err error) {
+func (c *config) read() (err error) {
 	err = c.k.Load(c.fileProvider, c.parser)
 	if err != nil {
 		return
@@ -127,28 +161,13 @@ func (c *config) Read() (err error) {
 }
 
 // Get returns the in memory config.
-func (c *config) Get() NodeConfig {
+func (c *config) get() NodeConfig {
+	c.read()
+
 	return c.cfg
 }
 
 // Set writes the config to the in memory state.
-func (c *config) Set(cfg NodeConfig) (err error) {
-	b, err := json.Marshal(c.cfg)
-	if err != nil {
-		return
-	}
-
-	err = json.Unmarshal(b, &c.valMap)
-	if err != nil {
-		return
-	}
-
-	err = c.k.Load(confmap.Provider(c.valMap, "."), nil)
-	if err != nil {
-		return
-	}
-
-	c.cfg = cfg
-
-	return
+func (c *config) set(key string, val any) (err error) {
+	return c.k.Set(key, val)
 }

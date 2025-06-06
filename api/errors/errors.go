@@ -13,6 +13,7 @@ var (
 	ErrNeedsRoot  = errors.New("operation needs root access")
 	ErrFileExists = errors.New("file already exists")
 	ErrCfgExists  = errors.New("config already exists")
+	ErrCfgMissing = errors.New("config is missing")
 
 	// HTTP
 	ErrNotFound = errors.New("not found")

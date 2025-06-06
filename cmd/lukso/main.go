@@ -33,19 +33,26 @@ func main() {
 
 	// Bottom to top dependencies
 	// display for commander
-	dispCh := make(chan tea.Msg)
+	dispCh := make(chan tea.Msg, 10000)
 	prg := progress.NewProgress(dispCh)
 	hndlLogger := logger.NewMsgLogger(dispCh, prg)
-	cmdDisplay := display.NewCmdDisplay(dispCh)
+	cmdDisplay := display.NewCmdDisplay(dispCh, nil)
 
 	// file/installation management
 	hndlFile := file.NewManager()
-	hndlCfg := config.NewConfigurator(config.Path, hndlFile)
 	hndlInstaller := installer.NewInstaller(hndlFile)
+	cfg := config.NewConfigurator(config.Path, hndlFile)
 	p := pid.NewPid(hndlFile)
 
+	config.UseConfigurator(cfg)
+	if config.Exists() {
+		err := config.Read()
+		if err != nil {
+			panic("unable to read config file: %v")
+		}
+	}
+
 	hndl := api.NewHandler(
-		hndlCfg,
 		hndlFile,
 		hndlLogger,
 		hndlInstaller,
@@ -75,8 +82,10 @@ REPO: https://github.com/lukso-network/tools-lukso-cli
 	app.Commands = []*cli.Command{
 		{
 			Name:            "install",
-			Action:          cmd.Install,
 			Flags:           flags.InstallFlags,
+			Before:          cmd.Before,
+			Action:          cmd.Install,
+			After:           cmd.After,
 			Usage:           "Installs chosen LUKSO clients (Execution, Consensus, Validator) and their binary dependencies",
 			HideHelpCommand: true,
 		},
