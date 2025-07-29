@@ -4,4 +4,5 @@ package types
 type CLConfig struct {
 	ShapellaEpoch *uint64 `yaml:"CAPELLA_FORK_EPOCH,omitempty"`
 	DencunEpoch   *uint64 `yaml:"DENEB_FORK_EPOCH,omitempty"`
+	PectraEpoch   *uint64 `yaml:"ELECTRA_FORK_EPOCH,omitempty"`
 }

@@ -15,6 +15,12 @@ import (
 	"github.com/lukso-network/tools-lukso-cli/dependencies/types"
 )
 
+// forkEpoch represents when a given fork is going to happen
+type forkEpoch struct {
+	fork  string
+	epoch *uint64
+}
+
 var cfg = config.NewConfig(config.Path)
 
 // installConfigGroup takes map of config dependencies and downloads them.
@@ -40,11 +46,9 @@ func displayHardforkTimestamps(network, srcConfig string, epochZeroTimestamp uin
 	var (
 		clconfig types.CLConfig
 
-		shapellaTime    time.Time
-		dencunTime      time.Time
-		shapellaMessage string
-		dencunMessage   string
-		isValid         bool
+		forkTime    time.Time
+		forkMessage string
+		isValid     bool
 	)
 
 	err = yaml.Unmarshal(f, &clconfig)
@@ -52,34 +56,38 @@ func displayHardforkTimestamps(network, srcConfig string, epochZeroTimestamp uin
 		return
 	}
 
-	if clconfig.ShapellaEpoch != nil {
-		shapellaTime, isValid = utils.EthEpochToTimestamp(*clconfig.ShapellaEpoch, epochZeroTimestamp)
-		switch {
-		case !isValid:
-			shapellaMessage = "TBA"
-
-		default:
-			shapellaMessage = shapellaTime.Format(time.RFC1123Z)
-		}
-	} else {
-		shapellaMessage = "Date missing - please make sure that your configs are up to date by running 'lukso update configs' command"
+	epochs := []forkEpoch{
+		{
+			"Shapella",
+			clconfig.ShapellaEpoch,
+		},
+		{
+			"Dencun",
+			clconfig.DencunEpoch,
+		},
+		{
+			"Pectra",
+			clconfig.PectraEpoch,
+		},
 	}
 
-	if clconfig.DencunEpoch != nil {
-		dencunTime, isValid = utils.EthEpochToTimestamp(*clconfig.DencunEpoch, epochZeroTimestamp)
-		switch {
-		case !isValid:
-			dencunMessage = "TBA"
+	for _, epoch := range epochs {
+		if epoch.epoch != nil {
+			forkTime, isValid = utils.EthEpochToTimestamp(*epoch.epoch, epochZeroTimestamp)
+			switch {
+			case !isValid:
+				forkMessage = "TBA"
 
-		default:
-			dencunMessage = dencunTime.Format(time.RFC1123Z)
+			default:
+				forkMessage = forkTime.Format(time.RFC1123Z)
+			}
+		} else {
+			forkMessage = "Date missing - please make sure that your configs are up to date by running 'lukso update configs' command"
 		}
-	} else {
-		dencunMessage = "Date missing - please make sure that your configs are up to date by running 'lukso update configs' command"
-	}
 
-	log.Infof("- Shapella: %v", shapellaMessage)
-	log.Infof("- Dencun: %v\n\n", dencunMessage)
+		forkMessage = fmt.Sprintf("- %s: %s", epoch.fork, forkMessage)
+		log.Info(forkMessage)
+	}
 
 	return
 }
