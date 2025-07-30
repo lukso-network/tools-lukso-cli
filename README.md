@@ -20,14 +20,14 @@ The LUKSO CLI is able to install multiple clients for running the node.
 
 | Client         | Version  | Release                                                         |
 | -------------- | -------- | --------------------------------------------------------------- |
-| Geth           | v1.14.13 | https://github.com/ethereum/go-ethereum/releases/tag/v1.14.13   |
-| Erigon         | v2.61.0  | https://github.com/erigontech/erigon/releases/tag/v2.61.0       |
-| Nethermind     | v1.30.3  | https://github.com/NethermindEth/nethermind/releases/tag/1.30.3 |
-| Besu           | v24.12.2 | https://github.com/hyperledger/besu/releases/tag/24.12.2        |
-| Prysm          | v5.2.0   | https://github.com/prysmaticlabs/prysm/releases/tag/v5.2.0      |
-| Lighthouse     | v6.0.1   | https://github.com/sigp/lighthouse/releases/tag/v6.0.1          |
-| Teku           | v24.12.1 | https://github.com/Consensys/teku/releases/tag/24.12.1          |
-| Nimbus (eth-2) | v24.12.0 | https://github.com/status-im/nimbus-eth2/releases/tag/v24.10.0  |
+| Geth           | v1.16.1  | https://github.com/ethereum/go-ethereum/releases/tag/v1.16.1    |
+| Erigon         | v3.0.12  | https://github.com/erigontech/erigon/releases/tag/v3.0.12       |
+| Nethermind     | v1.32.2  | https://github.com/NethermindEth/nethermind/releases/tag/1.32.2 |
+| Besu           | v25.7.0  | https://github.com/hyperledger/besu/releases/tag/25.7.0         |
+| Prysm          | v6.0.4   | https://github.com/prysmaticlabs/prysm/releases/tag/v6.0.4      |
+| Lighthouse     | v7.0.1   | https://github.com/sigp/lighthouse/releases/tag/v7.0.1          |
+| Teku           | v25.6.0  | https://github.com/Consensys/teku/releases/tag/25.6.0           |
+| Nimbus (eth-2) | v25.5.0  | https://github.com/status-im/nimbus-eth2/releases/tag/v25.5.0   |
 
 > More clients will be added in the future.
 
