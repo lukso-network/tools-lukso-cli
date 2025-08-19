@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.25.1](https://github.com/lukso-network/tools-lukso-cli/compare/v0.25.0...v0.25.1) (2025-08-19)
+
+
+### Bug Fixes
+
+* Geth downgrade ([#293](https://github.com/lukso-network/tools-lukso-cli/issues/293)) ([d3088e4](https://github.com/lukso-network/tools-lukso-cli/commit/d3088e4f5c7160bfb093eddad558f262aed9b15f))
+
 ## [0.25.0](https://github.com/lukso-network/tools-lukso-cli/compare/v0.24.1...v0.25.0) (2025-07-29)
 
 
