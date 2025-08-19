@@ -4,7 +4,7 @@ const (
 	ConfigPerms   = 0o750
 	SlotsPerEpoch = 32
 
-	GethTag              = "1.16.1"
+	GethTag              = "1.15.11"
 	ErigonTag            = "v3.0.12"
 	NethermindTag        = "1.32.2"
 	BesuTag              = "25.7.0"
@@ -12,7 +12,7 @@ const (
 	LighthouseTag        = "v7.0.1"
 	TekuTag              = "25.6.0"
 	Nimbus2Tag           = "25.5.0"
-	GethCommitHash       = "12b4131f"
+	GethCommitHash       = "36b2371c"
 	NethermindCommitHash = "d3e7eb98"
 	Nimbus2CommitHash    = "d2f23389"
 

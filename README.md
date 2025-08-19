@@ -20,7 +20,7 @@ The LUKSO CLI is able to install multiple clients for running the node.
 
 | Client         | Version  | Release                                                         |
 | -------------- | -------- | --------------------------------------------------------------- |
-| Geth           | v1.16.1  | https://github.com/ethereum/go-ethereum/releases/tag/v1.16.1    |
+| Geth           | v1.15.11 | https://github.com/ethereum/go-ethereum/releases/tag/v1.15.11   |
 | Erigon         | v3.0.12  | https://github.com/erigontech/erigon/releases/tag/v3.0.12       |
 | Nethermind     | v1.32.2  | https://github.com/NethermindEth/nethermind/releases/tag/1.32.2 |
 | Besu           | v25.7.0  | https://github.com/hyperledger/besu/releases/tag/25.7.0         |
@@ -202,18 +202,18 @@ $ lukso install --geth-tag 1.14.7 --geth-commit-hash aa55f5ea
 | Option                         | Description                                         | Default    |
 | ------------------------------ | --------------------------------------------------- | ---------- |
 | --agree-terms                  | Automatically accept Terms and Conditions           | false      |
-| --geth-tag value               | Tag for Geth                                        | "1.14.13"  |
-| --geth-commit-hash value       | A hash of commit that is bound to given release tag | "eb00f169" |
-| --validator-tag value          | Tag for validator binary                            | "v5.2.0"   |
-| --prysm-tag value              | Tag for Prysm                                       | "v5.2.0"   |
-| --erigon-tag value             | Tag for Erigon                                      | "2.61.0"   |
-| --lighthouse-tag value         | Tag for Lighthouse                                  | "v6.0.1"   |
-| --teku-tag value               | Tag for Teku                                        | "24.12.1"  |
-| --besu-tag value               | Tag for Besu                                        | "24.12.2"  |
-| --nimbus2-tag value            | Tag for Nimbus2                                     | "24.12.0"  |
-| --nimbus2-commit-hash value    | A hash of commit that is bound to given release tag | "4e440277" |
-| --nethermind-tag value         | Tag for Teku                                        | "1.30.3"   |
-| --nethermind-commit-hash value | A hash of commit that is bound to given release tag | "87c86379" |
+| --geth-tag value               | Tag for Geth                                        | "1.15.11"  |
+| --geth-commit-hash value       | A hash of commit that is bound to given release tag | "36b2371c" |
+| --validator-tag value          | Tag for validator binary                            | "v6.0.4"   |
+| --prysm-tag value              | Tag for Prysm                                       | "v6.0.4"   |
+| --erigon-tag value             | Tag for Erigon                                      | "3.0.12"   |
+| --lighthouse-tag value         | Tag for Lighthouse                                  | "v7.0.1"   |
+| --teku-tag value               | Tag for Teku                                        | "25.6.0"   |
+| --besu-tag value               | Tag for Besu                                        | "25.7.0"   |
+| --nimbus2-tag value            | Tag for Nimbus2                                     | "25.5.0"   |
+| --nimbus2-commit-hash value    | A hash of commit that is bound to given release tag | "d2f23389" |
+| --nethermind-tag value         | Tag for Teku                                        | "1.32.2"   |
+| --nethermind-commit-hash value | A hash of commit that is bound to given release tag | "d3e7eb98" |
 | --help, -h                     | show help                                           | false      |
 
 ### `update`
