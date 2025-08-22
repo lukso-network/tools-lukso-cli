@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.25.2](https://github.com/lukso-network/tools-lukso-cli/compare/v0.25.1...v0.25.2) (2025-08-22)
+
+
+### Bug Fixes
+
+* Add information about lighthouse insecure sync ([#295](https://github.com/lukso-network/tools-lukso-cli/issues/295)) ([2fd3b5d](https://github.com/lukso-network/tools-lukso-cli/commit/2fd3b5ddd6525fec5f8b2034c63fcf67a2522797))
+
 ## [0.25.1](https://github.com/lukso-network/tools-lukso-cli/compare/v0.25.0...v0.25.1) (2025-08-19)
 
 
