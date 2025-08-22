@@ -720,6 +720,18 @@ time="2024-02-27 11:32:55" level=error msg="There were some issues parsing the c
   line 119: field DENEB_FORK_EPOCH not found in type params.BeaconChainConfig"
 ```
 
+
+- [Minor] With the [v0.25.0](https://github.com/lukso-network/tools-lukso-cli/releases/tag/v0.25.0) release, the Lighthouse client does not start without the checkpoint flag.
+Thus, it is recommended to use the `--checkpoint-sync` flag by the default.  
+Lighthouse error log:
+
+```
+Syncing from genesis is insecure and incompatible with data availability checks.
+You should instead perform a checkpoint sync from a trusted node using the --checkpoint-sync-url option.
+For a list of public endpoints, see: https://eth-clients.github.io/checkpoint-sync-endpoints/ 
+Alternatively, use --allow-insecure-genesis-sync if the risks are understood.
+```
+
 ## Contributing
 
 If you want to contribute to this repository, please check [`CONTRIBUTING.md`](./CONTRIBUTING.md).
