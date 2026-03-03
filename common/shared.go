@@ -11,7 +11,7 @@ const (
 	PrysmTag             = "v7.1.2"
 	LighthouseTag        = "v8.1.1"
 	TekuTag              = "26.2.0"
-	Nimbus2Tag           = "26.2.0"
+	Nimbus2Tag           = "26.3.0"
 	GethCommitHash       = "0cf3d3ba"
 	NethermindCommitHash = "31cb81b7"
 	Nimbus2CommitHash    = "6aa946f8"
