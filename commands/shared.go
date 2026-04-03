@@ -69,6 +69,10 @@ func displayHardforkTimestamps(network, srcConfig string, epochZeroTimestamp uin
 			"Pectra",
 			clconfig.PectraEpoch,
 		},
+		{
+			"Fusaka",
+			clconfig.FusakaEpoch,
+		},
 	}
 
 	for _, epoch := range epochs {
